@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (C) 2011 eXo Platform SAS.
+
+    This is free software; you can redistribute it and/or modify it
+    under the terms of the GNU Lesser General Public License as
+    published by the Free Software Foundation; either version 2.1 of
+    the License, or (at your option) any later version.
+
+    This software is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+    Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public
+    License along with this software; if not, write to the Free
+    Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+    02110-1301 USA, or see the FSF site: http://www.fsf.org.
+
+-->
+<web-app id="WebApp_ID" version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+   <display-name>cloud-admin</display-name>
+
+   <context-param>
+      <param-name>javax.ws.rs.Application</param-name>
+      <param-value>org.exoplatform.cloudmanagement.admin.rest.CloudIdeRestApplication</param-value>
+   </context-param>
+
+   <!-- filter>
+      <filter-name>TeeFilter</filter-name>
+      <filter-class>ch.qos.logback.access.servlet.TeeFilter</filter-class>
+   </filter-->
+
+   <!-- filter-mapping>
+      <filter-name>TeeFilter</filter-name>
+      <url-pattern>/rest/*</url-pattern>
+   </filter-mapping-->        
+   
+
+   <listener>
+      <listener-class>org.exoplatform.cloudmanagement.admin.PropertiesInitializerListner</listener-class>
+   </listener>
+
+   <listener>
+      <listener-class>org.everrest.core.servlet.EverrestInitializedListener</listener-class>
+   </listener>
+
+
+   <servlet>
+      <servlet-name>EverrestServlet</servlet-name>
+      <servlet-class>org.everrest.core.servlet.EverrestServlet</servlet-class>
+   </servlet>
+
+
+
+    <servlet-mapping>
+      <servlet-name>EverrestServlet</servlet-name>
+      <url-pattern>/rest/*</url-pattern>
+   </servlet-mapping>
+
+   <servlet-mapping>
+      <servlet-name>EverrestServlet</servlet-name>
+      <url-pattern>/rest/private/*</url-pattern>
+   </servlet-mapping>
+
+
+
+
+
+   <security-constraint>
+      <web-resource-collection>
+         <web-resource-name>Cloud-admin-application</web-resource-name>
+         <url-pattern>/rest/private/*</url-pattern>
+         <http-method>POST</http-method>
+         <http-method>GET</http-method>
+      </web-resource-collection>
+      <auth-constraint>
+         <role-name>cloud-admin</role-name>
+      </auth-constraint>
+      <user-data-constraint>
+         <transport-guarantee>NONE</transport-guarantee>
+      </user-data-constraint>
+   </security-constraint>
+
+
+   <!-- Define the Login Configuration for this Application -->
+   <login-config>
+      <auth-method>BASIC</auth-method>
+      <realm-name>Cloud admin application</realm-name>
+   </login-config>
+
+   <!-- Security roles referenced by this web application -->
+   <security-role>
+      <description>The role that is required to log in to the Cloud admin application</description>
+      <role-name>cloud-admin</role-name>
+   </security-role>
+
+</web-app>
+
