@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<!--
+    Copyright (C) 2011 eXo Platform SAS.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>com.cloud-intranet</groupId>
     <artifactId>cloud-intranet-parent</artifactId>
     <version>1.0.0-Beta1-SNAPSHOT</version>
   </parent>
-  <artifactId>cloud-intranet-bundle</artifactId>
-  <packaging>war</packaging>
-  <name>eXo Cloud Intranet Platform bundle</name>
+  <artifactId>cloud-intranet-platform-bundle</artifactId>
+  <packaging>pom</packaging>
+  <name>eXo Cloud Intranet :: Platform bundle</name>
   <description>Cloud Intranet Platform Tomcat bundle.</description>
 
 </project>

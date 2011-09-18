@@ -1,47 +1,50 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-   <modelVersion>4.0.0</modelVersion>
+<!--
+    Copyright (C) 2011 eXo Platform SAS.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
-   <parent>
-     <groupId>com.cloud-intranet</groupId>
-     <artifactId>cloud-intranet-web</artifactId>
-     <version>1.0.0-Beta1-SNAPSHOT</version>
-   </parent>
+  <parent>
+    <groupId>com.cloud-intranet</groupId>
+    <artifactId>cloud-intranet-web</artifactId>
+    <version>1.0.0-Beta1-SNAPSHOT</version>
+  </parent>
 
-   <artifactId>cloud-intranet-web-admin</artifactId>
-   <packaging>war</packaging>
-   <name>eXo Cloud Intranet :: Admin web application</name>
+  <artifactId>cloud-intranet-web-admin</artifactId>
+  <packaging>war</packaging>
+  <name>eXo Cloud Intranet :: Admin</name>
+  <description>eXo Cloud Intranet Admin web application</description>
 
-   <dependencies>
-     <dependency>
-       <groupId>org.exoplatform.cloud-management</groupId>
-       <artifactId>cloud-admin</artifactId>
-       <version>${org.exoplatform.cloud-management.version}</version>
-     </dependency>
+  <dependencies>
+    <dependency>
+      <groupId>org.exoplatform.cloud-management</groupId>
+      <artifactId>cloud-admin</artifactId>
+      <version>${org.exoplatform.cloud-management.version}</version>
+    </dependency>
 
-     <dependency>
-       <groupId>javax.mail</groupId>
-       <artifactId>mail</artifactId>
-       <version>1.4.2</version>
-       <scope>compile</scope>
-     </dependency>
-   </dependencies>
+    <dependency>
+      <groupId>javax.mail</groupId>
+      <artifactId>mail</artifactId>
+      <version>1.4.2</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
 
-   <build>
-      <plugins>
-         <plugin>
-            <artifactId>maven-war-plugin</artifactId>
-            <configuration>
-               <archiveClasses>false</archiveClasses>
-               <archive>
-                  <manifest>
-                     <addClasspath>false</addClasspath>
-                  </manifest>
-               </archive>
-            </configuration>
-         </plugin>
-      </plugins>
-
-      <finalName>cloud-intranet-admin</finalName>
-   </build>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-war-plugin</artifactId>
+        <configuration>
+          <archiveClasses>false</archiveClasses>
+          <archive>
+            <manifest>
+              <addClasspath>false</addClasspath>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

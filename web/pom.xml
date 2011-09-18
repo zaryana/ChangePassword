@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<!--
+    Copyright (C) 2011 eXo Platform SAS.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>com.cloud-intranet</groupId>
@@ -8,8 +12,9 @@
   </parent>
   <artifactId>cloud-intranet-web</artifactId>
   <packaging>pom</packaging>
-  <name>eXo Cloud Intranet webapp</name>
-  <description>Cloud Intranet web application.</description>
+  <name>eXo Cloud Intranet :: Web</name>
+  <description>Cloud Intranet web application</description>
+  
   <modules>
     <module>admin</module>
   </modules>

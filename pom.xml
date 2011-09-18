@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<!--
+    Copyright (C) 2011 eXo Platform SAS.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.exoplatform</groupId>
@@ -18,7 +22,7 @@
     <url>http://svn.exoplatform.org/exo-int/cloud-intranet/trunk/</url>
     <developerConnection>scm:svn:http://svn.exoplatform.org/exo-int/cloud-intranet/trunk/</developerConnection>
   </scm>
-  
+
   <properties>
     <!-- Defaut compiler settings -->
     <maven.compiler.optimize>true</maven.compiler.optimize>
@@ -28,7 +32,7 @@
     <!-- eXo Modules -->
     <org.exoplatform.platform.version>3.5.0-M4</org.exoplatform.platform.version>
     <org.exoplatform.cloud-management.version>1.1-M2</org.exoplatform.cloud-management.version>      
-     <!-- Db libs -->
+    <!-- Db libs -->
     <mysql.connector.java.version>5.1.13</mysql.connector.java.version>
     <tomcat.version>6.0.32</tomcat.version>
   </properties>
@@ -54,6 +58,7 @@
 
   <modules>
     <module>web</module>
+    <module>admin-bundle</module>
     <module>platform-bundle</module>
   </modules>
 </project>
