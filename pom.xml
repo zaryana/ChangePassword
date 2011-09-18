@@ -53,7 +53,7 @@
   </dependencyManagement>
 
   <modules>
-    <module>web/admin-application</module>
+    <module>web</module>
     <module>platform-bundle</module>
   </modules>
 </project>
