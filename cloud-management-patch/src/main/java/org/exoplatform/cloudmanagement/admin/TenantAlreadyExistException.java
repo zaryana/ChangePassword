@@ -1,6 +1,4 @@
-package org.exoplatform.cloudintranet;
-
-import org.exoplatform.cloudmanagement.admin.TenantValidationException;
+package org.exoplatform.cloudmanagement.admin;
 
 public class TenantAlreadyExistException extends TenantValidationException
 {
