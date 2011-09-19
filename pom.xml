@@ -57,6 +57,7 @@
   </dependencyManagement>
 
   <modules>
+    <module>cloud-management-patch</module>
     <module>web</module>
     <module>admin-bundle</module>
     <module>platform-bundle</module>
