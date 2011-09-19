@@ -20,7 +20,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.exoplatform.cloudintranet.TenantAlreadyExistException;
 import org.exoplatform.cloudintranet.UserAlreadyExistsException;
 
 import org.everrest.core.impl.provider.json.JsonException;
@@ -32,6 +31,7 @@ import org.exoplatform.cloudmanagement.admin.CloudAdminException;
 import org.exoplatform.cloudmanagement.admin.MailSender;
 import org.exoplatform.cloudmanagement.admin.TenantMetadataValidator;
 import org.exoplatform.cloudmanagement.admin.TenantRegistrationException;
+import org.exoplatform.cloudmanagement.admin.TenantAlreadyExistException;
 import org.exoplatform.cloudmanagement.admin.TenantValidationException;
 import org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration;
 import org.exoplatform.cloudmanagement.admin.creation.TenantCreationSupervisor;

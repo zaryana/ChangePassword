@@ -18,6 +18,13 @@
   <description>eXo Cloud Intranet Admin web application</description>
 
   <dependencies>
+
+    <dependency>
+      <groupId>com.cloud-intranet</groupId>
+      <artifactId>cloud-management-patch</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
     <dependency>
       <groupId>org.exoplatform.cloud-management</groupId>
       <artifactId>cloud-admin</artifactId>
