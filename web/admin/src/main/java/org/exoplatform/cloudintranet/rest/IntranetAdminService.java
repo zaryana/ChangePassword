@@ -25,7 +25,7 @@ import org.exoplatform.cloudintranet.UserAlreadyExistsException;
 import org.everrest.core.impl.provider.json.JsonException;
 import org.everrest.core.impl.provider.json.JsonParser;
 import org.everrest.core.impl.provider.json.ObjectValue;
-import org.exoplatform.cloudmanagement.admin.rest.TenantCreatorWithEmailAuthorization;
+import org.exoplatform.cloudmanagement.admin.rest.TenantCreator;
 import org.exoplatform.cloudmanagement.admin.rest.CloudAdminExceptionMapper;
 import org.exoplatform.cloudmanagement.admin.CloudAdminException;
 import org.exoplatform.cloudmanagement.admin.MailSender;
@@ -38,7 +38,7 @@ import org.exoplatform.cloudmanagement.admin.creation.TenantCreationSupervisor;
 import org.exoplatform.cloudmanagement.admin.status.CloudInfoHolder;
 
 @Path(CLOUD_ADMIN_PUBLIC_TENANT_CREATION_SERVICE)
-public class IntranetAdminService extends TenantCreatorWithEmailAuthorization
+public class IntranetAdminService extends TenantCreator
 {
 
    /* Cloud-intranet mail  */
