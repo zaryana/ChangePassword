@@ -14,7 +14,15 @@
   <packaging>pom</packaging>
   <name>eXo Cloud Intranet :: Web</name>
   <description>Cloud Intranet web application</description>
-  
+
+  <dependencies>
+    <dependency>
+       <groupId>org.exoplatform.cloud-management</groupId>
+       <artifactId>cloud-admin-valve</artifactId>
+       <version>${org.exoplatform.cloud-management.version}</version>
+     </dependency>
+  </dependencies>
+
   <modules>
     <module>admin</module>
   </modules>
