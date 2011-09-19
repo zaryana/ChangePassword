@@ -48,10 +48,11 @@ import javax.ws.rs.core.Response.Status;
 
 /**
  * Tenant creation service for public use with email authorization.
+ * This is a full copy of TenantCreatorWithEmailAuthorization from CM, but with shared adminConfiguration field for extensioning.
  */
 
 @Path(CLOUD_ADMIN_PUBLIC_TENANT_CREATION_SERVICE)
-public class TenantCreatorWithEmailAuthorization
+public class TenantCreator
 {
    private static final Logger LOG = LoggerFactory.getLogger(TenantCreatorWithEmailAuthorization.class);
 
@@ -63,7 +64,7 @@ public class TenantCreatorWithEmailAuthorization
 
    private final TenantCreationSupervisor creationSupervisor;
 
-   public TenantCreatorWithEmailAuthorization(CloudInfoHolder cloudInfoHolder,
+   public TenantCreator(CloudInfoHolder cloudInfoHolder,
       TenantMetadataValidator tenantMetadataValidator, CloudAdminConfiguration cloudAdminConfiguration,
       TenantCreationSupervisor creationSupervisor)
    {
