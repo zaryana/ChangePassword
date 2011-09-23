@@ -127,7 +127,7 @@
                     <echo message="Deploy cloud-intranet-web-admin.war" />
                     <copy
                       file="${project.build.directory}/packager-conf/war/cloud-intranet-web-admin-${project.version}.war"
-                      tofile="${project.build.directory}/tomcat-admin/webapps/ROOT.war" />
+                      tofile="${project.build.directory}/tomcat-admin/webapps/cloud-admin.war" />
                     <chmod file="${project.build.directory}/tomcat-admin/bin/*.sh" perm="+x" />
 
                     <echo message="Copy cloud-admin-valve.jar" />
