@@ -55,6 +55,8 @@ public class IntranetAdminService extends TenantCreator
    public final static String CLOUD_ADMIN_MAIL_JOIN_CLOSED_OWNER_TEMPLATE =
       "cloud.admin.mail.join.closed.owner.template";
 
+   public final static String CLOUD_ADMIN_MAIL_SALES_EMAIL = "cloud.admin.mail.sales.email";
+   
    public final static String CLOUD_ADMIN_MAIL_JOIN_CLOSED_SALES_SUBJECT = "cloud.admin.mail.join.closed.sales.subject";
 
    public final static String CLOUD_ADMIN_MAIL_JOIN_CLOSED_SALES_TEMPLATE =
@@ -120,15 +122,16 @@ public class IntranetAdminService extends TenantCreator
                props.put("tenant.name", tName);
                props.put("user.mail", userMail);
 
-               String userTemplate = adminConfiguration.getProperty(CLOUD_ADMIN_MAIL_JOIN_TEMPLATE, null);
-               String ownerTemplate = adminConfiguration.getProperty(CLOUD_ADMIN_MAIL_JOIN_TEMPLATE, null);
-               String salesTemplate = adminConfiguration.getProperty(CLOUD_ADMIN_MAIL_JOIN_TEMPLATE, null);
+               String userTemplate = adminConfiguration.getProperty(CLOUD_ADMIN_MAIL_JOIN_CLOSED_USER_TEMPLATE, null);
+               String ownerTemplate = adminConfiguration.getProperty(CLOUD_ADMIN_MAIL_JOIN_CLOSED_OWNER_TEMPLATE, null);
+               String salesEmail = adminConfiguration.getProperty(CLOUD_ADMIN_MAIL_SALES_EMAIL, null);
+               String salesTemplate = adminConfiguration.getProperty(CLOUD_ADMIN_MAIL_JOIN_CLOSED_SALES_TEMPLATE, null);
 
                mailSender.sendMail(userMail, adminConfiguration.getProperty(CLOUD_ADMIN_MAIL_JOIN_CLOSED_USER_SUBJECT),
                   userTemplate, props);
                //					mailSender.sendMail(ownerMail, adminConfiguration.getProperty(CLOUD_ADMIN_MAIL_JOIN_CLOSED_OWNER_SUBJECT),
                //							ownerTemplate, props);
-               //					mailSender.sendMail(salesMail, adminConfiguration.getProperty(CLOUD_ADMIN_MAIL_JOIN_CLOSED_SALES_SUBJECT),
+               //					mailSender.sendMail(salesEmail, adminConfiguration.getProperty(CLOUD_ADMIN_MAIL_JOIN_CLOSED_SALES_SUBJECT),
                //							salesTemplate, props);
 
             }
@@ -242,7 +245,7 @@ public class IntranetAdminService extends TenantCreator
       StringBuilder strUrl = new StringBuilder();
       strUrl.append("http://");
       strUrl.append(adminConfiguration.getMasterHost());
-      strUrl.append("/cloud-admin/rest/cloud-admin/info-service/users-list");
+      strUrl.append("/rest/cloud-admin/info-service/users-list");
 
       try
       {

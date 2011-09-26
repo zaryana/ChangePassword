@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!--
+    Copyright (C) 2011 eXo Platform SAS.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.cloud-intranet</groupId>
+    <artifactId>cloud-intranet-web</artifactId>
+    <version>1.0.0-Beta1-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>cloud-intranet-webui</artifactId>
+  <packaging>war</packaging>
+  <name>eXo Cloud Intranet :: WebUI</name>
+  <description>eXo Cloud Intranet  Web application</description>
+
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-war-plugin</artifactId>
+        <configuration>
+          <archiveClasses>false</archiveClasses>
+          <archive>
+            <manifest>
+              <addClasspath>false</addClasspath>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
