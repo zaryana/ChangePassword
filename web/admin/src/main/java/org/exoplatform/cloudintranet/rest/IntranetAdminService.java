@@ -20,6 +20,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.exoplatform.cloudintranet.TenantCreatedListener;
 import org.exoplatform.cloudintranet.UserAlreadyExistsException;
 
 import org.everrest.core.impl.provider.json.JsonException;
@@ -36,6 +37,7 @@ import org.exoplatform.cloudmanagement.admin.TenantValidationException;
 import org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration;
 import org.exoplatform.cloudmanagement.admin.creation.TenantCreationSupervisor;
 import org.exoplatform.cloudmanagement.admin.status.CloudInfoHolder;
+import org.exoplatform.cloudmanagement.admin.status.criteria.TenantCreatedCriteria;
 
 @Path(CLOUD_ADMIN_PUBLIC_TENANT_CREATION_SERVICE)
 public class IntranetAdminService extends TenantCreator
@@ -67,6 +69,8 @@ public class IntranetAdminService extends TenantCreator
       TenantCreationSupervisor creationSupervisor)
    {
       super(cloudInfoHolder, tenantMetadataValidator, cloudAdminConfiguration, creationSupervisor);
+     // super.cloudInfoHolder.addTenantStateListener(new TenantCreatedCriteria(), new TenantCreatedListener());
+      
    }
 
    @POST
