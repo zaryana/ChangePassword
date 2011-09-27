@@ -58,7 +58,7 @@ public class TenantCreator
 
    protected final CloudAdminConfiguration adminConfiguration;
 
-   private final CloudInfoHolder cloudInfoHolder;
+   protected final CloudInfoHolder cloudInfoHolder;
 
    private final TenantMetadataValidator tenantMetadataValidator;
 
