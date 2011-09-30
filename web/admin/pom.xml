@@ -30,7 +30,8 @@
       <artifactId>cloud-admin</artifactId>
       <version>${org.exoplatform.cloud-management.version}</version>
     </dependency>
-
+    
+   
     <dependency>
       <groupId>javax.mail</groupId>
       <artifactId>mail</artifactId>
