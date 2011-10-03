@@ -89,7 +89,7 @@ public class IntranetAdminService extends TenantCreator
                props.put("tenant.masterhost", adminConfiguration.getMasterHost());
                props.put("tenant.name", tName);
                props.put("user.mail", userMail);
-              // utils.sendOkToJoinEmail(userMail, props);
+               utils.sendOkToJoinEmail(userMail, props);
             }
             else
             {
@@ -151,26 +151,12 @@ public class IntranetAdminService extends TenantCreator
          new TenantCreatedListenerThread(userMail, firstName, lastName, companyName, phone, password, cloudInfoHolder,
             adminConfiguration);
       ExecutorService executor = Executors.newSingleThreadExecutor();
-      try
-      {
-         Future<?> res = executor.submit(thread);
-         res.get(30, TimeUnit.MINUTES);
-      }
-      catch (InterruptedException e)
-      {
-         LOG.error("Failed to create intranet " + e.getCause());
-         e.printStackTrace();
-      }
-      catch (ExecutionException e)
-      {
-         LOG.error("Failed to create intranet " + e.getCause());
-         e.printStackTrace();
-      }
-      catch (TimeoutException e)
-      {
-         LOG.error("Failed to create intranet " + e.getCause());
-         e.printStackTrace();
-      }
+      
+//         Future<?> res = executor.submit(thread);
+//         res.get(30, TimeUnit.MINUTES);
+         executor.execute(thread);
+      
+      
       return Response.ok().build();
    }
 

@@ -48,7 +48,7 @@ public class CloudIntranetUtils
    public final static String CLOUD_ADMIN_MAIL_JOIN_CLOSED_SALES_TEMPLATE =
       "cloud.admin.mail.join.closes.sales.template";
 
-   private static final String CLOUD_ADMIN_MAIL_USER_JOINED_TEMPLATE = "cloud.admin.mail.join.template";
+   private static final String CLOUD_ADMIN_MAIL_USER_JOINED_TEMPLATE = "cloud.admin.mail.joined.template";
 
    private static final String CLOUD_ADMIN_MAIL_USER_JOINED_SUBJECT = "cloud.admin.mail.joined.subject";
 
@@ -59,16 +59,16 @@ public class CloudIntranetUtils
       "cloud.admin.mail.user.joined.owner.subject";
 
    private static final String CLOUD_ADMIN_MAIL_USER_INTRANET_CREATED_TEMPLATE =
-      "cloud.admin.mail.user.intranet.created.template";
+      "cloud.admin.mail.intranet.created.user.template";
 
    private static final String CLOUD_ADMIN_MAIL_USER_INTRANET_CREATED_SUBJECT =
-      "cloud.admin.mail.user.intranet.created.subject";
+      "cloud.admin.mail.intranet.created.user.subject";
 
    private static final String CLOUD_ADMIN_MAIL_OWNER_INTRANET_CREATED_TEMPLATE =
-      "cloud.admin.mail.owner.intranet.created.template";
+      "cloud.admin.mail.intranet.created.owner.template";
 
    private static final String CLOUD_ADMIN_MAIL_OWNER_INTRANET_CREATED_SUBJECT =
-      "cloud.admin.mail.owner.intranet.created.subject";
+      "cloud.admin.mail.intranet.created.owner.subject";
 
    private CloudAdminConfiguration cloudAdminConfiguration;
 
@@ -111,11 +111,7 @@ public class CloudIntranetUtils
       params.append("last-name=" + lastName);
       params.append("&");
       params.append("email=" + userMail);
-      
-     // String userPassword = cloudAdminConfiguration.getProperty("admin.agent.auth.username") + ":" + cloudAdminConfiguration.getProperty("admin.agent.auth.password");
-     // System.out.println("Logging in:"+userPassword);
-     // String encoding = Base64.encode(userPassword.getBytes());
-
+    
       try
       {
          url = new URL(strUrl.toString());
@@ -179,9 +175,6 @@ public class CloudIntranetUtils
       params.append("&");
       params.append("email=" + userMail);
       
-//      String userPassword = cloudAdminConfiguration.getProperty("admin.agent.auth.username") + ":" + cloudAdminConfiguration.getProperty("admin.agent.auth.password");
-//      String encoding = new sun.misc.BASE64Encoder().encode(userPassword.getBytes());
-
       try
       {
          url = new URL(strUrl.toString());
@@ -233,10 +226,6 @@ public class CloudIntranetUtils
       strUrl.append("http://");
       strUrl.append(cloudAdminConfiguration.getMasterHost());
       strUrl.append("/cloud-admin/rest/private/cloud-admin/info-service/users-list");
-//      String userPassword = cloudAdminConfiguration.getProperty("admin.agent.auth.username") + ":" + cloudAdminConfiguration.getProperty("admin.agent.auth.password");
-//      String encoding = new sun.misc.BASE64Encoder().encode(userPassword.getBytes());
-
-
       try
       {
          url = new URL(strUrl.toString());
@@ -378,15 +367,15 @@ public class CloudIntranetUtils
    public void sendIntranetCreatedEmails(String userMail, Map<String, String> props) throws CloudAdminException
    {
 
-      String userTemplate = cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_USER_INTRANET_CREATED_TEMPLATE, null);
+      //String userTemplate = cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_USER_INTRANET_CREATED_TEMPLATE, null);
       String ownerTemplate =
          cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_OWNER_INTRANET_CREATED_TEMPLATE, null);
       try
       {
+//         mailSender.sendMail(userMail,
+//            cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_USER_INTRANET_CREATED_SUBJECT), userTemplate, props);
          mailSender.sendMail(userMail,
-            cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_USER_INTRANET_CREATED_SUBJECT), userTemplate, props);
-         mailSender.sendMail(userMail,
-            cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_OWNER_INTRANET_CREATED_SUBJECT), userTemplate, props);
+            cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_OWNER_INTRANET_CREATED_SUBJECT), ownerTemplate, props);
 
       }
       catch (ConfigurationParameterNotFound e)
