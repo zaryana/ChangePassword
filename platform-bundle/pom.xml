@@ -15,4 +15,97 @@
   <name>eXo Cloud Intranet :: Platform bundle</name>
   <description>Cloud Intranet Platform Tomcat bundle.</description>
 
+<profiles>
+ <profile>
+  <id>distrib</id>
+  <dependencies>
+    <dependency>
+	<groupId>com.exoplatform.platform.cloud</groupId>
+        <artifactId>exo.platform.packaging.assembly</artifactId>
+        <version>${org.exoplatform.platform.version}</version>
+        <type>zip</type>
+        <classifier>tomcat</classifier>
+    </dependency>
+  </dependencies>
+<build>
+    <finalName>Cloud-Intranet-Platform-${project.version}</finalName>
+    <plugins>
+<!-- Unpack Tomcat base -->
+       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>01-unpack-dependencies</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <overWriteSnapshots>true</overWriteSnapshots>
+              <artifactItems>
+                <artifactItem>
+		   <groupId>com.exoplatform.platform.cloud</groupId>
+                   <artifactId>exo.platform.packaging.assembly</artifactId>
+                   <version>${org.exoplatform.platform.version}</version>
+		   <classifier>tomcat</classifier>
+		   <type>zip</type>
+                  <outputDirectory>target/tomcat</outputDirectory>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+<!-- Create Demo -->
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.6</version>
+        <executions>
+          <execution>
+            <id>02-prepare-cloud-intranet</id>
+            <phase>prepare-package</phase>
+            <configuration>
+              <target>
+                <replace file="${project.build.directory}/tomcat/bin/gatein.sh">
+				  <replacetoken><![CDATA[EXO_CLOUD_ADMIN_OPTS="-Dcloud.admin.log.dir=../logs/cloud-admin -Dcloud.admin.data.dir=../gatein/data -Dcloud.admin.configuration.dir=../gatein/conf/cloud/cloud-admin -Dcloud.admin.configuration.file=../gatein/conf/cloud/cloud-admin/admin.properties"]]> </replacetoken>
+				  <replacevalue><![CDATA[ ]]></replacevalue>
+		</replace>
+                <replace file="${project.build.directory}/tomcat/bin/gatein.sh">
+                                 <replacetoken><![CDATA[JAVA_OPTS="-Xms512m -Xmx2g -XX:MaxPermSize=256m $JAVA_OPTS $LOG_OPTS $SECURITY_OPTS $EXO_OPTS $EXO_CLOUD_ADMIN_OPTS $EXO_PROFILES $EXO_CLOUD_SECURITY_OPTS $EXO_CLOUD_OPTS $JMX_OPTS"]]> </replacetoken>
+				  <replacevalue><![CDATA[JAVA_OPTS="-Xms512m -Xmx2g -XX:MaxPermSize=256m $JAVA_OPTS $LOG_OPTS $SECURITY_OPTS $EXO_OPTS $EXO_PROFILES $EXO_CLOUD_SECURITY_OPTS $EXO_CLOUD_OPTS $JMX_OPTS"]]></replacevalue>
+		</replace>
+                <delete file="${project.build.directory}/tomcat/conf/Catalina/localhost/cloud-admin.xml" />
+                <delete dir="${project.build.directory}/tomcat/gatein/conf/cloud/cloud-admin" />
+                <delete file="${project.build.directory}/tomcat/lib/cloud-admin-valve-${org.exoplatform.cloud-management.version}.jar" />
+                <delete file="${project.build.directory}/tomcat/webapps/cloud-admin.war" />
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>03-assembly</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>single</goal>
+                </goals>
+                <configuration>
+                  <descriptors>
+                    <descriptor>src/main/assembly/tomcat-archive.xml</descriptor>
+                  </descriptors>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+    </plugins>
+  </build>
+ </profile>
+</profiles>
 </project>
