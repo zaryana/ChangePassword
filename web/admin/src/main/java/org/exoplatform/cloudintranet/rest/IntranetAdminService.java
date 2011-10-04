@@ -127,7 +127,8 @@ public class IntranetAdminService extends TenantCreator
          props.put("tenant.name",
             userMail.substring(userMail.indexOf("@") + 1, userMail.indexOf(".", userMail.indexOf("@"))));
          props.put("user.mail", userMail);
-        // utils.sendUserJoinedEmails(userMail, props);
+         props.put("first.name", firstName);
+         utils.sendUserJoinedEmails(userMail, props);
          return Response.ok().build();
       }
       catch (CloudAdminException e)
