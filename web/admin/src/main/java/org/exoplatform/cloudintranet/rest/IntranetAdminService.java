@@ -92,7 +92,8 @@ public class IntranetAdminService extends TenantCreator
                props.put("tenant.masterhost", adminConfiguration.getMasterHost());
                props.put("tenant.name", tName);
                props.put("user.mail", userMail);
-              // utils.sendJoinRejectedEmails(userMail, props);
+               props.put("owner.email", utils.getTenantOwnerEmail(tName));
+               utils.sendJoinRejectedEmails(userMail, props);
 
             }
          }

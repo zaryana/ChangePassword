@@ -423,10 +423,10 @@ public class CloudIntranetUtils
       {
          mailSender.sendMail(userMail, cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_JOIN_CLOSED_USER_SUBJECT),
             userTemplate, props);
-         //             mailSender.sendMail(ownerMail, adminConfiguration.getProperty(CLOUD_ADMIN_MAIL_JOIN_CLOSED_OWNER_SUBJECT),
-         //                   ownerTemplate, props);
-         //             mailSender.sendMail(salesEmail, adminConfiguration.getProperty(CLOUD_ADMIN_MAIL_JOIN_CLOSED_SALES_SUBJECT),
-         //                   salesTemplate, props);
+         mailSender.sendMail(props.get("owner.email"), cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_JOIN_CLOSED_OWNER_SUBJECT),
+                            ownerTemplate, props);
+         mailSender.sendMail(salesEmail, cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_JOIN_CLOSED_SALES_SUBJECT),
+                            salesTemplate, props);
       }
       catch (ConfigurationParameterNotFound e)
       {
