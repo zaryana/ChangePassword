@@ -4,13 +4,8 @@ import static org.exoplatform.cloudmanagement.rest.admin.CloudAdminRestServicePa
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,7 +21,6 @@ import org.exoplatform.cloudintranet.CloudIntranetUtils;
 import org.exoplatform.cloudintranet.TenantCreatedListenerThread;
 import org.exoplatform.cloudmanagement.admin.rest.TenantCreator;
 import org.exoplatform.cloudmanagement.admin.rest.CloudAdminExceptionMapper;
-import org.exoplatform.cloudmanagement.admin.rest.TenantCreatorWithCloudAdminRole;
 import org.exoplatform.cloudmanagement.admin.CloudAdminException;
 import org.exoplatform.cloudmanagement.admin.TenantMetadataValidator;
 import org.exoplatform.cloudmanagement.admin.TenantAlreadyExistException;
@@ -104,7 +98,6 @@ public class IntranetAdminService extends TenantCreator
          }
          catch (CloudAdminException e)
          {
-            e.printStackTrace();
             CloudAdminExceptionMapper mapper = new CloudAdminExceptionMapper();
             return mapper.toResponse(e);
          }

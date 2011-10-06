@@ -19,8 +19,6 @@ import java.util.Iterator;
 import java.net.Authenticator;
 
 import java.util.Map;
-import java.util.UUID;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -119,7 +117,6 @@ public class CloudIntranetUtils
       {
          url = new URL(strUrl.toString());
          connection = (HttpURLConnection)url.openConnection();
-         //connection.setRequestProperty("Authorization", "Basic " + encoding);
          connection.setRequestMethod("POST");
          connection.setDoOutput(true);
          OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
@@ -184,7 +181,6 @@ public class CloudIntranetUtils
       {
          url = new URL(strUrl.toString());
          connection = (HttpURLConnection)url.openConnection();
-         //connection.setRequestProperty("Authorization", "Basic " + encoding);
          connection.setRequestMethod("POST");
          connection.setDoOutput(true);
 
@@ -235,7 +231,6 @@ public class CloudIntranetUtils
       {
          url = new URL(strUrl.toString());
          connection = (HttpURLConnection)url.openConnection();
-         // connection.setRequestProperty("Authorization", "Basic " + encoding);
          connection.setRequestMethod("GET");
 
          InputStream io;
@@ -279,7 +274,7 @@ public class CloudIntranetUtils
                   }
                }
             }
-            if (counter < 20)
+            if (counter < 20) //TODO: make configurable;
                return true;
             else
                return false;
@@ -325,7 +320,6 @@ public class CloudIntranetUtils
       {
          url = new URL(strUrl.toString());
          connection = (HttpURLConnection)url.openConnection();
-         // connection.setRequestProperty("Authorization", "Basic " + encoding);
          connection.setRequestMethod("GET");
 
          InputStream io;
@@ -454,7 +448,7 @@ public class CloudIntranetUtils
          mailSender.sendMail(userMail, cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_USER_JOINED_SUBJECT),
             userTemplate, props);
          mailSender.sendMail(ownerEmail, cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_USER_JOINED_OWNER_SUBJECT),
-               userTemplate, props);
+            ownerTemplate, props);
 
       }
       catch (ConfigurationParameterNotFound e)
@@ -467,13 +461,13 @@ public class CloudIntranetUtils
    public void sendIntranetCreatedEmails(String userMail, Map<String, String> props) throws CloudAdminException
    {
 
-      //String userTemplate = cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_USER_INTRANET_CREATED_TEMPLATE, null);
+      String userTemplate = cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_USER_INTRANET_CREATED_TEMPLATE, null);
       String ownerTemplate =
          cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_OWNER_INTRANET_CREATED_TEMPLATE, null);
       try
       {
-         //         mailSender.sendMail(userMail,
-         //            cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_USER_INTRANET_CREATED_SUBJECT), userTemplate, props);
+         mailSender.sendMail(userMail,
+            cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_USER_INTRANET_CREATED_SUBJECT), userTemplate, props);
          mailSender.sendMail(userMail,
             cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_OWNER_INTRANET_CREATED_SUBJECT), ownerTemplate, props);
 

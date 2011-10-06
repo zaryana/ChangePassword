@@ -43,8 +43,8 @@ public class TenantCreatedListenerThread implements Runnable
    private CloudAdminConfiguration cloudAdminConfiguration;
    
 
-   public TenantCreatedListenerThread(String userMail, String firstName, String lastName, String companyName, String phone,
-      String password, CloudInfoHolder cloudInfoHolder, CloudAdminConfiguration cloudAdminConfiguration)
+   public TenantCreatedListenerThread(String userMail, String firstName, String lastName, String companyName,
+      String phone, String password, CloudInfoHolder cloudInfoHolder, CloudAdminConfiguration cloudAdminConfiguration)
    {
 
       this.tName = userMail.substring(userMail.indexOf("@") + 1, userMail.indexOf(".", userMail.indexOf("@")));
@@ -72,7 +72,7 @@ public class TenantCreatedListenerThread implements Runnable
             while (!cloudInfoHolder.getTenantStatus(tName).getState().equals(TenantState.ONLINE))
             {
                if (count > limit)
-               throw new CloudAdminException("Tenant creation timeout reached");
+                  throw new CloudAdminException("Tenant creation timeout reached");
                Thread.sleep(interval);
                count++;
             }
