@@ -95,15 +95,27 @@
                 <!-- Delete tenants management page -->
                 <unzip src="${project.build.directory}/tomcat/webapps/cloud-extension.war"
                        dest="${project.build.directory}/tomcat/webapps/cloud-ext" />
-                <copy file="${project.basedir}/src/main/resources/pages.xml"
+                <copy file="${project.basedir}/src/main/resources/cloud-extension/pages.xml"
                       tofile="${project.build.directory}/tomcat/webapps/cloud-ext/WEB-INF/conf/portal/group/platform/administrators/pages.xml"
                       overwrite="true" />
-                <copy file="${project.basedir}/src/main/resources/navigation.xml"
+                <copy file="${project.basedir}/src/main/resources/cloud-extension/navigation.xml"
                       tofile="${project.build.directory}/tomcat/webapps/cloud-ext/WEB-INF/conf/portal/group/platform/administrators/navigation.xml"
                       overwrite="true" />
                 <zip destfile="${project.build.directory}/tomcat/webapps/cloud-extension.war" 
                      basedir="${project.build.directory}/tomcat/webapps/cloud-ext" />
                 <delete dir="${project.build.directory}/tomcat/webapps/cloud-ext" />
+                <!-- Delete acme-intranet welcome page -->
+                <unzip src="${project.build.directory}/tomcat/webapps/acme-intranet.war"
+                       dest="${project.build.directory}/tomcat/webapps/acme-intranet" />
+                <copy file="${project.basedir}/src/main/resources/acme-intranet/pages.xml"
+                      tofile="${project.build.directory}/tomcat/webapps/acme-intranet/WEB-INF/conf/office-extension/portal/portal/intranet/pages.xml"
+                      overwrite="true" />
+                <copy file="${project.basedir}/src/main/resources/acme-intranet/navigation.xml"
+                      tofile="${project.build.directory}/tomcat/webapps/acme-intranet/WEB-INF/conf/office-extension/portal/portal/intranet/navigation.xml"
+                      overwrite="true" />
+                <zip destfile="${project.build.directory}/tomcat/webapps/acme-intranet.war" 
+                     basedir="${project.build.directory}/tomcat/webapps/acme-intranet" />
+                <delete dir="${project.build.directory}/tomcat/webapps/acme-intranet" />
               </target>
             </configuration>
             <goals>
