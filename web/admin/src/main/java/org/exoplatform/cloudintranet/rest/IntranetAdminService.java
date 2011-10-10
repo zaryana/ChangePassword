@@ -64,7 +64,7 @@ public class IntranetAdminService extends TenantCreator
    @Path("/signup")
    public Response signupToIntranet(@FormParam("user-mail") String userMail) throws CloudAdminException
    {
-      String tName = userMail.substring(userMail.indexOf("@") + 1, userMail.indexOf(".", userMail.indexOf("@")));
+      String tName = utils.emailToTenant(userMail);
       String username = userMail.substring(0, (userMail.indexOf("@")));
       //TODO: white-list checking
       LOG.info("Received signup request from " + userMail);
@@ -118,8 +118,7 @@ public class IntranetAdminService extends TenantCreator
          utils.storeUser(userMail, firstName, lastName, password);
          Map<String, String> props = new HashMap<String, String>();
          props.put("tenant.masterhost", adminConfiguration.getMasterHost());
-         props.put("tenant.name",
-            userMail.substring(userMail.indexOf("@") + 1, userMail.indexOf(".", userMail.indexOf("@"))));
+         props.put("tenant.name", utils.emailToTenant(userMail));
          props.put("user.mail", userMail);
          props.put("first.name", firstName);
          utils.sendUserJoinedEmails(userMail, props);
@@ -127,7 +126,6 @@ public class IntranetAdminService extends TenantCreator
       }
       catch (CloudAdminException e)
       {
-         e.printStackTrace();
          CloudAdminExceptionMapper mapper = new CloudAdminExceptionMapper();
          return mapper.toResponse(e);
       }

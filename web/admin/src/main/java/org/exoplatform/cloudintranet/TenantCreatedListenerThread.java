@@ -1,7 +1,6 @@
 package org.exoplatform.cloudintranet;
 
 import org.exoplatform.cloudmanagement.admin.CloudAdminException;
-import org.exoplatform.cloudmanagement.admin.MailSender;
 import org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration;
 import org.exoplatform.cloudmanagement.admin.queue.TenantQueueException;
 import org.exoplatform.cloudmanagement.admin.status.CloudInfoHolder;
@@ -77,7 +76,6 @@ public class TenantCreatedListenerThread implements Runnable
                count++;
             }
             CloudIntranetUtils utils = new CloudIntranetUtils(cloudAdminConfiguration);
-            MailSender mailSender = new MailSender(cloudAdminConfiguration);
             String root_password = UUID.randomUUID().toString().replace("-", "").substring(0, 9);
             utils.storeUser(email, firstName, lastName, password);
             utils.storeRoot(tName, email, firstName, lastName, root_password);

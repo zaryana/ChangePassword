@@ -86,7 +86,7 @@ public class CloudIntranetUtils
       throws CloudAdminException
    {
 
-      String tName = userMail.substring(userMail.indexOf("@") + 1, userMail.indexOf(".", userMail.indexOf("@")));
+      String tName = emailToTenant(userMail);
       String username = userMail.substring(0, (userMail.indexOf("@")));
 
       URL url;
@@ -226,7 +226,7 @@ public class CloudIntranetUtils
       StringBuilder strUrl = new StringBuilder();
       strUrl.append("http://");
       strUrl.append(cloudAdminConfiguration.getMasterHost());
-      strUrl.append("/cloud-admin/rest/private/cloud-admin/info-service/users-list");
+      strUrl.append("/rest/private/cloud-admin/info-service/users-list");
       try
       {
          url = new URL(strUrl.toString());
@@ -265,7 +265,6 @@ public class CloudIntranetUtils
                      while (users.hasNext())
                      {
                         String userName = users.next();
-                        System.out.println("USER:" + userName);
                         if (!userName.equalsIgnoreCase(_username))
                            counter++;
                         else
@@ -315,7 +314,7 @@ public class CloudIntranetUtils
       StringBuilder strUrl = new StringBuilder();
       strUrl.append("http://");
       strUrl.append(cloudAdminConfiguration.getMasterHost());
-      strUrl.append("/cloud-admin/rest/private/cloud-admin/info-service/users-list");
+      strUrl.append("/rest/private/cloud-admin/info-service/users-list");
       try
       {
          url = new URL(strUrl.toString());
@@ -354,8 +353,7 @@ public class CloudIntranetUtils
                      while (users.hasNext())
                      {
                         String userName = users.next();
-                        System.out.println("USER:" + userName);
-
+ 
                         if (userName.equalsIgnoreCase("root")) {
                            email =
                               responseObj.getElement(asName).getElement(tenantName).getElement(userName)
@@ -437,7 +435,7 @@ public class CloudIntranetUtils
    public void sendUserJoinedEmails(String userMail, Map<String, String> props) throws CloudAdminException
    {
 
-      String tName = userMail.substring(userMail.indexOf("@") + 1, userMail.indexOf(".", userMail.indexOf("@")));
+      String tName = emailToTenant(userMail);
       String userTemplate = cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_USER_JOINED_TEMPLATE, null);
       String ownerTemplate = cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_USER_JOINED_OWNER_TEMPLATE, null);
       try
@@ -476,6 +474,16 @@ public class CloudIntranetUtils
       {
          LOG.error(e.getMessage());
       }
+   }
+   
+   
+   public  String emailToTenant(String email) throws CloudAdminException {
+      String tName = email.substring(email.indexOf("@") + 1, email.indexOf(".", email.indexOf("@")));
+      if (tName == null || tName.length() == 0)
+      {
+         throw new CloudAdminException("Can't validate this email");
+      }
+      return tName;
    }
 
 }
