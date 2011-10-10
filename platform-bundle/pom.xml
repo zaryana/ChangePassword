@@ -20,8 +20,8 @@
   <id>distrib</id>
   <dependencies>
     <dependency>
-	<groupId>com.exoplatform.platform.cloud</groupId>
-        <artifactId>exo.platform.packaging.assembly</artifactId>
+        <groupId>com.exoplatform.platform.cloud</groupId>
+        <artifactId>exo.platform.packaging.tomcat</artifactId>
         <version>${org.exoplatform.platform.version}</version>
         <type>zip</type>
         <classifier>tomcat</classifier>
@@ -45,12 +45,12 @@
               <overWriteSnapshots>true</overWriteSnapshots>
               <artifactItems>
                 <artifactItem>
-		   <groupId>com.exoplatform.platform.cloud</groupId>
-                   <artifactId>exo.platform.packaging.assembly</artifactId>
+                   <groupId>com.exoplatform.platform.cloud</groupId>
+                   <artifactId>exo.platform.packaging.tomcat</artifactId>
                    <version>${org.exoplatform.platform.version}</version>
-		   <classifier>tomcat</classifier>
-		   <type>zip</type>
-                  <outputDirectory>target/tomcat</outputDirectory>
+                   <classifier>tomcat</classifier>
+                   <type>zip</type>
+                   <outputDirectory>target/tomcat</outputDirectory>
                 </artifactItem>
               </artifactItems>
             </configuration>
@@ -92,7 +92,18 @@
 			<fileset dir="${project.build.directory}/tomcat/conf/Catalina/localhost" includes="default-website.xml" />
 			<fileset dir="${project.build.directory}/tomcat/lib" includes="exo.platform.sample.default-website.*.jar" />       
                 </delete>
-  
+                <!-- Delete tenants management page -->
+                <unzip src="${project.build.directory}/tomcat/webapps/cloud-extension.war"
+                       dest="${project.build.directory}/tomcat/webapps/cloud-ext" />
+                <copy file="${project.basedir}/src/main/resources/pages.xml"
+                      tofile="${project.build.directory}/tomcat/webapps/cloud-ext/WEB-INF/conf/portal/group/platform/administrators/pages.xml"
+                      overwrite="true" />
+                <copy file="${project.basedir}/src/main/resources/navigation.xml"
+                      tofile="${project.build.directory}/tomcat/webapps/cloud-ext/WEB-INF/conf/portal/group/platform/administrators/navigation.xml"
+                      overwrite="true" />
+                <zip destfile="${project.build.directory}/tomcat/webapps/cloud-extension.war" 
+                     basedir="${project.build.directory}/tomcat/webapps/cloud-ext" />
+                <delete dir="${project.build.directory}/tomcat/webapps/cloud-ext" />
               </target>
             </configuration>
             <goals>
