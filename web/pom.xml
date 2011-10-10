@@ -25,6 +25,5 @@
 
   <modules>
     <module>admin</module>
-    <module>webui</module>
   </modules>
 </project>
