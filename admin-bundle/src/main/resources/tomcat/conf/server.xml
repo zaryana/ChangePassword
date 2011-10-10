@@ -133,7 +133,7 @@
         <!--
         <Valve className="org.apache.catalina.authenticator.SingleSignOn" />
         -->
-
+        <Valve className="org.exoplatform.cloud.tomcat.SetCurrentRepositoryValve" portalContainerName="portal"/>
         <!-- Access log processes all example.
              Documentation at: /docs/config/valve.html -->
         <!--

@@ -23,6 +23,12 @@
       <type>war</type>
     </dependency>
     <dependency>
+      <groupId>com.cloud-intranet</groupId>
+      <artifactId>cloud-intranet-webui</artifactId>
+      <version>${project.version}</version>
+      <type>war</type>
+    </dependency>
+    <dependency>
       <groupId>org.exoplatform.cloud-management</groupId>
       <artifactId>cloud-admin-valve</artifactId>
       <version>${org.exoplatform.cloud-management.version}</version>
@@ -129,6 +135,10 @@
                       file="${project.build.directory}/packager-conf/war/cloud-intranet-web-admin-${project.version}.war"
                       tofile="${project.build.directory}/tomcat-admin/webapps/ROOT.war" />
                     <chmod file="${project.build.directory}/tomcat-admin/bin/*.sh" perm="+x" />
+
+                    <copy
+                      file="${project.build.directory}/packager-conf/war/cloud-intranet-webui-${project.version}.war"
+                      tofile="${project.build.directory}/tomcat-admin/webapps/webui.war" />
 
                     <echo message="Copy cloud-admin-valve.jar" />
                     <copy
