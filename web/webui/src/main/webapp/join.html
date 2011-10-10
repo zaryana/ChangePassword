@@ -1,4 +1,6 @@
 <html>
+<head>
+</head>
  <body>
  <form action="/rest/cloud-admin/public-tenant-service/join/" method="POST">
 <table cols="2">
@@ -14,7 +16,8 @@
     <td>Password * :</td><td> <input type="text" name="password" id="password"></td>
   </tr>
   </table>
-  <input type="submit" value="Sign In">
+  <input type="submit"  id="t_submit" value="Sign In">
+  <div id="messageString" class="TenantFormMsg"></div>
   </form>
  </body>
 </html>
