@@ -35,11 +35,6 @@
     </dependency>
     <dependency>
       <groupId>org.exoplatform.cloud-management</groupId>
-      <artifactId>cloud-tomcat-valve</artifactId>
-      <version>${org.exoplatform.cloud-management.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.exoplatform.cloud-management</groupId>
       <artifactId>cloud-services-common</artifactId>
       <version>${org.exoplatform.cloud-management.version}</version>
     </dependency>
@@ -149,11 +144,6 @@
                     <copy
                       file="${project.build.directory}/packager-conf/jar/cloud-admin-valve-${org.exoplatform.cloud-management.version}.jar"
                       tofile="${project.build.directory}/tomcat-admin/lib/cloud-admin-valve-${project.version}.jar" />
-
-                    <echo message="Copy cloud-tomcat-valve.jar" />
-                    <copy
-                      file="${project.build.directory}/packager-conf/jar/cloud-tomcat-valve-${org.exoplatform.cloud-management.version}.jar"
-                      tofile="${project.build.directory}/tomcat-admin/lib/cloud-tomcat-valve-${project.version}.jar" />
 
                     <echo message="Copy cloud-services-common.jar" />
                     <copy
