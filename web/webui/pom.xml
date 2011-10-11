@@ -32,5 +32,6 @@
         </configuration>
       </plugin>
     </plugins>
+    <finalName>cloud</finalName>
   </build>
 </project>
