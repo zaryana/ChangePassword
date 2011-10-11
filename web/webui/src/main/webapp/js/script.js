@@ -2,6 +2,8 @@ function Tenants() {
 }
 
 var prefixUrl = location.protocol + '//' + location.hostname;
+var queryString = location.query;
+
 if (location.port) {
 	prefixUrl += ':' + location.port;
 }
@@ -17,6 +19,9 @@ Tenants.prototype.init = function() {
 	refreshInterval = 10000;
 	is_chrome = (navigator.userAgent.toLowerCase().indexOf('chrome') > -1 || navigator.userAgent
 			.toLowerCase().indexOf('safari') > -1);
+	email = queryString.substring(queryString.indexOf('email='), queryString.indexOf('&'));
+	uuid = queryString.substring(queryString.indexOf('id='), queryString.length);
+	
 }
 
 
@@ -128,6 +133,10 @@ Tenants.prototype.getquerystringCreate = function () {
     var word = form.word.value;
     qstr = 'w=' + escape(word);  // NOTE: no '?' before querystring
     return qstr;
+}
+
+function _gel(id){
+  return Document.getElementById(id);
 }
 
 var tenants = new Tenants();
