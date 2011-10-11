@@ -81,8 +81,9 @@ public class IntranetAdminService extends TenantCreator
                //send OK email 
                Map<String, String> props = new HashMap<String, String>();
                props.put("tenant.masterhost", adminConfiguration.getMasterHost());
-               props.put("tenant.name", tName);
+               props.put("tenant.repository.name", tName);
                props.put("user.mail", userMail);
+               props.put("owner.email", utils.getTenantOwnerEmail(tName));
                utils.sendOkToJoinEmail(userMail, props);
             }
             else
@@ -90,7 +91,7 @@ public class IntranetAdminService extends TenantCreator
                //send not allowed mails
                Map<String, String> props = new HashMap<String, String>();
                props.put("tenant.masterhost", adminConfiguration.getMasterHost());
-               props.put("tenant.name", tName);
+               props.put("tenant.repository.name", tName);
                props.put("user.mail", userMail);
                props.put("owner.email", utils.getTenantOwnerEmail(tName));
                utils.sendJoinRejectedEmails(userMail, props);
@@ -118,7 +119,7 @@ public class IntranetAdminService extends TenantCreator
          utils.storeUser(userMail, firstName, lastName, password);
          Map<String, String> props = new HashMap<String, String>();
          props.put("tenant.masterhost", adminConfiguration.getMasterHost());
-         props.put("tenant.name", utils.emailToTenant(userMail));
+         props.put("tenant.repository.name", utils.emailToTenant(userMail));
          props.put("user.mail", userMail);
          props.put("first.name", firstName);
          utils.sendUserJoinedEmails(userMail, props);

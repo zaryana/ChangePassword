@@ -81,7 +81,7 @@ public class TenantCreatedListenerThread implements Runnable
             utils.storeRoot(tName, email, firstName, lastName, root_password);
             Map<String, String> props = new HashMap<String, String>();
             props.put("tenant.masterhost", cloudAdminConfiguration.getMasterHost());
-            props.put("tenant.name", tName);
+            props.put("tenant.repository.name", tName);
             props.put("user.mail", email);
             props.put("root.password", root_password);
             utils.sendIntranetCreatedEmails(email, props);
