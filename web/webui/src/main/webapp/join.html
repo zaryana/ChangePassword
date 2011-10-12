@@ -1,11 +1,12 @@
 <html>
 <head>
+  <script type="text/javascript" src="/cloud/js/script.js"></script>
 </head>
- <body>
- <form action="/rest/cloud-admin/public-tenant-service/join/" method="POST">
+ <body onLoad="tenants.init();">
+ <form action="javascript:void(0);"  method="POST">
 <table cols="2">
   <tr>
-    <td>Email :</td><td> <input type="text" name="user-mail" id="user-mail"  value=""></td>
+    <td>Email :</td><td> <input type="text" name="user-mail" id="user-mail" disabled value=""></td>
   </tr>
   <tr>
     <td>First name * :</td><td> <input type="text" name="first-name" id="first-name"></td>
@@ -13,10 +14,10 @@
   </tr>
     <td>Last name * :</td><td> <input type="text" name="last-name" id="last-name"></td> 
   <tr>
-    <td>Password * :</td><td> <input type="text" name="password" id="password"></td>
+    <td>Password * :</td><td> <input type="password" name="password" id="password"></td>
   </tr>
   </table>
-  <input type="submit"  id="t_submit" value="Sign In">
+  <input type="submit"  id="t_submit" value="Sign In" onClick="tenants.doJoinRequest();">
   <div id="messageString" class="TenantFormMsg"></div>
   </form>
  </body>

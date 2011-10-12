@@ -2,7 +2,7 @@ function Tenants() {
 }
 
 var prefixUrl = location.protocol + '//' + location.hostname;
-var queryString = location.query;
+var queryString = location.search;
 
 if (location.port) {
 	prefixUrl += ':' + location.port;
@@ -19,84 +19,89 @@ Tenants.prototype.init = function() {
 	refreshInterval = 10000;
 	is_chrome = (navigator.userAgent.toLowerCase().indexOf('chrome') > -1 || navigator.userAgent
 			.toLowerCase().indexOf('safari') > -1);
-	email = queryString.substring(queryString.indexOf('email='), queryString.indexOf('&'));
-	uuid = queryString.substring(queryString.indexOf('id='), queryString.length);
+
+        if (queryString != null && queryString != "") {
+        var email_start = queryString.indexOf('email=');
+        var uuid_start = queryString.indexOf('id=');
+        var end  = queryString.indexOf('&');
+        if (end == -1)
+	   email = (email_start != -1) ? queryString.substring(email_start+6) : null;
+        else
+           email = (email_start != -1) ? queryString.substring(email_start+6, end) : null;
+     
+        if (uuid_start != -1)
+	   uuid = queryString.substring(uuid_start+3);
+
+       if (email != null && email != "")
+         _gel('user-mail').value = email;
+
+       if (uuid != null && uuid != "")
+         _gel('confirmation-id').value = uuid;
+      }
 	
 }
 
 
-
-
-
 /* Sending request */
 Tenants.prototype.doSingupRequest = function() {
-
 	var url = tenantServicePath + "signup";
-	var params = {};
 	_gel("t_submit").value = "Wait..";
 	_gel("t_submit").disabled = true;
+         tenants.xmlhttpPost(url,tenants.handleSignupResponse,tenants.getquerystringSignup);
 
 }
 
 /* Sending request */
 Tenants.prototype.doCreationRequest = function() {
-
-	var url = tenantServicePath + "join";
-	var params = {};
+	var url = tenantServicePath + "create";
 	_gel("t_submit").value = "Wait..";
 	_gel("t_submit").disabled = true;
+        tenants.xmlhttpPost(url, tenants.handleCreationResponse, tenants.getquerystringCreate)
 
 }
 
 /* Sending request */
 Tenants.prototype.doJoinRequest = function() {
-
-	var url = tenantServicePath + "create";
-
+	var url = tenantServicePath + "join";
 	_gel("t_submit").value = "Wait..";
 	_gel("t_submit").disabled = true;
-     tenants.xmlhttpPost(url, tenants.handleSignupResponse, )
+        tenants.xmlhttpPost(url, tenants.handleJoinResponse, tenants.getquerystringJoin)
 }
 
 
 Tenants.prototype.handleSignupResponse = function(resp) {
 
-	if (resp.errors == "") {
-		_gel("messageString").innerHTML = "<div class=\"Ok\">Tenant creation request sent successfully! Check your email for instructions.</div>";
+	if (resp == "") {
+		_gel("messageString").innerHTML = "<div class=\"Ok\">Your signup request sent successfully! Check your email for instructions.</div>";
 	} else {
-		_gel("messageString").innerHTML = resp.text;
+		_gel("messageString").innerHTML = resp;
 	}
 	_gel("t_submit").disabled = false;
-	_gel("t_submit").value = "Submit";
-	_gel("t_name").value = "";
-	_gel("t_email").value = "";
+	_gel("t_submit").value = "Sign Up";
 }
 
 
 Tenants.prototype.handleCreationResponse = function(resp) {
 
-	if (resp.errors == "") {
-		_gel("messageString").innerHTML = "<div class=\"Ok\">Tenant creation request sent successfully! Check your email for instructions.</div>";
+	if (resp == "") {
+		_gel("messageString").innerHTML = "<div class=\"Ok\">Intranet creation request sent successfully! Check your email for instructions.</div>";
 	} else {
-		_gel("messageString").innerHTML = resp.text;
+		_gel("messageString").innerHTML = resp;
 	}
 	_gel("t_submit").disabled = false;
-	_gel("t_submit").value = "Submit";
-	_gel("t_name").value = "";
-	_gel("t_email").value = "";
+	_gel("t_submit").value = "Create";
 }
 
 Tenants.prototype.handleJoinResponse = function(resp) {
 
-	if (resp.errors == "") {
-		_gel("messageString").innerHTML = "<div class=\"Ok\">Tenant confirmed successfully! Creation is in progress. You will receive email when done.</div>";
+	if (resp == "") {
+		_gel("messageString").innerHTML = "<div class=\"Ok\">Tenant join successfull! Check your email for instructions.</div>";
 	} else {
-		_gel("messageString").innerHTML = resp.text;
+		_gel("messageString").innerHTML = resp;
 	}
 
-	_gel("t_submitId").disabled = false;
-	_gel("t_submitId").value = "Submit";
-	_gel("t_id").value = "";
+	_gel("t_submit").disabled = false;
+	_gel("t_submit").value = "Sign In";
 
 }
 
@@ -112,31 +117,67 @@ Tenants.prototype.xmlhttpPost =  function (strURL, handler, paramsMapper) {
         self.xmlHttpReq = new ActiveXObject("Microsoft.XMLHTTP");
     }
     self.xmlHttpReq.open('POST', strURL, true);
-    self.xmlHttpReq.setRequestHeader('Content-Type', 'application/json');
+    self.xmlHttpReq.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     self.xmlHttpReq.onreadystatechange = function() {
         if (self.xmlHttpReq.readyState == 4) {
-            updatepage(self.xmlHttpReq.responseText);
+            handler(self.xmlHttpReq.responseText);
         }
     }
-    self.xmlHttpReq.send(getquerystring());
+    self.xmlHttpReq.send(paramsMapper());
+}
+
+Tenants.prototype.getquerystringSignup = function () {
+    mail = _gel('user-mail').value;
+    qstr = 'user-mail=' + mail; 
+    return qstr;
 }
 
 Tenants.prototype.getquerystringJoin = function () {
-    var form     = document.forms['f1'];
-    var word = form.word.value;
-    qstr = 'w=' + escape(word);  // NOTE: no '?' before querystring
+    mail = _gel('user-mail').value;
+    f_name = _gel('first-name').value;
+    l_name = _gel('last-name').value;
+    pwd = _gel('password').value;
+
+    qstr = 'user-mail=' + mail; 
+    qstr += '&first-name=' + f_name;
+    qstr += '&last-name=' + l_name;
+    qstr += '&password=' + pwd;
     return qstr;
 }
 
 Tenants.prototype.getquerystringCreate = function () {
-    var form     = document.forms['f1'];
-    var word = form.word.value;
-    qstr = 'w=' + escape(word);  // NOTE: no '?' before querystring
+    mail = _gel('user-mail').value;
+    f_name = _gel('first-name').value;
+    l_name = _gel('last-name').value;
+    pwd = _gel('password').value;
+    phone = _gel('phone').value;
+    company = _gel('company-name').value;
+    id = _gel('confirmation-id').value;
+
+    qstr = 'user-mail=' + mail; 
+    qstr += '&first-name=' + f_name;
+    qstr += '&last-name=' + l_name;
+    qstr += '&password=' + pwd;
+    qstr += '&phone=' + phone;
+    qstr += '&company-name=' + company;
+    qstr += '&confirmation-id=' + id;
     return qstr;
 }
 
 function _gel(id){
-  return Document.getElementById(id);
+  return document.getElementById(id);
+}
+
+function onlyNumbers(evt)
+{
+	
+	var charCode = (evt.which) ? evt.which : event.keyCode;
+
+	if (charCode > 31 && ((charCode < 48 || charCode > 57) && charCode !=45 && charCode !=40 && charCode !=41))
+		return false;
+
+	return true;
+
 }
 
 var tenants = new Tenants();
