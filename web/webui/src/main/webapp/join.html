@@ -1,5 +1,6 @@
 <html>
 <head>
+  <title>Cloud-intranet registration</title>
   <script type="text/javascript" src="/cloud/js/script.js"></script>
 </head>
  <body onLoad="tenants.init();">
@@ -15,6 +16,9 @@
     <td>Last name * :</td><td> <input type="text" name="last-name" id="last-name"></td> 
   <tr>
     <td>Password * :</td><td> <input type="password" name="password" id="password"></td>
+  </tr>
+  <tr>
+    <td>Password check * :</td><td> <input type="password" name="password2" id="password2"></td>
   </tr>
   </table>
   <input type="submit"  id="t_submit" value="Sign In" onClick="tenants.doJoinRequest();">

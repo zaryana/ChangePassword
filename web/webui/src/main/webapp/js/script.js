@@ -14,7 +14,7 @@ var auth = null;
 Tenants.prototype.init = function() {
 	accessUrl = prefixUrl + '/rest/cloud-admin';
 	accessSecureUrl = prefixUrl + '/rest/private/cloud-admin';
-	tenantServicePath = accessUrl + "/public-tenant-service/";
+	tenantServicePath = accessUrl + "/public-tenant-service";
 	infoServicePath = accessSecureUrl + "/info-service/";
 	refreshInterval = 10000;
 	is_chrome = (navigator.userAgent.toLowerCase().indexOf('chrome') > -1 || navigator.userAgent
@@ -44,7 +44,7 @@ Tenants.prototype.init = function() {
 
 /* Sending request */
 Tenants.prototype.doSingupRequest = function() {
-	var url = tenantServicePath + "signup";
+	var url = tenantServicePath + "/signup";
 	_gel("t_submit").value = "Wait..";
 	_gel("t_submit").disabled = true;
          tenants.xmlhttpPost(url,tenants.handleSignupResponse,tenants.getquerystringSignup);
@@ -53,7 +53,7 @@ Tenants.prototype.doSingupRequest = function() {
 
 /* Sending request */
 Tenants.prototype.doCreationRequest = function() {
-	var url = tenantServicePath + "create";
+	var url = tenantServicePath + "/create";
 	_gel("t_submit").value = "Wait..";
 	_gel("t_submit").disabled = true;
         tenants.xmlhttpPost(url, tenants.handleCreationResponse, tenants.getquerystringCreate)
@@ -62,7 +62,7 @@ Tenants.prototype.doCreationRequest = function() {
 
 /* Sending request */
 Tenants.prototype.doJoinRequest = function() {
-	var url = tenantServicePath + "join";
+	var url = tenantServicePath + "/join";
 	_gel("t_submit").value = "Wait..";
 	_gel("t_submit").disabled = true;
         tenants.xmlhttpPost(url, tenants.handleJoinResponse, tenants.getquerystringJoin)
@@ -72,7 +72,8 @@ Tenants.prototype.doJoinRequest = function() {
 Tenants.prototype.handleSignupResponse = function(resp) {
 
 	if (resp == "") {
-		_gel("messageString").innerHTML = "<div class=\"Ok\">Your signup request sent successfully! Check your email for instructions.</div>";
+		//_gel("messageString").innerHTML = "<div class=\"Ok\">Your signup request sent successfully! Check your email for instructions.</div>";
+		window.location = prefixUrl + "/cloud/signup-done.html";
 	} else {
 		_gel("messageString").innerHTML = resp;
 	}
@@ -84,7 +85,8 @@ Tenants.prototype.handleSignupResponse = function(resp) {
 Tenants.prototype.handleCreationResponse = function(resp) {
 
 	if (resp == "") {
-		_gel("messageString").innerHTML = "<div class=\"Ok\">Intranet creation request sent successfully! Check your email for instructions.</div>";
+		//_gel("messageString").innerHTML = "<div class=\"Ok\">Intranet creation request sent successfully! Check your email for instructions.</div>";
+		window.location = prefixUrl + "/cloud/registration-done.html";
 	} else {
 		_gel("messageString").innerHTML = resp;
 	}
@@ -95,7 +97,8 @@ Tenants.prototype.handleCreationResponse = function(resp) {
 Tenants.prototype.handleJoinResponse = function(resp) {
 
 	if (resp == "") {
-		_gel("messageString").innerHTML = "<div class=\"Ok\">Tenant join successfull! Check your email for instructions.</div>";
+		//_gel("messageString").innerHTML = "<div class=\"Ok\">Tenant join successfull! Check your email for instructions.</div>";
+		window.location = prefixUrl + "/cloud/join-done.html";
 	} else {
 		_gel("messageString").innerHTML = resp;
 	}
@@ -127,40 +130,26 @@ Tenants.prototype.xmlhttpPost =  function (strURL, handler, paramsMapper) {
 }
 
 Tenants.prototype.getquerystringSignup = function () {
-    mail = _gel('user-mail').value;
-    qstr = 'user-mail=' + mail; 
+    qstr = 'user-mail=' + _gel('user-mail').value; 
     return qstr;
 }
 
 Tenants.prototype.getquerystringJoin = function () {
-    mail = _gel('user-mail').value;
-    f_name = _gel('first-name').value;
-    l_name = _gel('last-name').value;
-    pwd = _gel('password').value;
-
-    qstr = 'user-mail=' + mail; 
-    qstr += '&first-name=' + f_name;
-    qstr += '&last-name=' + l_name;
-    qstr += '&password=' + pwd;
+    qstr = 'user-mail=' + _gel('user-mail').value; 
+    qstr += '&first-name=' + _gel('first-name').value;
+    qstr += '&last-name=' + _gel('last-name').value;
+    qstr += '&password=' + _gel('password').value;
     return qstr;
 }
 
 Tenants.prototype.getquerystringCreate = function () {
-    mail = _gel('user-mail').value;
-    f_name = _gel('first-name').value;
-    l_name = _gel('last-name').value;
-    pwd = _gel('password').value;
-    phone = _gel('phone').value;
-    company = _gel('company-name').value;
-    id = _gel('confirmation-id').value;
-
-    qstr = 'user-mail=' + mail; 
-    qstr += '&first-name=' + f_name;
-    qstr += '&last-name=' + l_name;
-    qstr += '&password=' + pwd;
-    qstr += '&phone=' + phone;
-    qstr += '&company-name=' + company;
-    qstr += '&confirmation-id=' + id;
+    qstr = 'user-mail=' + _gel('user-mail').value;
+    qstr += '&first-name=' + _gel('first-name').value;
+    qstr += '&last-name=' + _gel('last-name').value;
+    qstr += '&password=' + _gel('password').value;
+    qstr += '&phone=' + _gel('phone').value;
+    qstr += '&company-name=' + _gel('company-name').value;
+    qstr += '&confirmation-id=' + _gel('confirmation-id').value;
     return qstr;
 }
 
@@ -173,7 +162,8 @@ function onlyNumbers(evt)
 	
 	var charCode = (evt.which) ? evt.which : event.keyCode;
 
-	if (charCode > 31 && ((charCode < 48 || charCode > 57) && charCode !=45 && charCode !=40 && charCode !=41))
+	if (charCode > 31 && ((charCode < 48 || charCode > 57) && charCode !=45 
+	      && charCode !=40 && charCode !=41 && charCode !=43))
 		return false;
 
 	return true;
