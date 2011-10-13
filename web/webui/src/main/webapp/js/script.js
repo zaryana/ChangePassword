@@ -54,6 +54,12 @@ Tenants.prototype.doSingupRequest = function() {
 /* Sending request */
 Tenants.prototype.doCreationRequest = function() {
 	var url = tenantServicePath + "/create";
+	
+	if (_gel("password").value != _gel("password2").value){
+	   _gel("messageString").innerHTML = "<div class=\"Ok\">Passwords does not match.</div>";
+	   return;
+	}
+	
 	_gel("t_submit").value = "Wait..";
 	_gel("t_submit").disabled = true;
         tenants.xmlhttpPost(url, tenants.handleCreationResponse, tenants.getquerystringCreate)
@@ -63,6 +69,11 @@ Tenants.prototype.doCreationRequest = function() {
 /* Sending request */
 Tenants.prototype.doJoinRequest = function() {
 	var url = tenantServicePath + "/join";
+	if (_gel("password").value != _gel("password2").value){
+	   _gel("messageString").innerHTML = "<div class=\"Ok\">Passwords does not match.</div>";
+	   return;
+	}
+
 	_gel("t_submit").value = "Wait..";
 	_gel("t_submit").disabled = true;
         tenants.xmlhttpPost(url, tenants.handleJoinResponse, tenants.getquerystringJoin)
