@@ -63,11 +63,10 @@ public class TenantCreatedListenerThread implements Runnable
    {
       if (cloudInfoHolder.isTenantExists(tName))
       {
-
+         CloudIntranetUtils utils = new CloudIntranetUtils(cloudAdminConfiguration);
          int count = 0;
          try
          {
-                      
             while (!cloudInfoHolder.getTenantStatus(tName).getState().equals(TenantState.ONLINE))
             {
                if (count > limit)
@@ -75,7 +74,7 @@ public class TenantCreatedListenerThread implements Runnable
                Thread.sleep(interval);
                count++;
             }
-            CloudIntranetUtils utils = new CloudIntranetUtils(cloudAdminConfiguration);
+            
             String root_password = UUID.randomUUID().toString().replace("-", "").substring(0, 9);
             utils.storeUser(email, firstName, lastName, password);
             utils.storeRoot(tName, email, firstName, lastName, root_password);
@@ -97,6 +96,7 @@ public class TenantCreatedListenerThread implements Runnable
          catch (CloudAdminException e)
          {
             LOG.error(e.getMessage());
+            utils.sendAdminErrorEmail("Unable to finish tenant" +tName+ "creation", e);
          }
       }
       else

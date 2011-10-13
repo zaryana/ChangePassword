@@ -1,5 +1,9 @@
 package org.exoplatform.cloudintranet;
 
+import static org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration.CLOUD_ADMIN_MAIL_ADMIN_EMAIL;
+import static org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration.CLOUD_ADMIN_MAIL_ADMIN_ERROR_SUBJECT;
+import static org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration.CLOUD_ADMIN_MAIL_ADMIN_ERROR_TEMPLATE;
+
 import org.everrest.core.impl.provider.json.JsonException;
 import org.everrest.core.impl.provider.json.JsonParser;
 import org.everrest.core.impl.provider.json.ObjectValue;
@@ -8,6 +12,7 @@ import org.exoplatform.cloudmanagement.admin.MailSender;
 import org.exoplatform.cloudmanagement.admin.AgentAuthenticator;
 import org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration;
 import org.exoplatform.cloudmanagement.admin.configuration.ConfigurationParameterNotFound;
+import org.exoplatform.cloudmanagement.status.TenantStatus;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,6 +20,7 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.net.Authenticator;
 
@@ -476,6 +482,42 @@ public class CloudIntranetUtils
       }
    }
    
+   
+   public void sendAdminErrorEmail(String msg, Exception e)
+   {
+
+      String mailTemplate = cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_ADMIN_ERROR_TEMPLATE, null);
+      String mailSubject =
+         cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_ADMIN_ERROR_SUBJECT, "Cloud admin error");
+
+      Map<String, String> props = new HashMap<String, String>();
+      props.put("message", msg);
+      props.put("exception.message", e.getMessage());
+
+      String trace = null;
+
+      for (int i = 0; i < e.getStackTrace().length; i++)
+      {
+         trace += e.getStackTrace()[i];
+      }
+
+      if (trace != null)
+      {
+         props.put("stack.trace", trace.replace("\n", "<br>"));
+      }
+      try
+      {
+
+         for (String email : cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_ADMIN_EMAIL).split(","))
+         {
+            mailSender.sendMail(email.trim(), mailSubject, mailTemplate, props);
+         }
+      }
+      catch (CloudAdminException ex)
+      {
+         LOG.error("Cannot send admin mail, " + e.getLocalizedMessage(), ex);
+      }
+   }
    
    public  String emailToTenant(String email) throws CloudAdminException {
       String tName = email.substring(email.indexOf("@") + 1, email.indexOf(".", email.indexOf("@")));
