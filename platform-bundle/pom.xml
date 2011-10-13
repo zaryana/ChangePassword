@@ -116,6 +116,21 @@
                 <zip destfile="${project.build.directory}/tomcat/webapps/acme-intranet.war" 
                      basedir="${project.build.directory}/tomcat/webapps/acme-intranet" />
                 <delete dir="${project.build.directory}/tomcat/webapps/acme-intranet" />
+                <!-- Remove marry, demo, john, james and keep 'root' but with empty password-->
+                <unzip src="${project.build.directory}/tomcat/webapps/acme-intranet.war"
+                       dest="${project.build.directory}/tomcat/webapps/acme-intranet" />
+                <copy file="${project.basedir}/src/main/resources/acme-intranet/organization-configuration.xml"
+                      tofile="${project.build.directory}/tomcat/webapps/acme-intranet/WEB-INF/conf/office-extension/organization/organization-configuration.xml"  overwrite="true" />
+                <zip destfile="${project.build.directory}/tomcat/webapps/acme-intranet.war" 
+                     basedir="${project.build.directory}/tomcat/webapps/acme-intranet" />
+                <delete dir="${project.build.directory}/tomcat/webapps/acme-intranet" />
+                <unzip src="${project.build.directory}/tomcat/webapps/platform-extension.war"
+                       dest="${project.build.directory}/tomcat/webapps/platform-extension" />
+                <copy file="${project.basedir}/src/main/resources/platform-extension/organization-configuration.xml"
+                      tofile="${project.build.directory}/tomcat/webapps/platform-extension/WEB-INF/conf/organization/organization-configuration.xml" overwrite="true" />
+                <zip destfile="${project.build.directory}/tomcat/webapps/platform-extension.war" 
+                     basedir="${project.build.directory}/tomcat/webapps/platform-extension" />
+                <delete dir="${project.build.directory}/tomcat/webapps/platform-extension" />
               </target>
             </configuration>
             <goals>
