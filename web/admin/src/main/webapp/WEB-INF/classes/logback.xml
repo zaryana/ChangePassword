@@ -50,10 +50,10 @@
       <SMTPHost>smtp.gmail.com</SMTPHost>
       <SMTPPort>465</SMTPPort>
       <SSL>true</SSL>
-      <username>exo.cloud.ide@gmail.com</username>
-      <password>cloudIDEuAeXo</password>
-      <to>exo.cloud.ide@gmail.com</to>
-      <from>exo.cloud.ide@gmail.com</from>
+      <username>exo.plf.cloud.test1@gmail.com</username>
+      <password>exo.plf.cloud.test112321</password>
+      <to>exo.plf.cloud.test2@gmail.com</to>
+      <from>exo.plf.cloud.test1@gmail.com</from>
       <subject>Cloud-Admin error: %logger{20} - %m</subject>
       <layout class="ch.qos.logback.classic.PatternLayout">
          <pattern>%-41(%date[%.15thread])%-45([%-5level] [%.30logger{30} %L]) - %msg%n</pattern>
