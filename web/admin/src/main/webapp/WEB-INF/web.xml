@@ -25,7 +25,7 @@
 
    <context-param>
       <param-name>javax.ws.rs.Application</param-name>
-      <param-value>org.exoplatform.cloudintranet.rest.CloudIntranetRestApplication</param-value>
+      <param-value>com.exoplatform.cloudintranet.rest.CloudIntranetRestApplication</param-value>
    </context-param>
 
    <!-- filter>
