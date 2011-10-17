@@ -17,7 +17,6 @@
   <name>eXo Cloud Intranet :: WebUI</name>
   <description>eXo Cloud Intranet  Web application</description>
 
-
   <build>
     <plugins>
       <plugin>

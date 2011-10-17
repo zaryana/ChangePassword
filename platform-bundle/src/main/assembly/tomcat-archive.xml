@@ -2,7 +2,7 @@
    xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.1 http://maven.apache.org/xsd/assembly-1.1.1.xsd">
    <id>tomcat</id>
    <formats>
-      <format>zip</format>
+     <format>zip</format>
    </formats>
    <includeBaseDirectory>false</includeBaseDirectory>
    <fileSets>
@@ -10,20 +10,44 @@
       <fileSet>
          <directory>target/tomcat</directory>
          <outputDirectory>tomcat-bundle</outputDirectory>
+         <excludes>
+           <exclude>**/*.sh</exclude>
+           <exclude>webapps/ROOT/**/*</exclude>
+         </excludes>
+         <fileMode>0644</fileMode>
       </fileSet>
-      <!-- Executable files-->
+      <!-- Executable files -->
       <fileSet>
          <directory>target/tomcat</directory>
          <outputDirectory>tomcat-bundle</outputDirectory>
          <includes>
-            <include>**/*.sh</include>
+           <include>**/*.sh</include>
+           <include>*.sh</include>
          </includes>
-         <fileMode>755</fileMode>
+         <fileMode>0755</fileMode>
       </fileSet>
-      <!-- ROOT webapp -->
+      <!-- ROOT webapp (cloud admin webui) -->
       <fileSet>
-        <directory>src/main/ROOT</directory>
+        <directory>src/main/resources/ROOT</directory>
         <outputDirectory>tomcat-bundle/webapps/ROOT</outputDirectory>
-     </fileSet>
+        <fileMode>0644</fileMode>
+      </fileSet>
    </fileSets>
+   <dependencySets>
+     <dependencySet>
+       <outputDirectory>tomcat-bundle/webapps</outputDirectory>
+       <includes>
+         <include>com.exoplatform.cloudintranet:cloud-intranet-webui:war</include>
+       </includes>
+       <outputFileNameMapping>cloud.war</outputFileNameMapping>
+       <fileMode>0644</fileMode>
+     </dependencySet>
+     <dependencySet>
+       <outputDirectory>tomcat-bundle/lib</outputDirectory>
+       <includes>
+         <include>mysql:mysql-connector-java</include>
+       </includes>
+       <fileMode>0644</fileMode>
+     </dependencySet>
+   </dependencySets>
 </assembly>
