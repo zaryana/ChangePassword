@@ -10,7 +10,7 @@
     <artifactId>exo.parent</artifactId>
     <version>7.1</version>
   </parent>
-  <groupId>com.cloud-intranet</groupId>
+  <groupId>com.exoplatform.cloudintranet</groupId>
   <artifactId>cloud-intranet-parent</artifactId>
   <version>1.0.0-Beta1-SNAPSHOT</version>
   <packaging>pom</packaging>

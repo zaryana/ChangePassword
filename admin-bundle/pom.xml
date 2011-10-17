@@ -6,7 +6,7 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>com.cloud-intranet</groupId>
+    <groupId>com.exoplatform.cloudintranet</groupId>
     <artifactId>cloud-intranet-parent</artifactId>
     <version>1.0.0-Beta1-SNAPSHOT</version>
   </parent>
@@ -17,13 +17,13 @@
 
   <dependencies>
     <dependency>
-      <groupId>com.cloud-intranet</groupId>
+      <groupId>com.exoplatform.cloudintranet</groupId>
       <artifactId>cloud-intranet-web-admin</artifactId>
       <version>${project.version}</version>
       <type>war</type>
     </dependency>
     <!-- dependency>
-      <groupId>com.cloud-intranet</groupId>
+      <groupId>com.exoplatform.cloudintranet</groupId>
       <artifactId>cloud-intranet-webui</artifactId>
       <version>${project.version}</version>
       <type>war</type>

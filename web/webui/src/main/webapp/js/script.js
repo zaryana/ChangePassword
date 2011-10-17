@@ -48,7 +48,6 @@ Tenants.prototype.doSingupRequest = function() {
 	var url = tenantServicePath + "/signup";
 	_gel("t_submit").value = "Wait..";
 	_gel("t_submit").disabled = true;
-	 tenants.xmlhttpPost(loopfuseURL,tenants.handleLoopfuseResponse,tenants.getLoopfuseQuerystringSignup);
          tenants.xmlhttpPost(url,tenants.handleSignupResponse,tenants.getquerystringSignup);
 
 }
@@ -64,7 +63,6 @@ Tenants.prototype.doCreationRequest = function() {
 	
 	_gel("t_submit").value = "Wait..";
 	_gel("t_submit").disabled = true;
-	tenants.xmlhttpPost(loopfuseURL,tenants.handleLoopfuseResponse,tenants.getLoopfusequerystringCreate);
         tenants.xmlhttpPost(url, tenants.handleCreationResponse, tenants.getquerystringCreate);
 
 }
@@ -79,7 +77,6 @@ Tenants.prototype.doJoinRequest = function() {
 
 	_gel("t_submit").value = "Wait..";
 	_gel("t_submit").disabled = true;
-	tenants.xmlhttpPost(loopfuseURL,tenants.handleLoopfuseResponse,tenants.getLoopfusequerystringJoin);
         tenants.xmlhttpPost(url, tenants.handleJoinResponse, tenants.getquerystringJoin);
 }
 
@@ -157,6 +154,8 @@ Tenants.prototype.getquerystringSignup = function () {
 
 Tenants.prototype.getLoopfuseQuerystringSignup = function () {
     qstr = 'email=' + _gel('email').value; 
+    qstr += '&formid=' + _gel('formid').value;
+    qstr += '&cid=' + _gel('cid').value;
     return qstr;
 }
 
@@ -172,6 +171,9 @@ Tenants.prototype.getLoopfusequerystringJoin = function () {
     qstr = 'email=' + _gel('email').value; 
     qstr += '&first_name=' + _gel('first_name').value;
     qstr += '&last_name=' + _gel('last_name').value;
+    qstr += '&formid=' + _gel('formid').value;
+    qstr += '&cid=' + _gel('cid').value;
+
     return qstr;
 }
 
@@ -194,6 +196,9 @@ Tenants.prototype.getLoopfusequerystringCreate = function () {
     qstr += '&last_name=' + _gel('last_name').value;
     qstr += '&phone_work=' + _gel('phone_work').value;
     qstr += '&company=' + _gel('company').value;
+    qstr += '&formid=' + _gel('formid').value;
+    qstr += '&cid=' + _gel('cid').value;
+
     return qstr;
 }
 

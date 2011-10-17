@@ -3,9 +3,10 @@
    <title>Cloud-intranet registration</title>
    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
    <script type="text/javascript" src="/cloud/js/script.js"></script>
+   <script type="text/javascript" src="/cloud/js/jquery-latest.js" ></script>
 </head>
  <body onLoad="tenants.init();">
-  <form action="javascript:void(0);"  method="POST">
+  <form action="javascript:void(0);"  method="POST" name="cloud-intranet-profile">
   <table cols="2">
   <tr>
     <td>Email :</td><td> <input type="text" name="email" id="email"  disbaled value=""></td>
@@ -31,8 +32,8 @@
  </table>
   <input type="hidden" name="confirmation-id" id="confirmation-id">
   <input type="submit" id="t_submit" value="Create" onClick="tenants.doCreationRequest();">
-  <input type="hidden" name="formid" value="147cd324-b524-4679-bcad-5f5708ad5beb"/>
-  <input type="hidden" name="cid" value="LF_df197061"/>
+  <input type="hidden" id="formid" name="formid" value="147cd324-b524-4679-bcad-5f5708ad5beb"/>
+  <input type="hidden" id="cid" name="cid" value="LF_df197061"/>
   </form>
   <div id="messageString" class="TenantFormMsg"></div>
  </body>
