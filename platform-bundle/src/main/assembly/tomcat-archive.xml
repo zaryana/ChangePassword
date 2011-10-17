@@ -20,8 +20,8 @@
          </includes>
          <fileMode>755</fileMode>
       </fileSet>
-       <!-- ROOT webapp -->
-     <fileSet>
+      <!-- ROOT webapp -->
+      <fileSet>
         <directory>src/main/ROOT</directory>
         <outputDirectory>tomcat-bundle/webapps/ROOT</outputDirectory>
      </fileSet>
