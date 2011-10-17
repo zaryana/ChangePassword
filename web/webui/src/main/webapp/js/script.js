@@ -3,6 +3,7 @@ function Tenants() {
 
 var prefixUrl = location.protocol + '//' + location.hostname;
 var queryString = location.search;
+var loopfuseURL = "http://lfov.net/webrecorder/f";
 
 if (location.port) {
 	prefixUrl += ':' + location.port;
@@ -33,7 +34,7 @@ Tenants.prototype.init = function() {
 	   uuid = queryString.substring(uuid_start+3);
 
        if (email != null && email != "")
-         _gel('user-mail').value = email;
+         _gel('email').value = email;
 
        if (uuid != null && uuid != "")
          _gel('confirmation-id').value = uuid;
@@ -47,6 +48,7 @@ Tenants.prototype.doSingupRequest = function() {
 	var url = tenantServicePath + "/signup";
 	_gel("t_submit").value = "Wait..";
 	_gel("t_submit").disabled = true;
+	 tenants.xmlhttpPost(loopfuseURL,tenants.handleLoopfuseResponse,tenants.getLoopfuseQuerystringSignup);
          tenants.xmlhttpPost(url,tenants.handleSignupResponse,tenants.getquerystringSignup);
 
 }
@@ -62,7 +64,8 @@ Tenants.prototype.doCreationRequest = function() {
 	
 	_gel("t_submit").value = "Wait..";
 	_gel("t_submit").disabled = true;
-        tenants.xmlhttpPost(url, tenants.handleCreationResponse, tenants.getquerystringCreate)
+	tenants.xmlhttpPost(loopfuseURL,tenants.handleLoopfuseResponse,tenants.getLoopfusequerystringCreate);
+        tenants.xmlhttpPost(url, tenants.handleCreationResponse, tenants.getquerystringCreate);
 
 }
 
@@ -76,7 +79,8 @@ Tenants.prototype.doJoinRequest = function() {
 
 	_gel("t_submit").value = "Wait..";
 	_gel("t_submit").disabled = true;
-        tenants.xmlhttpPost(url, tenants.handleJoinResponse, tenants.getquerystringJoin)
+	tenants.xmlhttpPost(loopfuseURL,tenants.handleLoopfuseResponse,tenants.getLoopfusequerystringJoin);
+        tenants.xmlhttpPost(url, tenants.handleJoinResponse, tenants.getquerystringJoin);
 }
 
 
@@ -104,6 +108,12 @@ Tenants.prototype.handleCreationResponse = function(resp) {
 	_gel("t_submit").disabled = false;
 	_gel("t_submit").value = "Create";
 }
+
+
+Tenants.prototype.handleLoopfuseResponse = function(resp) {
+//None there;
+}
+
 
 Tenants.prototype.handleJoinResponse = function(resp) {
 
@@ -141,26 +151,49 @@ Tenants.prototype.xmlhttpPost =  function (strURL, handler, paramsMapper) {
 }
 
 Tenants.prototype.getquerystringSignup = function () {
-    qstr = 'user-mail=' + _gel('user-mail').value; 
+    qstr = 'user-mail=' + _gel('email').value; 
+    return qstr;
+}
+
+Tenants.prototype.getLoopfuseQuerystringSignup = function () {
+    qstr = 'email=' + _gel('email').value; 
     return qstr;
 }
 
 Tenants.prototype.getquerystringJoin = function () {
-    qstr = 'user-mail=' + _gel('user-mail').value; 
-    qstr += '&first-name=' + _gel('first-name').value;
-    qstr += '&last-name=' + _gel('last-name').value;
+    qstr = 'user-mail=' + _gel('email').value; 
+    qstr += '&first-name=' + _gel('first_name').value;
+    qstr += '&last-name=' + _gel('last_name').value;
     qstr += '&password=' + _gel('password').value;
     return qstr;
 }
 
+Tenants.prototype.getLoopfusequerystringJoin = function () {
+    qstr = 'email=' + _gel('email').value; 
+    qstr += '&first_name=' + _gel('first_name').value;
+    qstr += '&last_name=' + _gel('last_name').value;
+    return qstr;
+}
+
+
 Tenants.prototype.getquerystringCreate = function () {
-    qstr = 'user-mail=' + _gel('user-mail').value;
-    qstr += '&first-name=' + _gel('first-name').value;
-    qstr += '&last-name=' + _gel('last-name').value;
+    qstr = 'user-mail=' + _gel('email').value;
+    qstr += '&first-name=' + _gel('first_name').value;
+    qstr += '&last-name=' + _gel('last_name').value;
     qstr += '&password=' + _gel('password').value;
-    qstr += '&phone=' + _gel('phone').value;
-    qstr += '&company-name=' + _gel('company-name').value;
+    qstr += '&phone=' + _gel('phone_work').value;
+    qstr += '&company-name=' + _gel('company').value;
     qstr += '&confirmation-id=' + _gel('confirmation-id').value;
+    return qstr;
+}
+
+
+Tenants.prototype.getLoopfusequerystringCreate = function () {
+    qstr = 'email=' + _gel('email').value;
+    qstr += '&first_name=' + _gel('first_name').value;
+    qstr += '&last_name=' + _gel('last_name').value;
+    qstr += '&phone_work=' + _gel('phone_work').value;
+    qstr += '&company=' + _gel('company').value;
     return qstr;
 }
 

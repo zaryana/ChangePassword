@@ -1,15 +1,18 @@
 <html>
 <head>
   <title>Cloud-intranet signup</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <script type="text/javascript" src="/cloud/js/script.js"></script>
 </head>
 <body onLoad="tenants.init();">
 <br>
 	<form action="javascript:void(0);"   method="POST">
 		Enter your professional email: 
-          <input type="text" name="user-mail" id="user-mail">
+          <input type="text" name="email" id="email">
           <br> 
           <input type="submit" id="t_submit"  value="Sign Up" onClick="tenants.doSingupRequest();">
+          <input type="hidden" name="formid" value="147cd324-b524-4679-bcad-5f5708ad5beb"/>
+          <input type="hidden" name="cid" value="LF_df197061"/>
 	</form>
 	<div id="messageString" class="TenantFormMsg"></div>
 </body>
