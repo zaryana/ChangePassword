@@ -88,10 +88,10 @@ Tenants.prototype.handleSignupResponse = function(resp) {
 		//window.location = prefixUrl + "/cloud/signup-done.html";
 		sendDataToLoopfuse(
 	         {
-	            "email": _gel('email').value;
+	            "email": _gel('email').value,
 	            // hidden LoopFuse fields
-	            "formid": _gel('formid').value;
-	            "cid": _gel('cid').value;
+	            "formid": _gel('formid').value,
+	            "cid": _gel('cid').value
 	         }, function()
 	         {
 	           window.location = prefixUrl + "/cloud/signup-done.html";
@@ -112,14 +112,14 @@ Tenants.prototype.handleCreationResponse = function(resp) {
 		//window.location = prefixUrl + "/cloud/registration-done.html";
 		sendDataToLoopfuse(
 			{
-	            "email": _gel('email').value;
-	            "first_name": _gel('first_name').value;
-	            "last_name": _gel('last_name').value;
-	            "company" : _gel('company').value;
-	            "phone_work" : _gel('phone_work').value;
+	            "email": _gel('email').value,
+	            "first_name": _gel('first_name').value,
+	            "last_name": _gel('last_name').value,
+	            "company" : _gel('company').value,
+	            "phone_work" : _gel('phone_work').value,
 	            // hidden LoopFuse fields
-	             "formid": _gel('formid').value;
-	            "cid": _gel('cid').value;
+	             "formid": _gel('formid').value,
+	            "cid": _gel('cid').value
 	         }, function()
 	         {
 	           window.location = prefixUrl + "/cloud/registration-done.html";
@@ -139,12 +139,12 @@ Tenants.prototype.handleJoinResponse = function(resp) {
 		//window.location = prefixUrl + "/cloud/join-done.html";
 		sendDataToLoopfuse(
 	        {
-	            "email":  _gel('email').value;
-	            "first_name": _gel('first_name').value;
-	            "last_name": _gel('last_name').value;
+	            "email":  _gel('email').value,
+	            "first_name": _gel('first_name').value,
+	            "last_name": _gel('last_name').value,
 	            // hidden LoopFuse fields
-	            "formid": _gel('formid').value;
-	            "cid": _gel('cid').value;
+	            "formid": _gel('formid').value,
+	            "cid": _gel('cid').value
 	         }, function()
 	         {
 	           window.location = prefixUrl + "/cloud/join-done.html";
