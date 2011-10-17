@@ -85,7 +85,18 @@ Tenants.prototype.handleSignupResponse = function(resp) {
 
 	if (resp == "") {
 		//_gel("messageString").innerHTML = "<div class=\"Ok\">Your signup request sent successfully! Check your email for instructions.</div>";
-		window.location = prefixUrl + "/cloud/signup-done.html";
+		//window.location = prefixUrl + "/cloud/signup-done.html";
+		sendDataToLoopfuse(
+	         {
+	            "email": _gel('email').value;
+	            // hidden LoopFuse fields
+	            "formid": _gel('formid').value;
+	            "cid": _gel('cid').value;
+	         }, function()
+	         {
+	           window.location = prefixUrl + "/cloud/signup-done.html";
+	         });
+	      } 
 	} else {
 		_gel("messageString").innerHTML = resp;
 	}
@@ -98,7 +109,21 @@ Tenants.prototype.handleCreationResponse = function(resp) {
 
 	if (resp == "") {
 		//_gel("messageString").innerHTML = "<div class=\"Ok\">Intranet creation request sent successfully! Check your email for instructions.</div>";
-		window.location = prefixUrl + "/cloud/registration-done.html";
+		//window.location = prefixUrl + "/cloud/registration-done.html";
+		sendDataToLoopfuse(
+			{
+	            "email": _gel('email').value;
+	            "first_name": _gel('first_name').value;
+	            "last_name": _gel('last_name').value;
+	            "company" : _gel('company').value;
+	            "phone_work" : _gel('phone_work').value;
+	            // hidden LoopFuse fields
+	             "formid": _gel('formid').value;
+	            "cid": _gel('cid').value;
+	         }, function()
+	         {
+	           window.location = prefixUrl + "/cloud/registration-done.html";
+	         });
 	} else {
 		_gel("messageString").innerHTML = resp;
 	}
@@ -107,16 +132,23 @@ Tenants.prototype.handleCreationResponse = function(resp) {
 }
 
 
-Tenants.prototype.handleLoopfuseResponse = function(resp) {
-//None there;
-}
-
-
 Tenants.prototype.handleJoinResponse = function(resp) {
 
 	if (resp == "") {
 		//_gel("messageString").innerHTML = "<div class=\"Ok\">Tenant join successfull! Check your email for instructions.</div>";
-		window.location = prefixUrl + "/cloud/join-done.html";
+		//window.location = prefixUrl + "/cloud/join-done.html";
+		sendDataToLoopfuse(
+	        {
+	            "email":  _gel('email').value;
+	            "first_name": _gel('first_name').value;
+	            "last_name": _gel('last_name').value;
+	            // hidden LoopFuse fields
+	            "formid": _gel('formid').value;
+	            "cid": _gel('cid').value;
+	         }, function()
+	         {
+	           window.location = prefixUrl + "/cloud/join-done.html";
+	         });
 	} else {
 		_gel("messageString").innerHTML = resp;
 	}
@@ -152,12 +184,6 @@ Tenants.prototype.getquerystringSignup = function () {
     return qstr;
 }
 
-Tenants.prototype.getLoopfuseQuerystringSignup = function () {
-    qstr = 'email=' + _gel('email').value; 
-    qstr += '&formid=' + _gel('formid').value;
-    qstr += '&cid=' + _gel('cid').value;
-    return qstr;
-}
 
 Tenants.prototype.getquerystringJoin = function () {
     qstr = 'user-mail=' + _gel('email').value; 
@@ -166,17 +192,6 @@ Tenants.prototype.getquerystringJoin = function () {
     qstr += '&password=' + _gel('password').value;
     return qstr;
 }
-
-Tenants.prototype.getLoopfusequerystringJoin = function () {
-    qstr = 'email=' + _gel('email').value; 
-    qstr += '&first_name=' + _gel('first_name').value;
-    qstr += '&last_name=' + _gel('last_name').value;
-    qstr += '&formid=' + _gel('formid').value;
-    qstr += '&cid=' + _gel('cid').value;
-
-    return qstr;
-}
-
 
 Tenants.prototype.getquerystringCreate = function () {
     qstr = 'user-mail=' + _gel('email').value;
@@ -189,18 +204,6 @@ Tenants.prototype.getquerystringCreate = function () {
     return qstr;
 }
 
-
-Tenants.prototype.getLoopfusequerystringCreate = function () {
-    qstr = 'email=' + _gel('email').value;
-    qstr += '&first_name=' + _gel('first_name').value;
-    qstr += '&last_name=' + _gel('last_name').value;
-    qstr += '&phone_work=' + _gel('phone_work').value;
-    qstr += '&company=' + _gel('company').value;
-    qstr += '&formid=' + _gel('formid').value;
-    qstr += '&cid=' + _gel('cid').value;
-
-    return qstr;
-}
 
 function _gel(id){
   return document.getElementById(id);
@@ -217,6 +220,55 @@ function onlyNumbers(evt)
 
 	return true;
 
+}
+
+
+function sendDataToLoopfuse(data, afterSubmitCallback)
+{   
+  
+   var loopfuseOutputIframeId = "loopfuseOutput";
+   var loopfuseOutputIframeName = "loopfuseOutput";
+   var loopfuseFormId = "loopfuseForm";
+   
+   if (jQuery && document.getElementById(loopfuseOutputIframeId)) 
+   {
+      jQuery('#' + loopfuseFormId).remove();
+      jQuery('#' + loopfuseOutputIframeId).attr('src', "");   // clear iframe      
+      
+      jQuery('body').append(jQuery('<form/>', 
+      {
+         id: loopfuseFormId,
+         method: 'POST',
+         action: loopfuseURL,
+         target: loopfuseOutputIframeName
+      }));
+      
+      for (var i in data) 
+      {
+         jQuery('#' + loopfuseFormId).append(jQuery('<input/>', 
+         {
+            type: 'hidden',
+            name: i,
+            value: data[i]
+         }));
+      }
+            
+      jQuery('#' + loopfuseFormId).submit();
+      
+      var i = 200;  // set limited iterations - interrupt after the 20 seconds
+      var afterSubmitHandler = window.setInterval(function() {
+         if (!(i--) || isLoopfuseResponseReceived(loopfuseOutputIframeId))
+         {
+            window.clearInterval(afterSubmitHandler);
+            if (afterSubmitCallback) 
+            {
+               afterSubmitCallback();
+            }
+            
+            jQuery('#' + loopfuseOutputIframeId).attr('src', ""); // clear iframe         
+         }
+      }, 100);
+   }
 }
 
 var tenants = new Tenants();
