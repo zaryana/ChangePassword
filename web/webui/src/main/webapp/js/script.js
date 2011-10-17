@@ -96,7 +96,6 @@ Tenants.prototype.handleSignupResponse = function(resp) {
 	         {
 	           window.location = prefixUrl + "/cloud/signup-done.html";
 	         });
-	      } 
 	} else {
 		_gel("messageString").innerHTML = resp;
 	}
@@ -268,6 +267,19 @@ function sendDataToLoopfuse(data, afterSubmitCallback)
             jQuery('#' + loopfuseOutputIframeId).attr('src', ""); // clear iframe         
          }
       }, 100);
+   }
+}
+
+
+function isLoopfuseResponseReceived(iframeId)
+{
+   try {
+      return ! document.getElementById(iframeId) || document.getElementById(iframeId).contentWindow.location.href != "about:blank"; 
+   }
+   catch(e)
+   {
+      // check for permission of 
+      return true;
    }
 }
 
