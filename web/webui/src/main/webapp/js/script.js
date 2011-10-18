@@ -26,14 +26,14 @@ Tenants.prototype.init = function() {
     var uuid_start = queryString.indexOf('id=');
     var end = queryString.indexOf('&');
     if (end == -1)
-      email = (email_start != -1) ? queryString.substring(email_start + 6)
+      email = (email_start != -1) ? queryString.substring(email_start + email_start.length)
           : null;
     else
-      email = (email_start != -1) ? queryString.substring(email_start + 6, end)
+      email = (email_start != -1) ? queryString.substring(email_start + email_start.length, end)
           : null;
 
     if (uuid_start != -1)
-      uuid = queryString.substring(uuid_start + 3);
+      uuid = queryString.substring(uuid_start + uuid_start.length);
 
     if (email != null && email != "")
       _gel('email').value = email;
@@ -57,6 +57,11 @@ Tenants.prototype.doSingupRequest = function() {
 /* Sending request */
 Tenants.prototype.doCreationRequest = function() {
   var url = tenantServicePath + "/create";
+  
+   if (_gel("password").value.length <6) {
+    _gel("messageString").innerHTML = "<div class=\"Ok\">Password must consist of at least 6 characters.</div>";
+    return;
+  
 
   if (_gel("password").value != _gel("password2").value) {
     _gel("messageString").innerHTML = "<div class=\"Ok\">Passwords does not match.</div>";
@@ -73,6 +78,11 @@ Tenants.prototype.doCreationRequest = function() {
 /* Sending request */
 Tenants.prototype.doJoinRequest = function() {
   var url = tenantServicePath + "/join";
+  
+   if (_gel("password").value.length <6) {
+    _gel("messageString").innerHTML = "<div class=\"Ok\">Password must consist of at least 6 characters.</div>";
+    return;
+    
   if (_gel("password").value != _gel("password2").value) {
     _gel("messageString").innerHTML = "<div class=\"Ok\">Passwords does not match.</div>";
     return;
