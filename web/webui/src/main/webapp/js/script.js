@@ -228,6 +228,7 @@ function sendDataToLoopfuse(data, afterSubmitCallback)
    var loopfuseOutputIframeId = "loopfuseOutput";
    var loopfuseOutputIframeName = "loopfuseOutput";
    var loopfuseFormId = "loopfuseForm";
+   var loopfuseFormName = "cloud-intranet-profile";
    
    if (jQuery && document.getElementById(loopfuseOutputIframeId)) 
    {
@@ -237,6 +238,7 @@ function sendDataToLoopfuse(data, afterSubmitCallback)
       jQuery('body').append(jQuery('<form/>', 
       {
          id: loopfuseFormId,
+         name: loopfuseFormName,
          method: 'POST',
          action: loopfuseURL,
          target: loopfuseOutputIframeName
