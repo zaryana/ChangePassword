@@ -26,14 +26,14 @@ Tenants.prototype.init = function() {
     var uuid_start = queryString.indexOf('id=');
     var end = queryString.indexOf('&');
     if (end == -1)
-      email = (email_start != -1) ? queryString.substring(email_start + email_start.length)
+      email = (email_start != -1) ? queryString.substring(email_start + 6)
           : null;
     else
-      email = (email_start != -1) ? queryString.substring(email_start + email_start.length, end)
+      email = (email_start != -1) ? queryString.substring(email_start + 6, end)
           : null;
 
     if (uuid_start != -1)
-      uuid = queryString.substring(uuid_start + uuid_start.length);
+      uuid = queryString.substring(uuid_start + 3);
 
     if (email != null && email != "")
       _gel('email').value = email;
