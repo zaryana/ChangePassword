@@ -14,28 +14,26 @@
   <packaging>war</packaging>
   <name>eXo Cloud Intranet :: Admin</name>
   <description>eXo Cloud Intranet Admin web application</description>
-  
+
   <pluginRepositories>
-     <pluginRepository>
-        <id>truezip-maven-plugin</id>
-        <name>truezip-maven-plugin</name>
-        <url>
-              http://snapshots.repository.codehaus.org/
-        </url>
-        <releases>
-                <enabled>true</enabled>
-        </releases>
-        <snapshots>
-                <enabled>true</enabled>
-        </snapshots>
-     </pluginRepository>
-     
-</pluginRepositories>
+    <pluginRepository>
+      <id>truezip-maven-plugin</id>
+      <name>truezip-maven-plugin</name>
+      <url>http://snapshots.repository.codehaus.org/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </pluginRepository>
+
+  </pluginRepositories>
 
   <dependencies>
 
     <dependency>
-       <groupId>com.exoplatform.cloudintranet</groupId>
+      <groupId>com.exoplatform.cloudintranet</groupId>
       <artifactId>cloud-management-patch</artifactId>
       <version>${project.version}</version>
     </dependency>
@@ -56,8 +54,8 @@
   </dependencies>
 
   <build>
-  <plugins>
-  <plugin>
+    <plugins>
+      <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>truezip-maven-plugin</artifactId>
         <version>1.0-beta-4</version>
@@ -96,23 +94,23 @@
           </execution>
         </executions>
       </plugin>
-  
-  
-    <plugin>
-      <artifactId>maven-war-plugin</artifactId>
-      <configuration>
-        <archiveClasses>false</archiveClasses>
-        <archive>
-          <manifest>
-            <addClasspath>false</addClasspath>
-          </manifest>
-        </archive>
-      </configuration>
-    </plugin>
-  </plugins>
-</build>
 
- <properties>
+
+      <plugin>
+        <artifactId>maven-war-plugin</artifactId>
+        <configuration>
+          <archiveClasses>false</archiveClasses>
+          <archive>
+            <manifest>
+              <addClasspath>false</addClasspath>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <properties>
     <archive>${project.build.directory}/${project.artifactId}-${project.version}.war/WEB-INF/lib/cloud-admin-${org.exoplatform.cloud-management.version}.jar</archive>
   </properties>
 </project>
