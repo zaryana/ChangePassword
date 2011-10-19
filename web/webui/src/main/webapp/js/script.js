@@ -61,18 +61,22 @@ Tenants.prototype.doCreationRequest = function() {
    if (_gel("password").value.length <6) {
     _gel("messageString").innerHTML = "<div class=\"Ok\">Password must consist of at least 6 characters.</div>";
     return;
-    
+    } 
+      
     if (_gel("first_name").value.length == 0) {
     _gel("messageString").innerHTML = "<div class=\"Ok\">Please, indicate your First name.</div>";
     return;
+    }
     
     if (_gel("last_name").value.length == 0) {
     _gel("messageString").innerHTML = "<div class=\"Ok\">Please, indicate your Last name.</div>";
     return;
+    }
     
      if (_gel("company").value.length == 0) {
     _gel("messageString").innerHTML = "<div class=\"Ok\">Please, indicate your company name.</div>";
     return;
+    }
   
 
   if (_gel("password").value != _gel("password2").value) {
@@ -94,15 +98,18 @@ Tenants.prototype.doJoinRequest = function() {
   if (_gel("first_name").value.length == 0) {
     _gel("messageString").innerHTML = "<div class=\"Ok\">Please, indicate your First name.</div>";
     return;
+    }
     
     if (_gel("last_name").value.length == 0) {
     _gel("messageString").innerHTML = "<div class=\"Ok\">Please, indicate your Last name.</div>";
     return;
+    }
   
   
    if (_gel("password").value.length <6) {
     _gel("messageString").innerHTML = "<div class=\"Ok\">Password must consist of at least 6 characters.</div>";
     return;
+    }
     
   if (_gel("password").value != _gel("password2").value) {
     _gel("messageString").innerHTML = "<div class=\"Ok\">Passwords does not match.</div>";
