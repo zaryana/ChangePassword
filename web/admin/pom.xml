@@ -14,6 +14,23 @@
   <packaging>war</packaging>
   <name>eXo Cloud Intranet :: Admin</name>
   <description>eXo Cloud Intranet Admin web application</description>
+  
+  <pluginRepositories>
+     <pluginRepository>
+        <id>truezip-maven-plugin</id>
+        <name>truezip-maven-plugin</name>
+        <url>
+              http://snapshots.repository.codehaus.org/
+        </url>
+        <releases>
+                <enabled>true</enabled>
+        </releases>
+        <snapshots>
+                <enabled>true</enabled>
+        </snapshots>
+     </pluginRepository>
+     
+</pluginRepositories>
 
   <dependencies>
 
@@ -40,6 +57,47 @@
 
   <build>
   <plugins>
+  <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>truezip-maven-plugin</artifactId>
+        <version>1.0-beta-4</version>
+        <executions>
+          <execution>
+            <id>remove-a-validator</id>
+            <goals>
+              <goal>remove</goal>
+            </goals>
+            <phase>package</phase>
+            <configuration>
+              <fileset>
+                <!-- note how the archive is treated a normal file directory -->
+                <directory>${archive}/org/exoplatform/cloudmanagement/admin</directory>
+                <includes>
+                  <include>**/TenantMetadataValidator.class</include>
+                </includes>
+              </fileset>
+            </configuration>
+          </execution>
+          <execution>
+            <id>remove-a-listener</id>
+            <goals>
+              <goal>remove</goal>
+            </goals>
+            <phase>package</phase>
+            <configuration>
+              <fileset>
+                <!-- note how the archive is treated a normal file directory -->
+                <directory>${archive}/org/exoplatform/cloudmanagement/admin/status/listener</directory>
+                <includes>
+                  <include>**/MailSenderListener.class</include>
+                </includes>
+              </fileset>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+  
+  
     <plugin>
       <artifactId>maven-war-plugin</artifactId>
       <configuration>
@@ -53,4 +111,8 @@
     </plugin>
   </plugins>
 </build>
+
+ <properties>
+    <archive>${project.build.directory}/${project.artifactId}-${project.version}.war/WEB-INF/lib/cloud-admin-${org.exoplatform.cloud-management.version}.jar</archive>
+  </properties>
 </project>
