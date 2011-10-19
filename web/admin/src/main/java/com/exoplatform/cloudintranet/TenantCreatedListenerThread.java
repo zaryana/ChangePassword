@@ -96,7 +96,7 @@ public class TenantCreatedListenerThread implements Runnable
          catch (CloudAdminException e)
          {
             LOG.error(e.getMessage());
-            utils.sendAdminErrorEmail("Unable to finish tenant" +tName+ "creation", e);
+            utils.sendAdminErrorEmail("Unable to finish tenant '" + tName + "' creation", e);
          }
       }
       else
