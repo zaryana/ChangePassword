@@ -88,10 +88,12 @@ public class TenantCreatedListenerThread implements Runnable
          catch (TenantQueueException e)
          {
             LOG.error(e.getMessage());
+            utils.sendAdminErrorEmail("Unable to finish tenant '" + tName + "' creation", e);
          }
          catch (InterruptedException e)
          {
             LOG.error(e.getMessage());
+            utils.sendAdminErrorEmail("Unable to finish tenant '" + tName + "' creation", e);
          }
          catch (CloudAdminException e)
          {

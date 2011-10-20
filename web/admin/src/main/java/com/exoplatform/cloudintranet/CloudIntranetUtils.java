@@ -101,7 +101,7 @@ public class CloudIntranetUtils
       strUrl.append("http://");
       strUrl.append(tName);
       strUrl.append(".");
-      strUrl.append(cloudAdminConfiguration.getMasterHost());
+      strUrl.append(cloudAdminConfiguration.getProperty("cloud.admin.fromtend.server.host"));
       strUrl.append("/cloud-agent/rest/organization/adduser");
 
       StringBuilder params = new StringBuilder();
@@ -169,7 +169,7 @@ public class CloudIntranetUtils
       strUrl.append("http://");
       strUrl.append(tName);
       strUrl.append(".");
-      strUrl.append(cloudAdminConfiguration.getMasterHost());
+      strUrl.append(cloudAdminConfiguration.getProperty("cloud.admin.fromtend.server.host"));
       strUrl.append("/cloud-agent/rest/organization/createroot");
 
       StringBuilder params = new StringBuilder();
