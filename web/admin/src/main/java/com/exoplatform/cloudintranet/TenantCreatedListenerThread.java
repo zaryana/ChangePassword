@@ -37,7 +37,7 @@ public class TenantCreatedListenerThread implements Runnable
 
    private int interval = 15000;
    
-   private int limit = 120; //30 minutes; 120 times by 15 sec;
+   private int limit = 1440; //360 minutes; 1440 times by 15 sec;
 
    private CloudAdminConfiguration cloudAdminConfiguration;
    
