@@ -136,7 +136,7 @@ public class CloudIntranetUtils
          else
          {
             throw new CloudAdminException("Unable to add user to tenant " + tName + " - HTTP status:"
-               + connection.getResponseCode());
+               + connection.getResponseCode()+ ". Please, contact support");
          }
 
       }
@@ -201,7 +201,7 @@ public class CloudIntranetUtils
          else
          {
             throw new CloudAdminException("Unable to add root user to tenant " + tName + " - HTTP status:"
-               + connection.getResponseCode());
+               + connection.getResponseCode() + ". Please, contact support");
          }
 
       }
@@ -274,7 +274,7 @@ public class CloudIntranetUtils
                         if (!userName.equalsIgnoreCase(_username))
                            counter++;
                         else
-                           throw new UserAlreadyExistsException("This user already registered on tenant " + tenantName);
+                           throw new UserAlreadyExistsException("This user has already registered on tenant " + tenantName);
                      }
                   }
                }
@@ -287,7 +287,7 @@ public class CloudIntranetUtils
          else
          {
             throw new CloudAdminException("Unable to get user list from tenant " + _tName + " - HTTP status"
-               + connection.getResponseCode());
+               + connection.getResponseCode() + ". Please, contact support");
          }
       }
       catch (MalformedURLException e)
