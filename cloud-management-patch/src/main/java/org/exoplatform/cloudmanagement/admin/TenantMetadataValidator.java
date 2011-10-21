@@ -92,10 +92,10 @@ public class TenantMetadataValidator
          if (LOG.isDebugEnabled())
          {
             LOG.debug("Network name: " + tenantName
-               + " should contain lower cased Latin characters (a-z) and digits (0-9). Cannot be solely of digits.");
+               + " should contain only lower-case characters (a-z) and/or digits (0-9); at least one character is required.");
          }
          throw new TenantValidationException("Network name: " + tenantName
-            + " should contain lower cased Latin characters (a-z) and digits (0-9). Cannot be solely of digits.");
+            + " should contain only lower-case characters (a-z) and/or digits (0-9); at least one character is required.");
       }
 
    }
@@ -112,7 +112,7 @@ public class TenantMetadataValidator
          }
          catch (AddressException e)
          {
-            throw new TenantValidationException("E-Mail validation failed");
+            throw new TenantValidationException("E-Mail validation failed. Please check the format of your e-mail address.");
          }
       }
    }

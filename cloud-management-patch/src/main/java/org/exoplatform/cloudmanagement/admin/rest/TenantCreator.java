@@ -93,7 +93,7 @@ public class TenantCreator
       String mailTemplate = adminConfiguration.getProperty(CLOUD_ADMIN_MAIL_CONFIRMATION_TEMPLATE, null);
       if (mailTemplate == null)
       {
-         throw new TenantRegistrationException(500, "Mail template configuration not found");
+         throw new TenantRegistrationException(500, "Mail template configuration not found. Please contact support.");
       }
 
       Map<String, String> props = new HashMap<String, String>();
@@ -120,7 +120,7 @@ public class TenantCreator
       {
          LOG.warn("Id {} unknown", uuid);
          return Response.status(Status.BAD_REQUEST)
-            .entity("Your confirmation key is wrong or has been already activated").build();
+            .entity("Your confirmation key is wrong or has already been activated").build();
       }
 
       TenantStatus tenantStatus = cloudInfoHolder.getTenantFromValidationQueue(uuid);
