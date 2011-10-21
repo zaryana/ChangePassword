@@ -12,8 +12,6 @@ import org.exoplatform.cloudmanagement.admin.MailSender;
 import org.exoplatform.cloudmanagement.admin.AgentAuthenticator;
 import org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration;
 import org.exoplatform.cloudmanagement.admin.configuration.ConfigurationParameterNotFound;
-import org.exoplatform.cloudmanagement.status.TenantStatus;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
@@ -376,7 +374,7 @@ public class CloudIntranetUtils
          else
          {
             throw new CloudAdminException("Unable to get owner from tenant " + _tName + " - HTTP status"
-               + connection.getResponseCode());
+               + connection.getResponseCode() + ". Please contact support.");
          }
       }
       catch (MalformedURLException e)
@@ -523,7 +521,7 @@ public class CloudIntranetUtils
       String tName = email.substring(email.indexOf("@") + 1, email.indexOf(".", email.indexOf("@")));
       if (tName == null || tName.length() == 0)
       {
-         throw new CloudAdminException("Can't validate this email");
+         throw new CloudAdminException("E-mail validation failed. Please check the format of your email address.");
       }
       return tName;
    }
