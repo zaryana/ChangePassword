@@ -539,7 +539,7 @@ public class CloudIntranetUtils
          FileInputStream io = new FileInputStream(propertyFile);
          Properties properties = new Properties();
          properties.load(io);
-         value =properties.getProperty(tail);
+         value = properties.getProperty(tail);
       }
       catch (FileNotFoundException e)
       {
