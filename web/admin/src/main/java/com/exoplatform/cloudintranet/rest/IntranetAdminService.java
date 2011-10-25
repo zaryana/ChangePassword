@@ -66,45 +66,42 @@ public class IntranetAdminService extends TenantCreator
    @Path("/signup")
    public Response signupToIntranet(@FormParam("user-mail") String userMail) throws CloudAdminException
    {
+      LOG.info("Received signup request from " + userMail);
       String tName = utils.emailToTenant(userMail);
       String username = userMail.substring(0, (userMail.indexOf("@")));
-      //TODO: white-list checking
-      LOG.info("Received signup request from " + userMail);
+      String tail = userMail.substring(userMail.indexOf("@") + 1);
+
       try
       {
+
+         if (!utils.checkWhiteList(tail))
+            return Response.status(Status.BAD_REQUEST)
+               .entity("Sorry, its not allowed for your company to create domains. Please contact support.").build();
          super.createTenantWithEmailConfirmation(tName, userMail);
       }
       catch (TenantAlreadyExistException ex)
       {
-         try
-         {
-            if (utils.isNewUserAllowed(tName, username))
-            {
-               //send OK email 
-               Map<String, String> props = new HashMap<String, String>();
-               props.put("tenant.masterhost", adminConfiguration.getMasterHost());
-               props.put("tenant.repository.name", tName);
-               props.put("user.mail", userMail);
-               props.put("owner.email", utils.getTenantOwnerEmail(tName));
-               utils.sendOkToJoinEmail(userMail, props);
-            }
-            else
-            {
-               //send not allowed mails
-               Map<String, String> props = new HashMap<String, String>();
-               props.put("tenant.masterhost", adminConfiguration.getMasterHost());
-               props.put("tenant.repository.name", tName);
-               props.put("user.mail", userMail);
-               props.put("owner.email", utils.getTenantOwnerEmail(tName));
-               utils.sendJoinRejectedEmails(userMail, props);
+         Map<String, String> props = new HashMap<String, String>();
+         props.put("tenant.masterhost", adminConfiguration.getMasterHost());
+         props.put("tenant.repository.name", tName);
+         props.put("user.mail", userMail);
+         props.put("owner.email", utils.getTenantOwnerEmail(tName));
 
-            }
-         }
-         catch (CloudAdminException e)
+         if (utils.isNewUserAllowed(tName, username))
          {
-            CloudAdminExceptionMapper mapper = new CloudAdminExceptionMapper();
-            return mapper.toResponse(e);
+            //send OK email 
+            utils.sendOkToJoinEmail(userMail, props);
          }
+         else
+         {
+            //send not allowed mails
+            utils.sendJoinRejectedEmails(userMail, props);
+         }
+      }
+      catch (CloudAdminException e)
+      {
+         CloudAdminExceptionMapper mapper = new CloudAdminExceptionMapper();
+         return mapper.toResponse(e);
       }
       return Response.ok().build();
    }

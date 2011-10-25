@@ -12,6 +12,9 @@ import org.exoplatform.cloudmanagement.admin.MailSender;
 import org.exoplatform.cloudmanagement.admin.AgentAuthenticator;
 import org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration;
 import org.exoplatform.cloudmanagement.admin.configuration.ConfigurationParameterNotFound;
+
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
@@ -20,6 +23,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Scanner;
 import java.net.Authenticator;
 
 import java.util.Map;
@@ -75,6 +79,8 @@ public class CloudIntranetUtils
    private CloudAdminConfiguration cloudAdminConfiguration;
 
    private MailSender mailSender;
+   
+   private String whiteListConfigurationFile;
 
    private static final Logger LOG = LoggerFactory.getLogger(CloudIntranetUtils.class);
 
@@ -82,6 +88,8 @@ public class CloudIntranetUtils
    {
       this.cloudAdminConfiguration = cloudAdminConfiguration;
       this.mailSender = new MailSender(cloudAdminConfiguration);
+      this.whiteListConfigurationFile = System.getProperty("cloud.intranet.admin.whitelist");
+      
       Authenticator.setDefault(new AgentAuthenticator(cloudAdminConfiguration.getProperty("admin.agent.auth.username",
          null), cloudAdminConfiguration.getProperty("admin.agent.auth.password", null)));
    }
@@ -525,5 +533,34 @@ public class CloudIntranetUtils
       }
       return tName;
    }
-
+   
+   
+   
+   public boolean checkWhiteList(String match) throws CloudAdminException
+   {
+      if (whiteListConfigurationFile == null)
+      {
+         LOG.warn("White list configuration property not found, registration disabled!");
+         return false;
+      }
+      File propertyFile = new File(whiteListConfigurationFile);
+      Scanner sc;
+      try
+      {
+         sc = new Scanner(propertyFile);
+         while (sc.hasNextLine())
+         {
+            String pattern = sc.nextLine();
+            if (pattern.equalsIgnoreCase(match))
+               return true;
+         }
+         return false;
+      }
+      catch (FileNotFoundException e)
+      {
+         throw new CloudAdminException("White list configuration file not found. Please contact support.");
+      }
+   }
+   
+   
 }
