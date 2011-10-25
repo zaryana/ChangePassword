@@ -1,3 +1,4 @@
-gmail.com
-exoplatform.com
-yahoo.com
+gmail.com=gmail
+exoplatform.com=exoplatform
+exoplatform.com.ua=exoplatform
+yahoo.com=yahoo
