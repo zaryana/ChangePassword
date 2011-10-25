@@ -28,7 +28,6 @@ import org.exoplatform.cloudmanagement.admin.TenantAlreadyExistException;
 import org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration;
 import org.exoplatform.cloudmanagement.admin.creation.TenantCreationSupervisor;
 import org.exoplatform.cloudmanagement.admin.status.CloudInfoHolder;
-import org.exoplatform.cloudmanagement.admin.status.criteria.TenantCreatedCriteria;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -111,7 +110,6 @@ public class IntranetAdminService extends TenantCreator
       @FormParam("last-name") String lastName, @FormParam("password") String password,
       @FormParam("confirmation-id") String uuid) throws CloudAdminException
    {
-      //TODO: control UUID
       String tName = null;
       try
       {

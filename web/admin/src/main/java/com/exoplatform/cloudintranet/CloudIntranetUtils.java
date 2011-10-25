@@ -11,6 +11,7 @@ import org.exoplatform.cloudmanagement.admin.CloudAdminException;
 import org.exoplatform.cloudmanagement.admin.MailSender;
 import org.exoplatform.cloudmanagement.admin.AgentAuthenticator;
 import org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration;
+import static org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration.CLOUD_ADMIN_FRONT_END_SERVER_HOST;
 import org.exoplatform.cloudmanagement.admin.configuration.ConfigurationParameterNotFound;
 
 import java.io.File;
@@ -25,7 +26,6 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Properties;
-import java.util.Scanner;
 import java.net.Authenticator;
 
 
@@ -176,7 +176,7 @@ public class CloudIntranetUtils
       strUrl.append("http://");
       strUrl.append(tName);
       strUrl.append(".");
-      strUrl.append(cloudAdminConfiguration.getProperty("cloud.admin.frontend.server.host"));
+      strUrl.append(cloudAdminConfiguration.getProperty(CLOUD_ADMIN_FRONT_END_SERVER_HOST));
       strUrl.append("/cloud-agent/rest/organization/createroot");
 
       StringBuilder params = new StringBuilder();
