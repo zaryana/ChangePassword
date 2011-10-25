@@ -37,7 +37,7 @@ public class IntranetAdminService extends TenantCreator
 {
 
    CloudIntranetUtils utils;
-   
+
    private static final Logger LOG = LoggerFactory.getLogger(IntranetAdminService.class);
 
    public IntranetAdminService(CloudInfoHolder cloudInfoHolder, TenantMetadataValidator tenantMetadataValidator,
@@ -67,14 +67,13 @@ public class IntranetAdminService extends TenantCreator
    public Response signupToIntranet(@FormParam("user-mail") String userMail) throws CloudAdminException
    {
       LOG.info("Received signup request from " + userMail);
-      String tName = utils.emailToTenant(userMail);
+      String tName = null;
       String username = userMail.substring(0, (userMail.indexOf("@")));
-      String tail = userMail.substring(userMail.indexOf("@") + 1);
 
       try
       {
-
-         if (!utils.checkWhiteList(tail))
+         tName = utils.checkOnWhiteList(userMail);
+         if (tName == null)
             return Response.status(Status.BAD_REQUEST)
                .entity("Sorry, its not allowed for your company to create domains. Please contact support.").build();
          super.createTenantWithEmailConfirmation(tName, userMail);
@@ -113,15 +112,21 @@ public class IntranetAdminService extends TenantCreator
       @FormParam("confirmation-id") String uuid) throws CloudAdminException
    {
       //TODO: control UUID
+      String tName = null;
       try
       {
-         utils.storeUser(userMail, firstName, lastName, password);
+         tName = utils.checkOnWhiteList(userMail);
+         if (tName == null)
+            return Response.status(Status.BAD_REQUEST)
+               .entity("Sorry, its not allowed for your company to create domains. Please contact support.").build();
+
+         utils.storeUser(tName, userMail, firstName, lastName, password);
          Map<String, String> props = new HashMap<String, String>();
          props.put("tenant.masterhost", adminConfiguration.getMasterHost());
-         props.put("tenant.repository.name", utils.emailToTenant(userMail));
+         props.put("tenant.repository.name", tName);
          props.put("user.mail", userMail);
          props.put("first.name", firstName);
-         utils.sendUserJoinedEmails(userMail, props);
+         utils.sendUserJoinedEmails(tName, userMail, props);
          return Response.ok().build();
       }
       catch (CloudAdminException e)
@@ -139,18 +144,25 @@ public class IntranetAdminService extends TenantCreator
       @FormParam("phone") String phone, @FormParam("password") String password,
       @FormParam("confirmation-id") String uuid) throws CloudAdminException
    {
-      super.createTenantWithConfirmedEmail(uuid);
-      TenantCreatedListenerThread thread =
-         new TenantCreatedListenerThread(userMail, firstName, lastName, companyName, phone, password, cloudInfoHolder,
-            adminConfiguration);
-      ExecutorService executor = Executors.newSingleThreadExecutor();
-      
-//         Future<?> res = executor.submit(thread);
-//         res.get(30, TimeUnit.MINUTES);
+      try
+      {
+         super.createTenantWithConfirmedEmail(uuid);
+         String tName = utils.checkOnWhiteList(userMail);
+         if (tName == null)
+            return Response.status(Status.BAD_REQUEST)
+               .entity("Sorry, its not allowed for your company to create domains. Please contact support.").build();
+         TenantCreatedListenerThread thread =
+            new TenantCreatedListenerThread(tName, userMail, firstName, lastName, companyName, phone, password,
+               cloudInfoHolder, adminConfiguration);
+         ExecutorService executor = Executors.newSingleThreadExecutor();
          executor.execute(thread);
-      
-      
-      return Response.ok().build();
+         return Response.ok().build();
+      }
+      catch (CloudAdminException e)
+      {
+         CloudAdminExceptionMapper mapper = new CloudAdminExceptionMapper();
+         return mapper.toResponse(e);
+      }
    }
 
 }

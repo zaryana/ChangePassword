@@ -42,11 +42,10 @@ public class TenantCreatedListenerThread implements Runnable
    private CloudAdminConfiguration cloudAdminConfiguration;
    
 
-   public TenantCreatedListenerThread(String userMail, String firstName, String lastName, String companyName,
+   public TenantCreatedListenerThread(String tName, String userMail, String firstName, String lastName, String companyName,
       String phone, String password, CloudInfoHolder cloudInfoHolder, CloudAdminConfiguration cloudAdminConfiguration)
    {
-
-      this.tName = userMail.substring(userMail.indexOf("@") + 1, userMail.indexOf(".", userMail.indexOf("@")));
+      this.tName = tName;
       this.email = userMail;
       this.firstName = firstName;
       this.lastName = lastName;
@@ -61,9 +60,10 @@ public class TenantCreatedListenerThread implements Runnable
    @Override
    public void run()
    {
+      CloudIntranetUtils utils = new CloudIntranetUtils(cloudAdminConfiguration);
+
       if (cloudInfoHolder.isTenantExists(tName))
       {
-         CloudIntranetUtils utils = new CloudIntranetUtils(cloudAdminConfiguration);
          int count = 0;
          try
          {
@@ -76,7 +76,7 @@ public class TenantCreatedListenerThread implements Runnable
             }
             
             String root_password = UUID.randomUUID().toString().replace("-", "").substring(0, 9);
-            utils.storeUser(email, firstName, lastName, password);
+            utils.storeUser(tName, email, firstName, lastName, password);
             utils.storeRoot(tName, email, "root", "root", root_password);
             Map<String, String> props = new HashMap<String, String>();
             props.put("tenant.masterhost", cloudAdminConfiguration.getMasterHost());

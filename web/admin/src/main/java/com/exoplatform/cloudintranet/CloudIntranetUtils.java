@@ -14,6 +14,7 @@ import org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfigurati
 import org.exoplatform.cloudmanagement.admin.configuration.ConfigurationParameterNotFound;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,8 +24,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Properties;
 import java.util.Scanner;
 import java.net.Authenticator;
+
 
 import java.util.Map;
 import org.slf4j.Logger;
@@ -94,11 +97,9 @@ public class CloudIntranetUtils
          null), cloudAdminConfiguration.getProperty("admin.agent.auth.password", null)));
    }
 
-   public void storeUser(String userMail, String firstName, String lastName, String password)
+   public void storeUser(String tName, String userMail, String firstName, String lastName, String password)
       throws CloudAdminException
    {
-
-      String tName = emailToTenant(userMail);
       String username = userMail.substring(0, (userMail.indexOf("@")));
 
       URL url;
@@ -444,10 +445,8 @@ public class CloudIntranetUtils
       }
    }
 
-   public void sendUserJoinedEmails(String userMail, Map<String, String> props) throws CloudAdminException
+   public void sendUserJoinedEmails(String tName, String userMail, Map<String, String> props) throws CloudAdminException
    {
-
-      String tName = emailToTenant(userMail);
       String userTemplate = cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_USER_JOINED_TEMPLATE, null);
       String ownerTemplate = cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_USER_JOINED_OWNER_TEMPLATE, null);
       try
@@ -525,42 +524,35 @@ public class CloudIntranetUtils
       }
    }
    
-   public  String emailToTenant(String email) throws CloudAdminException {
-      String tName = email.substring(email.indexOf("@") + 1, email.indexOf(".", email.indexOf("@")));
-      if (tName == null || tName.length() == 0)
-      {
-         throw new CloudAdminException("E-mail validation failed. Please check the format of your email address.");
-      }
-      return tName;
-   }
-   
-   
-   
-   public boolean checkWhiteList(String match) throws CloudAdminException
+   public String checkOnWhiteList(String email) throws CloudAdminException
    {
+      String tail = email.substring(email.indexOf("@") + 1);
       if (whiteListConfigurationFile == null)
       {
          LOG.warn("White list configuration property not found, registration disabled!");
-         return false;
+         return null;
       }
+      String value = null;
       File propertyFile = new File(whiteListConfigurationFile);
-      Scanner sc;
       try
       {
-         sc = new Scanner(propertyFile);
-         while (sc.hasNextLine())
-         {
-            String pattern = sc.nextLine();
-            if (pattern.equalsIgnoreCase(match))
-               return true;
-         }
-         return false;
+         FileInputStream io = new FileInputStream(propertyFile);
+         Properties properties = new Properties();
+         properties.load(io);
+         value =properties.getProperty(tail);
+         if (value == null)
+            throw new ConfigurationParameterNotFound("");
       }
       catch (FileNotFoundException e)
       {
          throw new CloudAdminException("White list configuration file not found. Please contact support.");
       }
+      catch (IOException e)
+      {
+         throw new CloudAdminException("White list configuration file read error. Please contact support.");
+
+      }
+      return value;
    }
-   
    
 }
