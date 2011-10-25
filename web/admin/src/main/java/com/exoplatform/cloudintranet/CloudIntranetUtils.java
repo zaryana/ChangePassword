@@ -540,8 +540,6 @@ public class CloudIntranetUtils
          Properties properties = new Properties();
          properties.load(io);
          value =properties.getProperty(tail);
-         if (value == null)
-            throw new ConfigurationParameterNotFound("");
       }
       catch (FileNotFoundException e)
       {
