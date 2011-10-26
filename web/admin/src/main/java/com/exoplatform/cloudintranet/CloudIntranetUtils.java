@@ -78,6 +78,8 @@ public class CloudIntranetUtils
 
    private static final String CLOUD_ADMIN_MAIL_OWNER_INTRANET_CREATED_SUBJECT =
       "cloud.admin.mail.intranet.created.owner.subject";
+   
+   private static final String CLOUD_ADMIN_TENANT_MAXUSERS = "cloud.admin.tenant.maxusers";
 
    private CloudAdminConfiguration cloudAdminConfiguration;
 
@@ -263,6 +265,7 @@ public class CloudIntranetUtils
             jsonParser.parse(io);
             ObjectValue responseObj = (ObjectValue)jsonParser.getJsonObject();
             int counter = 0;
+            int limit = Integer.parseInt(cloudAdminConfiguration.getProperty(CLOUD_ADMIN_TENANT_MAXUSERS, "20"));
 
             Iterator<String> as = responseObj.getKeys();
             while (as.hasNext())
@@ -286,7 +289,7 @@ public class CloudIntranetUtils
                   }
                }
             }
-            if (counter < 20) //TODO: make configurable;
+            if (counter < limit) 
                return true;
             else
                return false;

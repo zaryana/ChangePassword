@@ -18,6 +18,7 @@ public class TenantCreatedListenerThread implements Runnable
 
    private static final Logger LOG = LoggerFactory.getLogger(TenantCreatedListenerThread.class);
 
+   private static final String CLOUD_ADMIN_CREATION_TIMEOUT = "cloud.admin.tenant.creation.timeou";
 
    private String tName;
 
@@ -36,8 +37,6 @@ public class TenantCreatedListenerThread implements Runnable
    private CloudInfoHolder cloudInfoHolder;
 
    private int interval = 15000;
-   
-   private int limit = 5760; //24h; 1440 times by 15 sec;
 
    private CloudAdminConfiguration cloudAdminConfiguration;
    
@@ -61,6 +60,7 @@ public class TenantCreatedListenerThread implements Runnable
    public void run()
    {
       CloudIntranetUtils utils = new CloudIntranetUtils(cloudAdminConfiguration);
+      int limit = Integer.parseInt(cloudAdminConfiguration.getProperty(CLOUD_ADMIN_CREATION_TIMEOUT, "86400"));
 
       if (cloudInfoHolder.isTenantExists(tName))
       {
@@ -72,7 +72,7 @@ public class TenantCreatedListenerThread implements Runnable
                if (count > limit)
                   throw new CloudAdminException("Tenant creation timeout reached");
                Thread.sleep(interval);
-               count++;
+               count+=15;
             }
             
             String root_password = UUID.randomUUID().toString().replace("-", "").substring(0, 9);
