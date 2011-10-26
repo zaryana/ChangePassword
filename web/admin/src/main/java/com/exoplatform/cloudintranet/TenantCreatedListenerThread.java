@@ -18,7 +18,7 @@ public class TenantCreatedListenerThread implements Runnable
 
    private static final Logger LOG = LoggerFactory.getLogger(TenantCreatedListenerThread.class);
 
-   private static final String CLOUD_ADMIN_CREATION_TIMEOUT = "cloud.admin.tenant.creation.timeou";
+   private static final String CLOUD_ADMIN_CREATION_TIMEOUT = "cloud.admin.tenant.creation.timeout";
 
    private String tName;
 
