@@ -255,7 +255,7 @@ function sendDataToLoopfuse(data, afterSubmitCallback) {
   var loopfuseOutputIframeId = "loopfuseOutput";
   var loopfuseOutputIframeName = "loopfuseOutput";
   var loopfuseFormId = "loopfuseForm";
-  var loopfuseFormName = "cloud-intranet-profile";
+  var loopfuseFormName = "cloud-workspaces-profile";
 
   if (jQuery && document.getElementById(loopfuseOutputIframeId)) {
     jQuery('#' + loopfuseFormId).remove();
