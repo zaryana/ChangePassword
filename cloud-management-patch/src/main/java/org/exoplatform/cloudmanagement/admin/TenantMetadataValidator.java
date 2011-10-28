@@ -70,7 +70,7 @@ public class TenantMetadataValidator
       String tenantName = tenantStatus.getTenantName();
       if (tenantName == null || tenantName.length() == 0)
       {
-         throw new TenantValidationException("Network name can't be null or ''");
+         throw new TenantValidationException("Domain name can't be null or ''");
       }
 
       // 'www' should be forbidden tenant name 
@@ -81,7 +81,7 @@ public class TenantMetadataValidator
 
       if (MAX_TENANT_NAME_LENGTH < tenantName.length())
       {
-         throw new TenantValidationException("Network name should contain " + MAX_TENANT_NAME_LENGTH
+         throw new TenantValidationException("Domain name should contain " + MAX_TENANT_NAME_LENGTH
             + " or less characters");
       }
 
@@ -91,10 +91,10 @@ public class TenantMetadataValidator
       {
          if (LOG.isDebugEnabled())
          {
-            LOG.debug("Network name: " + tenantName
+            LOG.debug("Domain name: " + tenantName
                + " should contain only lower-case characters (a-z) and/or digits (0-9); at least one character is required.");
          }
-         throw new TenantValidationException("Network name: " + tenantName
+         throw new TenantValidationException("Domain name: " + tenantName
             + " should contain only lower-case characters (a-z) and/or digits (0-9); at least one character is required.");
       }
 

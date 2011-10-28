@@ -7,15 +7,15 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>com.exoplatform.cloudintranet</groupId>
-    <artifactId>cloud-intranet-parent</artifactId>
+    <groupId>com.exoplatform.cloudworkspaces</groupId>
+    <artifactId>cloud-workspaces-parent</artifactId>
     <version>1.0.0-Beta1-SNAPSHOT</version>
   </parent>
 
   <artifactId>cloud-management-patch</artifactId>
   <packaging>jar</packaging>
-  <name>eXo Cloud Intranet :: Cloud Management Patch</name>
-  <description>eXo Cloud Intranet Cloud Management Patch</description>
+  <name>eXo Cloud Workspaces :: Cloud Management Patch</name>
+  <description>eXo Cloud Workspaces Cloud Management Patch</description>
 
   <dependencies>
     <dependency>

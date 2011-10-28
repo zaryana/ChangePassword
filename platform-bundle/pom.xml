@@ -6,14 +6,14 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>com.exoplatform.cloudintranet</groupId>
-    <artifactId>cloud-intranet-parent</artifactId>
+    <groupId>com.exoplatform.cloudworkspaces</groupId>
+    <artifactId>cloud-workspaces-parent</artifactId>
     <version>1.0.0-Beta1-SNAPSHOT</version>
   </parent>
-  <artifactId>cloud-intranet-platform-bundle</artifactId>
+  <artifactId>cloud-workspaces-platform-bundle</artifactId>
   <packaging>pom</packaging>
-  <name>eXo Cloud Intranet :: Platform bundle</name>
-  <description>Cloud Intranet Platform Tomcat bundle.</description>
+  <name>eXo Cloud Workspaces :: Platform bundle</name>
+  <description>Cloud Workspaces Platform Tomcat bundle.</description>
 
   <profiles>
     <profile>
@@ -31,14 +31,14 @@
           <artifactId>mysql-connector-java</artifactId>
         </dependency>
         <dependency>
-          <groupId>com.exoplatform.cloudintranet</groupId>
-          <artifactId>cloud-intranet-webui</artifactId>
+          <groupId>com.exoplatform.cloudworkspaces</groupId>
+          <artifactId>cloud-workspaces-webui</artifactId>
           <version>${project.version}</version>
           <type>war</type>
         </dependency>
       </dependencies>
       <build>
-        <finalName>Cloud-Intranet-Platform-${project.version}</finalName>
+        <finalName>Cloud-Workspaces-Platform-${project.version}</finalName>
         <plugins>
           <!-- Unpack Tomcat base -->
           <plugin>

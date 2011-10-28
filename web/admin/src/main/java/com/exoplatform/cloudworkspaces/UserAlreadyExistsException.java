@@ -1,4 +1,4 @@
-package com.exoplatform.cloudintranet;
+package com.exoplatform.cloudworkspaces;
 
 import org.exoplatform.cloudmanagement.admin.CloudAdminException;
 

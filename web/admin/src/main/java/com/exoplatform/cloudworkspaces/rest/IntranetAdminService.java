@@ -1,9 +1,9 @@
-package com.exoplatform.cloudintranet.rest;
+package com.exoplatform.cloudworkspaces.rest;
 
 import static org.exoplatform.cloudmanagement.rest.admin.CloudAdminRestServicePaths.CLOUD_ADMIN_PUBLIC_TENANT_CREATION_SERVICE;
 
-import com.exoplatform.cloudintranet.CloudIntranetUtils;
-import com.exoplatform.cloudintranet.TenantCreatedListenerThread;
+import com.exoplatform.cloudworkspaces.CloudIntranetUtils;
+import com.exoplatform.cloudworkspaces.TenantCreatedListenerThread;
 
 import java.util.HashMap;
 import java.util.Map;

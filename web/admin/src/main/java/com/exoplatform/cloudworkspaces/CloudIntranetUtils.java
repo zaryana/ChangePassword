@@ -1,4 +1,4 @@
-package com.exoplatform.cloudintranet;
+package com.exoplatform.cloudworkspaces;
 
 import static org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration.CLOUD_ADMIN_MAIL_ADMIN_EMAIL;
 import static org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration.CLOUD_ADMIN_MAIL_ADMIN_ERROR_SUBJECT;
@@ -93,7 +93,7 @@ public class CloudIntranetUtils
    {
       this.cloudAdminConfiguration = cloudAdminConfiguration;
       this.mailSender = new MailSender(cloudAdminConfiguration);
-      this.whiteListConfigurationFile = System.getProperty("cloud.intranet.admin.whitelist");
+      this.whiteListConfigurationFile = System.getProperty("cloud.admin.whitelist");
       
       Authenticator.setDefault(new AgentAuthenticator(cloudAdminConfiguration.getProperty("admin.agent.auth.username",
          null), cloudAdminConfiguration.getProperty("admin.agent.auth.password", null)));

@@ -5,15 +5,15 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>com.exoplatform.cloudintranet</groupId>
-    <artifactId>cloud-intranet-web</artifactId>
+    <groupId>com.exoplatform.cloudworkspaces</groupId>
+    <artifactId>cloud-workspaces-web</artifactId>
     <version>1.0.0-Beta1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>cloud-intranet-web-admin</artifactId>
+  <artifactId>cloud-workspaces-web-admin</artifactId>
   <packaging>war</packaging>
-  <name>eXo Cloud Intranet :: Admin</name>
-  <description>eXo Cloud Intranet Admin web application</description>
+  <name>eXo Cloud Workspaces :: Admin</name>
+  <description>eXo Cloud Workspaces Admin web application</description>
 
   <pluginRepositories>
     <pluginRepository>
@@ -33,7 +33,7 @@
   <dependencies>
 
     <dependency>
-      <groupId>com.exoplatform.cloudintranet</groupId>
+      <groupId>com.exoplatform.cloudworkspaces</groupId>
       <artifactId>cloud-management-patch</artifactId>
       <version>${project.version}</version>
     </dependency>

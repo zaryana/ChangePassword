@@ -6,25 +6,25 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>com.exoplatform.cloudintranet</groupId>
-    <artifactId>cloud-intranet-parent</artifactId>
+    <groupId>com.exoplatform.cloudworkspaces</groupId>
+    <artifactId>cloud-workspaces-parent</artifactId>
     <version>1.0.0-Beta1-SNAPSHOT</version>
   </parent>
-  <artifactId>cloud-intranet-admin-bundle</artifactId>
+  <artifactId>cloud-workspaces-admin-bundle</artifactId>
   <packaging>pom</packaging>
-  <name>eXo Cloud Intranet :: Admin bundle</name>
-  <description>Cloud Intranet Admin and front webapp Tomcat bundle</description>
+  <name>eXo Cloud Workspaces :: Admin bundle</name>
+  <description>Cloud Workspaces Admin and front webapp Tomcat bundle</description>
 
   <dependencies>
     <dependency>
-      <groupId>com.exoplatform.cloudintranet</groupId>
-      <artifactId>cloud-intranet-web-admin</artifactId>
+      <groupId>com.exoplatform.cloudworkspaces</groupId>
+      <artifactId>cloud-workspaces-web-admin</artifactId>
       <version>${project.version}</version>
       <type>war</type>
     </dependency>
     <!-- dependency>
-      <groupId>com.exoplatform.cloudintranet</groupId>
-      <artifactId>cloud-intranet-webui</artifactId>
+      <groupId>com.exoplatform.cloudworkspaces</groupId>
+      <artifactId>cloud-workspaces-webui</artifactId>
       <version>${project.version}</version>
       <type>war</type>
     </dependency -->
@@ -130,15 +130,11 @@
                       <fileset dir="${basedir}/src/main/resources/tomcat/conf" />
                     </copy>
 
-                    <echo message="Deploy cloud-intranet-web-admin.war" />
+                    <echo message="Deploy cloud-workspaces-web-admin.war" />
                     <copy
-                      file="${project.build.directory}/packager-conf/war/cloud-intranet-web-admin-${project.version}.war"
+                      file="${project.build.directory}/packager-conf/war/cloud-workspaces-web-admin-${project.version}.war"
                       tofile="${project.build.directory}/tomcat-admin/webapps/ROOT.war" />
                     <chmod file="${project.build.directory}/tomcat-admin/bin/*.sh" perm="+x" />
-
-                    <!-- copy
-                      file="${project.build.directory}/packager-conf/war/cloud-intranet-webui-${project.version}.war"
-                      tofile="${project.build.directory}/tomcat-admin/webapps/webui.war" / -->
 
                     <echo message="Copy cloud-admin-valve.jar" />
                     <copy
