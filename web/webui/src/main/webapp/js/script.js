@@ -11,7 +11,6 @@ if (location.port) {
 var user;
 var auth = null;
 
-/** Getting list chain */
 Tenants.prototype.init = function() {
   accessUrl = prefixUrl + '/rest/cloud-admin';
   accessSecureUrl = prefixUrl + '/rest/private/cloud-admin';
@@ -44,13 +43,31 @@ Tenants.prototype.init = function() {
 
 }
 
+
+Tenants.prototype.doLogin = function() {
+   var tname = _gel("workspace").value;
+   var login = _gel("email").value;
+   var pass = _gel("password").value;
+   var redirect = location.protocol + '//' + tname + '.' + location.hostname;
+   if (location.port) {
+    redirect += ':' + location.port;
+   }
+    redirect += '/portal/login?username=';
+    redirect += login;
+    redirect += '&password=';
+    redirect += pass;
+    redirect += '&initialURI=/portal/intranet/welcome';
+    window.location = redirect;
+}
+
+
 /* Sending request */
 Tenants.prototype.doSingupRequest = function() {
   var url = tenantServicePath + "/signup";
   _gel("t_submit").value = "Wait..";
   _gel("t_submit").disabled = true;
   tenants.xmlhttpPost(url, tenants.handleSignupResponse,
-      tenants.getquerystringSignup);
+  tenants.getquerystringSignup);
 
 }
 
