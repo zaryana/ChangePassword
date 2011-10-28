@@ -49,15 +49,12 @@ Tenants.prototype.doLogin = function() {
    var login = _gel("email").value;
    var pass = _gel("password").value;
    var redirect = location.protocol + '//' + tname + '.' + location.hostname;
-   if (location.port) {
-    redirect += ':' + location.port;
-   }
-    redirect += '/portal/login?username=';
-    redirect += login;
-    redirect += '&password=';
-    redirect += pass;
-    redirect += '&initialURI=/portal/intranet/welcome';
-    window.location = redirect;
+   redirect += '/portal/login?username=';
+   redirect += login;
+   redirect += '&password=';
+   redirect += pass;
+   redirect += '&initialURI=/portal/intranet/welcome';
+   window.location = redirect;
 }
 
 
