@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2011 eXo Platform SAS.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ */
 package com.exoplatform.cloudworkspaces.rest;
 
 import static org.exoplatform.cloudmanagement.rest.admin.CloudAdminRestServicePaths.CLOUD_ADMIN_PUBLIC_TENANT_CREATION_SERVICE;
@@ -67,7 +85,7 @@ public class IntranetAdminService extends TenantCreator
    {
       LOG.info("Received signup request from " + userMail);
       String tName = null;
-      String username = userMail.substring(0, (userMail.indexOf("@")));
+      //String username = userMail.substring(0, (userMail.indexOf("@")));
 
       try
       {
@@ -85,7 +103,7 @@ public class IntranetAdminService extends TenantCreator
          props.put("user.mail", userMail);
          props.put("owner.email", utils.getTenantOwnerEmail(tName));
 
-         if (utils.isNewUserAllowed(tName, username))
+         if (utils.isNewUserAllowed(tName, userMail))
          {
             //send OK email 
             utils.sendOkToJoinEmail(userMail, props);
@@ -118,13 +136,21 @@ public class IntranetAdminService extends TenantCreator
             return Response.status(Status.BAD_REQUEST)
                .entity("Sorry, its not allowed for your company to create domains. Please contact support.").build();
 
-         utils.storeUser(tName, userMail, firstName, lastName, password);
          Map<String, String> props = new HashMap<String, String>();
          props.put("tenant.masterhost", adminConfiguration.getMasterHost());
          props.put("tenant.repository.name", tName);
          props.put("user.mail", userMail);
          props.put("first.name", firstName);
-         utils.sendUserJoinedEmails(tName, userMail, props);
+
+         if (utils.isNewUserAllowed(tName, userMail))
+         {
+            utils.storeUser(tName, userMail, firstName, lastName, password);
+            utils.sendUserJoinedEmails(tName, userMail, props);
+         }
+         else
+         {
+            utils.sendJoinRejectedEmails(userMail, props);
+         }
          return Response.ok().build();
       }
       catch (CloudAdminException e)
