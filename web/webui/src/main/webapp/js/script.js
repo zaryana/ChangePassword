@@ -1,3 +1,22 @@
+/*
+ * Copyright (C) 2011 eXo Platform SAS.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ */
+
 function Tenants() {
 }
 
@@ -10,6 +29,8 @@ if (location.port) {
 }
 var user;
 var auth = null;
+
+/*  Init function */
 
 Tenants.prototype.init = function() {
   accessUrl = prefixUrl + '/rest/cloud-admin';
@@ -43,11 +64,16 @@ Tenants.prototype.init = function() {
 
 }
 
-
+/* Login redirect */
 Tenants.prototype.doLogin = function() {
    var tname = _gel("workspace").value;
    var login = _gel("email").value;
    var pass = _gel("password").value;
+   
+   if (tname.length == 0|| login.length == 0 || pass.length == 0){
+     _gel("messageString").innerHTML = "<div class=\"Ok\">Please fill all form fileds.</div>";
+     return;
+   }
    var redirect = location.protocol + '//' + tname + '.' + location.hostname;
    redirect += '/portal/login?username=';
    redirect += login;
@@ -58,7 +84,7 @@ Tenants.prototype.doLogin = function() {
 }
 
 
-/* Sending request */
+/* Sending signup request */
 Tenants.prototype.doSingupRequest = function() {
   var url = tenantServicePath + "/signup";
   _gel("t_submit").value = "Wait..";
@@ -68,7 +94,7 @@ Tenants.prototype.doSingupRequest = function() {
 
 }
 
-/* Sending request */
+/* Sending creation request */
 Tenants.prototype.doCreationRequest = function() {
   var url = tenantServicePath + "/create";
   
@@ -105,7 +131,7 @@ Tenants.prototype.doCreationRequest = function() {
 
 }
 
-/* Sending request */
+/* Sending join request */
 Tenants.prototype.doJoinRequest = function() {
   var url = tenantServicePath + "/join";
   
@@ -136,6 +162,7 @@ Tenants.prototype.doJoinRequest = function() {
       tenants.getquerystringJoin);
 }
 
+/*  Handle signup response */
 Tenants.prototype.handleSignupResponse = function(resp) {
 
   if (resp == "") {
@@ -155,6 +182,8 @@ Tenants.prototype.handleSignupResponse = function(resp) {
   _gel("t_submit").value = "Sign Up";
 }
 
+
+/*  Handle creation response */
 Tenants.prototype.handleCreationResponse = function(resp) {
 
   if (resp == "") {
@@ -178,10 +207,10 @@ Tenants.prototype.handleCreationResponse = function(resp) {
   _gel("t_submit").value = "Create";
 }
 
+/*  Handle join response */
 Tenants.prototype.handleJoinResponse = function(resp) {
 
   if (resp == "") {
-    // window.location = prefixUrl + "/cloud/join-done.html";
     sendDataToLoopfuse({
       "email" : _gel('email').value,
       "first_name" : _gel('first_name').value,
@@ -252,7 +281,6 @@ function _gel(id) {
 }
 
 function onlyNumbers(evt) {
-
   var charCode = (evt.which) ? evt.which : event.keyCode;
 
   if (charCode > 31
