@@ -520,17 +520,13 @@ public class CloudIntranetUtils
       props.put("message", msg);
       props.put("exception.message", e.getMessage());
 
-      String trace = null;
+      String trace = "";
 
       for (int i = 0; i < e.getStackTrace().length; i++)
       {
-         trace += e.getStackTrace()[i];
+         trace += e.getStackTrace()[i] + "<br>";
       }
-
-      if (trace != null)
-      {
-         props.put("stack.trace", trace.replace("\n", "<br>"));
-      }
+      props.put("stack.trace", trace);
       try
       {
 
