@@ -85,7 +85,7 @@ public class IntranetAdminService extends TenantCreator
    {
       LOG.info("Received signup request from " + userMail);
       String tName = null;
-      //String username = userMail.substring(0, (userMail.indexOf("@")));
+      String username = userMail.substring(0, (userMail.indexOf("@")));
 
       try
       {
@@ -103,7 +103,7 @@ public class IntranetAdminService extends TenantCreator
          props.put("user.mail", userMail);
          props.put("owner.email", utils.getTenantOwnerEmail(tName));
 
-         if (utils.isNewUserAllowed(tName, userMail))
+         if (utils.isNewUserAllowed(tName, username))
          {
             //send OK email 
             utils.sendOkToJoinEmail(userMail, props);
@@ -129,6 +129,7 @@ public class IntranetAdminService extends TenantCreator
       @FormParam("confirmation-id") String uuid) throws CloudAdminException
    {
       String tName = null;
+      String username = userMail.substring(0, (userMail.indexOf("@")));
       try
       {
          tName = utils.checkOnWhiteList(userMail);
@@ -140,9 +141,10 @@ public class IntranetAdminService extends TenantCreator
          props.put("tenant.masterhost", adminConfiguration.getMasterHost());
          props.put("tenant.repository.name", tName);
          props.put("user.mail", userMail);
+         props.put("user.name", username);
          props.put("first.name", firstName);
 
-         if (utils.isNewUserAllowed(tName, userMail))
+         if (utils.isNewUserAllowed(tName, username))
          {
             utils.storeUser(tName, userMail, firstName, lastName, password);
             utils.sendUserJoinedEmails(tName, userMail, props);

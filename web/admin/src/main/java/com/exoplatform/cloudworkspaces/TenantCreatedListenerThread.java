@@ -101,6 +101,7 @@ public class TenantCreatedListenerThread implements Runnable
             props.put("tenant.repository.name", tName);
             props.put("user.mail", email);
             props.put("root.password", root_password);
+            props.put("user.name", email.substring(0, (email.indexOf("@"))));
             utils.sendIntranetCreatedEmails(email, props);
          }
          catch (TenantQueueException e)

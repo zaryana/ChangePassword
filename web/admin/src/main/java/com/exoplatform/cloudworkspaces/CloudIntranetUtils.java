@@ -251,7 +251,7 @@ public class CloudIntranetUtils
 
    }
 
-   public boolean isNewUserAllowed(String _tName, String _usermail) throws CloudAdminException
+   public boolean isNewUserAllowed(String _tName, String _username) throws CloudAdminException
    {
 
       URL url;
@@ -299,7 +299,7 @@ public class CloudIntranetUtils
                      while (users.hasNext())
                      {
                         String userName = users.next();
-                        if (!userName.equalsIgnoreCase(_usermail))
+                        if (!userName.equalsIgnoreCase(_username))
                            counter++;
                         else
                            throw new UserAlreadyExistsException("This user has already registered on tenant " + tenantName);
@@ -490,7 +490,6 @@ public class CloudIntranetUtils
 
    public void sendIntranetCreatedEmails(String userMail, Map<String, String> props) throws CloudAdminException
    {
-
       String userTemplate = cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_USER_INTRANET_CREATED_TEMPLATE, null);
       String ownerTemplate =
          cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_OWNER_INTRANET_CREATED_TEMPLATE, null);
