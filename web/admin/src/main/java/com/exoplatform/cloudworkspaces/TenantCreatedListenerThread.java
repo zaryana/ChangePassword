@@ -94,14 +94,23 @@ public class TenantCreatedListenerThread implements Runnable
             }
             Thread.sleep(interval*4); //To let the proxy to reload;
             String root_password = UUID.randomUUID().toString().replace("-", "").substring(0, 9);
-            utils.storeUser(tName, email, firstName, lastName, password);
+            String username = email.substring(0, (email.indexOf("@")));
+            
+            try {
+              utils.storeUser(tName, username, email, firstName, lastName, password);
+            }
+            catch (UserAlreadyExistsException e){
+              username = "admin." + username;
+              utils.storeUser(tName, username, email, firstName, lastName, password);
+            }
+           
             utils.storeRoot(tName, email, "root", "root", root_password);
             Map<String, String> props = new HashMap<String, String>();
             props.put("tenant.masterhost", cloudAdminConfiguration.getMasterHost());
             props.put("tenant.repository.name", tName);
             props.put("user.mail", email);
             props.put("root.password", root_password);
-            props.put("user.name", email.substring(0, (email.indexOf("@"))));
+            props.put("user.name", username);
             utils.sendIntranetCreatedEmails(email, props);
          }
          catch (TenantQueueException e)
