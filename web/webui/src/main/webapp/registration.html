@@ -17,18 +17,22 @@
   <tr>
     <td>Last name * :</td><td> <input type="text" name="last_name" id="last_name"></td>
  </tr>
-  <tr>
-     <td>Password * :</td><td> <input type="password" name="password" id="password"></td>
-  </tr>
-  <tr>
-     <td>Password check * :</td><td> <input type="password" name="password2" id="password2"></td>
-  </tr>
-   <tr>
+ <tr>
      <td>Phone * :</td><td> <input type="text" name="phone_work" id="phone_work" onkeypress="return onlyNumbers(event);"></td>
    </tr>
    <tr>
      <td>Company * :</td><td> <input type="text" name="company" id="company"></td>
    </tr>
+   <tr>
+    <td>Username :</td><td> <input type="text" name="username" disabled id="username"></td> 
+  </tr>
+  <tr>
+     <td>Password * :</td><td> <input type="password" name="password" id="password"></td>
+  </tr>
+  <tr>
+     <td>Confirm password * :</td><td> <input type="password" name="password2" id="password2"></td>
+  </tr>
+   
  </table>
   <input type="hidden" name="confirmation-id" id="confirmation-id">
   <input type="submit" id="t_submit" value="Create" onClick="tenants.doCreationRequest();">

@@ -55,8 +55,12 @@ Tenants.prototype.init = function() {
     if (uuid_start != -1)
       uuid = queryString.substring(uuid_start + 3);
 
-    if (email != null && email != "")
+    if (email != null && email != "") {
       _gel('email').value = email;
+      var split = email.split('@');
+      _gel('username').value = split[0];
+      _gel('workspace').value = split[1].substring(0, split[1].indexof('.'));
+      }
 
     if (uuid != null && uuid != "")
       _gel('confirmation-id').value = uuid;
