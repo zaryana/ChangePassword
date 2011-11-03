@@ -37,7 +37,7 @@
      <dependencySet>
        <outputDirectory>tomcat-bundle/webapps</outputDirectory>
        <includes>
-         <include>com.exoplatform.cloudintranet:cloud-intranet-webui:war</include>
+         <include>com.exoplatform.cloudworkspaces:cloud-workspaces-webui:war</include>
        </includes>
        <outputFileNameMapping>cloud.war</outputFileNameMapping>
        <fileMode>0644</fileMode>
