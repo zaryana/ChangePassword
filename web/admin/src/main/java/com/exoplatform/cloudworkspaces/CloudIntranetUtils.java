@@ -117,13 +117,11 @@ public class CloudIntranetUtils
          null), cloudAdminConfiguration.getProperty("admin.agent.auth.password", null)));
    }
 
-   public void storeUser(String tName, String username, String userMail, String firstName, String lastName, String password)
+   public void storeUser(String tName,  String userMail, String firstName, String lastName, String password)
       throws CloudAdminException
    {
-      //String username = userMail.substring(0, (userMail.indexOf("@")));
+      String username = userMail.substring(0, (userMail.indexOf("@")));
       
-      isNewUserAllowed(tName, username);
-
       URL url;
       HttpURLConnection connection = null;
       StringBuilder strUrl = new StringBuilder();
