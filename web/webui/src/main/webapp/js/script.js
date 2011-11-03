@@ -59,7 +59,7 @@ Tenants.prototype.init = function() {
       _gel('email').value = email;
       var split = email.split('@');
       _gel('username').value = split[0];
-      _gel('workspace').value = split[1].substring(0, split[1].indexof('.'));
+      _gel('workspace').value = split[1].substring(0, split[1].indexOf('.'));
       }
 
     if (uuid != null && uuid != "")
