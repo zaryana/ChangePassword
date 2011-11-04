@@ -56,14 +56,19 @@ Tenants.prototype.init = function() {
       uuid = queryString.substring(uuid_start + 3);
 
     if (email != null && email != "") {
-      _gel('email').value = email;
-      var split = email.split('@');
-      _gel('username').value = split[0];
+    var split = email.split('@');
+       if (_gel('email') != null )
+         _gel('email').value = email;
+      if (_gel('username') != null)
+         _gel('username').value = split[0];
+      if (_gel('workspace') != null)     
       _gel('workspace').value = split[1].substring(0, split[1].indexOf('.'));
       }
 
-    if (uuid != null && uuid != "")
-      _gel('confirmation-id').value = uuid;
+    if (uuid != null && uuid != ""){
+      if (_gel('confirmation-id') != null)
+        _gel('confirmation-id').value = uuid;
+      }
   }
 
 }
@@ -91,6 +96,12 @@ Tenants.prototype.doLogin = function() {
 /* Sending signup request */
 Tenants.prototype.doSingupRequest = function() {
   var url = tenantServicePath + "/signup";
+  
+  if (_gel("email").value.length == 0){
+    _gel("messageString").innerHTML = "<div class=\"Ok\">Please, indicate your email.</div>";
+    return;
+    }
+  
   _gel("t_submit").value = "Wait..";
   _gel("t_submit").disabled = true;
   tenants.xmlhttpPost(url, tenants.handleSignupResponse,
@@ -101,6 +112,16 @@ Tenants.prototype.doSingupRequest = function() {
 /* Sending creation request */
 Tenants.prototype.doCreationRequest = function() {
   var url = tenantServicePath + "/create";
+  
+  if (_gel("email").value.length == 0){
+    _gel("messageString").innerHTML = "<div class=\"Ok\">Cannot process request, email is not set.</div>";
+    return;
+    }
+    
+    if (_gel("confirmation-id").value.length == 0){
+    _gel("messageString").innerHTML = "<div class=\"Ok\">Cannot process request, confirmation ID is not set.</div>";
+    return;
+    }
   
    if (_gel("password").value.length <6) {
     _gel("messageString").innerHTML = "<div class=\"Ok\">Password must consist of at least 6 characters.</div>";
@@ -117,6 +138,11 @@ Tenants.prototype.doCreationRequest = function() {
     return;
     }
     
+     if (_gel("phone_work").value.length == 0) {
+    _gel("messageString").innerHTML = "<div class=\"Ok\">Please, indicate your company phone.</div>";
+    return;
+    }
+
      if (_gel("company").value.length == 0) {
     _gel("messageString").innerHTML = "<div class=\"Ok\">Please, indicate your company name.</div>";
     return;
@@ -138,6 +164,16 @@ Tenants.prototype.doCreationRequest = function() {
 /* Sending join request */
 Tenants.prototype.doJoinRequest = function() {
   var url = tenantServicePath + "/join";
+  
+  if (_gel("email").value.length == 0){
+    _gel("messageString").innerHTML = "<div class=\"Ok\">Cannot process request, email is not set.</div>";
+    return;
+    }
+    
+    if (_gel("workspace").value.length == 0){
+    _gel("messageString").innerHTML = "<div class=\"Ok\">Cannot process request, workspace is not set.</div>";
+    return;
+    }
   
   if (_gel("first_name").value.length == 0) {
     _gel("messageString").innerHTML = "<div class=\"Ok\">Please, indicate your First name.</div>";
