@@ -147,7 +147,7 @@ public class IntranetAdminService extends TenantCreator
          if (utils.isNewUserAllowed(tName, username))
          {
             utils.storeUser(tName,userMail, firstName, lastName, password);
-            utils.sendUserJoinedEmails(tName, userMail, props);
+            utils.sendUserJoinedEmails(tName, firstName, userMail, props);
          }
          else
          {

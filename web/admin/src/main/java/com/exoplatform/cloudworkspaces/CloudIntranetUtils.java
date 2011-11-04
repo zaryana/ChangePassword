@@ -455,10 +455,10 @@ public class CloudIntranetUtils
       {
          mailSender.sendMail(userMail, cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_JOIN_CLOSED_USER_SUBJECT),
             userTemplate, props);
-         mailSender.sendMail(props.get("owner.email"), cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_JOIN_CLOSED_OWNER_SUBJECT),
-                            ownerTemplate, props);
-         mailSender.sendMail(salesEmail, cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_JOIN_CLOSED_SALES_SUBJECT),
-                            salesTemplate, props);
+         mailSender.sendMail(props.get("owner.email"), cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_JOIN_CLOSED_OWNER_SUBJECT).
+        		 replace("${company}", props.get("tenant.repository.name")),ownerTemplate, props);
+         mailSender.sendMail(salesEmail, cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_JOIN_CLOSED_SALES_SUBJECT).
+        		 replace("${company}", props.get("tenant.repository.name")), salesTemplate, props);
       }
       catch (ConfigurationParameterNotFound e)
       {
@@ -466,19 +466,21 @@ public class CloudIntranetUtils
       }
    }
 
-   public void sendUserJoinedEmails(String tName, String userMail, Map<String, String> props) throws CloudAdminException
+   public void sendUserJoinedEmails(String tName, String firstName,  String userMail, Map<String, String> props) throws CloudAdminException
    {
       String userTemplate = cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_USER_JOINED_TEMPLATE, null);
       String ownerTemplate = cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_USER_JOINED_OWNER_TEMPLATE, null);
+      String ownerSubject = cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_USER_JOINED_OWNER_SUBJECT).
+     		 replace("${company}", tName);
+      ownerSubject = ownerSubject.replace("${firstname}", firstName);
       try
       {
          String ownerEmail = getTenantOwnerEmail(tName);
          if (ownerEmail == null)
             throw new CloudAdminException("Cannot get owner email for tenant " + tName);
-         mailSender.sendMail(userMail, cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_USER_JOINED_SUBJECT),
-            userTemplate, props);
-         mailSender.sendMail(ownerEmail, cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_USER_JOINED_OWNER_SUBJECT),
-            ownerTemplate, props);
+         mailSender.sendMail(userMail, cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_USER_JOINED_SUBJECT).
+        		 replace("${company}", tName), userTemplate, props);
+         mailSender.sendMail(ownerEmail,ownerSubject, ownerTemplate, props);
 
       }
       catch (ConfigurationParameterNotFound e)
@@ -496,9 +498,11 @@ public class CloudIntranetUtils
       try
       {
          mailSender.sendMail(userMail,
-            cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_USER_INTRANET_CREATED_SUBJECT), userTemplate, props);
+            cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_USER_INTRANET_CREATED_SUBJECT).
+            replace("${company}", props.get("tenant.repository.name")), userTemplate, props);
          mailSender.sendMail(userMail,
-            cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_OWNER_INTRANET_CREATED_SUBJECT), ownerTemplate, props);
+            cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_OWNER_INTRANET_CREATED_SUBJECT).
+            replace("${company}", props.get("tenant.repository.name")), ownerTemplate, props);
 
       }
       catch (ConfigurationParameterNotFound e)
