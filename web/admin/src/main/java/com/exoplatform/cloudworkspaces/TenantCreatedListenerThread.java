@@ -107,17 +107,17 @@ public class TenantCreatedListenerThread implements Runnable
          }
          catch (TenantQueueException e)
          {
-            LOG.error(e.getMessage());
+            LOG.error("Unable to finish tenant '" + tName + "' creation", e);
             utils.sendAdminErrorEmail("Unable to finish tenant '" + tName + "' creation", e);
          }
          catch (InterruptedException e)
          {
-            LOG.error(e.getMessage());
+            LOG.error("Unable to finish tenant '" + tName + "' creation", e);
             utils.sendAdminErrorEmail("Unable to finish tenant '" + tName + "' creation", e);
          }
          catch (CloudAdminException e)
          {
-            LOG.error(e.getMessage());
+            LOG.error("Unable to finish tenant '" + tName + "' creation", e);
             utils.sendAdminErrorEmail("Unable to finish tenant '" + tName + "' creation", e);
          }
       }
@@ -125,7 +125,6 @@ public class TenantCreatedListenerThread implements Runnable
       {
          LOG.error("Unable to find tenant '" + tName + "' in creation queue.");
       }
-
    }
 
 }

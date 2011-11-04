@@ -18,36 +18,35 @@
  */
 package com.exoplatform.cloudworkspaces;
 
+import static org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration.CLOUD_ADMIN_FRONT_END_SERVER_HOST;
 import static org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration.CLOUD_ADMIN_MAIL_ADMIN_EMAIL;
 import static org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration.CLOUD_ADMIN_MAIL_ADMIN_ERROR_SUBJECT;
 import static org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration.CLOUD_ADMIN_MAIL_ADMIN_ERROR_TEMPLATE;
-
-import org.everrest.core.impl.provider.json.JsonException;
-import org.everrest.core.impl.provider.json.JsonParser;
-import org.everrest.core.impl.provider.json.ObjectValue;
-import org.exoplatform.cloudmanagement.admin.CloudAdminException;
-import org.exoplatform.cloudmanagement.admin.MailSender;
-import org.exoplatform.cloudmanagement.admin.AgentAuthenticator;
-import org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration;
-import static org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration.CLOUD_ADMIN_FRONT_END_SERVER_HOST;
-import org.exoplatform.cloudmanagement.admin.configuration.ConfigurationParameterNotFound;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.net.Authenticator;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Properties;
-import java.net.Authenticator;
-
-
 import java.util.Map;
+import java.util.Properties;
+
+import org.everrest.core.impl.provider.json.JsonException;
+import org.everrest.core.impl.provider.json.JsonParser;
+import org.everrest.core.impl.provider.json.ObjectValue;
+import org.exoplatform.cloudmanagement.admin.AgentAuthenticator;
+import org.exoplatform.cloudmanagement.admin.CloudAdminException;
+import org.exoplatform.cloudmanagement.admin.MailSender;
+import org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration;
+import org.exoplatform.cloudmanagement.admin.configuration.ConfigurationParameterNotFound;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -124,11 +123,15 @@ public class CloudIntranetUtils
       
       URL url;
       HttpURLConnection connection = null;
+      
+      StringBuilder hostName = new StringBuilder();
+      hostName.append(tName);
+      hostName.append(".");
+      hostName.append(cloudAdminConfiguration.getProperty("cloud.admin.frontend.server.host"));
+      
       StringBuilder strUrl = new StringBuilder();
       strUrl.append("http://");
-      strUrl.append(tName);
-      strUrl.append(".");
-      strUrl.append(cloudAdminConfiguration.getProperty("cloud.admin.frontend.server.host"));
+      strUrl.append(hostName);
       strUrl.append("/cloud-agent/rest/organization/adduser");
 
       StringBuilder params = new StringBuilder();
@@ -162,10 +165,12 @@ public class CloudIntranetUtils
          }
          else
          {
-            throw new CloudAdminException("Unable to add user to tenant " + tName + " - HTTP status:"
-               + connection.getResponseCode()+ ". Please, contact support");
+            String err = readText(connection.getErrorStream());
+            throw new CloudAdminException("Unable to add user to tenant " + tName + " (" + hostName + ") - HTTP status:"
+               + connection.getResponseCode() 
+               + (err != null ? ". Server error: \r\n" + err  + "\r\n": "") 
+               + ". Please, contact support");
          }
-
       }
       catch (MalformedURLException e)
       {
@@ -177,19 +182,16 @@ public class CloudIntranetUtils
       }
       finally
       {
-
          if (connection != null)
          {
             connection.disconnect();
          }
       }
-
    }
 
    public void storeRoot(String tName, String userMail, String firstName, String lastName, String password)
       throws CloudAdminException
    {
-
       URL url;
       HttpURLConnection connection = null;
       StringBuilder strUrl = new StringBuilder();
@@ -227,10 +229,12 @@ public class CloudIntranetUtils
          }
          else
          {
+            String err = readText(connection.getErrorStream());
             throw new CloudAdminException("Unable to add root user to tenant " + tName + " - HTTP status:"
-               + connection.getResponseCode() + ". Please, contact support");
+               + connection.getResponseCode() 
+               + (err != null ? ". Server error: \r\n" + err  + "\r\n" : "") 
+               + ". Please, contact support");
          }
-
       }
       catch (MalformedURLException e)
       {
@@ -242,13 +246,11 @@ public class CloudIntranetUtils
       }
       finally
       {
-
          if (connection != null)
          {
             connection.disconnect();
          }
       }
-
    }
 
    public boolean isNewUserAllowed(String _tName, String _username) throws CloudAdminException
@@ -299,23 +301,34 @@ public class CloudIntranetUtils
                      while (users.hasNext())
                      {
                         String userName = users.next();
-                        if (!userName.equalsIgnoreCase(_username))
+                        if (!userName.equalsIgnoreCase(_username)) 
+                        {
                            counter++;
+                        }
                         else
+                        {
                            throw new UserAlreadyExistsException("This user has already registered on tenant " + tenantName);
+                        }
                      }
                   }
                }
             }
             if (counter < limit) 
+            {
                return true;
+            }
             else
+            {
                return false;
+            }
          }
          else
          {
+            String err = readText(connection.getErrorStream());
             throw new CloudAdminException("Unable to get user list from tenant " + _tName + " - HTTP status"
-               + connection.getResponseCode() + ". Please, contact support");
+               + connection.getResponseCode() 
+               + (err != null ? ". Server error: \r\n" + err  + "\r\n" : "") 
+               + ". Please, contact support");
          }
       }
       catch (MalformedURLException e)
@@ -337,7 +350,6 @@ public class CloudIntranetUtils
             connection.disconnect();
          }
       }
-
    }
 
    public String getTenantOwnerEmail(String _tName) throws CloudAdminException
@@ -388,12 +400,12 @@ public class CloudIntranetUtils
                      {
                         String userName = users.next();
  
-                        if (userName.equalsIgnoreCase("root")) {
+                        if (userName.equalsIgnoreCase("root")) 
+                        {
                            email =
                               responseObj.getElement(asName).getElement(tenantName).getElement(userName)
                                  .getStringValue();
                            return email;
-                        
                         }
                      }
                   }
@@ -403,8 +415,11 @@ public class CloudIntranetUtils
          }
          else
          {
+            String err = readText(connection.getErrorStream());
             throw new CloudAdminException("Unable to get owner from tenant " + _tName + " - HTTP status"
-               + connection.getResponseCode() + ". Please contact support.");
+               + connection.getResponseCode() 
+               + (err != null ? ". Server error: \r\n" + err  + "\r\n" : "") 
+               + ". Please contact support.");
          }
       }
       catch (MalformedURLException e)
@@ -426,7 +441,6 @@ public class CloudIntranetUtils
             connection.disconnect();
          }
       }
-
    }
 
    public void sendOkToJoinEmail(String userMail, Map<String, String> props) throws CloudAdminException
@@ -439,9 +453,8 @@ public class CloudIntranetUtils
       }
       catch (ConfigurationParameterNotFound e)
       {
-         LOG.error(e.getMessage());
+         LOG.error("Confuiguration error", e);
       }
-
    }
 
    public void sendJoinRejectedEmails(String userMail, Map<String, String> props) throws CloudAdminException
@@ -462,7 +475,7 @@ public class CloudIntranetUtils
       }
       catch (ConfigurationParameterNotFound e)
       {
-         LOG.error(e.getMessage());
+         LOG.error("Confuiguration error", e);
       }
    }
 
@@ -481,13 +494,11 @@ public class CloudIntranetUtils
          mailSender.sendMail(userMail, cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_USER_JOINED_SUBJECT).
         		 replace("${company}", tName), userTemplate, props);
          mailSender.sendMail(ownerEmail,ownerSubject, ownerTemplate, props);
-
       }
       catch (ConfigurationParameterNotFound e)
       {
-         LOG.error(e.getMessage());
+        LOG.error("Confuiguration error", e);
       }
-
    }
 
    public void sendIntranetCreatedEmails(String userMail, Map<String, String> props) throws CloudAdminException
@@ -503,31 +514,29 @@ public class CloudIntranetUtils
          mailSender.sendMail(userMail,
             cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_OWNER_INTRANET_CREATED_SUBJECT).
             replace("${company}", props.get("tenant.repository.name")), ownerTemplate, props);
-
       }
       catch (ConfigurationParameterNotFound e)
       {
-         LOG.error(e.getMessage());
+         LOG.error("Confuiguration error", e);
       }
    }
    
    
-   public void sendAdminErrorEmail(String msg, Exception e)
+   public void sendAdminErrorEmail(String msg, Exception error)
    {
-
       String mailTemplate = cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_ADMIN_ERROR_TEMPLATE, null);
       String mailSubject =
          cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_ADMIN_ERROR_SUBJECT, "Cloud admin error");
 
       Map<String, String> props = new HashMap<String, String>();
       props.put("message", msg);
-      props.put("exception.message", e.getMessage());
+      props.put("exception.message", error.getMessage());
 
       String trace = "";
 
-      for (int i = 0; i < e.getStackTrace().length; i++)
+      for (int i = 0; i < error.getStackTrace().length; i++)
       {
-         trace += e.getStackTrace()[i] + "<br>";
+         trace += error.getStackTrace()[i] + "<br>";
       }
       props.put("stack.trace", trace);
       try
@@ -540,7 +549,7 @@ public class CloudIntranetUtils
       }
       catch (CloudAdminException ex)
       {
-         LOG.error("Cannot send admin mail, " + e.getLocalizedMessage(), ex);
+         LOG.error("Cannot send mail message to admin. Message was '" + msg + "' it is caused by '" + error.getMessage() + "'.", ex);
       }
    }
    
@@ -552,6 +561,7 @@ public class CloudIntranetUtils
          LOG.warn("White list configuration property not found, registration disabled!");
          return null;
       }
+      
       String value = null;
       File propertyFile = new File(whiteListConfigurationFile);
       try
@@ -567,10 +577,41 @@ public class CloudIntranetUtils
       }
       catch (IOException e)
       {
-         throw new CloudAdminException("White list configuration file read error. Please contact support.");
+         throw new CloudAdminException("Error of White list configuration file read. Please contact support.");
 
       }
       return value;
    }
    
+  /**
+   * Read text message from InputStream. 
+   * @param errStream InputStream
+   * @return String
+   * @throws IOException 
+   */
+  protected String readText(InputStream errStream) throws IOException {
+     if (errStream != null) 
+     {
+       InputStreamReader errReader = new InputStreamReader(errStream);
+       try 
+       {
+         int r = -1;
+         StringBuilder errText = new StringBuilder();
+         char[] buff = new char[256]; 
+         while ((r = errReader.read(buff)) >= 0) 
+         {
+           errText.append(buff, 0, r);
+         }
+         return errText.toString();
+       } 
+       finally 
+       {
+         errReader.close();
+       }
+     } 
+     else 
+     {
+       return null;
+     }
+   }
 }
