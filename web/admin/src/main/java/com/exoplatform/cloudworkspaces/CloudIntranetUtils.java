@@ -103,6 +103,8 @@ public class CloudIntranetUtils
    private MailSender mailSender;
    
    private String whiteListConfigurationFile;
+   
+   private boolean isUserLimitSet;
 
    private static final Logger LOG = LoggerFactory.getLogger(CloudIntranetUtils.class);
 
@@ -111,6 +113,7 @@ public class CloudIntranetUtils
       this.cloudAdminConfiguration = cloudAdminConfiguration;
       this.mailSender = new MailSender(cloudAdminConfiguration);
       this.whiteListConfigurationFile = System.getProperty("cloud.admin.whitelist");
+      this.isUserLimitSet = false;
       
       Authenticator.setDefault(new AgentAuthenticator(cloudAdminConfiguration.getProperty("admin.agent.auth.username",
          null), cloudAdminConfiguration.getProperty("admin.agent.auth.password", null)));
@@ -253,7 +256,7 @@ public class CloudIntranetUtils
       }
    }
 
-   public boolean isNewUserAllowed(String _tName, String _username) throws CloudAdminException
+   public boolean isNewUserAllowed(String _tName, String _username, int maxUsers) throws CloudAdminException
    {
 
       URL url;
@@ -285,7 +288,7 @@ public class CloudIntranetUtils
             jsonParser.parse(io);
             ObjectValue responseObj = (ObjectValue)jsonParser.getJsonObject();
             int counter = 0;
-            int limit = Integer.parseInt(cloudAdminConfiguration.getProperty(CLOUD_ADMIN_TENANT_MAXUSERS, "20"));
+            int limit = this.isUserLimitSet ? maxUsers : Integer.parseInt(cloudAdminConfiguration.getProperty(CLOUD_ADMIN_TENANT_MAXUSERS, "20"));
 
             Iterator<String> as = responseObj.getKeys();
             while (as.hasNext())
@@ -313,7 +316,7 @@ public class CloudIntranetUtils
                   }
                }
             }
-            if (counter < limit) 
+            if (limit == -1 || counter < limit) 
             {
                return true;
             }
@@ -553,7 +556,7 @@ public class CloudIntranetUtils
       }
    }
    
-   public String checkOnWhiteList(String email) throws CloudAdminException
+   public String getTenantNameFromWhitelist(String email) throws CloudAdminException
    {
       String tail = email.substring(email.indexOf("@") + 1);
       if (whiteListConfigurationFile == null)
@@ -561,8 +564,8 @@ public class CloudIntranetUtils
          LOG.warn("White list configuration property not found, registration disabled!");
          return null;
       }
-      
       String value = null;
+      String tName = null;
       File propertyFile = new File(whiteListConfigurationFile);
       try
       {
@@ -570,6 +573,13 @@ public class CloudIntranetUtils
          Properties properties = new Properties();
          properties.load(io);
          value = properties.getProperty(tail);
+         if (value.indexOf(":") > -1) 
+         {
+          tName = value.substring(0, value.indexOf(":"));
+         } else {
+           tName = value;
+         }
+         io.close();
       }
       catch (FileNotFoundException e)
       {
@@ -577,11 +587,47 @@ public class CloudIntranetUtils
       }
       catch (IOException e)
       {
-         throw new CloudAdminException("Error of White list configuration file read. Please contact support.");
-
+         throw new CloudAdminException("White list configuration file read error. Please contact support.");
       }
-      return value;
+      return tName;
    }
+
+   
+   public int getMaxUsersForTenant(String email) throws CloudAdminException
+   {
+      String tail = email.substring(email.indexOf("@") + 1);
+      if (whiteListConfigurationFile == null)
+      {
+         LOG.warn("White list configuration property not found, user limits disabled!");
+         return -1;
+      }
+      String value = null;
+      int count = -1;
+      File propertyFile = new File(whiteListConfigurationFile);
+      try
+      {
+         FileInputStream io = new FileInputStream(propertyFile);
+         Properties properties = new Properties();
+         properties.load(io);
+         value = properties.getProperty(tail);
+         if (value.indexOf(":") > -1) 
+         {
+           count = Integer.parseInt(value.substring(value.indexOf(":")+1));
+           this.isUserLimitSet = true;
+         }
+         io.close();
+      }
+      catch (FileNotFoundException e)
+      {
+         throw new CloudAdminException("White list configuration file not found. Please contact support.");
+      }
+      catch (IOException e)
+      {
+         throw new CloudAdminException("White list configuration file read error. Please contact support.");
+      }
+      return count;
+   }  
+
    
   /**
    * Read text message from InputStream. 

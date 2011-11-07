@@ -86,10 +86,9 @@ public class IntranetAdminService extends TenantCreator
       LOG.info("Received signup request from " + userMail);
       String tName = null;
       String username = userMail.substring(0, (userMail.indexOf("@")));
-
       try
       {
-         tName = utils.checkOnWhiteList(userMail);
+    	 tName = utils.getTenantNameFromWhitelist(userMail);
          if (tName == null)
             return Response.status(Status.BAD_REQUEST)
                .entity("Sorry, its not allowed for your company to create domains. Please contact support.").build();
@@ -102,8 +101,9 @@ public class IntranetAdminService extends TenantCreator
          props.put("tenant.repository.name", tName);
          props.put("user.mail", userMail);
          props.put("owner.email", utils.getTenantOwnerEmail(tName));
-
-         if (utils.isNewUserAllowed(tName, username))
+         
+         int maxUsers = utils.getMaxUsersForTenant(userMail);
+         if (utils.isNewUserAllowed(tName, username, maxUsers))
          {
             //send OK email 
             utils.sendOkToJoinEmail(userMail, props);
@@ -128,11 +128,11 @@ public class IntranetAdminService extends TenantCreator
       @FormParam("last-name") String lastName, @FormParam("password") String password,
       @FormParam("confirmation-id") String uuid) throws CloudAdminException
    {
-      String tName = null;
-      String username = userMail.substring(0, (userMail.indexOf("@")));
+	   String tName = null;
+       String username = userMail.substring(0, (userMail.indexOf("@")));
       try
       {
-         tName = utils.checkOnWhiteList(userMail);
+    	 tName = utils.getTenantNameFromWhitelist(userMail);
          if (tName == null)
             return Response.status(Status.BAD_REQUEST)
                .entity("Sorry, its not allowed for your company to create domains. Please contact support.").build();
@@ -143,8 +143,10 @@ public class IntranetAdminService extends TenantCreator
          props.put("user.mail", userMail);
          props.put("user.name", username);
          props.put("first.name", firstName);
+         
+         int maxUsers = utils.getMaxUsersForTenant(userMail);
 
-         if (utils.isNewUserAllowed(tName, username))
+         if (utils.isNewUserAllowed(tName, username, maxUsers))
          {
             utils.storeUser(tName,userMail, firstName, lastName, password);
             utils.sendUserJoinedEmails(tName, firstName, userMail, props);
@@ -172,11 +174,11 @@ public class IntranetAdminService extends TenantCreator
    {
       try
       {
-         super.createTenantWithConfirmedEmail(uuid);
-         String tName = utils.checkOnWhiteList(userMail);
+    	 String tName = utils.getTenantNameFromWhitelist(userMail);
          if (tName == null)
             return Response.status(Status.BAD_REQUEST)
                .entity("Sorry, its not allowed for your company to create domains. Please contact support.").build();
+         super.createTenantWithConfirmedEmail(uuid);
          TenantCreatedListenerThread thread =
             new TenantCreatedListenerThread(tName, userMail, firstName, lastName, companyName, phone, password,
                cloudInfoHolder, adminConfiguration);
