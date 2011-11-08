@@ -1,5 +1,4 @@
-<%@ page import="org.exoplatform.cloudmanagement.multitenancy.TenantNameResolver"%>
-
+<%@ page contentType="text/html; charset=UTF-8" language="java" import="org.exoplatform.cloudmanagement.multitenancy.TenantNameResolver" %>
 <%
    String tenantName = TenantNameResolver.getTenantName(request.getRequestURL().toString());
    if (tenantName == null)
