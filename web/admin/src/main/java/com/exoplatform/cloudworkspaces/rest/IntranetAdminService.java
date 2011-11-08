@@ -154,6 +154,7 @@ public class IntranetAdminService extends TenantCreator
          }
          else
          {
+        	props.put("users.maxallowed", Integer.toString(maxUsers));
             utils.sendJoinRejectedEmails(userMail, props);
          }
          return Response.ok().build();

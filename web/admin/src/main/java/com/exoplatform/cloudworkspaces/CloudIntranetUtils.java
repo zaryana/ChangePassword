@@ -103,8 +103,6 @@ public class CloudIntranetUtils
    private MailSender mailSender;
    
    private String whiteListConfigurationFile;
-   
-   private boolean isUserLimitSet;
 
    private static final Logger LOG = LoggerFactory.getLogger(CloudIntranetUtils.class);
 
@@ -113,7 +111,6 @@ public class CloudIntranetUtils
       this.cloudAdminConfiguration = cloudAdminConfiguration;
       this.mailSender = new MailSender(cloudAdminConfiguration);
       this.whiteListConfigurationFile = System.getProperty("cloud.admin.whitelist");
-      this.isUserLimitSet = false;
       
       Authenticator.setDefault(new AgentAuthenticator(cloudAdminConfiguration.getProperty("admin.agent.auth.username",
          null), cloudAdminConfiguration.getProperty("admin.agent.auth.password", null)));
@@ -288,7 +285,6 @@ public class CloudIntranetUtils
             jsonParser.parse(io);
             ObjectValue responseObj = (ObjectValue)jsonParser.getJsonObject();
             int counter = 0;
-            int limit = this.isUserLimitSet ? maxUsers : Integer.parseInt(cloudAdminConfiguration.getProperty(CLOUD_ADMIN_TENANT_MAXUSERS, "20"));
             Iterator<String> as = responseObj.getKeys();
             while (as.hasNext())
             {
@@ -315,7 +311,7 @@ public class CloudIntranetUtils
                   }
                }
             }
-            if (limit == -1 || counter <= limit) 
+            if (maxUsers == -1 || counter <= maxUsers) 
             {
                return true;
             }
@@ -612,8 +608,9 @@ public class CloudIntranetUtils
          if (value.indexOf(":") > -1) 
          {
            count = Integer.parseInt(value.substring(value.indexOf(":")+1));
-           this.isUserLimitSet = true;
-         }
+         } else{
+           count = Integer.parseInt(cloudAdminConfiguration.getProperty("CLOUD_ADMIN_TENANT_MAXUSERS", "20")); 
+         } 
          io.close();
       }
       catch (FileNotFoundException e)
