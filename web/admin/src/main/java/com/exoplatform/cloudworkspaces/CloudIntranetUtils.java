@@ -289,7 +289,6 @@ public class CloudIntranetUtils
             ObjectValue responseObj = (ObjectValue)jsonParser.getJsonObject();
             int counter = 0;
             int limit = this.isUserLimitSet ? maxUsers : Integer.parseInt(cloudAdminConfiguration.getProperty(CLOUD_ADMIN_TENANT_MAXUSERS, "20"));
-
             Iterator<String> as = responseObj.getKeys();
             while (as.hasNext())
             {
@@ -316,7 +315,7 @@ public class CloudIntranetUtils
                   }
                }
             }
-            if (limit == -1 || counter < limit) 
+            if (limit == -1 || counter <= limit) 
             {
                return true;
             }
