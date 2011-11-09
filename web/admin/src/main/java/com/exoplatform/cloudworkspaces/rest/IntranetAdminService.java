@@ -64,6 +64,7 @@ public class IntranetAdminService extends TenantCreator
       this.utils = new CloudIntranetUtils(cloudAdminConfiguration);
    }
 
+   @Override
    @POST
    @Path("/create-with-confirm/{tenantname}/{user-mail}")
    public Response createTenantWithEmailConfirmation(@PathParam("tenantname") String tenantName,
@@ -72,6 +73,7 @@ public class IntranetAdminService extends TenantCreator
       return Response.status(Status.FORBIDDEN).entity("It's forbidden to use this method").build();
    }
 
+   @Override
    @POST
    @Path("/create-confirmed")
    public Response createTenantWithConfirmedEmail(@QueryParam("id") String uuid) throws CloudAdminException
@@ -111,6 +113,7 @@ public class IntranetAdminService extends TenantCreator
          else
          {
             //send not allowed mails
+            props.put("users.maxallowed", Integer.toString(maxUsers));
             utils.sendJoinRejectedEmails(userMail, props);
          }
       }
@@ -154,7 +157,7 @@ public class IntranetAdminService extends TenantCreator
          }
          else
          {
-        	props.put("users.maxallowed", Integer.toString(maxUsers));
+        	   props.put("users.maxallowed", Integer.toString(maxUsers));
             utils.sendJoinRejectedEmails(userMail, props);
          }
          return Response.ok().build();

@@ -473,7 +473,7 @@ public class CloudIntranetUtils
       }
       catch (ConfigurationParameterNotFound e)
       {
-         LOG.error("Confuiguration error", e);
+         LOG.error("Configuration error", e);
       }
    }
 
@@ -495,7 +495,7 @@ public class CloudIntranetUtils
       }
       catch (ConfigurationParameterNotFound e)
       {
-        LOG.error("Confuiguration error", e);
+        LOG.error("Configuration error", e);
       }
    }
 
@@ -515,7 +515,7 @@ public class CloudIntranetUtils
       }
       catch (ConfigurationParameterNotFound e)
       {
-         LOG.error("Confuiguration error", e);
+         LOG.error("Configuration error", e);
       }
    }
    
@@ -529,17 +529,14 @@ public class CloudIntranetUtils
       Map<String, String> props = new HashMap<String, String>();
       props.put("message", msg);
       props.put("exception.message", error.getMessage());
-
       String trace = "";
-
-      for (int i = 0; i < error.getStackTrace().length; i++)
+      for (StackTraceElement item:error.getStackTrace())
       {
-         trace += error.getStackTrace()[i] + "<br>";
+         trace += item.toString() + "<br>";
       }
       props.put("stack.trace", trace);
       try
       {
-
          for (String email : cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_ADMIN_EMAIL).split(","))
          {
             mailSender.sendMail(email.trim(), mailSubject, mailTemplate, props);
@@ -568,11 +565,13 @@ public class CloudIntranetUtils
          Properties properties = new Properties();
          properties.load(io);
          value = properties.getProperty(tail);
-         if (value.indexOf(":") > -1) 
+         if (value.indexOf(":") > -1)
          {
-          tName = value.substring(0, value.indexOf(":"));
-         } else {
-           tName = value;
+            tName = value.substring(0, value.indexOf(":"));
+         }
+         else
+         {
+            tName = value;
          }
          io.close();
       }
@@ -586,7 +585,6 @@ public class CloudIntranetUtils
       }
       return tName;
    }
-
    
    public int getMaxUsersForTenant(String email) throws CloudAdminException
    {
@@ -608,7 +606,7 @@ public class CloudIntranetUtils
          if (value.indexOf(":") > -1) 
          {
            count = Integer.parseInt(value.substring(value.indexOf(":")+1));
-         } else{
+         } else {
            count = Integer.parseInt(cloudAdminConfiguration.getProperty("CLOUD_ADMIN_TENANT_MAXUSERS", "20")); 
          } 
          io.close();
