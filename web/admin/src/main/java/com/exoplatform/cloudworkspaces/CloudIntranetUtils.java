@@ -566,7 +566,7 @@ public class CloudIntranetUtils
          properties.load(io);
          value = properties.getProperty(tail);
          if (value == null)
-            throw new CloudAdminException("This domain is not allowed to create tenants. Please contact support.");
+            return null;
          if (value.indexOf(":") > -1)
          {
             tName = value.substring(0, value.indexOf(":"));
