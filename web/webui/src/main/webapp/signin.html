@@ -1,25 +1,65 @@
-<html>
-<head>
-  <title>Cloud-workspaces login</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <script type="text/javascript" src="/cloud/js/script.js"></script>
-  <script type="text/javascript" src="/cloud/js/jquery-latest.js" ></script>
-</head>
- <body onLoad="tenants.init();">
- <form action="javascript:void(0);"  method="POST" name="cloud-workspaces-profile">
-<table cols="2">
-  <tr>
-    <td>Email * :</td><td> <input type="text" name="email" id="email"  value=""></td>
-  </tr>
-    <td>Password * :</td><td> <input type="password" name="password" id="password"></td>
-  </tr>
-  <tr>
-    <td>Workspace * :</td><td> <input type="text" name="workspace" id="workspace"></td>
-  </tr>
-  </table>
-  <input type="submit"  id="t_submit" value="Sign In" onClick="tenants.doLogin();">
-  </form>
-    <div id="" class="">If you don't remember your workspace name, look in your registration mailbox.</div>
-    <div id="messageString" class="TenantFormMsg"></div>
- </body>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
+	<head>
+		<title>Cloud-workspaces login</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<link href="css/Style.css" rel="stylesheet" type="text/css" />
+		<script type="text/javascript" src="/cloud/js/script.js"></script>
+		<script type="text/javascript" src="/cloud/js/jquery-latest.js" ></script>
+	</head>
+	<body onLoad="tenants.init();">
+		<!--begin header-->
+		<div class="UIHeader">
+			<div class="MainContent">
+				<ul class="UIMenuTop FR">
+				  <li class="first selected"><a class="Tab BlueTab" href="about.html">About</a></li>
+				  <li><a class="Tab BlueTab " href="#">Documentation</a></li>
+				  <li><a class="Tab GreenTab" href="http://community.exoplatform.com" target="_blank">Community</a></li>
+				  <li><a class="Tab GrayTab" href="http://blog.exoplatform.com" target="_blank">Blog</a></li>
+				  <li><a class="Tab OrangeTab" href="http://www.exoplatform.com" target="_blank">eXo platform.com</a></li>
+				  <li class="last"><a class="Tab OrangeTab" href="ContactUs.html">Contact us</a></li>
+				</ul>
+				<div class="Logo FL"><a href=""><img src="background/logo.png"/></a></div>
+				<div class="ClouIntranet FR"><h1>eXo Cloud Workspaces</h1><span>The free Social Intranet for your company</span></div>
+			</div>
+		</div>
+		<!--begin banner-->		
+		<div class="UIbanner" style="display: none;">
+			<div class="MainContent" >
+				<h2>Sign up for your free social intranet</h2>
+				<div class="FormContainer ClearFix">
+					<div class="FR"></div>
+					<div class="FormBox"></div>
+				</div>
+			</div>
+		</div>
+		<!--FormPages-->		
+		 <div class="UIPageBody FormPages">
+			<h1>Cloud Workspaces: Sign In</h1>
+			<div id="messageString" class="TenantFormMsg"></div>
+			<form class="UIForm" action="javascript:void(0);"  method="POST" name="cloud-workspaces-profile">
+				<table cols="2">
+					<tr>
+						<td class="Field">Email :</td><td> <input type="text" name="email" id="email"  value="yourname@yourcompany.com" onclick="this.value='';"><span class="Star">*</span></td>
+					</tr>
+						<td class="Field">Password :</td><td> <input type="password" name="password" id="password"><span class="Star">*</span></td>
+					</tr>
+					<tr>
+						<td class="Field">Workspace :</td><td> <input type="text" name="workspace" id="workspace" value="mycompany" onclick="this.value='';"><span class="Star">*</span></td>
+					</tr>
+				</table>
+				</form>
+			<div id="" class="info">If you don't remember your workspace name, look in your registration mailbox.</div>
+			<div id="messageString" class="TenantFormMsg"></div>
+			<input class="Button" type="submit"  id="t_submit" value="Sign In" onClick="tenants.doLogin();">
+		</div>
+		
+		<!--begin Footer-->	
+		<div class="UIFooterPortlet">
+			<div class="MainContent" >
+				<p class="FL">Cloud-intranet.com is brought to you by <span>eXo</span></p>
+				<p class="FR">Copyright &copy; 2000-2011. All rights Reserved, eXo Platform SAS.</p>
+			</div>
+		</div>
+	 </body>
 </html>

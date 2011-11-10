@@ -1,21 +1,59 @@
-<html>
-<head>
-  <title>Cloud-workspaces signup</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <script type="text/javascript" src="/cloud/js/script.js"></script>
-  <script type="text/javascript" src="/cloud/js/jquery-latest.js" ></script>
-</head>
-<body onLoad="tenants.init();">
-<br>
-	<form action="javascript:void(0);"   method="POST" name="cloud-workspaces-profile">
-		Enter your professional email: 
-          <input type="text" name="email" id="email">
-          <br> 
-          <input type="submit" id="t_submit"  value="Sign Up" onClick="tenants.doSingupRequest();">
-          <input type="hidden" id="formid" name="formid" value="147cd324-b524-4679-bcad-5f5708ad5beb"/>
-          <input type="hidden" id="cid" name="cid" value="LF_df197061"/>
-	</form>
-	<div id="messageString" class="TenantFormMsg"></div>
-	<iframe id="loopfuseOutput" name="loopfuseOutput" style='display:none; visibility:hidden'></iframe>
-</body>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
+	<head>
+		<title>Cloud-workspaces signup</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<link href="css/Style.css" rel="stylesheet" type="text/css" />
+		<script type="text/javascript" src="/cloud/js/script.js"></script>
+		<script type="text/javascript" src="/cloud/js/jquery-latest.js" ></script>
+	</head>
+	<body onLoad="tenants.init();">
+		<!--begin header-->
+		<div class="UIHeader">
+			<div class="MainContent">
+				<ul class="UIMenuTop FR">
+				  <li class="first selected"><a class="Tab BlueTab" href="about.html">About</a></li>
+				  <li><a class="Tab BlueTab " href="#">Documentation</a></li>
+				  <li><a class="Tab GreenTab" href="http://community.exoplatform.com" target="_blank">Community</a></li>
+				  <li><a class="Tab GrayTab" href="http://blog.exoplatform.com" target="_blank">Blog</a></li>
+				  <li><a class="Tab OrangeTab" href="http://www.exoplatform.com" target="_blank">eXo platform.com</a></li>
+				  <li class="last"><a class="Tab OrangeTab" href="ContactUs.html">Contact us</a></li>
+				</ul>
+				<div class="Logo FL"><a href=""><img src="background/logo.png"/></a></div>
+				<div class="ClouIntranet FR"><h1>eXo Cloud Workspaces</h1><span>The free Social Intranet for your company</span></div>
+			</div>
+		</div>
+		<!--begin banner-->		
+		<div class="UIbanner" style="display: none;">
+			<div class="MainContent" >
+				<h2>Sign up for your free social intranet</h2>
+				<div class="FormContainer ClearFix">
+					<div class="FR"></div>
+					<div class="FormBox"></div>
+				</div>
+			</div>
+		</div>
+		<!--IndexPage-->	
+		 <div class="UIPageBody IndexPage">
+			<h1>Sign up for your free social intranet</h1>
+			<p class="SignUpInfo">eXo Cloud Workspaces is currently in private beta. To participate, register with your work email address. We'll keep you updated when your company's social intranet is ready.</p>
+			<div id="messageString" class="TenantFormMsg"></div>
+			<form class="UIForm" action="javascript:void(0);"   method="POST" name="cloud-workspaces-profile">
+				  <input type="text" name="email" id="email" value="Enter your professional email" onclick="this.value='';">
+				</form>
+			  <input class="Button" type="submit" id="t_submit"  value="Sign Up" onClick="tenants.doSingupRequest();">
+			  <input type="hidden" id="formid" name="formid" value="147cd324-b524-4679-bcad-5f5708ad5beb"/>
+			  <input type="hidden" id="cid" name="cid" value="LF_df197061"/>
+			<div id="signin"><a href="/cloud/signin.html">Already registered? Sign In</a></div>
+			<iframe id="loopfuseOutput" name="loopfuseOutput" style='display:none; visibility:hidden'></iframe>
+		</div>
+		
+		<!--begin Footer-->	
+		<div class="UIFooterPortlet">
+			<div class="MainContent" >
+				<p class="FL">Cloud-intranet.com is brought to you by <span>eXo</span></p>
+				<p class="FR">Copyright &copy; 2000-2011. All rights Reserved, eXo Platform SAS.</p>
+			</div>
+		</div>
+	</body>
 </html>
