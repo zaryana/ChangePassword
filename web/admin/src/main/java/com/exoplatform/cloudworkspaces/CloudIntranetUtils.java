@@ -381,7 +381,7 @@ public class CloudIntranetUtils
             JsonParser jsonParser = new JsonParser();
             jsonParser.parse(io);
             ObjectValue responseObj = (ObjectValue)jsonParser.getJsonObject();
-            String email = null;
+            String email = "";
 
             Iterator<String> as = responseObj.getKeys();
             while (as.hasNext())
