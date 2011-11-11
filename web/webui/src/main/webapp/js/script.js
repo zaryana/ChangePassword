@@ -40,39 +40,75 @@ Tenants.prototype.init = function() {
   refreshInterval = 10000;
   is_chrome = (navigator.userAgent.toLowerCase().indexOf('chrome') > -1 || navigator.userAgent
       .toLowerCase().indexOf('safari') > -1);
-
+  }
+  
+  Tenants.prototype.initRegistrationPage = function() {
+  tenants.init();
   if (queryString != null && queryString != "") {
+  var email_start = queryString.indexOf('email=');
+  var uuid_start = queryString.indexOf('id=');
+  var end = queryString.indexOf('&');
+  var uuid = "";
+  if (end == -1)
+    email = (email_start != -1) ? queryString.substring(email_start + 6) : null;
+  else
+    email = (email_start != -1) ? queryString.substring(email_start + 6, end) : null;
+  if (uuid_start != -1)
+    uuid = queryString.substring(uuid_start + 3);
+  if (email != null && email != "") {
+  var split = email.split('@');
+  var prefix = split[0];
+   _gel('email').value = email;
+   _gel('username').value = prefix;
+   if (prefix.indexOf('.') > -1){
+     var splittedName = prefix.split('.');
+     _gel('first_name').value = splittedName[0];
+     _gel('last_name').value = splittedName[1];
+   } else {
+     _gel('first_name').value = prefix;
+   }
+  } else {
+     _gel("messageString").innerHTML = "<div class=\"Ok\">Application error: email is not found. Please contact support.</div>";
+  }
+  if (uuid != "")
+   _gel('confirmation-id').value = uuid;
+   else
+   _gel("messageString").innerHTML = "<div class=\"Ok\">Application error: damaged form confirmation-id. Please contact support.</div>"
+  }
+ }
+
+  Tenants.prototype.initJoinPage = function() {
+    tenants.init();
+    if (queryString != null && queryString != "") {
     var email_start = queryString.indexOf('email=');
     var uuid_start = queryString.indexOf('id=');
     var end = queryString.indexOf('&');
-    var uuid = "";
     if (end == -1)
-      email = (email_start != -1) ? queryString.substring(email_start + 6)
-          : null;
+      email = (email_start != -1) ? queryString.substring(email_start + 6) : null;
     else
-      email = (email_start != -1) ? queryString.substring(email_start + 6, end)
-          : null;
-
-    if (uuid_start != -1)
-      uuid = queryString.substring(uuid_start + 3);
-
+      email = (email_start != -1) ? queryString.substring(email_start + 6, end) : null;
     if (email != null && email != "") {
     var split = email.split('@');
-       if (_gel('email') != null )
-         _gel('email').value = email;
-      if (_gel('username') != null)
-         _gel('username').value = split[0];
-      if (_gel('workspace') != null)     
-      _gel('workspace').value = split[1].substring(0, split[1].indexOf('.'));
-      }
+     _gel('email').value = email;
+     var prefix = split[0];
+     _gel('username').value = prefix;
+     if (prefix.indexOf('.') > -1){
+     var splittedName = prefix.split('.');
+     _gel('first_name').value = splittedName[0];
+     _gel('last_name').value = splittedName[1];
+     } else {
+     _gel('first_name').value = prefix;
+     }
+    _gel('workspace').value = split[1].substring(0, split[1].indexOf('.'));
+    }else{
+    _gel("messageString").innerHTML = "<div class=\"Ok\">Application error: email is not found. Please contact support.</div>";
+    }
+    
+   }
+ }
 
-    if (uuid != ""){
-      if (_gel('confirmation-id') != null)
-        _gel('confirmation-id').value = uuid;
-      }
-  }
 
-}
+
 
 /* Login redirect */
 Tenants.prototype.doLogin = function() {
@@ -81,7 +117,7 @@ Tenants.prototype.doLogin = function() {
    var pass = _gel("password").value;
    
    if (tname.length == 0|| login.length == 0 || pass.length == 0){
-     _gel("messageString").innerHTML = "<div class=\"Ok\">Please fill all form fileds.</div>";
+     _gel("messageString").innerHTML = "<div class=\"Ok\">Please fill all form fields.</div>";
      return;
    }
    var redirect = location.protocol + '//' + tname + '.' + location.hostname;
