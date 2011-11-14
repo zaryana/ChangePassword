@@ -528,13 +528,23 @@ public class CloudIntranetUtils
 
       Map<String, String> props = new HashMap<String, String>();
       props.put("message", msg);
-      props.put("exception.message", error.getMessage());
-      String trace = "";
-      for (StackTraceElement item:error.getStackTrace())
+      
+      String prettyMsg = error.getMessage().replaceAll("(\r\n|\n\r|\r|\n)", "<br>"); 
+      prettyMsg = prettyMsg.replaceAll("(\t)", "&nbsp;&nbsp;&nbsp;&nbsp;");
+      props.put("exception.message", prettyMsg);
+      
+      StringBuilder trace = new StringBuilder();
+      for (StackTraceElement item: error.getStackTrace())
       {
-         trace += item.toString() + "<br>";
+         String line = item.toString();
+         if (line.startsWith("at ")) {
+           trace.append("&nbsp;&nbsp;&nbsp;&nbsp;");
+         } 
+         trace.append(item.toString());
+         trace.append("<br>");
       }
-      props.put("stack.trace", trace);
+      props.put("stack.trace", trace.toString());
+      
       try
       {
          for (String email : cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_ADMIN_EMAIL).split(","))
