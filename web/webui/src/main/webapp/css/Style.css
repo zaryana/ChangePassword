@@ -1,4 +1,3 @@
-
 body {
 	margin: 0;
 	outline: none;
@@ -110,6 +109,7 @@ p{margin: 0px;}
 .UIMenuTop li  a.OrangeTab:hover,.UIMenuTop li.selected a.OrangeTab  {
 	border-top:4px solid #ffcb08;
 }
+
 /*logo*/
 .Logo{
 	margin-top: 43px;
@@ -129,26 +129,6 @@ p{margin: 0px;}
 	text-align: right;
 }
 
-.ClouIntranet span {
-
-}
-/*UIbanner*/
-.UIbanner {
-	background: url("../background/bg_banner.png") repeat-x left top;
-	min-height: 430px;
-}
-
-.UIbanner h2 {
-	color:#fff;
-	margin: 0 0 20px 0;
-	padding: 10px 0 0 0;
-}
-.FormContainer {background:#fff url("../background/dropShadown.png") no-repeat left bottom;}
-.FormBox {
-	width: 670px;
-	height: 288px;
-	background:#fff ;
-}
 /*UIFooter*/
 .UIFooterPortlet {
 	background: url("../background/bg-footer.png") repeat-x left top;
@@ -165,9 +145,10 @@ p{margin: 0px;}
 
 /* Back icon */
 .BackIcon {
-	background: url(../background/BackIcon.gif) no-repeat left center;
+	background: url("../background/BackIcon.gif") no-repeat left center;
 	padding-left: 10px;
 	color: #4283c7;
+	display: inline-block;
 }
 
 .BackIcon:hover {
@@ -181,21 +162,41 @@ p{margin: 0px;}
 	padding-bottom: 10px;
 }
 
+/* Button */
+.UIPageBody input.Button {
+	background: url("../background/Bg-Button.png") repeat-x left top;
+	border: 1px solid #3495b9;
+	line-height: 33px;
+	height: 38px;
+	margin: 0;
+	padding: 0;
+	color: #fff;
+	font-family: Myriad Pro;
+	font-size: 18px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+	text-shadow: 0px 1px 0px #1d7aae;
+	cursor: pointer;
+	display: block;
+	width: 100px;
+	text-align: center;
+}
 
 /*IndexPage*/
 .IndexPage {
 	text-align: center;
 }
 
-.IndexPage .UIForm input {
+.IndexPage .UIForm input.InputText {
 	width: 490px; 
 	height: 48px; 
 	color: #636363; 
 	text-align: center;
 }
 
-.IndexPage .Button {
-	margin: 20px 0px 15px 0px;
+.IndexPage input.Button {
+	margin: 20px auto 15px;
 }
 
 .IndexPage .TenantFormMsg a {
@@ -208,11 +209,11 @@ p{margin: 0px;}
 
 /*FormPages*/
  
-.UIForm {
+.UIPageBody .UIForm {
 	margin: 0px;
 }
 
-h1 {
+.UIPageBody h1 {
 	text-align: center;
 	font-size: 30px;
 	font-weight: bold;
@@ -220,12 +221,12 @@ h1 {
 	margin: 0px 0px 20px 0px;
 }
 
-table td {
+.UIPageBody table td {
 	padding: 0px 0px 20px 0px;
 	border: none;
 }
 
-.Field {
+.UIPageBody .Field {
 	width: 340px;
 	text-align: right;
 	padding-right: 25px;
@@ -234,12 +235,13 @@ table td {
 	color: #414141;
 }
 
-.UIForm input {
+.UIPageBody input.InputText {
 	-moz-box-shadow: 0 5px 8px #F4F4F4 inset;
 	-webkit-box-shadow: 0 5px 8px #F4F4F4 inset;
 	box-shadow: 0 5px 8px #F4F4F4 inset;
 	width: 300px;
 	height: 38px;
+	line-height: 36px;
 	padding: 0px 10px;
 	border: 1px solid #dddddd;
 	-moz-border-radius: 3px;
@@ -247,32 +249,21 @@ table td {
 	border-radius: 3px;
 	font-size: 18px;
 	color: #c0c0c0;
-	margin-right: 10px;
+	
 }
 
-.UIForm .Star {
+.UIPageBody input.DisabledArea {
+	background: #f4f4f4;
+}
+
+.UIPageBody .UIForm .Star {
 	font-size: 20px;
 	color: #ff6666;
+	display: inline-block;
+	margin-left: 20px;
 }
 
-.Button {
-	background: url("../background/Bg-Button.png") repeat-x left top;
-	border: 1px solid #3495b9;
-	line-height: 38px;
-	height: 38px;
-	padding: 0px 25px;
-	color: #fff;
-	font-family: Myriad Pro;
-	font-size: 18px;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
-	border-radius: 3px;
-	text-shadow: 0px 1px 0px #1d7aae;
-	cursor: pointer;
-	margin-left: 369px;
-}
-
-.SignUpInfo {
+.UIPageBody .SignUpInfo {
 	background: url("../background/CheckIcon.gif") no-repeat left top;
 	padding-left: 28px;
 	width: 575px;
@@ -283,11 +274,10 @@ table td {
 	color: #7dae19;
 }
 
-.info {
+.UIPageBody .info {
 	background: url("../background/InfoIcon.gif") no-repeat left top;
 	padding-left: 28px;
 	width: 300px;
-	margin: 0px 0px 20px 369px;
 	line-height: 20px;
 	color: #4c4c4c;
 }
@@ -323,7 +313,7 @@ table td {
 }
 
 .ThanksPages .RightContent a {
-	background: url(../background/ArrowIcon.gif) no-repeat left 7px;
+	background: url("../background/ArrowIcon.gif") no-repeat left 7px;
 	padding-left: 25px;
 	color: #006cc0;
 	line-height: 22px;
@@ -374,7 +364,7 @@ table td {
 }
 
 .AboutPages ul li {
-	background: url(../background/DotIcon.gif) no-repeat 8px 7px;
+	background: url("../background/DotIcon.gif") no-repeat 8px 7px;
 	padding-left: 30px;
 	line-height: 20px;
 	color: #6b6b6b;
@@ -393,7 +383,7 @@ table td {
 }
 
 .ErrorPages .ErrorIcon {
-	background: url(../background/ErrorIcon.gif) no-repeat left top;
+	background: url("../background/ErrorIcon.gif") no-repeat left top;
 	padding-left: 30px;
 	display: inline-block;
 	color: #666666;
@@ -445,52 +435,13 @@ table td {
 	text-shadow: 0 1px 0 #FFFFFF;
 }
 
-.UIFormBox p {
-	margin: 0px 0px 20px 0px;
-	line-height: 40px;
-	font-size: 18px;
-	color: #414141;
-}
-
-.UIFormBox label {
-	display: block;
-	margin: 0px 0px 20px 0px;
-}
-
-.UIFormBox .LeftForm {
+.UIFormBox .Field {
 	float: left;
 	width: 220px;
 	text-align: right;
 }
 
-.UIFormBox .RightForm {
-	float: right;
-	width: 460px;
-	color: #808080;
-}
-
-.UIFormBox .RightForm input {
-	-moz-box-shadow: 0 5px 8px #F4F4F4 inset;
-	-webkit-box-shadow: 0 5px 8px #F4F4F4 inset;
-	box-shadow: 0 5px 8px #F4F4F4 inset;
-	width: 300px;
-	height: 28px;
-	padding: 5px 10px;
-	border: 1px solid #dddddd;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
-	border-radius: 3px;
-	font-size: 18px;
-	color: #c0c0c0;
-	margin-right: 10px;
-}
-
-.UIFormBox .RightForm span {
-	font-size: 20px;
-	color: #ff6666;
-}
-
-.UIFormBox .RightForm textarea{
+.UIFormBox textarea{
 	-moz-box-shadow: 0 5px 8px #F4F4F4 inset;
 	-webkit-box-shadow: 0 5px 8px #F4F4F4 inset;
 	box-shadow: 0 5px 8px #F4F4F4 inset;
@@ -508,23 +459,20 @@ table td {
 
 .UIFormBox .Button {
 	float: left;
-	display: block;
-	margin: 0px 0px 25px 0px;
 }
 
-.UIFormBox .ButtonGray {
+.UIFormBox input.ButtonGray {
 	background: url("../background/GrayButton.png") repeat-x left top;
 	border: 1px solid #9c9c9c;
-	color: #fff;
-	text-shadow: 0px 1px 0px #8e8e8e;
 	margin-left: 20px;
+	text-shadow: 0px 1px 0px #1d7aae;
 }
 
 /* Invite page */
 
-
 .InviPages .UIFormBox {
 	width: 960px;
+	padding: 0 0 30px;
 }
 
 .InviPages .PermissionsBox {
@@ -554,21 +502,25 @@ table td {
     width: 400px;
 }
 
-.InviPages p{
-	margin-bottom: 0px;
+.InviPages .LeftInvi p.Title {
+	line-height: 44px;
+	font-size: 18px;
+	color: #414141;
 }
 
-.InviPages .LeftForm{
+.InviPages .Message td.Field {
+	text-align: left;
+	margin: 0;
+	padding: 0;
+}
+
+.InviPages .LeftForm {
 	text-align: left;
 }
 
-.InviPages .RightForm{
+.InviPages .RightForm {
 	width: 409px;
 	margin-bottom: 12px;
-}
-
-.InviPages .Button{
-	margin-top: 10px;
 }
 
 .InviPages .LeftInvi .Normal{
@@ -576,11 +528,11 @@ table td {
 	border-bottom: 1px solid #dddddd;
 }
 
-.InviPages .LeftInvi a{
+.InviPages .LeftInvi a {
 	color: #848484;
 }
 
-.InviPages .SelectIcon{
+.InviPages .SelectIcon {
 	font-size: 18px;
 	background: url("../background/SelectIcon.png") no-repeat left center;
 	padding:8px 4px 8px 32px;

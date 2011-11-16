@@ -23,16 +23,6 @@
 				<div class="ClouIntranet FR"><h1>eXo Cloud Workspaces</h1><span>The free Social Intranet for your company</span></div>
 			</div>
 		</div>
-		<!--begin banner-->		
-		<div class="UIbanner" style="display: none;">
-			<div class="MainContent" >
-				<h2>Sign up for your free social intranet</h2>
-				<div class="FormContainer ClearFix">
-					<div class="FR"></div>
-					<div class="FormBox"></div>
-				</div>
-			</div>
-		</div>
 		<!--FormPages-->		
 		 <div class="UIPageBody FormPages">
 			<h1>Cloud Workspaces: Sign In</h1>
@@ -40,18 +30,22 @@
 			<form class="UIForm" action="javascript:void(0);"  method="POST" name="cloud-workspaces-profile">
 				<table cols="2">
 					<tr>
-						<td class="Field">Email :</td><td> <input type="text" name="email" id="email"  value="yourname@yourcompany.com" onclick="this.value='';"><span class="Star">*</span></td>
+						<td class="Field">Email :</td><td> <input class="InputText" type="text" name="email" id="email"  value="yourname@yourcompany.com" onclick="this.value='';" /><span class="Star">*</span></td>
 					</tr>
-						<td class="Field">Password :</td><td> <input type="password" name="password" id="password"><span class="Star">*</span></td>
+						<td class="Field">Password :</td><td> <input class="InputText" type="password" name="password" id="password" /><span class="Star">*</span></td>
 					</tr>
 					<tr>
-						<td class="Field">Workspace :</td><td> <input type="text" name="workspace" id="workspace" value="mycompany" onclick="this.value='';"><span class="Star">*</span></td>
+						<td class="Field">Workspace :</td><td> <input class="InputText" type="text" name="workspace" id="workspace" value="mycompany" onclick="this.value='';" /><span class="Star">*</span></td>
+					</tr>
+					<tr>
+						<td class="Field"></td><td> <div id="" class="info">If you don't remember your workspace name, look in your registration mailbox.</div></td>
+					</tr>
+					<tr>
+						<td class="Field"></td><td> <input class="Button" type="submit"  id="t_submit" value="Sign In" onClick="tenants.doLogin();" /></td>
 					</tr>
 				</table>
-				</form>
-			<div id="" class="info">If you don't remember your workspace name, look in your registration mailbox.</div>
-			<div id="messageString" class="TenantFormMsg"></div>
-			<input class="Button" type="submit"  id="t_submit" value="Sign In" onClick="tenants.doLogin();">
+				<div id="messageString" class="TenantFormMsg"></div>
+			</form>
 		</div>
 		
 		<!--begin Footer-->	
