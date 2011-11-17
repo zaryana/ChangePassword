@@ -243,14 +243,13 @@ Tenants.prototype.doJoinRequest = function() {
 Tenants.prototype.handleSignupResponse = function(resp) {
 
   if (resp == "") {
-    // window.location = prefixUrl + "/cloud/signup-done.html";
     sendDataToLoopfuse({
       "email" : _gel('email').value,
       // hidden LoopFuse fields
       "formid" : _gel('formid').value,
       "cid" : _gel('cid').value
     }, function() {
-      window.location = prefixUrl + "/cloud/signup-done.html";
+      window.location = prefixUrl + "/signup-done.html";
     });
   } else {
     _gel("messageString").innerHTML = resp;
@@ -264,7 +263,6 @@ Tenants.prototype.handleSignupResponse = function(resp) {
 Tenants.prototype.handleCreationResponse = function(resp) {
 
   if (resp == "") {
-    // window.location = prefixUrl + "/cloud/registration-done.html";
     sendDataToLoopfuse({
       "email" : _gel('email').value,
       "first_name" : _gel('first_name').value,
@@ -275,7 +273,7 @@ Tenants.prototype.handleCreationResponse = function(resp) {
       "formid" : _gel('formid').value,
       "cid" : _gel('cid').value
     }, function() {
-      window.location = prefixUrl + "/cloud/registration-done.html";
+      window.location = prefixUrl + "/registration-done.html";
     });
   } else {
     _gel("messageString").innerHTML = resp;
@@ -296,7 +294,7 @@ Tenants.prototype.handleJoinResponse = function(resp) {
       "formid" : _gel('formid').value,
       "cid" : _gel('cid').value
     }, function() {
-      window.location = prefixUrl + "/cloud/join-done.html";
+      window.location = prefixUrl + "/join-done.html";
     });
   } else {
     _gel("messageString").innerHTML = resp;
