@@ -138,10 +138,12 @@ p{margin: 0px;}
 	padding-top: 10px;
 }
 
-.UIFooterPortlet span {
+.UIFooterPortlet span a {
 	color:#ffcb08;
 	font-size: 11px;
 }
+
+
 
 /* Back icon */
 .BackIcon {
