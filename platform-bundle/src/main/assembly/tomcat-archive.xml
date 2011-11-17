@@ -27,11 +27,11 @@
          <fileMode>0755</fileMode>
       </fileSet>
       <!-- ROOT webapp (cloud admin webui) -->
-      <fileSet>
+      <!-- fileSet>
         <directory>src/main/resources/ROOT</directory>
         <outputDirectory>tomcat-bundle/webapps/ROOT</outputDirectory>
         <fileMode>0644</fileMode>
-      </fileSet>
+      </fileSet -->
    </fileSets>
    <dependencySets>
      <dependencySet>
@@ -39,7 +39,7 @@
        <includes>
          <include>com.exoplatform.cloudworkspaces:cloud-workspaces-webui:war</include>
        </includes>
-       <outputFileNameMapping>cloud.war</outputFileNameMapping>
+       <outputFileNameMapping>ROOT.war</outputFileNameMapping>
        <fileMode>0644</fileMode>
      </dependencySet>
      <dependencySet>

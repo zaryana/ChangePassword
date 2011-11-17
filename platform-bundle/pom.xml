@@ -94,6 +94,7 @@ EXO_CLOUD_ADMIN_OPTS="-Dcloud.admin.log.dir=../logs/cloud-admin \
                     </replace>
                     <delete file="${project.build.directory}/tomcat/conf/Catalina/localhost/cloud-admin.xml" />
                     <delete dir="${project.build.directory}/tomcat/gatein/conf/cloud/cloud-admin" />
+                    <delete dir="${project.build.directory}/tomcat/webapps/ROOT" />
                     <delete file="${project.build.directory}/tomcat/lib/cloud-admin-valve-${org.exoplatform.cloud-management.version}.jar" />
                     <delete file="${project.build.directory}/tomcat/webapps/cloud-admin.war" />
 
