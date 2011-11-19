@@ -113,7 +113,7 @@ Tenants.prototype.init = function() {
 /* Login redirect */
 Tenants.prototype.doLogin = function() {
    var tname = _gel("workspace").value;
-   var username = login.substring(0, login.indexOf('@'));
+   var login = _gel("email").value;
    var pass = _gel("password").value;
    
    if (tname.length == 0){
@@ -132,7 +132,7 @@ Tenants.prototype.doLogin = function() {
      return;
    }  
    
-   var username = login.substring(0, login.indexOf('@'));   
+   var username = login.substring(0, login.indexOf('@'));
    var redirect = location.protocol + '//' + tname + '.' + location.hostname;
    redirect += '/portal/login?username=';
    redirect += username;
