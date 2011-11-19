@@ -45,6 +45,7 @@ import org.everrest.core.impl.provider.json.ObjectValue;
 import org.exoplatform.cloudmanagement.admin.AgentAuthenticator;
 import org.exoplatform.cloudmanagement.admin.CloudAdminException;
 import org.exoplatform.cloudmanagement.admin.MailSender;
+import org.exoplatform.cloudmanagement.admin.TenantMetadataValidator;
 import org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration;
 import org.exoplatform.cloudmanagement.admin.configuration.ConfigurationParameterNotFound;
 import org.slf4j.Logger;
@@ -635,7 +636,6 @@ public class CloudIntranetUtils
       }
       return count;
    }  
-
    
   /**
    * Read text message from InputStream. 

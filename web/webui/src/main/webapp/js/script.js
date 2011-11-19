@@ -116,17 +116,44 @@ Tenants.prototype.doLogin = function() {
    var login = _gel("email").value;
    var pass = _gel("password").value;
    
-   if (tname.length == 0|| login.length == 0 || pass.length == 0){
-     _gel("messageString").innerHTML = "<div class=\"Ok\">Please fill all form fields.</div>";
+   if (tname.length == 0){
+     _gel("messageString").innerHTML = "<div class=\"Ok\">Please indicate workspace name.</div>";
      return;
    }
+   
+   if (login.length == 0){
+     _gel("messageString").innerHTML = "<div class=\"Ok\">Please indicate your login.</div>";
+      return;
+   }  
+   
+   
+   if (pass.length == 0){
+    _gel("messageString").innerHTML = "<div class=\"Ok\">Please enter your password.</div>";
+     return;
+   }  
+   
    var redirect = location.protocol + '//' + tname + '.' + location.hostname;
    redirect += '/portal/login?username=';
    redirect += login;
    redirect += '&password=';
    redirect += pass;
    redirect += '&initialURI=/portal/intranet/welcome';
-   window.location = redirect;
+   var checkURL = tenantServicePath + "/status/" + tname;
+   var xmlHttpReq = false;
+   var self = this;
+   if (window.XMLHttpRequest) {self.xmlHttpReq = new XMLHttpRequest(); }
+    else if (window.ActiveXObject) { self.xmlHttpReq = new ActiveXObject("Microsoft.XMLHTTP");   }
+   self.xmlHttpReq.open('GET', checkURL, true);
+   self.xmlHttpReq.setRequestHeader('Content-Type', 'text/html');
+   self.xmlHttpReq.onreadystatechange = function() {
+     if (self.xmlHttpReq.readyState == 4) {
+      if (self.xmlHttpReq.responseText != "NOT_FOUND")
+         window.location = redirect; 
+      else
+      _gel("messageString").innerHTML = "<div class=\"Ok\">The workspace " + tname + " does not exist.</div>"; 
+    }  
+  }
+    self.xmlHttpReq.send(null);
 }
 
 

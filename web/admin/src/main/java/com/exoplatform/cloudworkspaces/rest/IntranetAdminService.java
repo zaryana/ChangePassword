@@ -31,6 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -46,6 +47,7 @@ import org.exoplatform.cloudmanagement.admin.TenantAlreadyExistException;
 import org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration;
 import org.exoplatform.cloudmanagement.admin.creation.TenantCreationSupervisor;
 import org.exoplatform.cloudmanagement.admin.status.CloudInfoHolder;
+import org.exoplatform.cloudmanagement.status.TenantStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -196,6 +198,18 @@ public class IntranetAdminService extends TenantCreator
          CloudAdminExceptionMapper mapper = new CloudAdminExceptionMapper();
          return mapper.toResponse(e);
       }
+   }
+   
+   
+   @GET
+   @Path ("/status/{tenantname}")
+   public Response tenantStatus(@PathParam("tenantname") String tenantName) throws CloudAdminException {
+	   try {
+	   TenantStatus status = cloudInfoHolder.getTenantStatus(tenantName);
+	   return Response.ok(status.getState().toString()).build();
+	   } catch (CloudAdminException e){
+		   return Response.ok("NOT_FOUND").build();
+	   }
    }
 
 }
