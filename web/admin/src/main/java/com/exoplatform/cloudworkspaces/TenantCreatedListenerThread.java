@@ -92,7 +92,7 @@ public class TenantCreatedListenerThread implements Runnable
                Thread.sleep(interval);
                count+=15;
             }
-            Thread.sleep(interval*4); //To let the proxy to reload;
+            Thread.sleep(interval*12); //To let the proxy to reload;
             String root_password = UUID.randomUUID().toString().replace("-", "").substring(0, 9);
             String username = email.substring(0, (email.indexOf("@")));
             utils.storeUser(tName, email, firstName, lastName, password);
