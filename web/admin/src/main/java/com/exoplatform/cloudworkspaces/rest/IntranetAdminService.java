@@ -89,9 +89,11 @@ public class IntranetAdminService extends TenantCreator
    {
       LOG.info("Received signup request from " + userMail);
       String tName = null;
-      String username = userMail.substring(0, (userMail.indexOf("@")));
+      String username = null;
       try
       {
+    	 utils.validateEmail(userMail);
+    	 username = userMail.substring(0, (userMail.indexOf("@")));  
     	 tName = utils.getTenantNameFromWhitelist(userMail);
          if (tName == null)
             return Response.status(Status.BAD_REQUEST)
@@ -133,11 +135,12 @@ public class IntranetAdminService extends TenantCreator
       @FormParam("last-name") String lastName, @FormParam("password") String password,
       @FormParam("confirmation-id") String uuid) throws CloudAdminException
    {
-	   String tName = null;
-      String username = userMail.substring(0, (userMail.indexOf("@")));
+	  String tName = null;
       try
       {
-    	   tName = utils.getTenantNameFromWhitelist(userMail);
+     	 utils.validateEmail(userMail);
+     	 String username = userMail.substring(0, (userMail.indexOf("@")));  
+         tName = utils.getTenantNameFromWhitelist(userMail);
          if (tName == null)
             return Response.status(Status.BAD_REQUEST)
                .entity("Sorry, its not allowed for your company to create domains. Please contact support.").build();
@@ -181,6 +184,7 @@ public class IntranetAdminService extends TenantCreator
    {
       try
       {
+    	 utils.validateEmail(userMail);
          String tName = utils.getTenantNameFromWhitelist(userMail);
          if (tName == null)
             return Response.status(Status.BAD_REQUEST)

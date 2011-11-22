@@ -255,7 +255,8 @@ public class CloudIntranetUtils
 
    public boolean isNewUserAllowed(String _tName, String _username, int maxUsers) throws CloudAdminException
    {
-
+      if (_tName == null || _username == null)
+    	  throw new CloudAdminException("Cannot validate user " + _username + " on tenant " + _tName);
       URL url;
       HttpURLConnection connection = null;
       StringBuilder strUrl = new StringBuilder();
@@ -634,7 +635,16 @@ public class CloudIntranetUtils
          throw new CloudAdminException("White list configuration file read error. Please contact support.");
       }
       return count;
-   }  
+   } 
+   
+   
+	public void validateEmail(String email) throws CloudAdminException {
+	 //TODO: more serious check
+     int index = email.indexOf("@");
+     if (index == -1)
+	   throw new CloudAdminException("Email is incorrect, please provide correct one.");
+
+	}   
    
   /**
    * Read text message from InputStream. 
