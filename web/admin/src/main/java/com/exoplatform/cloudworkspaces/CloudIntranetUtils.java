@@ -166,10 +166,10 @@ public class CloudIntranetUtils
          else
          {
             String err = readText(connection.getErrorStream());
-            throw new CloudAdminException("Unable to add user to tenant " + tName + " (" + hostName + ") - HTTP status:"
-               + connection.getResponseCode() 
-               + (err != null ? ". Server error: \r\n" + err  + "\r\n": "") 
-               + ". Please, contact support");
+            LOG.error("Unable to add user to tenant " + tName + " (" + hostName + ") - HTTP status:"
+                    + connection.getResponseCode() 
+                    + (err != null ? ". Server error: \r\n" + err  + "\r\n": ""));
+            throw new CloudAdminException("Internal error occured while adding user. Please contact support");
          }
       }
       catch (MalformedURLException e)
@@ -230,10 +230,10 @@ public class CloudIntranetUtils
          else
          {
             String err = readText(connection.getErrorStream());
-            throw new CloudAdminException("Unable to add root user to tenant " + tName + " - HTTP status:"
-               + connection.getResponseCode() 
-               + (err != null ? ". Server error: \r\n" + err  + "\r\n" : "") 
-               + ". Please, contact support");
+            LOG.error("Unable to add root user to tenant " + tName + " - HTTP status:"
+                    + connection.getResponseCode() 
+                    + (err != null ? ". Server error: \r\n" + err  + "\r\n" : ""));
+            throw new CloudAdminException("Internal error occured while adding onwer. Please contact support");
          }
       }
       catch (MalformedURLException e)
@@ -324,10 +324,10 @@ public class CloudIntranetUtils
          else
          {
             String err = readText(connection.getErrorStream());
-            throw new CloudAdminException("Unable to get user list from tenant " + _tName + " - HTTP status"
-               + connection.getResponseCode() 
-               + (err != null ? ". Server error: \r\n" + err  + "\r\n" : "") 
-               + ". Please, contact support");
+            LOG.error("Unable to get user list from tenant " + _tName + " - HTTP status"
+                    + connection.getResponseCode() 
+                    + (err != null ? ". Server error: \r\n" + err  + "\r\n" : ""));
+            throw new CloudAdminException("Internal error occured on getting users list. Please contact support");
          }
       }
       catch (MalformedURLException e)
@@ -415,10 +415,10 @@ public class CloudIntranetUtils
          else
          {
             String err = readText(connection.getErrorStream());
-            throw new CloudAdminException("Unable to get owner from tenant " + _tName + " - HTTP status"
-               + connection.getResponseCode() 
-               + (err != null ? ". Server error: \r\n" + err  + "\r\n" : "") 
-               + ". Please contact support.");
+            LOG.error("Unable to get owner from tenant " + _tName + " - HTTP status"
+                    + connection.getResponseCode() 
+                    + (err != null ? ". Server error: \r\n" + err  + "\r\n" : ""));
+            throw new CloudAdminException("Can not find tenant owner. Please, contact support.");
          }
       }
       catch (MalformedURLException e)
@@ -590,11 +590,13 @@ public class CloudIntranetUtils
       }
       catch (FileNotFoundException e)
       {
-         throw new CloudAdminException("White list configuration file not found. Please contact support.");
+    	 LOG.error("White list configuration file not found. Registration disabled!");
+         throw new CloudAdminException("Internal error occured. Please contact support.");
       }
       catch (IOException e)
       {
-         throw new CloudAdminException("White list configuration file read error. Please contact support.");
+         LOG.error("White list configuration file read error. Registration disabled!");
+         throw new CloudAdminException("Internal error occured. Please contact support.");
       }
       return tName;
    }
@@ -628,11 +630,13 @@ public class CloudIntranetUtils
       }
       catch (FileNotFoundException e)
       {
-         throw new CloudAdminException("White list configuration file not found. Please contact support.");
+    	  LOG.error("White list configuration file not found. Registration disabled!");
+          throw new CloudAdminException("Internal error occured. Please contact support.");
       }
       catch (IOException e)
       {
-         throw new CloudAdminException("White list configuration file read error. Please contact support.");
+    	  LOG.error("White list configuration file read error. Registration disabled!");
+          throw new CloudAdminException("Internal error occured. Please contact support.");
       }
       return count;
    } 
