@@ -23,19 +23,111 @@
 				<div class="ClouIntranet FR"><h1>eXo Cloud Workspaces</h1><span>The free Social Intranet for your company</span></div>
 			</div>
 		</div>
+		<!--begin banner-->		
+		<div class="UIBanner">
+			<div class="MainContent" >
+				<h2>Sign up for your free social intranet</h2>
+				<div class="FormContainer ClearFix">
+					<div class="FR BoxText">
+						<h3>Features</h3>
+						<ul>
+							<li><a href="#Web-based">Connect and collaborate in a private enterprise social network</a> </li>
+							<li><a href="#Direct-PaaS">More than status updates: integrate your company’s knowledge and content resources with built-in wiki, forum and content management tools</a></li>
+							<li><a href="#Git-integration">Easily create your personalized dashboard, and extend with custom gadgets and apps from eXo Cloud IDE </a></li>
+						</ul>
+						<h3>Resources</h3>
+						<p><a href="http://www.exoplatform.com/company/en/resource-center" target="_blank">Take a video tour, try some tutorials or browse the documentation.</a></p>
+						<h3>Get Help</h3>
+						<p><a href="http://community.exoplatform.org" target="_blank">Ask a question in the forum, submit your feedback, or contact the sales team for more info.</a></p>
+					</div>
+					<div class="FormBox">
+						<div class="BoxContent">
+							
+							<form class="UIForm" action="javascript:void(0);"   method="POST" name="cloud-workspaces-profile">
+								<p class="SignUpInfo">eXo Cloud Workspaces is currently in private beta. To participate, register with your work email address. We'll keep you updated when your company's social intranet is ready.</p>
+								<div id="messageString" class="TenantFormMsg"></div>
+								<input class="InputText" type="text" name="email" id="email" value="Enter your professional email" onclick="this.value='';" />
+								<input class="Button" type="submit" id="t_submit"  value="Sign up" onClick="tenants.doSingupRequest();" />
+								<input type="hidden" id="formid" name="formid" value="147cd324-b524-4679-bcad-5f5708ad5beb" />
+								<input type="hidden" id="cid" name="cid" value="LF_df197061" />
+								<div id="signin"><a class="SignIn" href="signin.html">Already registered? Sign In</a></div>
+								<iframe id="loopfuseOutput" name="loopfuseOutput" style='display:none; visibility:hidden'></iframe>
+							</form>
+							<div class="Social FR">
+								<a href="#" class="TwitterLink"><img src="background/icon-twiter.png" alt=""/></a>
+								<a href="#"><img src="background/icon-tweet.png" alt=""/></a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!--begin IntroBox-->		
+		<div class="UI-Intro">
+			<div class="MainContent ClearFix" >
+				<div class="Cols LCol FL">
+					<h3>About eXo Cloud Workspaces</h3>
+					<p><b>eXo Cloud Workspace </b> is a private social intranet that makes it easy to connect and collaborate with your coworkers. Going beyond simple status updates, eXo Cloud Workspaces provides tools that let you capture, organize and act on your team’s internal knowledge, from a full-featured enterprise wiki, rich content management system, forums, chat and more.</p>
+					<p>To request your company’s own social intranet, register using your work email address. We’ll keep you updated as the private beta expands.</p>
+					<a href="#" class="Readmore">Read more</a>
+				</div>
+				<div class="Cols MCol FL">
+					<h3>What can you do with Cloud Workspace?</h3>
+					<a href=""><img src="background/img_video.png" alt=""/></a>
+				</div>
+				<div class="Cols RCol FR">
+					<ul>
+						<li><a href="#"><img src="background/Stay-connect-mobile-apps.png" alt="Stay Connected Get the mobile apps" /></a> </li>
+						<li><a href="#"><img src="background/SocialIntranet-on-premise.png" alt="Download eXo Platform" /></a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		
 		<!--IndexPage-->	
 		 <div class="UIPageBody IndexPage">
-			<h1>Sign up for your free social intranet</h1>
-			<p class="SignUpInfo">eXo Cloud Workspaces is currently in private beta. To participate, register with your work email address. We'll keep you updated when your company's social intranet is ready.</p>
-			<div id="messageString" class="TenantFormMsg"></div>
-			<form class="UIForm" action="javascript:void(0);"   method="POST" name="cloud-workspaces-profile">
-				<input class="InputText" type="text" name="email" id="email" value="Enter your professional email" onclick="this.value='';" />
-				<input class="Button" type="submit" id="t_submit"  value="Sign Up" onClick="tenants.doSingupRequest();" />
-				<input type="hidden" id="formid" name="formid" value="147cd324-b524-4679-bcad-5f5708ad5beb" />
-				<input type="hidden" id="cid" name="cid" value="LF_df197061" />
-				<div id="signin"><a class="SignIn" href="signin.html">Already registered? Sign In</a></div>
-				<iframe id="loopfuseOutput" name="loopfuseOutput" style='display:none; visibility:hidden'></iframe>
-			</form>
+			<div class="MainContent" >
+				<h3>Features Overview</h3>
+				<div class="ClearFix RowOdd">
+					<div class="FL BoxImg"><a href="" ><img src="background/01-mini.png" alt=""/></a></div>
+					<div class="BoxText">
+						<h4 class="SpecialTit"><a name="Web-based">Web-based collaborative editor</a></h4>
+						<p>eXo Cloud Workspace is a full web-based code editor allowing you to write code and run it directly in your browser.</p>
+						<p>With dedicated storage space for each account, your can access and work on your projects from any computer.</p>
+						<p>Invite up to 5 users to share you workspace and collaborate on your workspace.</p>
+					</div>
+				</div>
+				<div class="ClearFix RowEven">
+					<div class="FR BoxImg"><a href="" ><img src="background/02-mini.png" alt=""/></a></div>
+					<div class="BoxText">
+						<h4 class="SpecialTit">Choose your language and framework: support for JavaScript, Java, Spring, Groovy, Ruby, PHP and more</h4>
+						<p>With auto-completion and syntax highlighting for HTML, JavaScript, PHP, Java, Groovy, Ruby - and more coming soon - you can write apps in your language of choice.</p>
+						<p>Beyond interpreted languages, eXo Cloud IDE includes support for standard Java classes (servlets or POJOs) and Java Server Pages (JSP). It even allows you to build your Java applications in the Cloud using Maven.</p>
+						<p>Templates for OpenSocial gadgets, sample apps in Spring or Ruby on Rails will help you get started even faster.</p>
+					</div>
+				</div>
+				
+				<div class="ClearFix RowOdd">
+					<div class="FL BoxImg"><a href="" ><img src="background/03-mini.png" alt=""/></a></div>
+					<div class="BoxText">
+						<h4 class="SpecialTit"><a name="Direct-PaaS">Easy On-Ramp to Cloud Deployments: Built-in Support for Multiple Platform-as-a-Service (PaaS) Solutions</a></h4>
+						<p>Run your apps in the cloud by deploying to your favorite PaaS directly from the IDE. The IDE allows developers to manage, edit and redeploy changes from the PaaS menu. Current support for:</p>
+						<p>CloudBees: for building, storing and running Java apps.</p>
+						<p>Cloud Foundry: for Spring, Rails or Node.js apps. Support for any Cloud Foundry-based target (CloudFoundry.com, Micro Cloud Foundry or third-party PaaS like Stackato and AppFog).</p>
+						<p>Heroku: for Java, Rails, and Node.js apps.</p>
+						<p>Red Hat OpenShift: for Java, PHP and Rails apps.</p>
+					</div>
+				</div>
+				<div class="ClearFix RowEven">
+					<div class="FR BoxImg"><a href="" ><img src="background/04-mini.png" alt=""/></a></div>
+					<div class="BoxText">
+						<h4 class="SpecialTit"><a name="Git-integration">Native Git Integration for Version Control & Deployment Flexibility</a></h4>
+						<p>eXo Cloud IDE features an easy-to-use Git menu, which natively integrates protocol commands. This gives developers access to Git controls, as well as visibility into the version history of repositories, without ever having to leave the eXo Cloud IDE domain.</p>
+						<p>The Git interface will let you clone, commit, or fork any Git repository. With the SSH key manager, you can configure SSH keys for different remote repositories. Review the commit history and compare with older versions.</p>
+					</div>
+				</div>
+			</div>
 		</div>
 		
 		<!--begin Footer-->	

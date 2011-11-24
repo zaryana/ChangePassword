@@ -24,23 +24,57 @@
 body {
 	font-family: Verdana, Arial, Tahoma, Sans-serif;
 	margin: 0;
+	font-size: 12px;
 	color:#666666;
-	outline: none;
+}
+
+div, table, tr, td, img, form, p,h1, h2, h3, h4, h5, h6,ul ,fieldset{
+	margin: 0;
+	padding: 0;
+}
+
+img,fieldset {
+	border: none;
+}
+
+a {
 	text-decoration: none;
-	text-align: left;
+	outline: none;
+	color:#0868b9;
+}
+
+li {
+	list-style-type:none;
+}
+h1,h2,h3,h4,h5 {
+	font-weight:normal;
+	font-family:arial,tahoma,serif;
+	margin:10px 0;
+}
+h1{
+	font-family:MyriadProSemibold,arial,tahoma;
+	font-size: 48px;
+	
+}
+h2{
+	font-family:MyriadProSemibold,arial,tahoma;
+	font-size: 42px;
+
+}
+h3{
+	font-size: 18px;	
+}
+h4{
+	font-size: 14px;	
+	font-weight: bold;
+}
+h5{
 	font-size: 12px;
 }
 
-img {border:none;}
-
-a {text-decoration: none;}
-
-ul{margin:0px; padding:0px;}
-
-ul li{list-style: none;}
-
-p{margin: 0px;}
-
+p {
+	margin:10px 0;
+}
 .ClearFix:after {
 	content: ".";
 	display: block;
@@ -69,7 +103,7 @@ p{margin: 0px;}
 }
 
 .UIPageBody {
-	margin: 50px auto;
+	margin: 30px auto;
 	width: 960px;
 	padding: 0 0 50px;
 }
@@ -161,6 +195,134 @@ p{margin: 0px;}
 	letter-spacing: 1px;
 }
 
+/*UIBanner*/
+.UIBanner {
+	background: url("../background/bg_banner.png") repeat-x left top;
+	min-height: 460px;
+}
+
+.UIBanner h2 {
+	color:#fff;
+	margin: 0 0 25px 0;
+	padding: 15px 0 0 0;
+	font-size: 42px;
+}
+
+/*Form box*/
+.UIBanner .FormBox .BoxContent {
+	width: 670px;
+	min-height: 315px;
+	background:#fff ;
+}
+
+.UIBanner .FormBox .BoxContent form {
+	margin: 0 auto;
+	padding: 20px 35px;
+	text-align: center;
+}
+
+.UIBanner .FormBox input.InputText {
+	width: 470px;
+	height: 28px;
+	line-height: 28px;
+	padding: 10px;
+	color: #636363;
+	text-align: center;
+	font-size:18px;
+	border: 1px solid #dedede;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+	-moz-box-shadow: 0 5px 8px #F4F4F4 inset;
+	-webkit-box-shadow: 0 5px 8px #F4F4F4 inset;
+	box-shadow: 0 5px 8px #F4F4F4 inset;
+}
+
+.UIBanner .FormBox input.Button {
+	margin: 25px auto 20px;
+	width: 170px;
+	height: 40px;
+	font-family: MyriadProSemibold, arial, tahoma;
+	font-size: 24px;
+}
+
+.UIBanner .FormBox a.Singup {
+	display:inline-block;
+	text-align:center;
+	border: 1px solid #3495b9;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+	height: 41px;
+	line-height: 41px;
+	color:#fff;
+	font-size: 24px; 
+	margin: 0 auto;
+	padding: 0 30px;
+	background: url("../background/Bg-Singup.png") repeat-x center bottom;
+	text-decoration:none;
+}
+
+.UIBanner .FormBox .SignUpInfo {
+	background: url("../background/CheckIcon.gif") no-repeat left top;
+	padding-left: 28px;
+	line-height: 20px;
+	color: #4C4C4C;
+	text-align: left;
+	color: #7DAE19;
+}
+
+.UIBanner .FormBox .Social {
+	margin-right: 88px;
+}
+
+.UIBanner .FormBox .Social .TwitterLink {
+	display: block;
+	float: left;
+	margin-right: 10px;
+	margin-top: -5px;
+}
+
+.FormContainer .FormBox {
+	padding-bottom: 35px;
+	background: url("../background/dropShadown.png") no-repeat center bottom;
+	margin-right: 290px;
+}
+
+.FormContainer .BoxText {
+	width: 250px;
+	color:#def6ff;	
+	line-height: 14px;
+}
+
+.FormContainer .BoxText h3 {
+	margin: 5px 0 15px 0;
+	color:#fff;
+}
+
+.FormContainer .BoxText ul {
+	margin: 0 0 15px 0;
+}
+
+.FormContainer .BoxText ul li {
+	list-style: disc inside none;
+	margin: 5px 0;
+}
+
+.FormContainer .BoxText ul  li:hover {
+	color:#7edcff;
+}
+
+.FormContainer .BoxText  a {
+	color:#def6ff;
+}
+
+.FormContainer .BoxText  a:hover {
+	text-decoration:underline;
+	color:#7edcff;
+}
+
+
 /*UIFooter*/
 .UIFooterPortlet {
 	background: url("../background/bg-footer.png") repeat-x left bottom;
@@ -178,8 +340,6 @@ p{margin: 0px;}
 	color:#ffcb08;
 	font-size: 11px;
 }
-
-
 
 /* Back icon */
 .BackIcon {
@@ -201,8 +361,54 @@ p{margin: 0px;}
 	padding-bottom: 10px;
 }
 
+/*IntroBox*/
+.UI-Intro {
+	background: #f8f8f8;
+	border-bottom: 1px solid #f1f1f1;
+	min-height: 360px;
+}
+
+.UI-Intro .Cols {
+	font-size: 12px;
+	line-height: 20px;
+}
+
+.UI-Intro .Cols h3 {
+	margin: 24px 0;
+}
+
+.UI-Intro .LCol {
+	width: 300px;
+}
+
+.UI-Intro .MCol {
+	width: 330px;
+	margin: 0 10px;
+	text-align: center;
+}
+
+.UI-Intro .RCol {
+	width: 290px;
+	text-align: right;
+}
+
+.UI-Intro  ul {
+	margin: 68px 0 0 0;
+}
+
+.UI-Intro .RCol li {
+	display:block;	
+	margin: 15px 0;
+}
+
+.UI-Intro .Readmore {
+	padding-right: 10px;
+	font-size: 13px;
+	background: url("../background/icon/readmore.png") no-repeat right 6px;
+}
+
 /* Button */
-.UIPageBody input.Button {
+input.Button {
 	background: url("../background/Bg-Button.png") repeat-x left top;
 	border: 1px solid #3495b9;
 	line-height: 33px;
@@ -222,38 +428,7 @@ p{margin: 0px;}
 	text-align: center;
 }
 
-/*IndexPage*/
-.IndexPage {
-	text-align: center;
-}
-
-.IndexPage .UIForm input.InputText {
-	width: 490px; 
-	height: 48px; 
-	color: #636363; 
-	text-align: center;
-}
-
-.IndexPage input.Button {
-	margin: 20px auto 15px;
-}
-
-.IndexPage .TenantFormMsg a {
-	color: #0868b9;
-}
-
-.IndexPage .TenantFormMsg a:hover {
-	text-decoration: underline;
-}
-
-.IndexPage .SignIn {
-	color: #0868b9;
-	text-decoration: underline;
-	font-family: Verdana, Arial, Tahoma, Sans-serif;
-}
-
 /*FormPages*/
- 
 .UIPageBody .UIForm {
 	margin: 0px;
 	font-family: arial, tahoma, serif;
@@ -296,7 +471,6 @@ p{margin: 0px;}
 	border-radius: 3px;
 	font-size: 18px;
 	color: #c0c0c0;
-	
 }
 
 .UIPageBody input.DisabledArea {
@@ -310,15 +484,25 @@ p{margin: 0px;}
 	margin-left: 20px;
 }
 
-.UIPageBody .SignUpInfo {
-	background: url("../background/CheckIcon.gif") no-repeat left top;
-	padding-left: 28px;
-	width: 575px;
-	margin: 0px auto 20px auto;
-	line-height: 20px;
-	color: #4c4c4c;
-	text-align: left;
-	color: #7dae19;
+.RowEven ,.RowOdd {
+	margin: 30px 0;
+}
+
+.UIPageBody p{
+	line-height: 16px;
+	text-align: justify;
+}
+
+.RowEven .BoxText {
+	padding-right: 320px;
+}
+
+.RowOdd .BoxText {
+	padding-left: 320px;
+}
+
+.SpecialTit {
+	color: #0868B9;
 }
 
 .UIPageBody .info {
@@ -326,8 +510,7 @@ p{margin: 0px;}
 	padding-left: 28px;
 	width: 300px;
 	line-height: 20px;
-	color: #4c4c4c;
-	font-family: Verdana, Arial, Tahoma, Sans-serif;
+	color: #4C4C4C;
 }
 
 /*ThanksPages*/
@@ -376,7 +559,6 @@ p{margin: 0px;}
 }
 
 /*AboutPages*/
-
 .AboutPages h1 {
 	text-align: left;
 }
@@ -427,8 +609,11 @@ p{margin: 0px;}
 }
 
 /*ErrorPages*/
-
 .ErrorPages {
+	text-align: center;
+}
+
+.ErrorPages p {
 	text-align: center;
 }
 
@@ -439,8 +624,8 @@ p{margin: 0px;}
 	color: #666666;
 	font-size: 14px;
 	margin-bottom: 10px;
+	line-height: 18px;
 }
-
 
 /* Contact us page */
 .MarkLayer{
@@ -554,7 +739,7 @@ p{margin: 0px;}
 }
 
 .InviPages .LeftInvi p.Title {
-	line-height: 44px;
+	line-height: 25px;
 	font-size: 18px;
 	color: #414141;
 }
