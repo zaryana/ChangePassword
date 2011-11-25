@@ -57,10 +57,10 @@ public class TenantCreatedListenerThread implements Runnable
    private int interval = 15000;
 
    private CloudAdminConfiguration cloudAdminConfiguration;
-   
 
-   public TenantCreatedListenerThread(String tName, String userMail, String firstName, String lastName, String companyName,
-      String phone, String password, CloudInfoHolder cloudInfoHolder, CloudAdminConfiguration cloudAdminConfiguration)
+   public TenantCreatedListenerThread(String tName, String userMail, String firstName, String lastName,
+      String companyName, String phone, String password, CloudInfoHolder cloudInfoHolder,
+      CloudAdminConfiguration cloudAdminConfiguration)
    {
       this.tName = tName;
       this.email = userMail;
@@ -88,22 +88,22 @@ public class TenantCreatedListenerThread implements Runnable
             while (!cloudInfoHolder.getTenantStatus(tName).getState().equals(TenantState.ONLINE))
             {
                if (count > limit)
-                  throw new CloudAdminException("Tenant creation timeout reached");
+                  throw new CloudAdminException("Workspace creation timeout reached");
                Thread.sleep(interval);
-               count+=15;
+               count += 15;
             }
-            Thread.sleep(interval*20); //To let the proxy to reload;
-            String root_password = UUID.randomUUID().toString().replace("-", "").substring(0, 9);
+            Thread.sleep(interval * 20); //To let the proxy to reload;
             String username = email.substring(0, (email.indexOf("@")));
-            utils.storeUser(tName, email, firstName, lastName, password);
-            utils.storeRoot(tName, email, "root", "root", root_password);
+            utils.storeUser(tName, email, firstName, lastName, password, true);
+            //utils.storeRoot(tName, email, "root", "root", root_password);
+            //String root_password = UUID.randomUUID().toString().replace("-", "").substring(0, 9);
             Map<String, String> props = new HashMap<String, String>();
             props.put("tenant.masterhost", cloudAdminConfiguration.getMasterHost());
             props.put("tenant.repository.name", tName);
             props.put("user.mail", email);
-            props.put("root.password", root_password);
+           // props.put("root.password", root_password);
             props.put("user.name", username);
-            utils.sendIntranetCreatedEmails(email, props);
+            utils.sendIntranetCreatedEmail(email, props);
          }
          catch (TenantQueueException e)
          {

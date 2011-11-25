@@ -20,6 +20,8 @@ package com.exoplatform.cloudworkspaces.rest;
 
 import static org.exoplatform.cloudmanagement.rest.admin.CloudAdminRestServicePaths.CLOUD_ADMIN_PUBLIC_TENANT_CREATION_SERVICE;
 
+import com.exoplatform.cloudworkspaces.UserAlreadyExistsException;
+
 import com.exoplatform.cloudworkspaces.CloudIntranetUtils;
 import com.exoplatform.cloudworkspaces.TenantCreatedListenerThread;
 
@@ -40,7 +42,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.exoplatform.cloudmanagement.admin.rest.TenantCreator;
-import org.exoplatform.cloudmanagement.admin.rest.CloudAdminExceptionMapper;
 import org.exoplatform.cloudmanagement.admin.CloudAdminException;
 import org.exoplatform.cloudmanagement.admin.TenantMetadataValidator;
 import org.exoplatform.cloudmanagement.admin.TenantAlreadyExistException;
@@ -66,6 +67,9 @@ public class IntranetAdminService extends TenantCreator
       this.utils = new CloudIntranetUtils(cloudAdminConfiguration);
    }
 
+   /* (non-Javadoc)
+    * @see org.exoplatform.cloudmanagement.admin.rest.TenantCreator#createTenantWithEmailConfirmation(java.lang.String, java.lang.String)
+    */
    @Override
    @POST
    @Path("/create-with-confirm/{tenantname}/{user-mail}")
@@ -75,6 +79,9 @@ public class IntranetAdminService extends TenantCreator
       return Response.status(Status.FORBIDDEN).entity("It's forbidden to use this method").build();
    }
 
+   /* (non-Javadoc)
+    * @see org.exoplatform.cloudmanagement.admin.rest.TenantCreator#createTenantWithConfirmedEmail(java.lang.String)
+    */
    @Override
    @POST
    @Path("/create-confirmed")
@@ -83,6 +90,13 @@ public class IntranetAdminService extends TenantCreator
       return Response.status(Status.FORBIDDEN).entity("It's forbidden to use this method").build();
    }
 
+   /**
+    * Sign-up method. Result is email with creating or joining workspace instructions.
+    * 
+    * @param userMail
+    * @return Response
+    * @throws CloudAdminException
+    */
    @POST
    @Path("/signup")
    public Response signupToIntranet(@FormParam("user-mail") String userMail) throws CloudAdminException
@@ -92,12 +106,17 @@ public class IntranetAdminService extends TenantCreator
       String username = null;
       try
       {
-    	 utils.validateEmail(userMail);
-    	 username = userMail.substring(0, (userMail.indexOf("@")));  
-    	 tName = utils.getTenantNameFromWhitelist(userMail);
+         if (!utils.validateEmail(userMail))
+            return Response.status(Status.BAD_REQUEST).entity("Email is incorrect, please provide correct one.").build();
+         username = userMail.substring(0, (userMail.indexOf("@")));
+         tName = utils.getTenantNameFromWhitelist(userMail);
          if (tName == null)
+         {
+            String domain = userMail.substring(userMail.indexOf("@"));
             return Response.status(Status.BAD_REQUEST)
-               .entity("Sorry, its not allowed for your company to create domains. Please contact support.").build();
+               .entity("Sorry, we can't sign you up with an email address " + domain + ". Try with your work email.")
+               .build();
+         }
          super.createTenantWithEmailConfirmation(tName, userMail);
       }
       catch (TenantAlreadyExistException ex)
@@ -106,75 +125,116 @@ public class IntranetAdminService extends TenantCreator
          props.put("tenant.masterhost", adminConfiguration.getMasterHost());
          props.put("tenant.repository.name", tName);
          props.put("user.mail", userMail);
-         props.put("owner.email", utils.getTenantOwnerEmail(tName));
-         
-         int maxUsers = utils.getMaxUsersForTenant(userMail);
-         if (utils.isNewUserAllowed(tName, username, maxUsers))
+
+         try
          {
-            //send OK email 
-            utils.sendOkToJoinEmail(userMail, props);
+            int maxUsers = utils.getMaxUsersForTenant(userMail);
+            if (utils.isNewUserAllowed(tName, username, maxUsers))
+            {
+               // send OK email
+               utils.sendOkToJoinEmail(userMail, props);
+            }
+            else
+            {
+               // send not allowed mails
+               props.put("users.maxallowed", Integer.toString(maxUsers));
+               utils.sendJoinRejectedEmails(tName, userMail, props);
+            }
          }
-         else
+         catch (UserAlreadyExistsException e)
          {
-            //send not allowed mails
-            props.put("users.maxallowed", Integer.toString(maxUsers));
-            utils.sendJoinRejectedEmails(userMail, props);
+            return Response.ok(e.getMessage()).build();
+         }
+         catch (CloudAdminException e)
+         {
+            LOG.error(e.getMessage());
+            return Response.ok("Can not finish signup action. Please contact support.").build();
          }
       }
       catch (CloudAdminException e)
       {
-         CloudAdminExceptionMapper mapper = new CloudAdminExceptionMapper();
-         return mapper.toResponse(e);
+         LOG.error(e.getMessage());
+         return Response.ok("Can not finish signup action. Please contact support.").build();
       }
       return Response.ok().build();
    }
 
+   /**
+    * Join to workspace service.
+    * 
+    * @param userMail
+    * @param firstName
+    * @param lastName
+    * @param password
+    * @param uuid
+    * @return Response
+    * @throws CloudAdminException
+    */
    @POST
    @Path("/join")
    public Response joinIntranet(@FormParam("user-mail") String userMail, @FormParam("first-name") String firstName,
       @FormParam("last-name") String lastName, @FormParam("password") String password,
       @FormParam("confirmation-id") String uuid) throws CloudAdminException
    {
-	  String tName = null;
+      String tName = null;
       try
       {
-     	 utils.validateEmail(userMail);
-     	 String username = userMail.substring(0, (userMail.indexOf("@")));  
+         if (!utils.validateEmail(userMail))
+            return Response.status(Status.BAD_REQUEST).entity("Email is incorrect, please provide correct one.").build();
+         String username = userMail.substring(0, (userMail.indexOf("@")));
          tName = utils.getTenantNameFromWhitelist(userMail);
          if (tName == null)
+         {
+            String domain = userMail.substring(userMail.indexOf("@"));
             return Response.status(Status.BAD_REQUEST)
-               .entity("Sorry, its not allowed for your company to create domains. Please contact support.").build();
-
+               .entity("Sorry, we can't join you with an email address " + domain + ". Try with your work email.")
+               .build();
+         }
          Map<String, String> props = new HashMap<String, String>();
          props.put("tenant.masterhost", adminConfiguration.getMasterHost());
          props.put("tenant.repository.name", tName);
          props.put("user.mail", userMail);
          props.put("user.name", username);
          props.put("first.name", firstName);
-         props.put("owner.email", utils.getTenantOwnerEmail(tName));
-         
-         int maxUsers = utils.getMaxUsersForTenant(userMail);
 
+         int maxUsers = utils.getMaxUsersForTenant(userMail);
          if (utils.isNewUserAllowed(tName, username, maxUsers))
          {
-            utils.storeUser(tName, userMail, firstName, lastName, password);
+            utils.storeUser(tName, userMail, firstName, lastName, password, false);
             utils.sendUserJoinedEmails(tName, firstName, userMail, props);
          }
          else
          {
             props.put("users.maxallowed", Integer.toString(maxUsers));
-            utils.sendJoinRejectedEmails(userMail, props);
+            utils.sendJoinRejectedEmails(tName, userMail, props);
          }
          return Response.ok().build();
       }
+      catch (UserAlreadyExistsException e)
+      {
+         return Response.ok(e.getMessage()).build();
+      }
       catch (CloudAdminException e)
       {
-         CloudAdminExceptionMapper mapper = new CloudAdminExceptionMapper();
-         return mapper.toResponse(e);
+         LOG.error(e.getMessage());
+         return Response.ok("Can not finish join action. Please contact support.").build();
       }
 
    }
 
+   /**
+    * Service for creating workspaces.
+    * 
+    * @param userMail
+    * @param firstName
+    * @param lastName
+    * @param companyName
+    * @param phone
+    * @param password
+    * @param uuid
+    * @return Response
+    * @throws CloudAdminException
+    */
    @POST
    @Path("/create")
    public Response createIntranet(@FormParam("user-mail") String userMail, @FormParam("first-name") String firstName,
@@ -184,11 +244,16 @@ public class IntranetAdminService extends TenantCreator
    {
       try
       {
-    	 utils.validateEmail(userMail);
+         if (!utils.validateEmail(userMail))
+            return Response.status(Status.BAD_REQUEST).entity("Email is incorrect, please provide correct one.").build();
          String tName = utils.getTenantNameFromWhitelist(userMail);
          if (tName == null)
+         {
+            String domain = userMail.substring(userMail.indexOf("@"));
             return Response.status(Status.BAD_REQUEST)
-               .entity("Sorry, its not allowed for your company to create domains. Please contact support.").build();
+               .entity("Sorry, we can't create workspace with an email address " + domain + ". Try with your work email.")
+               .build();
+         }
          super.createTenantWithConfirmedEmail(uuid);
          TenantCreatedListenerThread thread =
             new TenantCreatedListenerThread(tName, userMail, firstName, lastName, companyName, phone, password,
@@ -199,21 +264,31 @@ public class IntranetAdminService extends TenantCreator
       }
       catch (CloudAdminException e)
       {
-         CloudAdminExceptionMapper mapper = new CloudAdminExceptionMapper();
-         return mapper.toResponse(e);
+         LOG.error(e.getMessage());
+         return Response.ok("Can not finish workspace creation. Please contact support.").build();
       }
    }
-   
-   
+
+   /**
+    * Retrieves status string of the given tenant. 
+    * 
+    * @param tenantName
+    * @return Response
+    * @throws CloudAdminException
+    */
    @GET
-   @Path ("/status/{tenantname}")
-   public Response tenantStatus(@PathParam("tenantname") String tenantName) throws CloudAdminException {
-	   try {
-	   TenantStatus status = cloudInfoHolder.getTenantStatus(tenantName);
-	   return Response.ok(status.getState().toString()).build();
-	   } catch (CloudAdminException e){
-		   return Response.ok("NOT_FOUND").build();
-	   }
+   @Path("/status/{tenantname}")
+   public Response tenantStatus(@PathParam("tenantname") String tenantName) throws CloudAdminException
+   {
+      try
+      {
+         TenantStatus status = cloudInfoHolder.getTenantStatus(tenantName);
+         return Response.ok(status.getState().toString()).build();
+      }
+      catch (CloudAdminException e)
+      {
+         return Response.ok("NOT_FOUND").build();
+      }
    }
 
 }
