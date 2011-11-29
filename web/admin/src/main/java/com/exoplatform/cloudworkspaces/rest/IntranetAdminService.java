@@ -107,7 +107,7 @@ public class IntranetAdminService extends TenantCreator
       try
       {
          if (!utils.validateEmail(userMail))
-            return Response.status(Status.BAD_REQUEST).entity("Please enter a valid email adress.").build();
+            return Response.status(Status.BAD_REQUEST).entity("Please enter a valid email address.").build();
          username = userMail.substring(0, (userMail.indexOf("@")));
          tName = utils.getTenantNameFromWhitelist(userMail);
          if (tName == null)
@@ -180,7 +180,7 @@ public class IntranetAdminService extends TenantCreator
       try
       {
          if (!utils.validateEmail(userMail))
-            return Response.status(Status.BAD_REQUEST).entity("Please enter a valid email adress.").build();
+            return Response.status(Status.BAD_REQUEST).entity("Please enter a valid email address.").build();
          String username = userMail.substring(0, (userMail.indexOf("@")));
          tName = utils.getTenantNameFromWhitelist(userMail);
          if (tName == null)
@@ -245,7 +245,7 @@ public class IntranetAdminService extends TenantCreator
       try
       {
          if (!utils.validateEmail(userMail))
-            return Response.status(Status.BAD_REQUEST).entity("Please enter a valid email adress.").build();
+            return Response.status(Status.BAD_REQUEST).entity("Please enter a valid email address.").build();
          String tName = utils.getTenantNameFromWhitelist(userMail);
          if (tName == null)
          {
