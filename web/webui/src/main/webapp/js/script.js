@@ -215,7 +215,7 @@ Tenants.prototype.doCreationRequest = function() {
   
 
   if (_gel("password").value != _gel("password2").value) {
-    _gel("messageString").innerHTML = "<div class=\"Ok\">Passwords does not match.</div>";
+    _gel("messageString").innerHTML = "<div class=\"Ok\">Passwords do not match.</div>";
     return;
   }
 
@@ -257,7 +257,7 @@ Tenants.prototype.doJoinRequest = function() {
     }
     
   if (_gel("password").value != _gel("password2").value) {
-    _gel("messageString").innerHTML = "<div class=\"Ok\">Passwords does not match.</div>";
+    _gel("messageString").innerHTML = "<div class=\"Ok\">Passwords do not match.</div>";
     return;
   }
 
