@@ -36,6 +36,11 @@
           <version>${project.version}</version>
           <type>war</type>
         </dependency>
+       <dependency>
+         <groupId>com.exoplatform.cloudworkspaces</groupId>
+         <artifactId>cloud-workspaces-component-organization</artifactId>
+         <version>${project.version}</version>
+       </dependency>
       </dependencies>
       <build>
         <finalName>Cloud-Workspaces-Platform-${project.version}</finalName>
@@ -111,42 +116,54 @@ EXO_CLOUD_ADMIN_OPTS="-Dcloud.admin.log.dir=../logs/cloud-admin \
                     </delete>
                     <!-- Delete tenants management page -->
                     <unzip src="${project.build.directory}/tomcat/webapps/cloud-extension.war" dest="${project.build.directory}/tomcat/webapps/cloud-ext" />
-                    <copy file="${project.basedir}/src/main/resources/cloud-extension/pages.xml"
+                    <copy file="${project.basedir}/src/main/resources/tomcat/webapps/cloud-extension/pages.xml"
                       tofile="${project.build.directory}/tomcat/webapps/cloud-ext/WEB-INF/conf/portal/group/platform/administrators/pages.xml"
                       overwrite="true" />
-                    <copy file="${project.basedir}/src/main/resources/cloud-extension/navigation.xml"
+                    <copy file="${project.basedir}/src/main/resources/tomcat/webapps/cloud-extension/navigation.xml"
                       tofile="${project.build.directory}/tomcat/webapps/cloud-ext/WEB-INF/conf/portal/group/platform/administrators/navigation.xml"
                       overwrite="true" />
                     <zip destfile="${project.build.directory}/tomcat/webapps/cloud-extension.war" basedir="${project.build.directory}/tomcat/webapps/cloud-ext" />
                     <delete dir="${project.build.directory}/tomcat/webapps/cloud-ext" />
                     <!-- Delete acme-intranet welcome page -->
                     <unzip src="${project.build.directory}/tomcat/webapps/acme-intranet.war" dest="${project.build.directory}/tomcat/webapps/acme-intranet" />
-                    <copy file="${project.basedir}/src/main/resources/acme-intranet/pages.xml"
+                    <copy file="${project.basedir}/src/main/resources/tomcat/webapps/acme-intranet/pages.xml"
                       tofile="${project.build.directory}/tomcat/webapps/acme-intranet/WEB-INF/conf/office-extension/portal/portal/intranet/pages.xml"
                       overwrite="true" />
-                    <copy file="${project.basedir}/src/main/resources/acme-intranet/navigation.xml"
+                    <copy file="${project.basedir}/src/main/resources/tomcat/webapps/acme-intranet/navigation.xml"
                       tofile="${project.build.directory}/tomcat/webapps/acme-intranet/WEB-INF/conf/office-extension/portal/portal/intranet/navigation.xml"
                       overwrite="true" />
                     <zip destfile="${project.build.directory}/tomcat/webapps/acme-intranet.war" basedir="${project.build.directory}/tomcat/webapps/acme-intranet" />
                     <delete dir="${project.build.directory}/tomcat/webapps/acme-intranet" />
                     <!-- Remove marry, demo, john, james and keep 'root' but with empty password-->
                     <unzip src="${project.build.directory}/tomcat/webapps/acme-intranet.war" dest="${project.build.directory}/tomcat/webapps/acme-intranet" />
-                    <copy file="${project.basedir}/src/main/resources/acme-intranet/organization-configuration.xml"
+                    <copy file="${project.basedir}/src/main/resources/tomcat/webapps/acme-intranet/organization-configuration.xml"
                       tofile="${project.build.directory}/tomcat/webapps/acme-intranet/WEB-INF/conf/office-extension/organization/organization-configuration.xml"
                       overwrite="true" />
-                    <copy file="${project.basedir}/src/main/resources/acme-intranet/portal.xml"
+                    <copy file="${project.basedir}/src/main/resources/tomcat/webapps/acme-intranet/portal.xml"
                       tofile="${project.build.directory}/tomcat/webapps/acme-intranet/WEB-INF/conf/office-extension/portal/portal/intranet/portal.xml"
                       overwrite="true" />
                     <zip destfile="${project.build.directory}/tomcat/webapps/acme-intranet.war" basedir="${project.build.directory}/tomcat/webapps/acme-intranet" />
                     <delete dir="${project.build.directory}/tomcat/webapps/acme-intranet" />
                     <unzip src="${project.build.directory}/tomcat/webapps/platform-extension.war" dest="${project.build.directory}/tomcat/webapps/platform-extension" />
                     <copy
-                      file="${project.basedir}/src/main/resources/platform-extension/organization-configuration.xml"
+                      file="${project.basedir}/src/main/resources/tomcat/webapps/platform-extension/organization-configuration.xml"
                       tofile="${project.build.directory}/tomcat/webapps/platform-extension/WEB-INF/conf/organization/organization-configuration.xml"
                       overwrite="true" />
                     <zip destfile="${project.build.directory}/tomcat/webapps/platform-extension.war"
                       basedir="${project.build.directory}/tomcat/webapps/platform-extension" />
                     <delete dir="${project.build.directory}/tomcat/webapps/platform-extension" />
+                    <copy
+                     file="${project.basedir}/src/main/resources/tomcat/gatein/conf/configuration.properties"
+                     tofile="${project.build.directory}/tomcat/gatein/conf/configuration.properties"
+                     overwrite="true" />
+                    <copy
+                      file="${project.basedir}/src/main/resources/tomcat/gatein/conf/cloud/users.properties"
+                      tofile="${project.build.directory}/tomcat/gatein/conf/cloud/users.properties"
+                      overwrite="true" />
+                    <copy
+                      file="${project.basedir}/src/main/resources/tomcat/gatein/conf/portal/portal/configuration.xml"
+                      tofile="${project.build.directory}/tomcat/gatein/conf/portal/portal/configuration.xml"
+                    overwrite="true" />
                   </target>
                 </configuration>
                 <goals>

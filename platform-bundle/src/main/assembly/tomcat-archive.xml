@@ -46,6 +46,7 @@
        <outputDirectory>tomcat-bundle/lib</outputDirectory>
        <includes>
          <include>mysql:mysql-connector-java</include>
+         <include>com.exoplatform.cloudworkspaces:cloud-workspaces-component-organization</include>
        </includes>
        <fileMode>0644</fileMode>
      </dependencySet>
