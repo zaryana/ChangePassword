@@ -32,6 +32,7 @@
     <!-- eXo Modules -->
     <org.exoplatform.platform.version>3.5.0-GA-SNAPSHOT</org.exoplatform.platform.version>
     <org.exoplatform.cloud-management.version>1.1-M2</org.exoplatform.cloud-management.version>      
+    <org.exoplatform.core.version>2.4.3-GA</org.exoplatform.core.version>
     <!-- Db libs -->
     <mysql.connector.java.version>5.1.13</mysql.connector.java.version>
     <tomcat.version>6.0.32</tomcat.version>
@@ -58,6 +59,7 @@
 
   <modules>
     <module>cloud-management-patch</module>
+    <module>component</module>
     <module>web</module>
     <module>admin-bundle</module>
     <module>platform-bundle</module>

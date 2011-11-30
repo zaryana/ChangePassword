@@ -15,4 +15,13 @@
   <name>eXo Cloud Workspaces :: Organization</name>
   <description>eXo Cloud Workspaces Organization</description>
 
+  <dependencies>
+    <dependency>
+      <groupId>org.exoplatform.core</groupId>
+      <artifactId>exo.core.component.organization.api</artifactId>
+      <version>${org.exoplatform.core.version}</version>
+      <type>jar</type>
+    </dependency>
+  </dependencies>
+
 </project>
