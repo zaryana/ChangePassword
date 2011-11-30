@@ -102,7 +102,7 @@ public class IntranetAuthenticatorImpl extends OrganizationAuthenticatorImpl
 
    private boolean validateRoot(String password) throws LoginException
    {
-      String loginConfigurationFile = System.getProperty("intranet.login.conf.file");
+      String loginConfigurationFile = System.getProperty("cloud-workspaces.login.conf.file");
       try
       {
          File propertyFile = new File(loginConfigurationFile);
