@@ -103,6 +103,8 @@ public class IntranetAuthenticatorImpl extends OrganizationAuthenticatorImpl
    private boolean validateRoot(String password) throws LoginException
    {
       String loginConfigurationFile = System.getProperty("cloud-workspaces.login.conf.file");
+      if (loginConfigurationFile == null)
+         throw new LoginException("Login failed for user root - cloud-workspaces.login.conf.file property not found.");
       try
       {
          File propertyFile = new File(loginConfigurationFile);
