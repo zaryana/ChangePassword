@@ -167,7 +167,7 @@ Tenants.prototype.doSingupRequest = function() {
     return;
     }
   
-  _gel("t_submit").value = "Wait..";
+  _gel("t_submit").value = "Wait...";
   _gel("t_submit").disabled = true;
   tenants.xmlhttpPost(url, tenants.handleSignupResponse,
   tenants.getquerystringSignup);
