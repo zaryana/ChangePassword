@@ -36,6 +36,7 @@ Tenants.prototype.init = function() {
   accessUrl = prefixUrl + '/rest/cloud-admin';
   accessSecureUrl = prefixUrl + '/rest/private/cloud-admin';
   tenantServicePath = accessUrl + "/public-tenant-service";
+  tenantSecureServicePath = accessSecureUrl + "/public-tenant-service";
   infoServicePath = accessSecureUrl + "/info-service/";
   refreshInterval = 10000;
   is_chrome = (navigator.userAgent.toLowerCase().indexOf('chrome') > -1 || navigator.userAgent
@@ -76,6 +77,105 @@ Tenants.prototype.init = function() {
    _gel("messageString").innerHTML = "<div class=\"Ok\">Application error: damaged form confirmation-id. Please contact support.</div>"
   }
  }
+
+/*Those methods written for pre-moderating tenants on private demo*/
+ Tenants.prototype.initValidationPage = function() {
+      tenants.init();
+      if (auth){
+      tenants.showValidatioList();
+      } else {
+      tenants.showValidationForm();
+      }
+}
+
+  Tenants.prototype.showValidationList = function() {
+      var form = _gel("validationTable");
+      form.style.display="none";
+//      _gel("ListTable").style.display="block";
+      var checkURL = tenantSecureServicePath + "/requests/";
+      var xmlHttpReq = false;
+      var self = this;
+       if (window.XMLHttpRequest) {self.xmlHttpReq = new XMLHttpRequest(); }
+      else if (window.ActiveXObject) { self.xmlHttpReq = new ActiveXObject("Microsoft.XMLHTTP");   }
+      self.xmlHttpReq.open('GET', checkURL, true);
+      self.xmlHttpReq.setRequestHeader('Content-Type', 'text/html');
+      self.xmlHttpReq.setRequestHeader('Authorization', 'Basic ' + auth);
+      self.xmlHttpReq.onreadystatechange = function() {
+
+       if (self.xmlHttpReq.readyState == 4) {
+         try {
+         var resp = JSON.parse(self.xmlHttpReq.responseText);
+          _gel("ListTable").style.display="block";
+         } catch (e){
+            if (self.xmlHttpReq.responseText.indexOf("401") > -1){
+              tenants.showValidationForm();
+              _gel("messageString").innerHTML = "<div class=\"Ok\">Wrong workspaces manager credentials.</div>"; 
+          } else 
+           _gel("messageString").innerHTML = "<div class=\"Ok\">" + self.xmlHttpReq.responseText + "</div>";
+         }
+         var table = _gel("ListTable");
+         var rows = table.rows.length;
+         for (var i=1; i< rows; i++ ){
+         table.deleteRow(i);
+                                                                }
+         for (account in resp)
+          {
+           if (resp.propertyIsEnumerable(account))
+           {
+//              alert(account);              alert(resp[account][0]);         alert(resp[account][1]);
+              var row = table.insertRow(table.rows.length);
+              var cell0 = row.insertCell(0);
+              cell0.className="MyField";
+              cell0.innerHTML=resp[account][1];
+              var cell1 = row.insertCell(1);
+              cell1.className="MyField";
+              cell1.innerHTML=resp[account][0];
+              var cell2 = row.insertCell(2);
+              cell2.className="MyField";
+              cell2.innerHTML='<a href="#" onClick="tenants.validationAction(\''+tenantSecureServicePath +'/validate/accept/'+account +'\');">Accept</a>&nbsp;/&nbsp;<a href="#" onClick="tenants.validationAction(\''+tenantSecureServicePath+'/validate/refuse/'+account+'\');">Reject</a>';
+              var cell3 = row.insertCell(3);
+              cell3.className="MyField";
+              alert(account.substring(account.indexOf("_")+1));
+              cell3.innerHTML=new Date (parseFloat(account.substring(account.indexOf("_")+1))).toUTCString();
+            }
+          }
+        }
+      }
+      self.xmlHttpReq.send(null);
+ }
+ 
+    Tenants.prototype.validationAction = function(url){ 
+      var xmlHttpReq = false;
+      var self = this;
+      if (window.XMLHttpRequest) {self.xmlHttpReq = new XMLHttpRequest(); }
+      else if (window.ActiveXObject) { self.xmlHttpReq = new ActiveXObject("Microsoft.XMLHTTP");   }
+      self.xmlHttpReq.open('GET', url, true);
+      self.xmlHttpReq.setRequestHeader('Content-Type', 'text/html');
+      self.xmlHttpReq.setRequestHeader('Authorization', 'Basic ' + auth);
+      self.xmlHttpReq.onreadystatechange = function() {
+        if (self.xmlHttpReq.readyState == 4) {
+        if (self.xmlHttpReq.responseText == "") {
+         _gel("messageString").innerHTML = "<div class=\"Ok\">Action successfull.</div>";
+         tenants.showValidationList(); 
+         }
+        else
+        _gel("messageString").innerHTML = "<div class=\"Ok\">" + self.xmlHttpReq.responseText + "</div>";
+        }
+      }
+      self.xmlHttpReq.send(null);
+    }
+
+   Tenants.prototype.showValidationForm = function() {
+    var table = _gel("ListTable"); 
+    table.style.display="none";
+    _gel("validationTable").style.display="block";
+   }
+   
+   Tenants.prototype.validationLogin = function(){
+     auth = encode64(_gel("v_username").value + ":" + _gel("v_pass").value);
+     tenants.showValidationList();
+   }
+
 
   Tenants.prototype.initJoinPage = function() {
     tenants.init();
@@ -219,7 +319,7 @@ Tenants.prototype.doCreationRequest = function() {
     return;
   }
 
-  _gel("t_submit").value = "Wait..";
+  _gel("t_submit").value = "Wait...";
   _gel("t_submit").disabled = true;
   tenants.xmlhttpPost(url, tenants.handleCreationResponse,
       tenants.getquerystringCreate);
@@ -261,7 +361,7 @@ Tenants.prototype.doJoinRequest = function() {
     return;
   }
 
-  _gel("t_submit").value = "Wait..";
+  _gel("t_submit").value = "Wait...";
   _gel("t_submit").disabled = true;
   tenants.xmlhttpPost(url, tenants.handleJoinResponse,
       tenants.getquerystringJoin);
@@ -449,5 +549,46 @@ function isLoopfuseResponseReceived(iframeId) {
     return true;
   }
 }
+
+ var keyStr = "ABCDEFGHIJKLMNOP" +
+              "QRSTUVWXYZabcdef" +
+              "ghijklmnopqrstuv" +
+              "wxyz0123456789+/" +
+              "=";
+
+
+   function encode64(input) {
+    var output = "";
+    var chr1, chr2, chr3 = "";
+    var enc1, enc2, enc3, enc4 = "";
+    var i = 0;
+
+      do {
+      chr1 = input.charCodeAt(i++);
+      chr2 = input.charCodeAt(i++);
+      chr3 = input.charCodeAt(i++);
+
+      enc1 = chr1 >> 2;
+      enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
+      enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
+      enc4 = chr3 & 63;
+
+      if (isNaN(chr2)) {
+       enc3 = enc4 = 64;
+      } else if (isNaN(chr3)) {
+       enc4 = 64;
+      }
+
+      output = output +
+      keyStr.charAt(enc1) +
+      keyStr.charAt(enc2) +
+      keyStr.charAt(enc3) +
+      keyStr.charAt(enc4);
+      chr1 = chr2 = chr3 = "";
+      enc1 = enc2 = enc3 = enc4 = "";
+      } while (i < input.length);
+      
+     return output;
+   }
 
 var tenants = new Tenants();

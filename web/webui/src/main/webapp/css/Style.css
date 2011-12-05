@@ -456,6 +456,15 @@ input.Button {
 	color: #414141;
 }
 
+.UIPageBody .MyField {
+	width: 340px;
+	text-align: center;
+	padding-right: 25px;
+	line-height: 40px;
+	font-size: 18px;
+	color: #414141;
+}
+
 .UIPageBody input.InputText {
 	-moz-box-shadow: 0 5px 8px #F4F4F4 inset;
 	-webkit-box-shadow: 0 5px 8px #F4F4F4 inset;
