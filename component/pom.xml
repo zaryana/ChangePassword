@@ -17,5 +17,6 @@
 
   <modules>
     <module>organization</module>
+    <module>multitenancy</module>
   </modules>
 </project>

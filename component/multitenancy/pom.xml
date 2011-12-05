@@ -10,10 +10,10 @@
     <version>1.0.0-Beta1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>cloud-workspaces-component-organization</artifactId>
+  <artifactId>cloud-workspaces-component-multitenancy</artifactId>
   <packaging>jar</packaging>
-  <name>eXo Cloud Workspaces :: Organization</name>
-  <description>eXo Cloud Workspaces Organization</description>
+  <name>eXo Cloud Workspaces :: Multitenancy</name>
+  <description>eXo Cloud Workspaces Multitenancy</description>
 
   <dependencies>
     <dependency>
@@ -22,28 +22,35 @@
       <version>${org.exoplatform.core.version}</version>
       <type>jar</type>
     </dependency>
+
     <dependency>
-      <groupId>javax.ws.rs</groupId>
-      <artifactId>jsr311-api</artifactId>
-      <version>1.0</version>
-    </dependency>
-    <dependency>
-      <groupId>javax.annotation</groupId>
-      <artifactId>jsr250-api</artifactId>
-      <version>1.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.exoplatform.ws</groupId>
-      <artifactId>exo.ws.commons</artifactId>
-      <version>${org.exoplatform.ws.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.exoplatform.jcr</groupId>
-      <artifactId>exo.jcr.component.core</artifactId>
-      <version>${org.exoplatform.jcr.version}</version>
+      <groupId>com.exoplatform.cloudworkspaces</groupId>
+      <artifactId>cloud-workspaces-component-organization</artifactId>
+      <version>${project.version}</version>
+      <type>jar</type>
     </dependency>
 
     
+    <dependency>
+      <groupId>org.apache.tomcat</groupId>
+      <artifactId>catalina</artifactId>
+      <version>6.0.32</version>
+      <scope>provided</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.exoplatform.cloud-management</groupId>
+      <artifactId>cloud-tomcat-valve</artifactId>
+      <version>${org.exoplatform.cloud-management.version}</version>
+      <type>jar</type>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.exoplatform.cloud-management</groupId>
+      <artifactId>cloud-agent</artifactId>
+      <version>${org.exoplatform.cloud-management.version}</version>
+      <type>jar</type>
+    </dependency>
   </dependencies>
 
 </project>
