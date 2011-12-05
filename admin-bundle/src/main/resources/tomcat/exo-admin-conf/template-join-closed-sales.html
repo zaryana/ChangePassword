@@ -1,6 +1,10 @@
 <p>
-<BR><p>Hello,</p>
+<br/>
+<p>Hello,</p>
 
-<p>Today, <b>${user.mail}</b> has attempted to join ${tenant.repository.name} workspace.</p>
-<p><b>${tenant.repository.name}</b>  is currently owning a Free Access plan.</p>
-<p>Owner of ${tenant.repository.name} is ${owner.email}.</p>
+<p>We received a request from <b>${user.mail}</b> to join the ${tenant.repository.name} workspace.</p>
+<p>Unfortunately, <b>${tenant.repository.name}</b>  has reached his limit of ${users.maxallowed} users.</p>
+<p>${tenant.repository.name} is currently utilizing a <b>Free Access</b> plan.
+<br/>
+<p>Thank you,</p>
+<p>The eXo Cloud Workspaces Team</p>
