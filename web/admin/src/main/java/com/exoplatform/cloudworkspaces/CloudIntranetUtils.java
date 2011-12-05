@@ -357,10 +357,10 @@ public class CloudIntranetUtils
       }
    }
    
-   public List<String> getTenantAdministrators(String tName) throws CloudAdminException
+   public Map<String,String> getTenantAdministrators(String tName) throws CloudAdminException
    {
    
-      List<String> result = new ArrayList<String>();
+      Map<String,String> result = new HashMap<String,String>();
       URL url;
       HttpURLConnection connection = null;
 
@@ -391,7 +391,7 @@ public class CloudIntranetUtils
             {
                String userName = users.next();
                String email = responseObj.getElement(userName).getStringValue();
-               result.add(email);
+               result.put(userName,email);
             }
           return result;  
          }
@@ -544,11 +544,15 @@ public class CloudIntranetUtils
             cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_JOIN_CLOSED_SALES_SUBJECT).replace("${company}",
                props.get("tenant.repository.name")), salesTemplate, props);
 
-         List<String> adminEmails = getTenantAdministrators(tName);
+         Map<String,String> adminEmails = getTenantAdministrators(tName);
          mailSender.sendMail(userMail, cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_USER_JOINED_SUBJECT)
             .replace("${company}", tName), userTemplate, props);
-         for (String adminEmail : adminEmails)
+         Iterator<String> it =adminEmails.keySet().iterator(); 
+         while (it.hasNext())
          {
+            String username = it.next();
+            String adminEmail = adminEmails.get(username);
+            props.put("admin.firstname", username);
             if (adminEmail != null)
                mailSender.sendMail(adminEmail,
                   cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_JOIN_CLOSED_OWNER_SUBJECT).replace("${company}",
@@ -572,11 +576,15 @@ public class CloudIntranetUtils
       ownerSubject = ownerSubject.replace("${firstname}", firstName);
       try
       {
-         List<String> adminEmails = getTenantAdministrators(tName);
+         Map<String,String> adminEmails = getTenantAdministrators(tName);
          mailSender.sendMail(userMail, cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_USER_JOINED_SUBJECT)
             .replace("${company}", tName), userTemplate, props);
-         for (String adminEmail : adminEmails)
+         Iterator<String> it =adminEmails.keySet().iterator(); 
+         while (it.hasNext())
          {
+            String username = it.next();
+            String adminEmail = adminEmails.get(username);
+            props.put("admin.firstname", username);
             if (adminEmail != null)
                mailSender.sendMail(adminEmail, ownerSubject, ownerTemplate, props);
          }

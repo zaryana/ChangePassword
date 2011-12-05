@@ -204,6 +204,7 @@ public class IntranetAdminService extends TenantCreator
          props.put("user.mail", userMail);
          props.put("user.name", username);
          props.put("first.name", firstName);
+         props.put("last.name", lastName);
 
          int maxUsers = utils.getMaxUsersForTenant(userMail);
          if (utils.isNewUserAllowed(tName, username, maxUsers))
