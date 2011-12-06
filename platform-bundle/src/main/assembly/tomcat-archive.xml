@@ -16,6 +16,16 @@
          </excludes>
          <fileMode>0644</fileMode>
       </fileSet>
+      <!-- Patched executable files -->
+      <fileSet>
+         <directory>src/main/resources/tomcat</directory>
+         <outputDirectory>tomcat-bundle</outputDirectory>
+         <includes>
+           <include>**/*.sh</include>
+           <include>*.sh</include>
+         </includes>
+         <fileMode>0755</fileMode>
+      </fileSet>
       <!-- Executable files -->
       <fileSet>
          <directory>target/tomcat</directory>

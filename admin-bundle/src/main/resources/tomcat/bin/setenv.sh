@@ -25,17 +25,23 @@ EXO_CLOUD_ADMIN_OPTS="-Dcloud.admin.log.dir=${EXO_ADMIN_LOGS_DIR} \
                       -Dcloud.admin.whitelist=${EXO_ADMIN_CONF_DIR}/whitelist.properties \
                       -Dcloud.admin.configuration.file=${EXO_ADMIN_CONF_DIR}/admin.properties "
 
-JMX_OPTS="-Dcom.sun.management.jmxremote.authenticate=true \
-          -Dcom.sun.management.jmxremote.password.file=${CATALINA_HOME}/conf/jmxremote.password \
-          -Dcom.sun.management.jmxremote.access.file=${CATALINA_HOME}/conf/jmxremote.access \
-          -Dcom.sun.management.jmxremote.ssl=false"
-                              
+# HOST_EXTERNAL_ADDR=`ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}'`
+HOST_EXTERNAL_ADDR=localhost
+JMX_OPTS="-Dcom.sun.management.jmxremote=true -Djava.rmi.server.hostname=${HOST_EXTERNAL_ADDR} \
+	-Dcom.sun.management.jmxremote.authenticate=true \
+	-Dcom.sun.management.jmxremote.password.file=${CATALINA_HOME}/conf/jmxremote.password \
+	-Dcom.sun.management.jmxremote.access.file=${CATALINA_HOME}/conf/jmxremote.access \
+	-Dcom.sun.management.jmxremote.ssl=false"
 
 #uncomment if you want to debug app server
 #REMOTE_DEBUG="-Xdebug -Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=y"
 REMOTE_DEBUG=""
 
-export JAVA_OPTS="$JAVA_OPTS $EXO_CLOUD_ADMIN_OPTS $REMOTE_DEBUG $JMX_OPTS"
+# Enable PID control in Catalina
+CATALINA_PID="../temp/catalina.tmp"
+export CATALINA_PID
+
+export JAVA_OPTS="-Xms1g -Xmx4g $JAVA_OPTS $EXO_CLOUD_ADMIN_OPTS $REMOTE_DEBUG $JMX_OPTS"
 
 echo "======="
 echo $JAVA_OPTS
