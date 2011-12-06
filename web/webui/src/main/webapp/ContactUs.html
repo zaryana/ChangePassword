@@ -4,9 +4,17 @@
 		<title>Cloud-workspaces Contact Us</title>
 		<link href="css/Style.css" rel="stylesheet" type="text/css" />
 		<link rel="shortcut icon" type="image/png" href="favicon.png" />
+		<script language="javascript" type="text/javascript">
+		function hideForm(){
+		document.getElementById("MarkLayer").style.display="none";
+		document.getElementById("ContactForm").style.display="none";
+		document.getElementById("Content").style.display="block";
+		}
+		
+		</script>
 	</head>
 	<body>
-		<div class="MarkLayer" style="width: 100%; height: 610px;"><span></span></div>
+		<div class="MarkLayer" id="MarkLayer" style="width: 100%; height: 610px;"><span></span></div>
 		<!--begin header-->
 		<div class="UIHeader">
 			<div class="MainContent">
@@ -22,7 +30,8 @@
 			</div>
 		</div>
 		
-		<div class="UIPageBody ContactPages">
+		<div class="UIPageBody" id="Content" style="display:none;"></div>
+		<div class="UIPageBody ContactPages" id="ContactForm">
 			<form class="UIForm UIFormBox" action=""  method="" name="">
 				<h1 class="TitleForm">Contact Us</h1>
 				<table cols="2">
@@ -42,7 +51,7 @@
 						<td class="Field"></td>
 						<td> 
 							<input class="Button" type="submit"  id="" value="Send" />
-							<input class="Button ButtonGray" type="" id="" value="Cancel" />
+							<input class="Button ButtonGray" type="" id="" value="Cancel" onClick="hideForm();" />
 						</td>
 					</tr>
 				</table>
