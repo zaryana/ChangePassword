@@ -4,7 +4,26 @@
 		<title>Cloud-workspaces Contact Us</title>
 		<link href="css/Style.css" rel="stylesheet" type="text/css" />
 		<link rel="shortcut icon" type="image/png" href="favicon.png" />
+		<script type="text/javascript" src="/js/script.js"></script>
+		<script type="text/javascript" src="/js/jquery-latest.js"></script>
 		<script language="javascript" type="text/javascript">
+		function SendData(){
+		sendDataToLoopfuse({
+		      "email" : _gel('email').value,
+		      "first_name" : _gel('name').value,
+		      "company" : _gel('subject').value,
+		      "message" : _gel('ContactUs_Message__c').value,
+		      // hidden LoopFuse fields
+		      "formid" : _gel('formid').value,
+		      "service_source" : _gel('service_source').value,
+		      "cid" : _gel('cid').value
+		    }, function() {
+		     hideForm();
+		     document.getElementById('Content').innerHTML = "<div class=\"ThanksPages ClearFix\"><h1>Thank you!</h1><p>Your request has been successfully submitted. We will get back to you soon.</p></div>";
+		     });
+		
+		}
+		
 		function hideForm(){
 		document.getElementById("MarkLayer").style.display="none";
 		document.getElementById("ContactForm").style.display="none";
@@ -32,7 +51,7 @@
 		
 		<div class="UIPageBody" id="Content" style="display:none;"></div>
 		<div class="UIPageBody ContactPages" id="ContactForm">
-			<form class="UIForm UIFormBox" action=""  method="" name="">
+			<form class="UIForm UIFormBox" action="javascript:void(0);"  method="POST" name="">
 				<h1 class="TitleForm">Contact Us</h1>
 				<table cols="2">
 					<tr>
@@ -50,11 +69,12 @@
 					<tr>
 						<td class="Field"></td>
 						<td> 
-							<input class="Button" type="submit"  id="" value="Send" />
+							<input class="Button" type="submit"  id="" value="Send" onClick="SendData();" />
 							<input class="Button ButtonGray" type="" id="" value="Cancel" onClick="hideForm();" />
 						</td>
 					</tr>
 				</table>
+				<input type="hidden" name="service_source" id="service_source" value="Cloud-Workspaces" />
 				<input type="hidden"  id="formid" name="formid" value="147cd324-b524-4679-bcad-5f5708ad5beb" />
 				<input type="hidden" id="cid" name="cid" value="LF_df197061" />
 			</form>
@@ -67,5 +87,6 @@
 				<p class="FR">Copyright &copy; 2000-2011. All rights Reserved, eXo Platform SAS.</p>
 			</div>
 		</div>
+		<iframe id="loopfuseOutput" name="loopfuseOutput" style='display:none; visibility:hidden'></iframe>
 	</body>
 </html>
