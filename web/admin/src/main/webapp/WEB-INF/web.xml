@@ -78,6 +78,7 @@
       </web-resource-collection>
       <auth-constraint>
          <role-name>cloud-admin</role-name>
+         <role-name>cloud-manager</role-name>
       </auth-constraint>
       <user-data-constraint>
          <transport-guarantee>NONE</transport-guarantee>
@@ -95,6 +96,11 @@
    <security-role>
       <description>The role that is required to log in to the Cloud admin application</description>
       <role-name>cloud-admin</role-name>
+   </security-role>
+
+   <security-role>
+    <description>The role that is required to log in to the Cloud Tenants validation</description>
+    <role-name>cloud-manager</role-name>
    </security-role>
 
 </web-app>
