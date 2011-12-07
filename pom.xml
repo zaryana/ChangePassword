@@ -11,15 +11,15 @@
   </parent>
   <groupId>com.exoplatform.cloudworkspaces</groupId>
   <artifactId>cloud-workspaces-parent</artifactId>
-  <version>1.0.0-Beta1</version>
+  <version>1.0.0-Beta2-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>eXo Cloud Workspaces</name>
   <description>Parent POM for Cloud Workspaces projects.</description>
 
   <scm>
-    <connection>scm:svn:http://svn.exoplatform.org/exo-int/cloud-workspaces/tags/1.0.0-Beta1</connection>
-    <url>http://svn.exoplatform.org/exo-int/cloud-workspaces/tags/1.0.0-Beta1</url>
-    <developerConnection>scm:svn:http://svn.exoplatform.org/exo-int/cloud-workspaces/tags/1.0.0-Beta1</developerConnection>
+    <connection>scm:svn:http://svn.exoplatform.org/exo-int/cloud-workspaces/trunk/</connection>
+    <url>http://svn.exoplatform.org/exo-int/cloud-workspaces/trunk/</url>
+    <developerConnection>scm:svn:http://svn.exoplatform.org/exo-int/cloud-workspaces/trunk/</developerConnection>
   </scm>
 
   <properties>
