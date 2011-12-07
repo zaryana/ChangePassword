@@ -30,5 +30,5 @@
   <user username="cloudadmin" password="exo12321" roles="cloud-admin"/>
   
    <role rolename="cloud-manager"/>
-   <user username="cmanager" password="cldws12321" roles="cloud-manager"/>
+   <user username="cloudmanager" password="exomkt12321" roles="cloud-manager"/>
 </tomcat-users>
