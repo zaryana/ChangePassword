@@ -9,7 +9,7 @@
       <!-- Default files -->
       <fileSet>
          <directory>target/tomcat</directory>
-         <outputDirectory>tomcat-bundle</outputDirectory>
+         <outputDirectory>Cloud-Workspaces-Platform-${project.version}</outputDirectory>
          <excludes>
            <exclude>**/*.sh</exclude>
            <exclude>webapps/ROOT/**/*</exclude>
@@ -19,7 +19,7 @@
       <!-- Patched executable files -->
       <fileSet>
          <directory>src/main/resources/tomcat</directory>
-         <outputDirectory>tomcat-bundle</outputDirectory>
+         <outputDirectory>Cloud-Workspaces-Platform-${project.version}</outputDirectory>
          <includes>
            <include>**/*.sh</include>
            <include>*.sh</include>
@@ -29,23 +29,17 @@
       <!-- Executable files -->
       <fileSet>
          <directory>target/tomcat</directory>
-         <outputDirectory>tomcat-bundle</outputDirectory>
+         <outputDirectory>Cloud-Workspaces-Platform-${project.version}</outputDirectory>
          <includes>
            <include>**/*.sh</include>
            <include>*.sh</include>
          </includes>
          <fileMode>0755</fileMode>
       </fileSet>
-      <!-- ROOT webapp (cloud admin webui) -->
-      <!-- fileSet>
-        <directory>src/main/resources/ROOT</directory>
-        <outputDirectory>tomcat-bundle/webapps/ROOT</outputDirectory>
-        <fileMode>0644</fileMode>
-      </fileSet -->
    </fileSets>
    <dependencySets>
      <dependencySet>
-       <outputDirectory>tomcat-bundle/webapps</outputDirectory>
+       <outputDirectory>Cloud-Workspaces-Platform-${project.version}/webapps</outputDirectory>
        <includes>
          <include>com.exoplatform.cloudworkspaces:cloud-workspaces-webui:war</include>
        </includes>
@@ -53,7 +47,7 @@
        <fileMode>0644</fileMode>
      </dependencySet>
      <dependencySet>
-       <outputDirectory>tomcat-bundle/lib</outputDirectory>
+       <outputDirectory>Cloud-Workspaces-Platform-${project.version}/lib</outputDirectory>
        <includes>
          <include>mysql:mysql-connector-java</include>
          <include>com.exoplatform.cloudworkspaces:cloud-workspaces-component-organization</include>
