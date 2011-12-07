@@ -135,7 +135,6 @@ Tenants.prototype.init = function() {
               cell2.innerHTML='<a href="#" onClick="tenants.validationAction(\''+tenantSecureServicePath +'/validate/accept/'+account +'\');">Accept</a>&nbsp;/&nbsp;<a href="#" onClick="tenants.validationAction(\''+tenantSecureServicePath+'/validate/refuse/'+account+'\');">Reject</a>';
               var cell3 = row.insertCell(3);
               cell3.className="MyField";
-              alert(account.substring(account.indexOf("_")+1));
               cell3.innerHTML=new Date (parseFloat(account.substring(account.indexOf("_")+1))).toUTCString();
             }
           }
@@ -155,7 +154,7 @@ Tenants.prototype.init = function() {
       self.xmlHttpReq.onreadystatechange = function() {
         if (self.xmlHttpReq.readyState == 4) {
         if (self.xmlHttpReq.responseText == "") {
-         _gel("messageString").innerHTML = "<div class=\"Ok\">Action successfull.</div>";
+         _gel("messageString").innerHTML = "<div class=\"Ok\"><span style=\"color:blue;\">Action successfull.</span></div>";
          tenants.showValidationList(); 
          }
         else
