@@ -44,9 +44,13 @@
     </dependency>
   </dependencies>
 
-  <build>
-    <plugins>
-      <plugin>
+  <profiles>
+    <profile>
+      <id>distrib</id>
+        <build>
+          <finalName>Cloud-Workspaces-Admin-${project.version}</finalName>
+          <plugins>
+          <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
         <executions>
@@ -99,22 +103,11 @@
           </execution>
         </executions>
       </plugin>
-    </plugins>
-  </build>
-
-  <profiles>
-    <profile>
-      <id>pkg-tomcat</id>
-      <activation>
-        <activeByDefault>false</activeByDefault>
-      </activation>
-      <build>
-        <plugins>
           <plugin>
             <artifactId>maven-antrun-plugin</artifactId>
             <executions>
               <execution>
-                <id>configure-cloud-admin</id>
+                <id>-01-configure-cloud-admin</id>
                 <phase>prepare-package</phase>
                 <configuration>
                   <tasks>
@@ -146,6 +139,23 @@
                 <goals>
                   <goal>run</goal>
                 </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>02-assembly</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>single</goal>
+                </goals>
+                <configuration>
+                  <descriptors>
+                    <descriptor>src/main/assembly/tomcat-archive.xml</descriptor>
+                  </descriptors>
+                </configuration>
               </execution>
             </executions>
           </plugin>
