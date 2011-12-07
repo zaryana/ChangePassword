@@ -2,8 +2,7 @@
 <!--
     Copyright (C) 2011 eXo Platform SAS.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.exoplatform</groupId>
@@ -12,15 +11,15 @@
   </parent>
   <groupId>com.exoplatform.cloudworkspaces</groupId>
   <artifactId>cloud-workspaces-parent</artifactId>
-  <version>1.0.0-Beta1-SNAPSHOT</version>
+  <version>1.0.0-Beta1</version>
   <packaging>pom</packaging>
   <name>eXo Cloud Workspaces</name>
   <description>Parent POM for Cloud Workspaces projects.</description>
 
   <scm>
-    <connection>scm:svn:http://svn.exoplatform.org/exo-int/cloud-workspaces/trunk/</connection>
-    <url>http://svn.exoplatform.org/exo-int/cloud-workspaces/trunk/</url>
-    <developerConnection>scm:svn:http://svn.exoplatform.org/exo-int/cloud-workspaces/trunk/</developerConnection>
+    <connection>scm:svn:http://svn.exoplatform.org/exo-int/cloud-workspaces/tags/1.0.0-Beta1</connection>
+    <url>http://svn.exoplatform.org/exo-int/cloud-workspaces/tags/1.0.0-Beta1</url>
+    <developerConnection>scm:svn:http://svn.exoplatform.org/exo-int/cloud-workspaces/tags/1.0.0-Beta1</developerConnection>
   </scm>
 
   <properties>
