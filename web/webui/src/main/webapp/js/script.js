@@ -140,7 +140,7 @@ Tenants.prototype.init = function() {
               cell2.className="MyFieldLeft";
               var date = new Date (parseFloat(account.substring(account.indexOf("_")+1)));
               //toUTCString is too long for table
-              cell2.innerHTML=date.getUTCDate() + "/" + date.getUTCMonth() + "/" + date.getFullYear() + " " + date.getUTCHours() + ":" + date.getUTCMinutes() + "UTC";
+              cell2.innerHTML=date.getUTCDate() + "/" + date.getUTCMonth() + "/" + date.getFullYear() + " " + date.getUTCHours() + ":" + date.getUTCMinutes() + " UTC";
               //Company
               var cell3 = row.insertCell(3);
               cell3.className="MyFieldLeft";
