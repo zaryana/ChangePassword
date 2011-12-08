@@ -15,6 +15,15 @@
   <packaging>war</packaging>
   <name>eXo Cloud Workspaces :: WebUI</name>
   <description>eXo Cloud Workspaces Web application</description>
+  
+  <dependencies>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <version>2.5</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
 
   <build>
     <plugins>
