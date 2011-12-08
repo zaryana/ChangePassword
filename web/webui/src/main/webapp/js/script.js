@@ -82,15 +82,17 @@ Tenants.prototype.init = function() {
  Tenants.prototype.initValidationPage = function() {
       tenants.init();
       if (auth){
-      tenants.showValidatioList();
+      tenants.showValidatioList(true);
       } else {
       tenants.showValidationForm();
       }
 }
 
-  Tenants.prototype.showValidationList = function() {
+  Tenants.prototype.showValidationList = function(isClearStatus) {
       var form = _gel("validationTable");
       form.style.display="none";
+      if (isClearStatus)
+        _gel("messageString").innerHTML="";
 //      _gel("ListTable").style.display="block";
       var checkURL = tenantSecureServicePath + "/requests/";
       var xmlHttpReq = false;
@@ -106,10 +108,9 @@ Tenants.prototype.init = function() {
          try {
          var resp = JSON.parse(self.xmlHttpReq.responseText);
           _gel("ListTable").style.display="table";
-          _gel("messageString").innerHTML="";
          } catch (e){
             if (self.xmlHttpReq.responseText.indexOf("401") > -1){
-              tenants.showValidationForm();
+              tenants.showValidationForm(true);
               _gel("messageString").innerHTML = "<div class=\"Ok\">Wrong workspaces manager credentials.</div>"; 
           } else 
            _gel("messageString").innerHTML = "<div class=\"Ok\">" + self.xmlHttpReq.responseText + "</div>";
@@ -176,7 +177,7 @@ Tenants.prototype.init = function() {
         if (self.xmlHttpReq.readyState == 4) {
         if (self.xmlHttpReq.responseText == "") {
          _gel("messageString").innerHTML = "<div class=\"Ok\"><span style=\"color:blue;\">Action successfull.</span></div>";
-         tenants.showValidationList(); 
+         tenants.showValidationList(false); 
          }
         else
         _gel("messageString").innerHTML = "<div class=\"Ok\">" + self.xmlHttpReq.responseText + "</div>";
@@ -193,7 +194,7 @@ Tenants.prototype.init = function() {
    
    Tenants.prototype.validationLogin = function(){
      auth = encode64(_gel("v_username").value + ":" + _gel("v_pass").value);
-     tenants.showValidationList();
+     tenants.showValidationList(true);
    }
 
 
