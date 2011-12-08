@@ -159,7 +159,7 @@ Tenants.prototype.init = function() {
           var cell_s = row1.insertCell(0);
           cell_s.colSpan="6";
           cell_s.className="MyField";
-          cell_s.innerHTML="<a href=\"javascript:void(0);\" onClick=\"tenants.showValidationList();\">Refresh</a>";
+          cell_s.innerHTML="<a href=\"javascript:void(0);\" onClick=\"tenants.showValidationList(true);\">Refresh</a>";
         }
       }
       self.xmlHttpReq.send(null);
