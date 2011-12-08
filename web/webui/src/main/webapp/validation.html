@@ -28,14 +28,14 @@
 		<!--begin Body-->		
 		<div class="UIPageBody InviPages">
 		<div id="messageString" class="TenantFormMsg"></div>
-			<div class="UIFormBox ClearFix">
+			<div class="UIFormBox ClearFix" style="width:1200px;">
 				<h2 class="TitleForm">Validate cloud workspaces.</h2>
-					<table cols="4" id="ListTable">
+					<table cols="6" id="ListTable" width="100%" style="display:none;">
 						<tr>
-							<td class="MyField">Workspace:</td><td class="MyField">Requestor:</td><td class="MyField">Action:</td><td class="MyField">Time:</td>
+							<td class="MyFieldCenter">Tenant name:</td><td class="MyFieldCenter">Requestor:</td><td class="MyFieldCenter">Date:</td><td class="MyFieldCenter">Company:</td><td class="MyFieldCenter">Phone:</td><td class="MyFieldCenter">Action:</td>
 						</tr>
 					</table>
-					<form name="validationForm" id="validationForm" action="#">
+					<form name="validationForm" id="validationForm" method="POST" action="javascript:void(0);">
 					 <table id="validationTable" cols="2">
 					    <tr>
 					      <td class="MyField">Manager username:</td><td class="MyField"><input type="text" id="v_username"></td>

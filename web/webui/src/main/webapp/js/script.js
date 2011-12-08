@@ -105,7 +105,8 @@ Tenants.prototype.init = function() {
        if (self.xmlHttpReq.readyState == 4) {
          try {
          var resp = JSON.parse(self.xmlHttpReq.responseText);
-          _gel("ListTable").style.display="block";
+          _gel("ListTable").style.display="table";
+          _gel("messageString").innerHTML="";
          } catch (e){
             if (self.xmlHttpReq.responseText.indexOf("401") > -1){
               tenants.showValidationForm();
@@ -114,30 +115,50 @@ Tenants.prototype.init = function() {
            _gel("messageString").innerHTML = "<div class=\"Ok\">" + self.xmlHttpReq.responseText + "</div>";
          }
          var table = _gel("ListTable");
-         var rows = table.rows.length;
-         for (var i=1; i< rows; i++ ){
-         table.deleteRow(i);
-                                                                }
+         //Clear table
+         while (table.rows.length > 1){
+         table.deleteRow(-1);
+         }
+
          for (account in resp)
           {
            if (resp.propertyIsEnumerable(account))
            {
 //              alert(account);              alert(resp[account][0]);         alert(resp[account][1]);
-              var row = table.insertRow(table.rows.length);
+              var row = table.insertRow(-1);
+              //Tname
               var cell0 = row.insertCell(0);
-              cell0.className="MyField";
-              cell0.innerHTML=resp[account][1];
+              cell0.className="MyFieldLeft";
+              cell0.innerHTML= "<b>" +  resp[account][0] + "</b>";
+              //Name + Email
               var cell1 = row.insertCell(1);
-              cell1.className="MyField";
-              cell1.innerHTML=resp[account][0];
+              cell1.className="MyFieldLeft";
+              cell1.innerHTML=resp[account][2] + " &lt;" + resp[account][1] + "&gt;";
+              //Date
               var cell2 = row.insertCell(2);
-              cell2.className="MyField";
-              cell2.innerHTML='<a href="#" onClick="tenants.validationAction(\''+tenantSecureServicePath +'/validate/accept/'+account +'\');">Accept</a>&nbsp;/&nbsp;<a href="#" onClick="tenants.validationAction(\''+tenantSecureServicePath+'/validate/refuse/'+account+'\');">Reject</a>';
+              cell2.className="MyFieldLeft";
+              var date = new Date (parseFloat(account.substring(account.indexOf("_")+1)));
+              //toUTCString is too long for table
+              cell2.innerHTML=date.getUTCDate() + "/" + date.getUTCMonth() + "/" + date.getFullYear() + " " + date.getUTCHours() + ":" + date.getUTCMinutes() + "UTC";
+              //Company
               var cell3 = row.insertCell(3);
-              cell3.className="MyField";
-              cell3.innerHTML=new Date (parseFloat(account.substring(account.indexOf("_")+1))).toUTCString();
+              cell3.className="MyFieldLeft";
+              cell3.innerHTML=resp[account][3];
+              //Phone
+              var cell4 = row.insertCell(4);
+              cell4.className="MyFieldLeft";
+              cell4.innerHTML="<u>" + resp[account][4]+ "</u>";
+              //Action
+              var cell5 = row.insertCell(5);
+              cell5.className="MyFieldLeft";
+              cell5.innerHTML='<a href="#" onClick="tenants.validationAction(\''+tenantSecureServicePath +'/validate/accept/'+account +'\');">Accept</a>&nbsp;|&nbsp;<a href="#" onClick="tenants.validationAction(\''+tenantSecureServicePath+'/validate/refuse/'+account+'\');">Reject</a>&nbsp;|&nbsp;<a href="#" onClick="tenants.validationAction(\''+tenantSecureServicePath +'/validate/blacklist/'+account +'\');">Blacklist</a>&nbsp;';
             }
           }
+          var row1 = table.insertRow(-1);
+          var cell_s = row1.insertCell(0);
+          cell_s.colSpan="6";
+          cell_s.className="MyField";
+          cell_s.innerHTML="<a href=\"javascript:void(0);\" onClick=\"tenants.showValidationList();\">Refresh</a>";
         }
       }
       self.xmlHttpReq.send(null);
