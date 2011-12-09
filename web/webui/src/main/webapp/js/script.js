@@ -48,14 +48,9 @@ Tenants.prototype.init = function() {
   if (queryString != null && queryString != "") {
   var email_start = queryString.indexOf('email=');
   var uuid_start = queryString.indexOf('id=');
-  var end = queryString.indexOf('&');
   var uuid = "";
-  if (end == -1)
-    email = (email_start != -1) ? queryString.substring(email_start + 6) : null;
-  else
-    email = (email_start != -1) ? queryString.substring(email_start + 6, end) : null;
-  if (uuid_start != -1)
-    uuid = queryString.substring(uuid_start + 3);
+  email = (email_start != -1) ? queryString.substring(email_start + 6, uuid_start-1) : null;
+  uuid =  (uuid_start != -1) ? queryString.substring(uuid_start + 3) : null;
   if (email != null && email != "") {
   var split = email.split('@');
   var prefix = split[0];
@@ -202,12 +197,7 @@ Tenants.prototype.init = function() {
     tenants.init();
     if (queryString != null && queryString != "") {
     var email_start = queryString.indexOf('email=');
-    var uuid_start = queryString.indexOf('id=');
-    var end = queryString.indexOf('&');
-    if (end == -1)
-      email = (email_start != -1) ? queryString.substring(email_start + 6) : null;
-    else
-      email = (email_start != -1) ? queryString.substring(email_start + 6, end) : null;
+     email = (email_start != -1) ? queryString.substring(email_start + 6) : null;
     if (email != null && email != "") {
     var split = email.split('@');
      _gel('email').value = email;
@@ -398,7 +388,7 @@ Tenants.prototype.handleSignupResponse = function(resp) {
       "formid" : _gel('formid').value,
       "cid" : _gel('cid').value
     }, function() {
-      window.location = prefixUrl + "/signup-done.html";
+      window.location = prefixUrl + "/page?to=signup-done";
     });
   } else {
     _gel("messageString").innerHTML = resp;
@@ -422,7 +412,7 @@ Tenants.prototype.handleCreationResponse = function(resp) {
       "formid" : _gel('formid').value,
       "cid" : _gel('cid').value
     }, function() {
-      window.location = prefixUrl + "/registration-done.html";
+      window.location = prefixUrl + "/page?to=registration-done";
     });
   } else {
     _gel("messageString").innerHTML = resp;
@@ -443,7 +433,7 @@ Tenants.prototype.handleJoinResponse = function(resp) {
       "formid" : _gel('formid').value,
       "cid" : _gel('cid').value
     }, function() {
-      window.location = prefixUrl + "/join-done.html";
+      window.location = prefixUrl + "/page?to=join-done";
     });
   } else {
     _gel("messageString").innerHTML = resp;
