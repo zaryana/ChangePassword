@@ -12,7 +12,7 @@
 		<!--begin FormPages-->		
 		 <div class="UIPageBody FormPages">
 			<h1>Activate Your Cloud Workspaces Account</h1>
-			<p>To participate in the Cloud Workspaces private beta, please complete your profile.</p>
+			<p style="text-align:center">To participate in the Cloud Workspaces private beta, please complete your profile.</p>
 			<div id="messageString" class="TenantFormMsg"></div>
 			<form class="UIForm" action="javascript:void(0);"  method="POST" name="cloud-workspaces-profile">
 				<table cols="2">
