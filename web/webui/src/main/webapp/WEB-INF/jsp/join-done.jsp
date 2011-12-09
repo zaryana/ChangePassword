@@ -18,7 +18,7 @@
 			</div>
 			<div class="RightContent">
 				<h3>Even more to explore:</h3>
-				<a href="/cloud/page?to=about">Read an introduction to the key features of eXo Cloud Workspaces</a>
+				<a href="/page?to=about">Read an introduction to the key features of eXo Cloud Workspaces</a>
 				<a href="http://community.exoplatform.com">Join the eXo Community to connect with other users, access documentation, forums and more</a>
 				<a href="http://exoplatform.com/company/en/platform/exo-platform-35">Want to host your own social intranet on-premise or in a private cloud? Learn more about eXo Platform 3.5</a>
 			</div>
