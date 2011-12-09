@@ -28,7 +28,6 @@ import com.exoplatform.cloudworkspaces.TenantCreatedListenerThread;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -49,6 +48,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.exoplatform.cloudmanagement.admin.queue.TenantQueueException;
 import org.exoplatform.cloudmanagement.admin.rest.TenantCreator;
 import org.exoplatform.cloudmanagement.admin.CloudAdminException;
 import org.exoplatform.cloudmanagement.admin.TenantMetadataValidator;
@@ -116,8 +116,10 @@ public class IntranetAdminService extends TenantCreator
       {
          if (!utils.validateEmail(userMail))
             return Response.status(Status.BAD_REQUEST).entity("Please enter a valid email address.").build();
+         
          username = userMail.substring(0, (userMail.indexOf("@")));
          tName = utils.getTenantNameFromWhitelist(userMail);
+         
          if (tName == null)
          {
             String domain = userMail.substring(userMail.indexOf("@"));
@@ -153,16 +155,6 @@ public class IntranetAdminService extends TenantCreator
          {
             return Response.ok(e.getMessage()).build();
          }
-         catch (CloudAdminException e)
-         {
-            LOG.error(e.getMessage());
-            return Response.ok("Can not finish signup action. Please contact support.").build();
-         }
-      }
-      catch (CloudAdminException e)
-      {
-         LOG.error(e.getMessage());
-         return Response.ok("Can not finish signup action. Please contact support.").build();
       }
       return Response.ok().build();
    }
@@ -198,6 +190,7 @@ public class IntranetAdminService extends TenantCreator
                .entity("Sorry, we can't join you with an email address " + domain + ". Try with your work email.")
                .build();
          }
+         // Prepare properties for mailing
          Map<String, String> props = new HashMap<String, String>();
          props.put("tenant.masterhost", adminConfiguration.getMasterHost());
          props.put("tenant.repository.name", tName);
@@ -209,11 +202,13 @@ public class IntranetAdminService extends TenantCreator
          int maxUsers = utils.getMaxUsersForTenant(userMail);
          if (utils.isNewUserAllowed(tName, username, maxUsers))
          {
+            // Storing user & sending appropriate mails
             utils.storeUser(tName, userMail, firstName, lastName, password, false);
             utils.sendUserJoinedEmails(tName, firstName, userMail, props);
          }
          else
          {
+            // Limit reached
             props.put("users.maxallowed", Integer.toString(maxUsers));
             utils.sendJoinRejectedEmails(tName, userMail, props);
          }
@@ -223,12 +218,6 @@ public class IntranetAdminService extends TenantCreator
       {
          return Response.ok(e.getMessage()).build();
       }
-      catch (CloudAdminException e)
-      {
-         LOG.error(e.getMessage());
-         return Response.ok("Can not finish join action. Please contact support.").build();
-      }
-
    }
 
    /**
@@ -251,8 +240,6 @@ public class IntranetAdminService extends TenantCreator
       @FormParam("phone") String phone, @FormParam("password") String password,
       @FormParam("confirmation-id") String uuid) throws CloudAdminException
    {
-      try
-      {
          if (!utils.validateEmail(userMail))
             return Response.status(Status.BAD_REQUEST).entity("Please enter a valid email address.").build();
          String tName = utils.getTenantNameFromWhitelist(userMail);
@@ -263,19 +250,15 @@ public class IntranetAdminService extends TenantCreator
                .entity("Sorry, we can't create workspace with an email address " + domain + ". Try with your work email.")
                .build();
          }
-         super.createTenantWithConfirmedEmail(uuid);
+         Response resp = super.createTenantWithConfirmedEmail(uuid);
+         if (resp.getStatus() != 200)
+            throw new CloudAdminException((String)resp.getEntity());
          TenantCreatedListenerThread thread =
             new TenantCreatedListenerThread(tName, userMail, firstName, lastName, companyName, phone, password,
                cloudInfoHolder, adminConfiguration);
          ExecutorService executor = Executors.newSingleThreadExecutor();
          executor.execute(thread);
          return Response.ok().build();
-      }
-      catch (CloudAdminException e)
-      {
-         LOG.error(e.getMessage());
-         return Response.ok("Can not finish workspace creation. Please contact support.").build();
-      }
    }
     
 
@@ -288,14 +271,14 @@ public class IntranetAdminService extends TenantCreator
     */
    @GET
    @Path("/status/{tenantname}")
-   public Response tenantStatus(@PathParam("tenantname") String tenantName) throws CloudAdminException
+   public Response tenantStatus(@PathParam("tenantname") String tenantName)
    {
       try
       {
          TenantStatus status = cloudInfoHolder.getTenantStatus(tenantName);
          return Response.ok(status.getState().toString()).build();
       }
-      catch (CloudAdminException e)
+      catch (TenantQueueException e)
       {
          return Response.ok("NOT_FOUND").build();
       }
@@ -321,8 +304,10 @@ public class IntranetAdminService extends TenantCreator
       }
       
       String folderName = adminConfiguration.getProperty("cloud.admin.tenant.waiting.dir"); 
-      if (folderName == null)
-         return Response.ok("Can not finish tenant creation. Please contact support.").build();
+      if (folderName == null){
+         LOG.error("Property cloud.admin.tenant.waiting.dir not found in configuration.");
+         throw new CloudAdminException("Can not finish tenant creation. Please contact support.");
+      }
       File folder = new File(folderName);
       if (!folder.exists())
          folder.mkdir();
@@ -348,7 +333,7 @@ public class IntranetAdminService extends TenantCreator
       catch (Exception e)
       {
          LOG.error(e.getMessage());
-         return Response.ok("Can not finish workspace creation. Please contact support.").build();
+         throw new CloudAdminException("A problem happened during processsing this request. It was reported to developers. Please, try again later.");
       }
       
       return Response.ok().build();
@@ -363,9 +348,10 @@ public class IntranetAdminService extends TenantCreator
    {
       Map<String, String[]> result = new HashMap<String, String[]>();
       String folder = adminConfiguration.getProperty("cloud.admin.tenant.waiting.dir");
-      if (folder == null)
-         throw new CloudAdminException(
-            "Can not get workspace list - property cloud.admin.tenant.waiting.dir not found in admin configuration.");
+      if (folder == null){
+         LOG.error("Property cloud.admin.tenant.waiting.dir not found in admin configuration.");
+         throw new CloudAdminException("A problem happened during processsing this request. It was reported to developers. Please, try again later.");
+      }
       File[] list = new File(folder).listFiles();
       for (File one : list)
       {
@@ -376,15 +362,18 @@ public class IntranetAdminService extends TenantCreator
             properties.load(io);
             io.close();
             String tName = properties.getProperty("tenant");
-            String[] data = new String[2];
-            data[0] = properties.getProperty("user-mail");
-            data[1] = tName;
+            String[] data = new String[5];
+            data[0] = tName;
+            data[1] = properties.getProperty("user-mail");
+            data[2] = properties.getProperty("first-name") + " " + properties.getProperty("last-name");
+            data[3] = properties.getProperty("company-name");
+            data[4] = properties.getProperty("phone");
             result.put(one.getName().substring(0, one.getName().indexOf(".")), data);
          }
          catch (Exception e)
          {
             LOG.error(e.getMessage());
-            throw new CloudAdminException("Can not get workspaces requests list. Please contact support.");
+            throw new CloudAdminException("A problem happened during retrieving requests list . It was reported to developers. Please, try again later.");
          }
       }
       return result;
@@ -398,11 +387,11 @@ public class IntranetAdminService extends TenantCreator
    {
 
       String folderName = adminConfiguration.getProperty("cloud.admin.tenant.waiting.dir");
-      if (folderName == null)
-         return Response
-            .ok(
-               "Can not confirm/reject workspace - property cloud.admin.tenant.waiting.dir not found in admin configuration.")
-            .build();
+      if (folderName == null){
+         LOG.error("Property cloud.admin.tenant.waiting.dir not found in admin configuration.");
+         throw new CloudAdminException("Can not apply operation. Please contact support.");
+      }
+         
       File propertyFile = new File(folderName + filename + ".properties");
       Properties properties;
       try
@@ -414,7 +403,7 @@ public class IntranetAdminService extends TenantCreator
       }
       catch (Exception ex)
       {
-         return Response.ok("Tenant data file not found on server anymore.").build();
+         throw new CloudAdminException("Tenant data file not found on server anymore.");
       }
 
       if (decision.equalsIgnoreCase("accept"))
@@ -432,7 +421,7 @@ public class IntranetAdminService extends TenantCreator
          }
          else
          {
-            return Response.ok("Some eror happened during accepting creation.").build();
+            throw new CloudAdminException("Can not apply operation. Please contact support.");
          }
 
       }
@@ -442,9 +431,16 @@ public class IntranetAdminService extends TenantCreator
          propertyFile.delete();
          return Response.ok().build();
       }
+      else if (decision.equalsIgnoreCase("blacklist"))
+      {
+         //TODO: real blacklist
+         LOG.info("Tenant " + properties.getProperty("tenant") + " was blacklisted.");
+         propertyFile.delete();
+         return Response.ok().build();
+      }
       else
       {
-         return Response.ok("Unknown action.").build();
+         throw new CloudAdminException("Unknown action.");
       }
 
    }

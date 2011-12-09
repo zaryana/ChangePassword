@@ -34,10 +34,8 @@ import java.net.Authenticator;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -173,18 +171,22 @@ public class CloudIntranetUtils
          else
          {
             String err = readText(connection.getErrorStream());
-            throw new CloudAdminException("Unable to add user to workspace " + tName + " (" + hostName
+            LOG.error("Unable to add user to workspace " + tName + " (" + hostName
                + ") - HTTP status:" + connection.getResponseCode()
                + (err != null ? ". Server error: \r\n" + err + "\r\n" : ""));
+            throw new CloudAdminException("A problem happened during processsing this request. It was reported to developers. Please, try again later.");
          }
       }
       catch (MalformedURLException e)
       {
-         throw new CloudAdminException(e.getLocalizedMessage(), e);
+         LOG.error(e.getMessage(), e);
+         throw new CloudAdminException("A problem happened during processsing this request. It was reported to developers. Please, try again later.");
       }
       catch (IOException e)
       {
-         throw new CloudAdminException(e.getLocalizedMessage(), e);
+         LOG.error(e.getMessage(), e);
+         throw new CloudAdminException("A problem happened during processsing this request. It was reported to developers. Please, try again later.");
+
       }
       finally
       {
@@ -237,17 +239,22 @@ public class CloudIntranetUtils
          else
          {
             String err = readText(connection.getErrorStream());
-            throw new CloudAdminException("Unable to add ROOT user to workspace " + tName + "- HTTP status:"
+            LOG.error("Unable to add ROOT user to workspace " + tName + "- HTTP status:"
                + connection.getResponseCode() + (err != null ? ". Server error: \r\n" + err + "\r\n" : ""));
+            throw new CloudAdminException("A problem happened during processsing this request. It was reported to developers. Please, try again later.");
+
          }
       }
       catch (MalformedURLException e)
       {
-         throw new CloudAdminException(e.getLocalizedMessage(), e);
+         LOG.error(e.getMessage(), e);
+         throw new CloudAdminException("A problem happened during processsing this request. It was reported to developers. Please, try again later.");
+
       }
       catch (IOException e)
       {
-         throw new CloudAdminException(e.getLocalizedMessage(), e);
+         LOG.error(e.getMessage(), e);
+         throw new CloudAdminException("A problem happened during processsing this request. It was reported to developers. Please, try again later.");
       }
       finally
       {
@@ -260,10 +267,10 @@ public class CloudIntranetUtils
    
 
 
-   public boolean isNewUserAllowed(String _tName, String _username, int maxUsers) throws CloudAdminException
+   public boolean isNewUserAllowed(String tName, String username, int maxUsers) throws CloudAdminException
    {
-      if (_tName == null || _username == null)
-         throw new CloudAdminException("Cannot validate user " + _username + " on workspace " + _tName);
+      if (tName == null || username == null)
+         throw new CloudAdminException("Cannot validate user with such input data. Please, rewiev it.");
       URL url;
       HttpURLConnection connection = null;
       StringBuilder strUrl = new StringBuilder();
@@ -301,13 +308,13 @@ public class CloudIntranetUtils
                while (tenant.hasNext())
                {
                   String tenantName = tenant.next();
-                  if (tenantName.equalsIgnoreCase(_tName))
+                  if (tenantName.equalsIgnoreCase(tName))
                   {
                      Iterator<String> users = responseObj.getElement(asName).getElement(tenantName).getKeys();
                      while (users.hasNext())
                      {
                         String userName = users.next();
-                        if (!userName.equalsIgnoreCase(_username))
+                        if (!userName.equalsIgnoreCase(username))
                         {
                            counter++;
                         }
@@ -332,21 +339,25 @@ public class CloudIntranetUtils
          else
          {
             String err = readText(connection.getErrorStream());
-            throw new CloudAdminException("Unable to get user list from workspace " + _tName + " - HTTP status"
+            LOG.error("Unable to get user list from workspace " + tName + " - HTTP status"
                + connection.getResponseCode() + (err != null ? ". Server error: \r\n" + err + "\r\n" : ""));
+            throw new CloudAdminException("A problem happened during processsing this request. It was reported to developers. Please, try again later.");
          }
       }
       catch (MalformedURLException e)
       {
-         throw new CloudAdminException(e.getLocalizedMessage(), e);
+         LOG.error(e.getMessage(), e);
+         throw new CloudAdminException("A problem happened during processsing this request. It was reported to developers. Please, try again later.");
       }
       catch (IOException e)
       {
-         throw new CloudAdminException(e.getLocalizedMessage(), e);
+         LOG.error(e.getMessage(), e);
+         throw new CloudAdminException("A problem happened during processsing this request. It was reported to developers. Please, try again later.");
       }
       catch (JsonException e)
       {
-         throw new CloudAdminException(e.getLocalizedMessage(), e);
+         LOG.error(e.getMessage(), e);
+         throw new CloudAdminException("A problem happened during processsing this request. It was reported to developers. Please, try again later.");
       }
       finally
       {
@@ -364,14 +375,11 @@ public class CloudIntranetUtils
       URL url;
       HttpURLConnection connection = null;
 
-      StringBuilder hostName = new StringBuilder();
-      hostName.append(tName);
-      hostName.append(".");
-      hostName.append(cloudAdminConfiguration.getProperty("cloud.admin.frontend.server.host"));
-
       StringBuilder strUrl = new StringBuilder();
       strUrl.append("http://");
-      strUrl.append(hostName);
+      strUrl.append(tName);
+      strUrl.append(".");
+      strUrl.append(cloudAdminConfiguration.getProperty("cloud.admin.frontend.server.host"));
       strUrl.append("/cloud-agent/rest/organization/administrators/"+ tName);
       
       InputStream io;
@@ -398,22 +406,29 @@ public class CloudIntranetUtils
          else
          {
             String err = readText(connection.getErrorStream());
-            throw new CloudAdminException("Unable to get administrators list from workspace " + tName + " (" + hostName
-               + ") - HTTP status:" + connection.getResponseCode()
+            LOG.error("Unable to get administrators list from workspace " + tName 
+               + " - HTTP status:" + connection.getResponseCode()
                + (err != null ? ". Server error: \r\n" + err + "\r\n" : ""));
+            throw new CloudAdminException("A problem happened during processsing this request. It was reported to developers. Please, try again later.");
          }
       }
       catch (MalformedURLException e)
       {
-         throw new CloudAdminException(e.getLocalizedMessage(), e);
+         LOG.error(e.getMessage(), e);
+         throw new CloudAdminException("A problem happened during processsing this request. It was reported to developers. Please, try again later.");
+
       }
       catch (IOException e)
       {
-         throw new CloudAdminException(e.getLocalizedMessage(), e);
+         LOG.error(e.getMessage(), e);
+         throw new CloudAdminException("A problem happened during processsing this request. It was reported to developers. Please, try again later.");
+
       }
       catch (JsonException e)
       {
-         throw new CloudAdminException(e.getLocalizedMessage(), e);
+         LOG.error(e.getMessage(), e);
+         throw new CloudAdminException("A problem happened during processsing this request. It was reported to developers. Please, try again later.");
+
       }
       finally
       {
@@ -425,7 +440,7 @@ public class CloudIntranetUtils
    }
 
    @Deprecated
-   public String getTenantOwnerEmail(String _tName) throws CloudAdminException
+   public String getTenantOwnerEmail(String tName) throws CloudAdminException
    {
 
       URL url;
@@ -466,7 +481,7 @@ public class CloudIntranetUtils
                while (tenant.hasNext())
                {
                   String tenantName = tenant.next();
-                  if (tenantName.equalsIgnoreCase(_tName))
+                  if (tenantName.equalsIgnoreCase(tName))
                   {
                      Iterator<String> users = responseObj.getElement(asName).getElement(tenantName).getKeys();
                      while (users.hasNext())
@@ -489,21 +504,25 @@ public class CloudIntranetUtils
          else
          {
             String err = readText(connection.getErrorStream());
-            throw new CloudAdminException("Unable to get owner email from workspace " + _tName + " - HTTP status"
+            LOG.error("Unable to get owner email from workspace " + tName + " - HTTP status"
                + connection.getResponseCode() + (err != null ? ". Server error: \r\n" + err + "\r\n" : ""));
+            throw new CloudAdminException("A problem happened during processsing this request. It was reported to developers. Please, try again later.");
          }
       }
       catch (MalformedURLException e)
       {
-         throw new CloudAdminException(e.getLocalizedMessage(), e);
+         LOG.error(e.getMessage(), e);
+         throw new CloudAdminException("A problem happened during processsing this request. It was reported to developers. Please, try again later.");
       }
       catch (IOException e)
       {
-         throw new CloudAdminException(e.getLocalizedMessage(), e);
+         LOG.error(e.getMessage(), e);
+         throw new CloudAdminException("A problem happened during processsing this request. It was reported to developers. Please, try again later.");
       }
       catch (JsonException e)
       {
-         throw new CloudAdminException(e.getLocalizedMessage(), e);
+         LOG.error(e.getMessage(), e);
+         throw new CloudAdminException("A problem happened during processsing this request. It was reported to developers. Please, try again later.");
       }
       finally
       {
@@ -547,7 +566,7 @@ public class CloudIntranetUtils
          Map<String,String> adminEmails = getTenantAdministrators(tName);
          mailSender.sendMail(userMail, cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_USER_JOINED_SUBJECT)
             .replace("${company}", tName), userTemplate, props);
-         Iterator<String> it =adminEmails.keySet().iterator(); 
+         Iterator<String> it = adminEmails.keySet().iterator(); 
          while (it.hasNext())
          {
             String username = it.next();
@@ -663,7 +682,9 @@ public class CloudIntranetUtils
       String tail = email.substring(email.indexOf("@") + 1);
       if (whiteListConfigurationFile == null)
       {
-         throw new CloudAdminException("Whitelist file is not defined in admin configuration!");
+         String tName = tail.substring(0,tail.indexOf("."));
+         LOG.info("White list not configured, allowing tenant " + tName + "from email:" + email);
+         return tName;
       }
       String value = null;
       String tName = null;
@@ -688,11 +709,14 @@ public class CloudIntranetUtils
       }
       catch (FileNotFoundException e)
       {
-         throw new CloudAdminException(e.getMessage());
+         tName = tail.substring(0,tail.indexOf("."));
+         LOG.info("White list file not found, allowing tenant " + tName + "from email:" + email);
+         return tName;
       }
       catch (IOException e)
       {
-         throw new CloudAdminException(e.getMessage());
+         LOG.error(e.getMessage(), e);
+         throw new CloudAdminException("A problem happened during processsing this request. It was reported to developers. Please, try again later.");
       }
       return tName;
    }
@@ -702,7 +726,7 @@ public class CloudIntranetUtils
       String tail = email.substring(email.indexOf("@") + 1);
       if (whiteListConfigurationFile == null)
       {
-         throw new CloudAdminException("Whitelist file is not defined in admin configuration!");
+         return Integer.parseInt(cloudAdminConfiguration.getProperty(CLOUD_ADMIN_TENANT_MAXUSERS, "20"));
       }
       String value = null;
       int count = -1;
@@ -714,24 +738,25 @@ public class CloudIntranetUtils
          properties.load(io);
          value = properties.getProperty(tail);
          if (value == null)
-            throw new CloudAdminException("This domain is not allowed to create workspaces. Please contact support.");
+            return Integer.parseInt(cloudAdminConfiguration.getProperty(CLOUD_ADMIN_TENANT_MAXUSERS, "20"));
          if (value.indexOf(":") > -1)
          {
             count = Integer.parseInt(value.substring(value.indexOf(":") + 1));
          }
          else
          {
-            count = Integer.parseInt(cloudAdminConfiguration.getProperty("CLOUD_ADMIN_TENANT_MAXUSERS", "20"));
+            count = Integer.parseInt(cloudAdminConfiguration.getProperty(CLOUD_ADMIN_TENANT_MAXUSERS, "20"));
          }
          io.close();
       }
       catch (FileNotFoundException e)
       {
-         throw new CloudAdminException(e.getMessage());
+         return Integer.parseInt(cloudAdminConfiguration.getProperty(CLOUD_ADMIN_TENANT_MAXUSERS, "20"));
       }
       catch (IOException e)
       {
-         throw new CloudAdminException(e.getMessage());
+         LOG.error(e.getMessage(), e);
+         throw new CloudAdminException("A problem happened during processsing this request. It was reported to developers. Please, try again later.");
       }
       return count;
    }
