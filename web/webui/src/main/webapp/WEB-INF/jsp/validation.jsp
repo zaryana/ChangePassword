@@ -5,6 +5,7 @@
     <% String pageName = "Cloud-workspaces Invite"; %>
     <%@ include file="common/headStyle.jsp"%>
     <%@ include file="common/headScript.jsp"%>
+    <script type="text/javascript" src="/js/json2.js"></script>
 	</head>
 	<body onLoad="tenants.initValidationPage();">
 		<!--begin header-->
