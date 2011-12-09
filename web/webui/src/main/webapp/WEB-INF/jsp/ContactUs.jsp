@@ -3,6 +3,7 @@
 	<head>
     <% String pageName = "Cloud-workspaces Contact Us"; %>
     <%@ include file="common/headStyle.jsp"%>
+    <%@ include file="common/headScript.jsp"%>
     <script language="javascript" type="text/javascript">
      function SendData(){
       sendDataToLoopfuse({
@@ -16,7 +17,7 @@
       "cid" : _gel('cid').value
     }, function() {
       hideForm();
-      document.getElementById('Content').innerHTML = "<div class=\"ThanksPages ClearFix\"><h1>Thank you!</h1><p>Your request has been successfully submitted. We will get back to you soon.</p></div>";
+      document.getElementById('Content').innerHTML = "<div class=\"ThanksPages ClearFix\"><h1>Thank you!</h1><p style=\"text-align:center\">Your request has been successfully submitted. We will get back to you soon.</p></div>";
       });
     }
 
@@ -29,7 +30,7 @@
     </script>
 	</head>
 	<body>
-		<div class="MarkLayer" style="width: 100%; height: 630px;"><span></span></div>
+		<div class="MarkLayer" id="MarkLayer" style="width: 100%; height: 630px;"><span></span></div>
 		<!--begin header-->
     <%@ include file="common/header.jsp"%>
 		
@@ -66,5 +67,6 @@
 		
 		<!--begin Footer-->
     <%@ include file="common/footer.jsp"%>
+    <iframe id="loopfuseOutput" name="loopfuseOutput" style='display:none; visibility:hidden'></iframe>
 	</body>
 </html>
