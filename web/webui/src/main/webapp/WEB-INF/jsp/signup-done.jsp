@@ -22,7 +22,7 @@
 				<a href="http://community.exoplatform.com">Join the eXo Community to connect with other users, access documentation, forums and more</a>
 				<a href="http://exoplatform.com/company/en/products">Want to host your own social intranet on-premise or in a private cloud? Learn more about eXo Platform 3.5</a>
 			</div>
-			<center><a class="BackIcon" href="/cloud">Back</a></center>
+			<center><a class="BackIcon" href="/main.jsp">Back</a></center>
 		</div>
 		
 		<!--begin Footer-->	
