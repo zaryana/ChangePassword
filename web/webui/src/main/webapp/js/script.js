@@ -467,26 +467,26 @@ Tenants.prototype.xmlhttpPost = function(strURL, handler, paramsMapper) {
 }
 
 Tenants.prototype.getquerystringSignup = function() {
-  qstr = 'user-mail=' + _gel('email').value;
+  qstr = 'user-mail=' + jQuery.trim(_gel('email').value);
   return qstr;
 }
 
 Tenants.prototype.getquerystringJoin = function() {
-  qstr = 'user-mail=' + _gel('email').value;
-  qstr += '&first-name=' + _gel('first_name').value;
-  qstr += '&last-name=' + _gel('last_name').value;
-  qstr += '&password=' + _gel('password').value;
+  qstr = 'user-mail=' + jQuery.trim(_gel('email').value);
+  qstr += '&first-name=' + jQuery.trim(_gel('first_name').value);
+  qstr += '&last-name=' + jQuery.trim(_gel('last_name').value);
+  qstr += '&password=' + jQuery.trim(_gel('password').value);
   return qstr;
 }
 
 Tenants.prototype.getquerystringCreate = function() {
-  qstr = 'user-mail=' + _gel('email').value;
-  qstr += '&first-name=' + _gel('first_name').value;
-  qstr += '&last-name=' + _gel('last_name').value;
-  qstr += '&password=' + _gel('password').value;
-  qstr += '&phone=' + _gel('phone_work').value;
-  qstr += '&company-name=' + _gel('company').value;
-  qstr += '&confirmation-id=' + _gel('confirmation-id').value;
+  qstr = 'user-mail=' + jQuery.trim(_gel('email').value);
+  qstr += '&first-name=' + jQuery.trim(_gel('first_name').value);
+  qstr += '&last-name=' + jQuery.trim(_gel('last_name').value);
+  qstr += '&password=' + jQuery.trim(_gel('password').value);
+  qstr += '&phone=' + jQuery.trim(_gel('phone_work').value);
+  qstr += '&company-name=' + jQuery.trim(_gel('company').value);
+  qstr += '&confirmation-id=' + jQuery.trim(_gel('confirmation-id').value);
   return qstr;
 }
 
