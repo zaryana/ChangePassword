@@ -11,7 +11,7 @@
 		<!--begin ThanksPages-->	
 		 <div class="UIPageBody ThanksPages ClearFix">
 			<h1>Welcome to Your Workspace</h1>
-			<p>Get started with Cloud Workspaces by checking out these helpful resources.</p>
+			<p style="text-align:center">Get started with Cloud Workspaces by checking out these helpful resources.</p>
 			<div class="LeftContent">
 				<h3>Watch the Getting Started video:</h3>
 				<div class="Video"><img alt="" src="background/Video.jpg" /></div>

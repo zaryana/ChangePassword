@@ -11,7 +11,7 @@
 		<!--begin ThanksPages-->	
 		 <div class="UIPageBody ThanksPages ClearFix">
 			<h1>Thank you for your interest</h1>
-			<p>We've received your request to participate in the private beta. When your Cloud Workspaces account is available, we'll notify you via email. In the meantime, you can learn more about Cloud Workspaces by checking out these helpful resources.</p>
+			<p style="text-align:center">We've received your request to participate in the private beta. When your Cloud Workspaces account is available, we'll notify you via email. In the meantime, you can learn more about Cloud Workspaces by checking out these helpful resources.</p>
 			<div class="LeftContent">
 				<h3>Watch the Getting Started video:</h3>
 				<div class="Video"><img alt="" src="background/Video.jpg" /></div>

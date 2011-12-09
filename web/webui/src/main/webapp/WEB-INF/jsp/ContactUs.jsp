@@ -26,6 +26,10 @@
      document.getElementById("ContactForm").style.display="none";
      document.getElementById("Content").style.display="block";
     }
+    
+    function cancel() {
+      window.location = "/page?to=index";
+    }
 
     </script>
 	</head>
@@ -55,7 +59,7 @@
 		  <td class="Field"></td>
 		  <td>
 		    <input class="Button" type="submit"  id="" value="Send" onClick="SendData();" />
-		    <input class="Button ButtonGray" type="" id="" value="Cancel" onClick="hideForm();" />
+		    <input class="Button ButtonGray" type="" id="" value="Cancel" onClick="cancel();" />
 		  </td>
 		 </tr>
 		</table>
