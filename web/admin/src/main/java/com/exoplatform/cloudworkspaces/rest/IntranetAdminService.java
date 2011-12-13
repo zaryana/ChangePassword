@@ -20,6 +20,8 @@ package com.exoplatform.cloudworkspaces.rest;
 
 import static org.exoplatform.cloudmanagement.rest.admin.CloudAdminRestServicePaths.CLOUD_ADMIN_PUBLIC_TENANT_CREATION_SERVICE;
 
+import com.exoplatform.cloudworkspaces.RequestState;
+
 import com.exoplatform.cloudworkspaces.UserAlreadyExistsException;
 
 import com.exoplatform.cloudworkspaces.CloudIntranetUtils;
@@ -27,7 +29,9 @@ import com.exoplatform.cloudworkspaces.TenantCreatedListenerThread;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -315,6 +319,7 @@ public class IntranetAdminService extends TenantCreator
       File propertyFile = new File(folderName + tName + "_"+ System.currentTimeMillis() + ".properties");
       
       Properties properties = new Properties();
+      properties.put("action", RequestState.WAITING_CREATION.toString());
       properties.put("tenant", tName);
       properties.put("user-mail", userMail);
       properties.put("first-name", firstName);
@@ -361,6 +366,8 @@ public class IntranetAdminService extends TenantCreator
             Properties properties = new Properties();
             properties.load(io);
             io.close();
+            if (!properties.getProperty("action").equalsIgnoreCase(RequestState.WAITING_CREATION.toString()))
+               continue;
             String tName = properties.getProperty("tenant");
             String[] data = new String[5];
             data[0] = tName;
@@ -416,12 +423,30 @@ public class IntranetAdminService extends TenantCreator
 
          if (resp.getStatus() == 200 && resp.getEntity() == null)
          {
+            File[] list = new File(folderName).listFiles();
+            for (File one : list)
+            {
+               if (one.getName().startsWith(properties.getProperty("tenant") + "_")){
+                  try
+                  {
+                     FileInputStream io = new FileInputStream(one);
+                     Properties newprops = new Properties();
+                     newprops.load(io);
+                     io.close();
+                     newprops.put("action", RequestState.WAITING_JOIN.toString());
+                     newprops.store(new FileOutputStream(one), "");
+                  }
+                  catch (IOException e)
+                  {
+                  }
+               }
+            }
             propertyFile.delete();
             return resp;
          }
          else
          {
-            throw new CloudAdminException("Can not apply operation. Please contact support.");
+            throw new CloudAdminException("Can not apply this operation. Please contact support.");
          }
 
       }

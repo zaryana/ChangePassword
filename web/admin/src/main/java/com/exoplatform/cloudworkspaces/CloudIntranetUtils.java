@@ -26,6 +26,7 @@ import static org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConf
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -174,18 +175,18 @@ public class CloudIntranetUtils
             LOG.error("Unable to add user to workspace " + tName + " (" + hostName
                + ") - HTTP status:" + connection.getResponseCode()
                + (err != null ? ". Server error: \r\n" + err + "\r\n" : ""));
-            throw new CloudAdminException("A problem happened during processsing this request. It was reported to developers. Please, try again later.");
+            throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
          }
       }
       catch (MalformedURLException e)
       {
          LOG.error(e.getMessage(), e);
-         throw new CloudAdminException("A problem happened during processsing this request. It was reported to developers. Please, try again later.");
+         throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
       }
       catch (IOException e)
       {
          LOG.error(e.getMessage(), e);
-         throw new CloudAdminException("A problem happened during processsing this request. It was reported to developers. Please, try again later.");
+         throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
 
       }
       finally
@@ -248,13 +249,13 @@ public class CloudIntranetUtils
       catch (MalformedURLException e)
       {
          LOG.error(e.getMessage(), e);
-         throw new CloudAdminException("A problem happened during processsing this request. It was reported to developers. Please, try again later.");
+         throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
 
       }
       catch (IOException e)
       {
          LOG.error(e.getMessage(), e);
-         throw new CloudAdminException("A problem happened during processsing this request. It was reported to developers. Please, try again later.");
+         throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
       }
       finally
       {
@@ -341,23 +342,23 @@ public class CloudIntranetUtils
             String err = readText(connection.getErrorStream());
             LOG.error("Unable to get user list from workspace " + tName + " - HTTP status"
                + connection.getResponseCode() + (err != null ? ". Server error: \r\n" + err + "\r\n" : ""));
-            throw new CloudAdminException("A problem happened during processsing this request. It was reported to developers. Please, try again later.");
+            throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
          }
       }
       catch (MalformedURLException e)
       {
          LOG.error(e.getMessage(), e);
-         throw new CloudAdminException("A problem happened during processsing this request. It was reported to developers. Please, try again later.");
+         throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
       }
       catch (IOException e)
       {
          LOG.error(e.getMessage(), e);
-         throw new CloudAdminException("A problem happened during processsing this request. It was reported to developers. Please, try again later.");
+         throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
       }
       catch (JsonException e)
       {
          LOG.error(e.getMessage(), e);
-         throw new CloudAdminException("A problem happened during processsing this request. It was reported to developers. Please, try again later.");
+         throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
       }
       finally
       {
@@ -415,19 +416,19 @@ public class CloudIntranetUtils
       catch (MalformedURLException e)
       {
          LOG.error(e.getMessage(), e);
-         throw new CloudAdminException("A problem happened during processsing this request. It was reported to developers. Please, try again later.");
+         throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
 
       }
       catch (IOException e)
       {
          LOG.error(e.getMessage(), e);
-         throw new CloudAdminException("A problem happened during processsing this request. It was reported to developers. Please, try again later.");
+         throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
 
       }
       catch (JsonException e)
       {
          LOG.error(e.getMessage(), e);
-         throw new CloudAdminException("A problem happened during processsing this request. It was reported to developers. Please, try again later.");
+         throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
 
       }
       finally
@@ -512,17 +513,17 @@ public class CloudIntranetUtils
       catch (MalformedURLException e)
       {
          LOG.error(e.getMessage(), e);
-         throw new CloudAdminException("A problem happened during processsing this request. It was reported to developers. Please, try again later.");
+         throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
       }
       catch (IOException e)
       {
          LOG.error(e.getMessage(), e);
-         throw new CloudAdminException("A problem happened during processsing this request. It was reported to developers. Please, try again later.");
+         throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
       }
       catch (JsonException e)
       {
          LOG.error(e.getMessage(), e);
-         throw new CloudAdminException("A problem happened during processsing this request. It was reported to developers. Please, try again later.");
+         throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
       }
       finally
       {
@@ -716,7 +717,7 @@ public class CloudIntranetUtils
       catch (IOException e)
       {
          LOG.error(e.getMessage(), e);
-         throw new CloudAdminException("A problem happened during processsing this request. It was reported to developers. Please, try again later.");
+         throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
       }
       return tName;
    }
@@ -756,9 +757,60 @@ public class CloudIntranetUtils
       catch (IOException e)
       {
          LOG.error(e.getMessage(), e);
-         throw new CloudAdminException("A problem happened during processsing this request. It was reported to developers. Please, try again later.");
+         throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
       }
       return count;
+   }
+   
+   public void joinAll(String tName) throws CloudAdminException
+   {
+
+      String folderName = cloudAdminConfiguration.getProperty("cloud.admin.tenant.waiting.dir");
+      File[] list = new File(folderName).listFiles();
+      for (File one : list)
+      {
+         if (tName == null || one.getName().startsWith(tName + "_"))
+         {
+            try
+            {
+               FileInputStream io = new FileInputStream(one);
+               Properties newprops = new Properties();
+               newprops.load(io);
+               io.close();
+               if (newprops.getProperty("action").equalsIgnoreCase(RequestState.WAITING_JOIN.toString()))
+               {
+                  String tenant = newprops.getProperty("tenant");
+                  String userMail = newprops.getProperty("user-mail");
+                  String fName = newprops.getProperty("first-name");
+                  String lName = newprops.getProperty("last-name");
+                  
+                  try
+                  {
+                     storeUser(tenant, userMail, fName, lName, newprops.getProperty("password"), false);
+                     // Prepare properties for mailing
+                     Map<String, String> props = new HashMap<String, String>();
+                     props.put("tenant.masterhost", cloudAdminConfiguration.getMasterHost());
+                     props.put("tenant.repository.name", tenant);
+                     props.put("user.mail", userMail);
+                     props.put("user.name", userMail.substring(0, (userMail.indexOf("@"))));
+                     props.put("first.name", fName);
+                     props.put("last.name", lName);
+                     sendUserJoinedEmails(tName, fName, userMail, props);
+                     one.delete();
+                  }
+                  catch (CloudAdminException e)
+                  {
+                     LOG.error("An problem happened during joining user " + userMail
+                        + "  on tenant " + tenant + e.getMessage(), e);
+                  }
+               }
+            }
+            catch (IOException e)
+            {
+            }
+         }
+      }
+
    }
 
    public boolean validateEmail(String aEmailAddress){
