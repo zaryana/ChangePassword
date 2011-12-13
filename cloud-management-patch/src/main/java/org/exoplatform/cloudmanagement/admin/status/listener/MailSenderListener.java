@@ -22,7 +22,7 @@ import static org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConf
 import static org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration.CLOUD_ADMIN_MAIL_REGISTRATION_TEMPLATE;
 
 import org.exoplatform.cloudmanagement.admin.CloudAdminException;
-import org.exoplatform.cloudmanagement.admin.MailSender;
+import org.exoplatform.cloudmanagement.admin.WorkspacesMailSender;
 import org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration;
 import org.exoplatform.cloudmanagement.admin.status.TenantStateListener;
 import org.exoplatform.cloudmanagement.status.TenantStatus;
