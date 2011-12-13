@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (C) 2011 eXo Platform SAS.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.exoplatform.cloudworkspaces</groupId>
+    <artifactId>cloud-workspaces-parent</artifactId>
+    <version>1.0.0-Beta2-SNAPSHOT</version>
+  </parent>
+  <artifactId>cloud-workspaces-packaging</artifactId>
+  <packaging>pom</packaging>
+  <name>eXo Cloud Workspaces :: Packaging</name>
+  <description>Cloud Workspaces Tomcat Packaging</description>
+
+  <profiles>
+    <profile>
+      <id>distrib</id>
+      <dependencies>
+        <dependency>
+          <groupId>com.exoplatform.platform.cloud</groupId>
+          <artifactId>exo.platform.packaging.tomcat</artifactId>
+          <version>${org.exoplatform.platform.version}</version>
+          <type>zip</type>
+          <classifier>tomcat</classifier>
+        </dependency>
+        <dependency>
+          <groupId>mysql</groupId>
+          <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>com.exoplatform.cloudworkspaces</groupId>
+          <artifactId>cloud-workspaces-webui</artifactId>
+          <version>${project.version}</version>
+          <type>war</type>
+        </dependency>
+       <dependency>
+         <groupId>com.exoplatform.cloudworkspaces</groupId>
+         <artifactId>cloud-workspaces-component-organization</artifactId>
+         <version>${project.version}</version>
+       </dependency>
+       <dependency>
+         <groupId>com.exoplatform.cloudworkspaces</groupId>
+         <artifactId>cloud-workspaces-server-tomcat-patch</artifactId>
+         <version>${project.version}</version>
+       </dependency>
+       <dependency>
+         <groupId>com.exoplatform.cloudworkspaces</groupId>
+         <artifactId>cloud-workspaces-extension-config</artifactId>
+         <version>${project.version}</version>
+       </dependency>
+       <dependency>
+         <groupId>com.exoplatform.cloudworkspaces</groupId>
+         <artifactId>cloud-workspaces-extension-webapp</artifactId>
+         <type>war</type>
+         <version>${project.version}</version>
+       </dependency>
+      </dependencies>
+      <build>
+        <finalName>Cloud-Workspaces-Platform-${project.version}</finalName>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>01-unpack-dependencies</id>
+                <phase>generate-resources</phase>
+                <goals>
+                  <goal>unpack</goal>
+                </goals>
+                <configuration>
+                  <overWriteSnapshots>true</overWriteSnapshots>
+                  <artifactItems>
+                    <!-- Unpack Tomcat base -->
+                    <artifactItem>
+                      <groupId>com.exoplatform.platform.cloud</groupId>
+                      <artifactId>exo.platform.packaging.tomcat</artifactId>
+                      <version>${org.exoplatform.platform.version}</version>
+                      <classifier>tomcat</classifier>
+                      <type>zip</type>
+                      <outputDirectory>target/tomcat</outputDirectory>
+                    </artifactItem>
+                    <!-- Unpack Tomcat server patch -->
+                    <artifactItem>
+                      <groupId>com.exoplatform.cloudworkspaces</groupId>
+                      <artifactId>cloud-workspaces-server-tomcat-patch</artifactId>
+                      <version>${org.exoplatform.platform.version}</version>
+                      <outputDirectory>target/tomcat</outputDirectory>
+                    </artifactItem>
+                  </artifactItems>
+                </configuration>
+              </execution>
+		      <execution>
+		        <id>02-copy</id>
+		        <phase>prepare-package</phase>
+		        <goals>
+		          <goal>copy</goal>
+		        </goals>
+		        <configuration>
+		          <artifactItems>
+                    <!-- Copy dependencies -->
+		            <artifactItem>
+					  <groupId>com.exoplatform.cloudworkspaces</groupId>
+					  <artifactId>cloud-workspaces-webui</artifactId>
+					  <version>${project.version}</version>
+					  <type>war</type>
+		              <outputDirectory>${project.build.directory}/tomcat/webapps</outputDirectory>
+		            </artifactItem>
+		            <artifactItem>
+					  <groupId>com.exoplatform.cloudworkspaces</groupId>
+					  <artifactId>cloud-workspaces-component-organization</artifactId>
+					  <version>${project.version}</version>
+		              <outputDirectory>${project.build.directory}/tomcat/lib</outputDirectory>
+		            </artifactItem>
+		            <artifactItem>
+					  <groupId>com.exoplatform.cloudworkspaces</groupId>
+					  <artifactId>cloud-workspaces-extension-config</artifactId>
+					  <version>${project.version}</version>
+		              <outputDirectory>${project.build.directory}/tomcat/lib</outputDirectory>
+		            </artifactItem>
+		            <artifactItem>
+					  <groupId>com.exoplatform.cloudworkspaces</groupId>
+					  <artifactId>cloud-workspaces-extension-webapp</artifactId>
+					  <version>${project.version}</version>
+					  <type>war</type>
+		              <outputDirectory>${project.build.directory}/tomcat/webapps</outputDirectory>
+		            </artifactItem>
+		          </artifactItems>
+		        </configuration>
+		      </execution>
+            </executions>
+          </plugin>
+          <!-- Remove some files -->
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <version>1.6</version>
+            <executions>
+              <execution>
+                <id>03-prepare-cloud-intranet</id>
+                <phase>prepare-package</phase>
+                <configuration>
+                  <target>
+                    <!--Remove Cloud Admin
+                    <delete dir="${project.build.directory}/tomcat/gatein/conf/cloud/cloud-admin" />
+                    <delete dir="${project.build.directory}/tomcat/webapps/ROOT" />
+                    -->
+                    <delete>
+                    <!-- Cloud Admin -->
+                      <fileset dir="${project.build.directory}/tomcat/gatein/conf/cloud" includes="cloud-admin" />
+                      <fileset dir="${project.build.directory}/tomcat/webapps" includes="ROOT" />
+                      <fileset dir="${project.build.directory}/tomcat/webapps" includes="cloud-admin.war" />
+                      <fileset dir="${project.build.directory}/tomcat/lib" includes="cloud-admin-valve-*.jar" />
+                      <fileset dir="${project.build.directory}/tomcat/conf/Catalina/localhost" includes="cloud-admin.xml" />
+                    <!-- acme website -->
+                      <fileset dir="${project.build.directory}/tomcat/webapps" includes="acme-website.war" />
+                      <fileset dir="${project.build.directory}/tomcat/lib" includes="exo.platform.sample.acme-website.*.jar" />
+                      <fileset dir="${project.build.directory}/tomcat/conf/Catalina/localhost" includes="acme-website.xml" />
+                    <!-- default website -->
+                      <fileset dir="${project.build.directory}/tomcat/webapps" includes="default-website.war" />
+                      <fileset dir="${project.build.directory}/tomcat/conf/Catalina/localhost" includes="default-website.xml" />
+                      <fileset dir="${project.build.directory}/tomcat/lib" includes="exo.platform.sample.default-website.*.jar" />
+                    </delete>
+                  </target>
+                </configuration>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <!--plugin>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>04-assembly</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>single</goal>
+                </goals>
+                <configuration>
+                  <descriptors>
+                    <descriptor>src/main/assembly/tomcat-archive.xml</descriptor>
+                  </descriptors>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin-->
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

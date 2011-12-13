@@ -31,12 +31,6 @@ EXO_CLOUD_OPTS="-javaagent:../lib/cloud-instrument-1.1-M2.jar=../gatein/conf/clo
 EXO_CLOUD_SECURITY_OPTS="-Djava.security.manager=org.exoplatform.cloudmanagement.security.TenantSecurityManager \
 	-Djava.security.policy==../conf/catalina.policy"
 
-# set Cloud Admin properties in command line (can be used in standalone admin server)
-EXO_CLOUD_ADMIN_OPTS="-Dcloud.admin.log.dir=../logs/cloud-admin \
-	-Dcloud.admin.data.dir=../gatein/data 
-	-Dcloud.admin.configuration.dir=../gatein/conf/cloud/cloud-admin 
-	-Dcloud.admin.configuration.file=../gatein/conf/cloud/cloud-admin/admin.properties"
-
 # HOST_EXTERNAL_ADDR=`ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}'`
 HOST_EXTERNAL_ADDR=localhost
 JMX_OPTS="-Dcom.sun.management.jmxremote=true -Djava.rmi.server.hostname=${HOST_EXTERNAL_ADDR} \
@@ -48,7 +42,7 @@ JMX_OPTS="-Dcom.sun.management.jmxremote=true -Djava.rmi.server.hostname=${HOST_
 # Remote debug configuration
 #REMOTE_DEBUG="-Xdebug -Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=n"
 
-JAVA_OPTS="$JAVA_OPTS $LOG_OPTS $SECURITY_OPTS $EXO_OPTS $IDE_OPTS $EXO_CLOUD_OPTS $EXO_CLOUD_SECURITY_OPTS $EXO_CLOUD_ADMIN_OPTS $JMX_OPTS $REMOTE_DEBUG"
+JAVA_OPTS="$JAVA_OPTS $LOG_OPTS $SECURITY_OPTS $EXO_OPTS $IDE_OPTS $EXO_CLOUD_OPTS $EXO_CLOUD_SECURITY_OPTS $JMX_OPTS $REMOTE_DEBUG"
 export JAVA_OPTS
 
 export CLASSPATH="$CATALINA_HOME/lib/cloud-security-1.1-M2.jar:$CATALINA_HOME/conf/:$CATALINA_HOME/lib/jul-to-slf4j-1.5.8.jar:$CATALINA_HOME/lib/slf4j-api-1.5.8.jar:$CATALINA_HOME/lib/cloud-logback-logging-1.1-M2.jar:$CATALINA_HOME/lib/logback-classic-0.9.20.jar:$CATALINA_HOME/lib/logback-core-0.9.20.jar"
