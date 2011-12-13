@@ -60,11 +60,12 @@
 			<div class="MainContent ClearFix" >
 				<div class="Cols LCol FL">
 					<h3>About eXo Cloud Workspaces</h3>
-					<p><b>eXo Cloud Workspaces</b> is a private social intranet that makes it easy to connect and collaborate with your coworkers. Going beyond simple status updates, eXo Cloud Workspaces provides tools that let you capture, organize and act on your team's internal knowledge, from a full-featured enterprise wiki, rich content management system, forums, chat and more.</p>
+					<p><b>eXo Cloud Workspaces</b> is a private social intranet that makes it easy to connect and collaborate with your coworkers.</p> 
+					<p>Going beyond simple status updates, eXo Cloud Workspaces provides tools that let you capture, organize and act on your team's internal knowledge, from a full-featured enterprise wiki, rich content management system, forums, chat and more.</p>
 					<a href="/page?to=about" class="Readmore">Learn more</a>
 				</div>
 				<div class="Cols MCol FL">
-					<h3>What Can You Do with Cloud Workspaces?</h3>
+					<h3>What is a Social Intranet?</h3>
 					<a href=""><img src="background/img_video.png" alt=""/></a>
 				</div>
 				<div class="Cols RCol FR">
@@ -111,7 +112,7 @@
 					</div>
 				</div>
 				<div class="ClearFix RowOdd">
-					<div class="FL BoxImg"><a href="#"><img src="background/03-mini.png" alt=""/></a></div>
+					<div class="FL BoxImg"><a href="#"><img src="background/05-mini.png" alt=""/></a></div>
 					<div class="BoxText">
 						<h4 class="SpecialTit"><a name="Direct-PaaS">Your personal dashboard on-the-go: native mobile apps for Cloud Workspaces</a></h4>
 						<p>Native iPhone, iPad, and Android apps let you securely and easily view your personal dashboard, including any of the custom gadgets you've added. Post status updates and share photos, stay updated with your colleagues' activities, access your internal document repository - all the key functions of your social intranet, right in your pocket.</p>

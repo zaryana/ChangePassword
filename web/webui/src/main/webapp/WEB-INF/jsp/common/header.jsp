@@ -8,6 +8,6 @@
 				  <li class="last"><a class="Tab OrangeTab" href="/page?to=ContactUs">Contact us</a></li>
 				</ul>
 				<div class="Logo FL"><a href="/main.jsp"><img src="background/logo.png"/></a></div>
-				<div class="ClouIntranet FR"><h1>eXo Cloud Workspaces</h1><span>The free Social Intranet for your company</span></div>
+				<div class="ClouIntranet FR"><h1>eXo Cloud Workspaces</h1><span>The Free Social Intranet for Your Company</span></div>
 			</div>
 		</div>

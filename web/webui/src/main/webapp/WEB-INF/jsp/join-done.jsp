@@ -10,13 +10,13 @@
 		
 		<!--begin ThanksPages-->	
 		 <div class="UIPageBody ThanksPages ClearFix">
-			<h1>Welcome to Your Workspace</h1>
-			<p style="text-align:center">Get started with Cloud Workspaces by checking out these helpful resources.</p>
-			<div class="LeftContent">
+			<h1>Welcome to Tenant-name Workspace</h1>
+			<p class="FillProfileInfo">Get started with Cloud Workspaces by checking out these helpful resources.</p>
+			<div class="LeftContent FL">
 				<h3>Watch the Getting Started video:</h3>
-				<div class="Video"><img alt="" src="background/Video.jpg" /></div>
+				<div class="Video"><img alt="" src="background/ComingVideo.jpg" /></div>
 			</div>
-			<div class="RightContent">
+			<div class="RightContent FL">
 				<h3>Even more to explore:</h3>
 				<a href="/page?to=about">Read an introduction to the key features of eXo Cloud Workspaces</a>
 				<a href="http://community.exoplatform.com">Join the eXo Community to connect with other users, access documentation, forums and more</a>

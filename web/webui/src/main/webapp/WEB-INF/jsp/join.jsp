@@ -12,7 +12,7 @@
 		<!--begin FormPages-->		
 		 <div class="UIPageBody FormPages">
 			<h1>Activate Your Cloud Workspaces Account</h1>
-			<p style="text-align:center">To participate in the Cloud Workspaces private beta, please complete your profile.</p>
+			<p class="FillProfileInfo">To participate in the Cloud Workspaces private beta, please complete your profile.</p>
 			<div id="messageString" class="TenantFormMsg"></div>
 			<form class="UIForm" action="javascript:void(0);"  method="POST" name="cloud-workspaces-profile">
 				<table cols="2">
@@ -38,7 +38,7 @@
 						<td class="Field">Confirm password:</td><td> <input class="InputText" type="password" name="password2" id="password2" /><span class="Star">*</span></td>
 					</tr>
 					<tr>
-						<td class="Field"></td><td> <input class="Button" type="submit"  id="t_submit" value="Sign Up" onClick="tenants.doJoinRequest();" /></td>
+						<td class="Field"></td><td> <input class="Button" type="submit"  id="t_submit" value="Submit" onClick="tenants.doJoinRequest();" /></td>
 					</tr>
 				</table>
 				
