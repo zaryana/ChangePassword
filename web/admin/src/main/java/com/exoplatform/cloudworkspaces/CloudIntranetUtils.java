@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.Authenticator;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -138,22 +139,32 @@ public class CloudIntranetUtils
       strUrl.append(hostName);
       strUrl.append("/cloud-agent/rest/organization/adduser");
 
-      StringBuilder params = new StringBuilder();
-      params.append("tname=" + tName);
-      params.append("&");
-      params.append("URI=" + "/" + username);
-      params.append("&");
-      params.append("username=" + username);
-      params.append("&");
-      params.append("password=" + password);
-      params.append("&");
-      params.append("first-name=" + firstName);
-      params.append("&");
-      params.append("last-name=" + lastName);
-      params.append("&");
-      params.append("email=" + userMail);
-      params.append("&");
-      params.append("isadministrator=" + Boolean.toString(isAdministrator));
+      StringBuilder params;
+      try
+      {
+         params = new StringBuilder();
+         params.append("tname=" + tName);
+         params.append("&");
+         params.append("URI=" + "/" + java.net.URLEncoder.encode(username, "utf-8"));
+         params.append("&");
+         params.append("username=" + java.net.URLEncoder.encode(username, "utf-8"));
+         params.append("&");
+         params.append("password=" + java.net.URLEncoder.encode(password, "utf-8"));
+         params.append("&");
+         params.append("first-name=" + java.net.URLEncoder.encode(firstName, "utf-8"));
+         params.append("&");
+         params.append("last-name=" + java.net.URLEncoder.encode(lastName, "utf-8"));
+         params.append("&");
+         params.append("email=" + java.net.URLEncoder.encode(userMail, "utf-8"));
+         params.append("&");
+         params.append("isadministrator=" + Boolean.toString(isAdministrator));
+      }
+      catch (UnsupportedEncodingException e)
+      {
+         LOG.error(e.getMessage(), e);
+         throw new CloudAdminException(
+            "An problem happened during processsing this request. It was reported to developers. Please, try again later.");
+      }
 
       try
       {
