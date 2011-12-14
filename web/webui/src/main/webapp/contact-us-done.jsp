@@ -12,9 +12,9 @@
 		<div class="UIPageBody ThankyouPage">
 			<h1>Thank You for Contacting Us</h1>
 			<ul>
-				<li><a class="Back" href="#" title="Back to Cloud Workspaces Homepage">Back to Cloud Workspaces Homepage</a></li>
-				<li><a class="Forward" href="#" title="go to eXo Cloud Services">Learn More about eXo Cloud Services</a></li>
-				<li><a class="Forward" href="#" title="Find Cloud Tutorials, Video Demos and More in the eXo Resource Center">Find Cloud Tutorials, Video Demos and More in the eXo Resource Center</a></li>
+				<li><a class="Back" href="/main.jsp" title="Back to Cloud Workspaces Homepage">Back to Cloud Workspaces Homepage</a></li>
+				<li><a class="Forward" href="/about.jsp" title="go to eXo Cloud Services">Learn More about eXo Cloud Services</a></li>
+				<li><a class="Forward" href="http://www.exoplatform.com/company/en/resource-center" title="Find Cloud Tutorials, Video Demos and More in the eXo Resource Center">Find Cloud Tutorials, Video Demos and More in the eXo Resource Center</a></li>
 			</ul>
 		</div>
 		
