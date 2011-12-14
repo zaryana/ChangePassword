@@ -20,16 +20,41 @@
 
 -->
 <web-app id="WebApp_ID" version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
-   <display-name>cloud-webui</display-name>
+    xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+  <display-name>cloud-webui</display-name>
 
-    <welcome-file-list>
-      <welcome-file>/main.jsp</welcome-file>
-   </welcome-file-list>
+  <welcome-file-list>
+    <welcome-file>/main.jsp</welcome-file>
+  </welcome-file-list>
+  
+  <security-constraint>
+    <web-resource-collection>
+       <web-resource-name>Cloud-admin-web-application</web-resource-name>
+       <url-pattern>/jsp/*</url-pattern>
+       <http-method>POST</http-method>
+       <http-method>GET</http-method>
+    </web-resource-collection>
+    <auth-constraint>
+       <role-name>cloud-web</role-name>
+    </auth-constraint>
+    <user-data-constraint>
+       <transport-guarantee>NONE</transport-guarantee>
+    </user-data-constraint>
+   </security-constraint>
 
-    <error-page>  
-      <exception-type>java.lang.Throwable</exception-type>
-      <location>/cloud/jsp/error.jsp</location>  
-    </error-page>
-    
+   <login-config>
+      <auth-method>BASIC</auth-method>
+      <realm-name>Cloud admin web application</realm-name>
+   </login-config>
+
+   <security-role>
+      <description>The role that is required to log in to the Cloud admin web application</description>
+      <role-name>cloud-web</role-name>
+   </security-role>
+
+  <error-page>  
+    <exception-type>java.lang.Throwable</exception-type>
+    <location>/cloud/jsp/error.jsp</location>  
+  </error-page>
+
 </web-app>
