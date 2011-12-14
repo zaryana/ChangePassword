@@ -86,7 +86,7 @@
                     <artifactItem>
                       <groupId>com.exoplatform.cloudworkspaces</groupId>
                       <artifactId>cloud-workspaces-server-tomcat-patch</artifactId>
-                      <version>${org.exoplatform.platform.version}</version>
+                      <version>${project.version}</version>
                       <outputDirectory>target/tomcat</outputDirectory>
                     </artifactItem>
                   </artifactItems>
@@ -126,6 +126,7 @@
 					  <version>${project.version}</version>
 					  <type>war</type>
 		              <outputDirectory>${project.build.directory}/tomcat/webapps</outputDirectory>
+                      <destFileName>cloud-workspaces-extension.war</destFileName>
 		            </artifactItem>
 		          </artifactItems>
 		        </configuration>
