@@ -62,7 +62,7 @@
 					<h3>About eXo Cloud Workspaces</h3>
 					<p><b>eXo Cloud Workspaces</b> is a private social intranet that makes it easy to connect and collaborate with your coworkers.</p> 
 					<p>Going beyond simple status updates, eXo Cloud Workspaces provides tools that let you capture, organize and act on your team's internal knowledge, from a full-featured enterprise wiki, rich content management system, forums, chat and more.</p>
-					<a href="/page?to=about" class="Readmore">Learn more</a>
+					<a href="/jsp/about.jsp" class="Readmore">Learn more</a>
 				</div>
 				<div class="Cols MCol FL">
 					<h3>What is a Social Intranet?</h3>
