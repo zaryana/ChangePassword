@@ -4,7 +4,7 @@
    if (tenantName == null)
    {
 %>
-<%@ include file="jsp/index.jsp"%>
+<%@ include file="index.jsp"%>
 <%
    }
    else

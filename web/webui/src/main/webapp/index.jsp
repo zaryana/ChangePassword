@@ -42,7 +42,7 @@
 								<input class="Button" type="submit" id="t_submit"  value="Sign Up" onClick="tenants.doSingupRequest();" />
 								<input type="hidden" id="formid" name="formid" value="147cd324-b524-4679-bcad-5f5708ad5beb" />
 								<input type="hidden" id="cid" name="cid" value="LF_df197061" />
-								<div id="signin"><a class="SignIn" href="/jsp/signin.jsp">Already registered? Sign In</a></div>
+								<div id="signin"><a class="SignIn" href="/signin.jsp">Already registered? Sign In</a></div>
 								<iframe id="loopfuseOutput" name="loopfuseOutput" style='display:none; visibility:hidden'></iframe>
 							</form>
 							<div class="Social FR">
@@ -62,7 +62,7 @@
 					<h3>About eXo Cloud Workspaces</h3>
 					<p><b>eXo Cloud Workspaces</b> is a private social intranet that makes it easy to connect and collaborate with your coworkers.</p> 
 					<p>Going beyond simple status updates, eXo Cloud Workspaces provides tools that let you capture, organize and act on your team's internal knowledge, from a full-featured enterprise wiki, rich content management system, forums, chat and more.</p>
-					<a href="/jsp/about.jsp" class="Readmore">Learn more</a>
+					<a href="/about.jsp" class="Readmore">Learn more</a>
 				</div>
 				<div class="Cols MCol FL">
 					<h3>What is a Social Intranet?</h3>
