@@ -8,8 +8,8 @@
    <fileSets>
       <!-- Default files -->
       <fileSet>
-         <directory>target/tomcat-admin</directory>
-         <outputDirectory>Cloud-Workspaces-Admin-${project.version}</outputDirectory>
+         <directory>target/admin-tomcat</directory>
+         <outputDirectory>admin-tomcat</outputDirectory>
       </fileSet>
    </fileSets>
 </assembly>

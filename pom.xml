@@ -37,9 +37,8 @@
     <!-- Db libs -->
     <mysql.connector.java.version>5.1.13</mysql.connector.java.version>
     <tomcat.version>6.0.32</tomcat.version>
-    
     <!-- maven-release-plugin -->
-    <!-- arguments>-Prelease,distrib,exo-private,exo-staging -Dgatein.working.dir=target -Dmaven.wagon.provider.http=httpclient</arguments -->
+    <arguments>-Prelease,distrib,exo-private,exo-staging -Dgatein.working.dir=target -Dmaven.wagon.provider.http=httpclient</arguments>
   </properties>
 
   <prerequisites>
