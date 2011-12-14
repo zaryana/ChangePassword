@@ -219,6 +219,17 @@ Tenants.prototype.init = function() {
  }
 
 
+Tenants.prototype.initSignInPage = function() {
+ tenants.init();
+  if (queryString != null && queryString != "") {
+  var email_start = queryString.indexOf('email=');
+  email = (email_start != -1) ? queryString.substring(email_start + 6) : null;
+   if (email != null && email != "") {
+   _gel("email").value = email;
+  }
+ }
+}
+
 
 
 /* Login redirect */

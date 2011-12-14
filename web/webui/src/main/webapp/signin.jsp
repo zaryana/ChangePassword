@@ -5,7 +5,7 @@
     <%@ include file="common/headStyle.jsp"%>
     <%@ include file="common/headScript.jsp"%>
 	</head>
-	<body onLoad="tenants.init();">
+	<body onLoad="tenants.initSignInPage();">
 		<!--begin header-->
     <%@ include file="common/header.jsp"%>
     
