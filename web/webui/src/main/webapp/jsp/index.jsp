@@ -42,12 +42,12 @@
 								<input class="Button" type="submit" id="t_submit"  value="Sign Up" onClick="tenants.doSingupRequest();" />
 								<input type="hidden" id="formid" name="formid" value="147cd324-b524-4679-bcad-5f5708ad5beb" />
 								<input type="hidden" id="cid" name="cid" value="LF_df197061" />
-								<div id="signin"><a class="SignIn" href="/page?to=signin">Already registered? Sign In</a></div>
+								<div id="signin"><a class="SignIn" href="<%=request.getContextPath()%>/jsp/signin.jsp">Already registered? Sign In</a></div>
 								<iframe id="loopfuseOutput" name="loopfuseOutput" style='display:none; visibility:hidden'></iframe>
 							</form>
 							<div class="Social FR">
-								<a href="http://twitter.com/exoplatform" class="twitterLink" target="_blank"><img src="background/icon-twiter.png" alt=""/></a>
-								<a href="#"><img src="background/icon-tweet.png" alt=""/></a>
+								<a href="http://twitter.com/exoplatform" class="twitterLink" target="_blank"><img src="<%=request.getContextPath()%>/background/icon-twiter.png" alt=""/></a>
+								<a href="#"><img src="<%=request.getContextPath()%>/background/icon-tweet.png" alt=""/></a>
 							</div>						
 						</div>
 					</div>
@@ -62,16 +62,16 @@
 					<h3>About eXo Cloud Workspaces</h3>
 					<p><b>eXo Cloud Workspaces</b> is a private social intranet that makes it easy to connect and collaborate with your coworkers.</p> 
 					<p>Going beyond simple status updates, eXo Cloud Workspaces provides tools that let you capture, organize and act on your team's internal knowledge, from a full-featured enterprise wiki, rich content management system, forums, chat and more.</p>
-					<a href="/page?to=about" class="Readmore">Learn more</a>
+					<a href="<%=request.getContextPath()%>/jsp/about.jsp" class="Readmore">Learn more</a>
 				</div>
 				<div class="Cols MCol FL">
 					<h3>What is a Social Intranet?</h3>
-					<a href=""><img src="background/img_video.png" alt=""/></a>
+					<a href=""><img src="<%=request.getContextPath()%>/background/img_video.png" alt=""/></a>
 				</div>
 				<div class="Cols RCol FR">
 					<ul>
-						<li><a href="http://exoplatform.com/company/en/products/mobile"><img src="background/Stay-connect-mobile-apps.png" alt="Stay Connected with Mobile Apps for Cloud Workspaces" /></a> </li>
-						<li><a href="http://exoplatform.com/exo-platform-3-trial/eXoPlatform-3.zip"><img src="background/SocialIntranet-on-premise.png" alt="Want an On-Premise Social Intranet?" /></a></li>
+						<li><a href="http://exoplatform.com/company/en/products/mobile"><img src="<%=request.getContextPath()%>/background/Stay-connect-mobile-apps.png" alt="Stay Connected with Mobile Apps for Cloud Workspaces" /></a> </li>
+						<li><a href="http://exoplatform.com/exo-platform-3-trial/eXoPlatform-3.zip"><img src="<%=request.getContextPath()%>/background/SocialIntranet-on-premise.png" alt="Want an On-Premise Social Intranet?" /></a></li>
 					</ul>
 				</div>
 			</div>
@@ -82,14 +82,14 @@
 			<div class="MainContent" >
 				<h3>Features Overview</h3>
 				<div class="ClearFix RowOdd">
-					<div class="FL BoxImg"><a href="#"><img src="background/01-mini.png" alt=""/></a></div>
+					<div class="FL BoxImg"><a href="#"><img src="<%=request.getContextPath()%>/background/01-mini.png" alt=""/></a></div>
 					<div class="BoxText">
 						<h4 class="SpecialTit"><a name="Connect-Collaborate">Connect with your colleagues for an instant enterprise social network</a></h4>
 						<p>Support for OpenSocial allows Cloud Workspaces users to create and connect rich user profiles, share activity streams, and collaborate in real-time. When you sign up with your professional email, we'll create a private domain for your company. When anyone else joins <a href="http://cloud-workspaces.com/">cloud-workspaces.com</a> using your company's email address, they will automatically be added to your company's network.</p>
 					</div>
 				</div>
 				<div class="ClearFix RowEven">
-					<div class="FR BoxImg"><a href="#"><img src="background/02-mini.png" alt=""/></a></div>
+					<div class="FR BoxImg"><a href="#"><img src="<%=request.getContextPath()%>/background/02-mini.png" alt=""/></a></div>
 					<div class="BoxText">
 						<h4 class="SpecialTit"><a name="Status-Update">More than a private social network: enterprise wiki, forums, calendars, and more</a></h4>
 						<p>Following updates and comments from your coworkers is a great way to stay informed, but it's only the first step towards productive collaboration. Cloud Workspaces combines the benefits of a social network with the tools that support your online work. You can share documents, build workflows to manage business processes automatically, interact in forums and add team and project calendars. There's also a full-featured enterprise wiki built into every workspace, so your team can create, edit, store and easily find content and resources.</p>
@@ -97,14 +97,14 @@
 				</div>
 				
 				<div class="ClearFix RowOdd">
-					<div class="FL BoxImg"><a href="#"><img src="background/03-mini.png" alt=""/></a></div>
+					<div class="FL BoxImg"><a href="#"><img src="<%=request.getContextPath()%>/background/03-mini.png" alt=""/></a></div>
 					<div class="BoxText">
 						<h4 class="SpecialTit">Personalized dashboards provide a work start page for every user</h4>
 						<p>Users can easily create their own personalized dashboards with simple drag-and-drop controls, so your Cloud Workspaces start page will display the most relevant, useful information about your work.</p>
 					</div>
 				</div>
 				<div class="ClearFix RowEven">
-					<div class="FR BoxImg"><a href="#"><img src="background/04-mini.png" alt=""/></a></div>
+					<div class="FR BoxImg"><a href="#"><img src="<%=request.getContextPath()%>/background/04-mini.png" alt=""/></a></div>
 					<div class="BoxText">
 						<h4 class="SpecialTit"><a name="Customize-Social">Extend and customize your social intranet with the built-in Cloud IDE</a></h4>
 						<p>Toggling between your company social network and other sites you regularly use, such as web analytics or project management tools, can be distracting and inefficient. Third party web apps can be integrated directly in your Cloud Workspaces as gadgets. eXo Cloud IDE, a full-featured development environment for building and integrating applications, gadgets and mashups, is available within every Cloud Workspaces account.</p>
@@ -112,7 +112,7 @@
 					</div>
 				</div>
 				<div class="ClearFix RowOdd">
-					<div class="FL BoxImg"><a href="#"><img src="background/05-mini.png" alt=""/></a></div>
+					<div class="FL BoxImg"><a href="#"><img src="<%=request.getContextPath()%>/background/05-mini.png" alt=""/></a></div>
 					<div class="BoxText">
 						<h4 class="SpecialTit"><a name="Direct-PaaS">Your personal dashboard on-the-go: native mobile apps for Cloud Workspaces</a></h4>
 						<p>Native iPhone, iPad, and Android apps let you securely and easily view your personal dashboard, including any of the custom gadgets you've added. Post status updates and share photos, stay updated with your colleagues' activities, access your internal document repository - all the key functions of your social intranet, right in your pocket.</p>

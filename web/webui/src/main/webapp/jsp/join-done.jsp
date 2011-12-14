@@ -14,15 +14,15 @@
 			<p class="FillProfileInfo">Get started with Cloud Workspaces by checking out these helpful resources.</p>
 			<div class="LeftContent FL">
 				<h3>Watch the Getting Started video:</h3>
-				<div class="Video"><img alt="" src="background/ComingVideo.jpg" /></div>
+				<div class="Video"><img alt="" src="<%=request.getContextPath()%>/background/ComingVideo.jpg" /></div>
 			</div>
 			<div class="RightContent FL">
 				<h3>Even more to explore:</h3>
-				<a href="/page?to=about">Read an introduction to the key features of eXo Cloud Workspaces</a>
+				<a href="<%=request.getContextPath()%>/jsp/about.jsp">Read an introduction to the key features of eXo Cloud Workspaces</a>
 				<a href="http://community.exoplatform.com">Join the eXo Community to connect with other users, access documentation, forums and more</a>
 				<a href="http://exoplatform.com/company/en/platform/exo-platform-35">Want to host your own social intranet on-premise or in a private cloud? Learn more about eXo Platform 3.5</a>
 			</div>
-			<center><a class="BackIcon" href="/main.jsp">Back</a></center>
+			<center><a class="BackIcon" href="<%=request.getContextPath()%>/main.jsp">Back</a></center>
 		</div>
 		
 		<!--begin Footer-->	

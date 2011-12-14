@@ -28,7 +28,7 @@
     }
     
     function cancel() {
-      window.location = "/page?to=index";
+      window.location = "/cloud";
     }
 
     </script>

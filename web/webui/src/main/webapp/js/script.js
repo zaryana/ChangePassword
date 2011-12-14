@@ -388,7 +388,7 @@ Tenants.prototype.handleSignupResponse = function(resp) {
       "formid" : _gel('formid').value,
       "cid" : _gel('cid').value
     }, function() {
-      window.location = prefixUrl + "/page?to=signup-done";
+      window.location = prefixUrl + "/cloud/signup-done.jsp";
     });
   } else {
     _gel("messageString").innerHTML = resp;
@@ -412,7 +412,7 @@ Tenants.prototype.handleCreationResponse = function(resp) {
       "formid" : _gel('formid').value,
       "cid" : _gel('cid').value
     }, function() {
-      window.location = prefixUrl + "/page?to=registration-done";
+      window.location = prefixUrl + "/cloud/registration-done.jsp";
     });
   } else {
     _gel("messageString").innerHTML = resp;
@@ -433,7 +433,7 @@ Tenants.prototype.handleJoinResponse = function(resp) {
       "formid" : _gel('formid').value,
       "cid" : _gel('cid').value
     }, function() {
-      window.location = prefixUrl + "/page?to=join-done";
+      window.location = prefixUrl + "/cloud/join-done.jsp";
     });
   } else {
     _gel("messageString").innerHTML = resp;

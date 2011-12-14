@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
 	<head>
-    <% String pageName = "Registration Request Sent"; %>
+    <% String pageName = "Sign Up Done"; %>
     <%@ include file="common/headStyle.jsp"%>
 	</head>
 	<body>
@@ -14,15 +14,15 @@
 			<p style="text-align:center">We've received your request to participate in the private beta. When your Cloud Workspaces account is available, we'll notify you via email. In the meantime, you can learn more about Cloud Workspaces by checking out these helpful resources.</p>
 			<div class="LeftContent">
 				<h3>Watch the Getting Started video:</h3>
-				<div class="Video"><img alt="" src="background/ComingVideo.jpg" /></div>
+				<div class="Video"><img alt="" src="<%=request.getContextPath()%>/background/ComingVideo.jpg" /></div>
 			</div>
 			<div class="RightContent">
 				<h3>Even more to explore:</h3>
-				<a href="/page?to=about">Read an introduction to the key features of eXo Cloud Workspaces</a>
+				<a href="<%=request.getContextPath()%>/jsp/about.jsp">Read an introduction to the key features of eXo Cloud Workspaces</a>
 				<a href="http://community.exoplatform.com">Join the eXo Community to connect with other users, access documentation, forums and more</a>
 				<a href="http://exoplatform.com/company/en/products">Want to host your own social intranet on-premise or in a private cloud? Learn more about eXo Platform 3.5</a>
 			</div>
-			<center><a class="BackIcon" href="/main.jsp">Back</a></center>
+			<center><a class="BackIcon" href="<%=request.getContextPath()%>">Back</a></center>
 		</div>
 		
 		<!--begin Footer-->	
