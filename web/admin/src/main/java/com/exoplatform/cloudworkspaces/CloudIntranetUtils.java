@@ -48,7 +48,7 @@ import org.everrest.core.impl.provider.json.JsonParser;
 import org.everrest.core.impl.provider.json.ObjectValue;
 import org.exoplatform.cloudmanagement.admin.AgentAuthenticator;
 import org.exoplatform.cloudmanagement.admin.CloudAdminException;
-import org.exoplatform.cloudmanagement.admin.WorkspacesMailSender;
+import org.exoplatform.cloudmanagement.admin.MailSender;
 import org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration;
 import org.exoplatform.cloudmanagement.admin.configuration.ConfigurationParameterNotFound;
 import org.slf4j.Logger;
@@ -104,7 +104,7 @@ public class CloudIntranetUtils
 
    private CloudAdminConfiguration cloudAdminConfiguration;
 
-   private WorkspacesMailSender mailSender;
+   private MailSender mailSender;
    
    private String whiteListConfigurationFile;
 
@@ -113,7 +113,7 @@ public class CloudIntranetUtils
    public CloudIntranetUtils(CloudAdminConfiguration cloudAdminConfiguration)
    {
       this.cloudAdminConfiguration = cloudAdminConfiguration;
-      this.mailSender = new WorkspacesMailSender(cloudAdminConfiguration);
+      this.mailSender = new MailSender(cloudAdminConfiguration);
       this.whiteListConfigurationFile = System.getProperty("cloud.admin.whitelist");
 
       Authenticator.setDefault(new AgentAuthenticator(cloudAdminConfiguration.getProperty("admin.agent.auth.username",

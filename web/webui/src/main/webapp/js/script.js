@@ -476,7 +476,7 @@ Tenants.prototype.getquerystringJoin = function() {
   qstr += '&first-name=' + jQuery.trim(_gel('first_name').value);
   qstr += '&last-name=' + jQuery.trim(_gel('last_name').value);
   qstr += '&password=' + jQuery.trim(_gel('password').value);
-  return qstr;
+  return encodeURI(qstr);
 }
 
 Tenants.prototype.getquerystringCreate = function() {
@@ -487,7 +487,7 @@ Tenants.prototype.getquerystringCreate = function() {
   qstr += '&phone=' + jQuery.trim(_gel('phone_work').value);
   qstr += '&company-name=' + jQuery.trim(_gel('company').value);
   qstr += '&confirmation-id=' + jQuery.trim(_gel('confirmation-id').value);
-  return qstr;
+  return encodeURI(qstr);
 }
 
 function _gel(id) {
