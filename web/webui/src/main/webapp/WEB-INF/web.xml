@@ -27,6 +27,7 @@
     <welcome-file>/main.jsp</welcome-file>
   </welcome-file-list>
   
+  <!--
   <security-constraint>
     <web-resource-collection>
        <web-resource-name>Cloud-admin-web-application</web-resource-name>
@@ -51,6 +52,7 @@
       <description>The role that is required to log in to the Cloud admin web application</description>
       <role-name>cloud-web</role-name>
    </security-role>
+   -->
 
   <error-page>  
     <exception-type>java.lang.Throwable</exception-type>

@@ -42,7 +42,7 @@
 								<input class="Button" type="submit" id="t_submit"  value="Sign Up" onClick="tenants.doSingupRequest();" />
 								<input type="hidden" id="formid" name="formid" value="147cd324-b524-4679-bcad-5f5708ad5beb" />
 								<input type="hidden" id="cid" name="cid" value="LF_df197061" />
-								<div id="signin"><a class="SignIn" href="/page?to=signin">Already registered? Sign In</a></div>
+								<div id="signin"><a class="SignIn" href="/jsp/signin.jsp">Already registered? Sign In</a></div>
 								<iframe id="loopfuseOutput" name="loopfuseOutput" style='display:none; visibility:hidden'></iframe>
 							</form>
 							<div class="Social FR">

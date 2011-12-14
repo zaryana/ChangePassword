@@ -16,8 +16,9 @@
       "service_source" : _gel('service_source').value,
       "cid" : _gel('cid').value
     }, function() {
-      hideForm();
-      document.getElementById('Content').innerHTML = "<div class=\"ThanksPages ClearFix\"><h1>Thank you!</h1><p style=\"text-align:center\">Your request has been successfully submitted. We will get back to you soon.</p></div>";
+     // hideForm();
+     // document.getElementById('Content').innerHTML = "<div class=\"ThanksPages ClearFix\"><h1>Thank you!</h1><p style=\"text-align:center\">Your request has been successfully submitted. We will get back to you soon.</p></div>";
+     window.location = "/jsp/contact-us-done.jsp";
       });
     }
 
@@ -28,7 +29,7 @@
     }
     
     function cancel() {
-      window.location = "/page?to=index";
+      window.location = "/jsp/index.jsp";
     }
 
     </script>
