@@ -179,7 +179,7 @@ p {
 	width: 80%;
 }
 .ClouIntranet h1 {	
-	margin: 20px 0 0 0;
+	margin: 15px 0 0 0;
 	font-family: MyriadProSemibold, arial, tahoma;
 	font-size: 36px;
 	color: #fff;
@@ -293,7 +293,7 @@ p {
 .FormContainer .BoxText {
 	width: 265px;
 	color:#def6ff;	
-	line-height: 14px;
+	line-height: 18px;
 }
 
 .FormContainer .BoxText h3 {
@@ -307,7 +307,7 @@ p {
 
 .FormContainer .BoxText ul li {
 	list-style: disc inside none;
-	margin: 5px 0;
+	margin: 5px 0 10px;
 }
 
 .FormContainer .BoxText ul  li:hover {
@@ -557,6 +557,10 @@ input.Button {
 	font-family: arial;
 }
 
+.UIPageBody p.AlignLeftTxt {
+	text-align: justify;
+}
+
 /*ThanksPages*/
 .ThanksPages {
 	width: 770px;
@@ -648,6 +652,11 @@ input.Button {
 
 .AboutPages ul li span {
 	font-weight: bold;
+}
+
+.AboutPages dt {
+	font-weight: bold;
+	margin: 0 0 5px 40px;
 }
 
 /*ErrorPages*/
@@ -817,4 +826,34 @@ input.Button {
 	border-bottom: 1px solid #dddddd;
 }
 
- 
+/*Thank You for Contacting Us*/
+.ThankyouPage {
+	padding: 20px 0;
+}
+.ThankyouPage ul {
+	width: 35%;
+	margin: 0 auto;
+}
+
+.ThankyouPage ul  li  a {
+	padding: 10px 0 10px 42px; 
+	font-size: 14px;
+	color: #2878bc;
+	display: block;
+}
+
+.ThankyouPage ul  li  a:hover {
+	text-decoration: underline;
+}
+
+.ThankyouPage ul  li  a.Forward {
+	padding: 10px 0 10px 42px; 
+	font-size: 14px;
+	color: #2878bc;
+	display: block;
+	background: url("../background/forward-icon.png") no-repeat left 10px;
+}
+
+.ThankyouPage ul  li a.Back  {
+	background: url("../background/back-icon.png") no-repeat left 5px;
+}
