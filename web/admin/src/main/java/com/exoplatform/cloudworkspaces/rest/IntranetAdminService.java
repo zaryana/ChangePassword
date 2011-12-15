@@ -315,6 +315,25 @@ public class IntranetAdminService extends TenantCreator
       File folder = new File(folderName);
       if (!folder.exists())
          folder.mkdir();
+      
+      File[] list = folder.listFiles();
+      for (File one : list)
+      {
+         if (one.getName().startsWith(tName + "_")){
+            try
+            {
+               FileInputStream io = new FileInputStream(one);
+               Properties newprops = new Properties();
+               newprops.load(io);
+               io.close();
+               if (newprops.getProperty("user-mail").equalsIgnoreCase(userMail))
+                  throw new CloudAdminException("Request to create a Cloud Workspace from " + userMail + " already submitted, it is on the processing currently. Wait for the creation will be done or use another email.");
+            }
+            catch (IOException e)
+            {
+            }
+         }
+      }
                
       File propertyFile = new File(folderName + tName + "_"+ System.currentTimeMillis() + ".properties");
       
