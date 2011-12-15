@@ -377,6 +377,8 @@ public class IntranetAdminService extends TenantCreator
          throw new CloudAdminException("A problem happened during processsing this request. It was reported to developers. Please, try again later.");
       }
       File[] list = new File(folder).listFiles();
+      if (list == null)
+         return result;
       for (File one : list)
       {
          try
