@@ -24,13 +24,5 @@
 # Computes the absolute path of eXo
 cd `dirname "$0"`
 
-if [ "$EXO_PROFILES" = "" ] ; then 
-	EXO_PROFILES="-Dexo.profiles=default,cloud,webos"
-fi
-
-JVM64_OPTS="-XX:+UseCompressedOops"
-JAVA_OPTS="$JAVA_OPTS -Xms1g -Xmx4g -XX:MaxPermSize=256m $JVM64_OPTS $EXO_PROFILES"
-export JAVA_OPTS
-
 # Launches the server
 exec "$PRGDIR"./catalina.sh "$@"

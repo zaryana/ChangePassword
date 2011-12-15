@@ -23,11 +23,52 @@
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xsi:schemaLocation="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd http://www.exoplatform.org/xml/ns/kernel_1_2.xsd"
    xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
-   
-   <component>
-     <key>org.exoplatform.services.security.Authenticator</key>
-     <type>com.exoplatform.cloudworkspaces.organization.authenticator.IntranetAuthenticatorImpl</type>
-   </component>
+
+  <component>
+    <key>PropertyManagerConfigurator</key>
+    <type>org.exoplatform.container.PropertyConfigurator</type>
+    <init-params>
+      <value-param>
+        <name>properties.url</name>
+        <value>file:${catalina.home}/${exo.conf.dir.name}/cloud-workspaces.properties</value>
+      </value-param>
+    </init-params>
+  </component>
+
+  <component>
+    <key>org.exoplatform.services.security.Authenticator</key>
+   <type>com.exoplatform.cloudworkspaces.organization.authenticator.IntranetAuthenticatorImpl</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.cloudmanagement.multitenancy.CreateNewRepositoryPlugin</key>
+    <!-- type>org.exoplatform.cloudmanagement.multitenancy.CreateNewRepositoryPlugin</type -->
+    <!-- impl with support of JCR Value storages -->
+    <type>org.exoplatform.platform.cloud.services.multitenancy.CreateNewRepositoryPlugin</type>
+    <description>Create database</description>
+    <init-params>
+      <value-param>
+        <name>priority</name>
+        <value>10</value>
+      </value-param>
+      <value-param>
+        <name>configuration-path</name>
+        <value>file:///${catalina.home}/${exo.conf.dir.name}/cloud/platform-tenant-configuration-template.xml</value>
+      </value-param>
+    </init-params>
+  </component>
+
+  <!-- use old-style paths for users, required for eXo Intranet migration only -->
+  <!-- component>
+    <key>org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator</key>
+    <type>org.exoplatform.services.jcr.ext.hierarchy.impl.NodeHierarchyCreatorImpl</type>
+    <init-params>
+       <value-param>
+         <name>old-user-distribution</name>
+         <value>true</value>
+       </value-param>
+     </init-params>
+  </component -->
 
   <component>
     <key>org.exoplatform.services.jcr.config.RepositoryServiceConfiguration</key>
@@ -48,31 +89,8 @@
     </init-params>
   </component>
 
-  <!-- HSQL Configuration -->
-  <component>
-    <key>org.exoplatform.services.database.creator.DBCreator</key>
-    <type>org.exoplatform.services.database.creator.DBCreator</type>
-    <init-params>
-      <properties-param>
-        <name>db-connection</name>
-        <description>database connection properties</description>
-        <property name="driverClassName" value="org.hsqldb.jdbcDriver" />
-        <property name="url" value="jdbc:hsqldb:file:${tenant.data.dir}/hsqldb" />
-        <property name="username" value="sa" />
-        <property name="password" value="" />
-      </properties-param>
-      <properties-param>
-        <name>db-creation</name>
-        <description>database creation properties</description>
-        <property name="scriptPath" value="../${exo.conf.dir.name}/cloud/databases/hsqldb-schema.sql" />
-        <property name="username" value="sa" />
-        <property name="password" value="" />
-      </properties-param>
-    </init-params>
-  </component>
-
   <!-- MySQL configuration -->
-  <!-- component>
+  <component>
      <key>org.exoplatform.services.database.creator.DBCreator</key>
      <type>org.exoplatform.services.database.creator.DBCreator</type>
       <init-params>
@@ -80,7 +98,7 @@
            <name>db-connection</name>
            <description>database connection properties</description>
            <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-           <property name="url" value="jdbc:mysql://peter.exoplatform.com.ua:3306/"/>
+           <property name="url" value="jdbc:mysql://localhost:3306/"/>
            <property name="username" value="cloudadmin"/>
            <property name="password" value="cloud12321"/>
            <property name="maxActive" value="5" />
@@ -98,9 +116,26 @@
            <property name="password" value="cloud12321"/>
         </properties-param>
      </init-params>
-  </component -->
+  </component>
 
-  <!-- HSQL Configuration -->
+  <!-- passwords encrypter, mandatory for eXo Intranet migration -->
+  <component>
+    <key>org.exoplatform.services.security.PasswordEncrypter</key>
+    <type>org.exoplatform.platform.security.MD5HexPasswordEncrypter</type>
+  </component>
+
+  <!-- org-service listener for password encryption, mandatory for eXo Intranet migration -->
+  <external-component-plugins>
+    <target-component>org.exoplatform.services.organization.OrganizationService</target-component>
+      <component-plugin>
+      <name>organization.initializer.group.event.listener</name>
+      <set-method>addListenerPlugin</set-method>
+      <type>org.exoplatform.platform.security.PasswordEncrypterUserListener</type>
+      <description>description</description>
+    </component-plugin>
+  </external-component-plugins>
+
+  <!-- MySQL Configuration -->
   <external-component-plugins>
     <target-component>org.exoplatform.services.naming.InitialContextInitializer</target-component>
     <component-plugin>
@@ -123,10 +158,16 @@
         <properties-param>
           <name>ref-addresses</name>
           <description>ref-addresses</description>
-          <property name="driverClassName" value="org.hsqldb.jdbcDriver" />
-          <property name="url" value="jdbc:hsqldb:file:${tenant.data.dir}/hsqldb/${tenant.repository.name}" />
-          <property name="username" value="sa" />
-          <property name="password" value="" />
+            <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+            <property name="url" value="jdbc:mysql://localhost:3306/${tenant.repository.name}"/>
+            <property name="username" value="clouduser"/>
+            <property name="password" value="cloud12321"/>
+            <property name="maxActive" value="50" />
+            <property name="maxIdle" value="2" />
+            <property name="initialSize" value="5" />
+            <property name="validationQuery" value="select 1"/>
+            <property name="testOnReturn" value="true"/>
+            <property name="timeBetweenEvictionRunsMillis" value="300000"/>
         </properties-param>
       </init-params>
     </component-plugin>
@@ -150,86 +191,21 @@
         <properties-param>
           <name>ref-addresses</name>
           <description>ref-addresses</description>
-            <property name="driverClassName" value="org.hsqldb.jdbcDriver" />
-            <property name="url" value="jdbc:hsqldb:file:${tenant.data.dir}/hsqldb/jcr_conf_serv1" />
-            <property name="username" value="sa" />
-            <property name="password" value="" />
+            <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+            <property name="url" value="jdbc:mysql://localhost:3306/jcr_conf_serv1"/>
+            <property name="username" value="clouduser"/>
+            <property name="password" value="cloud12321"/>
+            <property name="maxActive" value="50" />
+            <property name="maxIdle" value="2" />
+            <property name="initialSize" value="5" />
+            <property name="validationQuery" value="select 1"/>
+            <property name="testOnReturn" value="true"/>
+            <property name="timeBetweenEvictionRunsMillis" value="300000"/>
         </properties-param>
       </init-params>
     </component-plugin>
   </external-component-plugins>
 
-  <!-- MySQL Configuration -->
-  <!-- external-component-plugins>
-    <target-component>org.exoplatform.services.naming.InitialContextInitializer</target-component>
-    <component-plugin>
-      <name>bind.datasource</name>
-      <set-method>addPlugin</set-method>
-      <type>org.exoplatform.services.naming.BindReferencePlugin</type>
-      <init-params>
-        <value-param>
-          <name>bind-name</name>
-          <value>${tenant.repository.name}</value>
-        </value-param>
-        <value-param>
-          <name>class-name</name>
-          <value>javax.sql.DataSource</value>
-        </value-param>
-        <value-param>
-          <name>factory</name>
-          <value>org.apache.commons.dbcp.BasicDataSourceFactory</value>
-        </value-param>
-        <properties-param>
-          <name>ref-addresses</name>
-          <description>ref-addresses</description>
-            <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-            <property name="url" value="jdbc:mysql://peter.exoplatform.com.ua:3306/${tenant.repository.name}"/>
-            <property name="username" value="clouduser"/>
-            <property name="password" value="cloud12321"/>
-            <property name="maxActive" value="50" />
-            <property name="maxIdle" value="2" />
-            <property name="initialSize" value="5" />
-            <property name="validationQuery" value="select 1"/>
-            <property name="testOnReturn" value="true"/>
-            <property name="timeBetweenEvictionRunsMillis" value="300000"/>
-        </properties-param>
-      </init-params>
-    </component-plugin>
-    <component-plugin>
-      <name>bind.datasource</name>
-      <set-method>addPlugin</set-method>
-      <type>org.exoplatform.services.naming.BindReferencePlugin</type>
-      <init-params>
-        <value-param>
-          <name>bind-name</name>
-          <value>jcr_conf</value>
-        </value-param>
-        <value-param>
-          <name>class-name</name>
-          <value>javax.sql.DataSource</value>
-        </value-param>
-        <value-param>
-          <name>factory</name>
-          <value>org.apache.commons.dbcp.BasicDataSourceFactory</value>
-        </value-param>
-        <properties-param>
-          <name>ref-addresses</name>
-          <description>ref-addresses</description>
-            <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-            <property name="url" value="jdbc:mysql://peter.exoplatform.com.ua:3306/jcr_conf_serv1"/>
-            <property name="username" value="clouduser"/>
-            <property name="password" value="cloud12321"/>
-            <property name="maxActive" value="50" />
-            <property name="maxIdle" value="2" />
-            <property name="initialSize" value="5" />
-            <property name="validationQuery" value="select 1"/>
-            <property name="testOnReturn" value="true"/>
-            <property name="timeBetweenEvictionRunsMillis" value="300000"/>
-        </properties-param>
-      </init-params>
-    </component-plugin>
-  </external-component-plugins -->
-  
   <remove-configuration>org.exoplatform.platform.gadget.services.GroovyScript2RestLoader.GroovyScript2RestLoaderExt</remove-configuration>
-  
+
 </configuration>
