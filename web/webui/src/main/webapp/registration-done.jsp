@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<%@page contentType="text/html; charset=UTF-8" language="java" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
 	<head>
     <% String pageName = "Registration Request Sent"; %>
@@ -22,7 +23,7 @@
 				<a href="http://community.exoplatform.com">Join the eXo Community to connect with other users, access documentation, forums and more</a>
 				<a href="http://exoplatform.com/company/en/products">Want to host your own social intranet on-premise or in a private cloud? Learn more about eXo Platform 3.5</a>
 			</div>
-			<center><a class="BackIcon" href="/main.jsp">Back</a></center>
+			<center><a class="BackIcon" href="/index.jsp">Back</a></center>
 		</div>
 		
 		<!--begin Footer-->	
