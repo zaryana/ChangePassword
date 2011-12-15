@@ -19,10 +19,9 @@
     02110-1301 USA, or see the FSF site: http://www.fsf.org.
 
 -->
-<configuration
-   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd http://www.exoplatform.org/xml/ns/kernel_1_2.xsd"
-   xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd http://www.exoplatform.org/xml/ns/kernel_1_2.xsd"
+  xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
 
   <component>
     <key>PropertyManagerConfigurator</key>
@@ -37,7 +36,7 @@
 
   <component>
     <key>org.exoplatform.services.security.Authenticator</key>
-   <type>com.exoplatform.cloudworkspaces.organization.authenticator.IntranetAuthenticatorImpl</type>
+    <type>com.exoplatform.cloudworkspaces.organization.authenticator.IntranetAuthenticatorImpl</type>
   </component>
 
   <component>
@@ -91,31 +90,31 @@
 
   <!-- MySQL configuration -->
   <component>
-     <key>org.exoplatform.services.database.creator.DBCreator</key>
-     <type>org.exoplatform.services.database.creator.DBCreator</type>
-      <init-params>
-        <properties-param>
-           <name>db-connection</name>
-           <description>database connection properties</description>
-           <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-           <property name="url" value="jdbc:mysql://localhost:3306/"/>
-           <property name="username" value="cloudadmin"/>
-           <property name="password" value="cloud12321"/>
-           <property name="maxActive" value="5" />
-           <property name="maxIdle" value="2" />
-           <property name="initialSize" value="2" />
-           <property name="validationQuery" value="select 1"/>
-           <property name="testOnReturn" value="true"/>
-           <property name="timeBetweenEvictionRunsMillis" value="300000"/>
-        </properties-param>
-        <properties-param>
-           <name>db-creation</name>
-           <description>database creation properties</description>
-           <property name="scriptPath" value="../${exo.conf.dir.name}/cloud/databases/mysqldb-schema.sql"/>
-           <property name="username" value="cloudadmin"/>
-           <property name="password" value="cloud12321"/>
-        </properties-param>
-     </init-params>
+    <key>org.exoplatform.services.database.creator.DBCreator</key>
+    <type>org.exoplatform.services.database.creator.DBCreator</type>
+    <init-params>
+      <properties-param>
+        <name>db-connection</name>
+        <description>database connection properties</description>
+        <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+        <property name="url" value="jdbc:mysql://localhost:3306/" />
+        <property name="username" value="cloudadmin" />
+        <property name="password" value="cloud12321" />
+        <property name="maxActive" value="5" />
+        <property name="maxIdle" value="2" />
+        <property name="initialSize" value="2" />
+        <property name="validationQuery" value="select 1" />
+        <property name="testOnReturn" value="true" />
+        <property name="timeBetweenEvictionRunsMillis" value="300000" />
+      </properties-param>
+      <properties-param>
+        <name>db-creation</name>
+        <description>database creation properties</description>
+        <property name="scriptPath" value="../${exo.conf.dir.name}/cloud/databases/mysqldb-schema.sql" />
+        <property name="username" value="cloudadmin" />
+        <property name="password" value="cloud12321" />
+      </properties-param>
+    </init-params>
   </component>
 
   <!-- passwords encrypter, mandatory for eXo Intranet migration -->
@@ -127,7 +126,7 @@
   <!-- org-service listener for password encryption, mandatory for eXo Intranet migration -->
   <external-component-plugins>
     <target-component>org.exoplatform.services.organization.OrganizationService</target-component>
-      <component-plugin>
+    <component-plugin>
       <name>organization.initializer.group.event.listener</name>
       <set-method>addListenerPlugin</set-method>
       <type>org.exoplatform.platform.security.PasswordEncrypterUserListener</type>
@@ -158,16 +157,16 @@
         <properties-param>
           <name>ref-addresses</name>
           <description>ref-addresses</description>
-            <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-            <property name="url" value="jdbc:mysql://localhost:3306/${tenant.repository.name}"/>
-            <property name="username" value="clouduser"/>
-            <property name="password" value="cloud12321"/>
-            <property name="maxActive" value="50" />
-            <property name="maxIdle" value="2" />
-            <property name="initialSize" value="5" />
-            <property name="validationQuery" value="select 1"/>
-            <property name="testOnReturn" value="true"/>
-            <property name="timeBetweenEvictionRunsMillis" value="300000"/>
+          <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+          <property name="url" value="jdbc:mysql://localhost:3306/${tenant.repository.name}" />
+          <property name="username" value="clouduser" />
+          <property name="password" value="cloud12321" />
+          <property name="maxActive" value="50" />
+          <property name="maxIdle" value="2" />
+          <property name="initialSize" value="5" />
+          <property name="validationQuery" value="select 1" />
+          <property name="testOnReturn" value="true" />
+          <property name="timeBetweenEvictionRunsMillis" value="300000" />
         </properties-param>
       </init-params>
     </component-plugin>
@@ -191,17 +190,54 @@
         <properties-param>
           <name>ref-addresses</name>
           <description>ref-addresses</description>
-            <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-            <property name="url" value="jdbc:mysql://localhost:3306/jcr_conf_serv1"/>
-            <property name="username" value="clouduser"/>
-            <property name="password" value="cloud12321"/>
-            <property name="maxActive" value="50" />
-            <property name="maxIdle" value="2" />
-            <property name="initialSize" value="5" />
-            <property name="validationQuery" value="select 1"/>
-            <property name="testOnReturn" value="true"/>
-            <property name="timeBetweenEvictionRunsMillis" value="300000"/>
+          <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+          <property name="url" value="jdbc:mysql://localhost:3306/jcr_conf_serv1" />
+          <property name="username" value="clouduser" />
+          <property name="password" value="cloud12321" />
+          <property name="maxActive" value="50" />
+          <property name="maxIdle" value="2" />
+          <property name="initialSize" value="5" />
+          <property name="validationQuery" value="select 1" />
+          <property name="testOnReturn" value="true" />
+          <property name="timeBetweenEvictionRunsMillis" value="300000" />
         </properties-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
+
+  <!-- temporarily for 1.0.0-Beta2, PLF-2644 -->
+  <external-component-plugins>
+    <target-component>org.exoplatform.portal.config.UserPortalConfigService</target-component>
+    <component-plugin>
+      <name>intranent.portal.config.user.listener</name>
+      <set-method>initListener</set-method>
+      <type>org.exoplatform.portal.config.NewPortalConfigListener</type>
+      <description>this listener init the portal configuration</description>
+      <init-params>
+        <value-param>
+          <name>default.portal</name>
+          <description>The default portal for checking db is empty or not</description>
+          <value>intranent</value>
+        </value-param>
+        <object-param>
+          <name>portal.configuration</name>
+          <description>description</description>
+          <object type="org.exoplatform.portal.config.NewPortalConfig">
+            <field name="predefinedOwner">
+              <collection type="java.util.HashSet">
+                <value>
+                  <string>intranet</string>
+                </value>
+              </collection>
+            </field>
+            <field name="ownerType">
+              <string>portal</string>
+            </field>
+            <field name="templateLocation">
+              <string>war:/conf/cloud-workspaces-extension/portal</string>
+            </field>
+          </object>
+        </object-param>
       </init-params>
     </component-plugin>
   </external-component-plugins>
