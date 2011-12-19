@@ -6,28 +6,7 @@
     <%@ include file="common/headStyle.jsp"%>
     <%@ include file="common/headScript.jsp"%>
     <script language="javascript" type="text/javascript">
-     function SendData(){
-      sendDataToLoopfuse({
-      "email" : _gel('email').value,
-      "first_name" : _gel('name').value,
-      "company" : _gel('subject').value,
-      "message" : _gel('ContactUs_Message__c').value,
-      // hidden LoopFuse fields
-      "formid" : _gel('formid').value,
-      "service_source" : _gel('service_source').value,
-      "cid" : _gel('cid').value
-    }, function() {
-     // hideForm();
-     // document.getElementById('Content').innerHTML = "<div class=\"ThanksPages ClearFix\"><h1>Thank you!</h1><p style=\"text-align:center\">Your request has been successfully submitted. We will get back to you soon.</p></div>";
-     window.location = "/contact-us-done.jsp";
-      });
-    }
 
-    function hideForm(){
-     document.getElementById("MarkLayer").style.display="none";
-     document.getElementById("ContactForm").style.display="none";
-     document.getElementById("Content").style.display="block";
-    }
     
     function cancel() {
       window.location = "/index.jsp";
@@ -35,7 +14,7 @@
 
     </script>
 	</head>
-	<body>
+	<body onload="tenants.init();">
 		<div class="MarkLayer" id="MarkLayer" style="width: 100%; height: 630px;"><span></span></div>
 		<!--begin header-->
     <%@ include file="common/header.jsp"%>
@@ -44,6 +23,7 @@
 		<div class="UIPageBody ContactPages" id="ContactForm">
 		<form class="UIForm UIFormBox" action="javascript:void(0);"  method="POST" name="">
 		<h1 class="TitleForm">Contact Us</h1>
+		<div id="messageString" class="TenantFormMsg"></div>
 		<table cols="2">
 		  <tr>
 		   <td class="Field">Your name:</td><td> <input class="InputText" type="text" name="name" id="name" value="" /></td>
@@ -60,7 +40,7 @@
 		 <tr>
 		  <td class="Field"></td>
 		  <td>
-		    <input class="Button" type="submit"  id="" value="Send" onClick="SendData();" />
+		    <input class="Button" type="submit"  id="" value="Send" onClick="tenants.doContactRequest();" />
 		    <input class="Button ButtonGray" type="" id="" value="Cancel" onClick="cancel();" />
 		  </td>
 		 </tr>

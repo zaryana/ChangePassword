@@ -29,7 +29,6 @@ import com.exoplatform.cloudworkspaces.TenantCreatedListenerThread;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
@@ -288,6 +287,16 @@ public class IntranetAdminService extends TenantCreator
       }
    }
    
+   @POST
+   @Path("/contactus")
+   public Response contactUs(@FormParam("user-mail") String userMail, @FormParam("first-name") String firstName,
+      @FormParam("subject") String subject, @FormParam("text") String text)
+   {
+      utils.sendContactUsEmail(userMail, firstName, subject, text);
+      return Response.ok().build();
+   }
+   
+   
    
    @POST
    @Path("/create")
@@ -307,11 +316,7 @@ public class IntranetAdminService extends TenantCreator
             .build();
       }
       
-      String folderName = adminConfiguration.getProperty("cloud.admin.tenant.waiting.dir"); 
-      if (folderName == null){
-         LOG.error("Property cloud.admin.tenant.waiting.dir not found in configuration.");
-         throw new CloudAdminException("Can not finish tenant creation. Please contact support.");
-      }
+      String folderName = utils.getRegistrationWaitingFolder();
       File folder = new File(folderName);
       if (!folder.exists())
          folder.mkdir();
@@ -371,11 +376,7 @@ public class IntranetAdminService extends TenantCreator
    public Map<String, String[]> getTenantRequests() throws CloudAdminException
    {
       Map<String, String[]> result = new HashMap<String, String[]>();
-      String folder = adminConfiguration.getProperty("cloud.admin.tenant.waiting.dir");
-      if (folder == null){
-         LOG.error("Property cloud.admin.tenant.waiting.dir not found in admin configuration.");
-         throw new CloudAdminException("A problem happened during processsing this request. It was reported to developers. Please, try again later.");
-      }
+      String folder = utils.getRegistrationWaitingFolder();
       File[] list = new File(folder).listFiles();
       if (list == null)
          return result;
@@ -414,12 +415,7 @@ public class IntranetAdminService extends TenantCreator
       throws CloudAdminException
    {
 
-      String folderName = adminConfiguration.getProperty("cloud.admin.tenant.waiting.dir");
-      if (folderName == null){
-         LOG.error("Property cloud.admin.tenant.waiting.dir not found in admin configuration.");
-         throw new CloudAdminException("Can not apply operation. Please contact support.");
-      }
-         
+      String folderName  = utils.getRegistrationWaitingFolder();
       File propertyFile = new File(folderName + filename + ".properties");
       Properties properties;
       try

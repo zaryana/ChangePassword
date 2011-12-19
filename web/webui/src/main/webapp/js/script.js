@@ -389,6 +389,24 @@ Tenants.prototype.doJoinRequest = function() {
       tenants.getquerystringJoin);
 }
 
+
+Tenants.prototype.doContactRequest = function() {
+    var url = tenantServicePath + "/contactus";
+
+    if (_gel("email").value.length == 0) {
+		_gel("messageString").innerHTML = "<div class=\"Ok\">Please, indicate your email.</div>";
+		return;
+	}
+
+	if (_gel("subject").value.length == 0) {
+		_gel("messageString").innerHTML = "<div class=\"Ok\">Please, indicate message subject.</div>";
+		return;
+	}
+	  tenants.xmlhttpPost(url, tenants.handleContactResponse,
+	  tenants.getquerystringContactUs);
+	}
+
+
 /*  Handle signup response */
 Tenants.prototype.handleSignupResponse = function(resp) {
 
@@ -455,6 +473,27 @@ Tenants.prototype.handleJoinResponse = function(resp) {
 
 }
 
+Tenants.prototype.handleContactResponse = function(resp) {
+
+	  if (resp == "") {
+		  sendDataToLoopfuse({
+		      "email" : _gel('email').value,
+		      "first_name" : _gel('name').value,
+		      "company" : _gel('subject').value,
+		      "message" : _gel('ContactUs_Message__c').value,
+		      // hidden LoopFuse fields
+		      "formid" : _gel('formid').value,
+		      "service_source" : _gel('service_source').value,
+		      "cid" : _gel('cid').value
+		    }, function() {
+		     // document.getElementById('Content').innerHTML = "<div class=\"ThanksPages ClearFix\"><h1>Thank you!</h1><p style=\"text-align:center\">Your request has been successfully submitted. We will get back to you soon.</p></div>";
+		     window.location = "/contact-us-done.jsp";
+		      });
+	  } else {
+	    _gel("messageString").innerHTML = resp;
+	  }
+	}
+
 Tenants.prototype.xmlhttpPost = function(strURL, handler, paramsMapper) {
   var xmlHttpReq = false;
   var self = this;
@@ -499,6 +538,15 @@ Tenants.prototype.getquerystringCreate = function() {
   qstr += '&company-name=' + jQuery.trim(_gel('company').value);
   qstr += '&confirmation-id=' + jQuery.trim(_gel('confirmation-id').value);
   return encodeURI(qstr);
+}
+
+
+Tenants.prototype.getquerystringContactUs = function() {
+	  qstr = 'user-mail=' + jQuery.trim(_gel('email').value);
+	  qstr += '&first-name=' + jQuery.trim(_gel('name').value);
+	  qstr += '&subject=' + jQuery.trim(_gel('subject').value);
+	  qstr += '&text=' + jQuery.trim(_gel('ContactUs_Message__c').value);
+	  return encodeURI(qstr);
 }
 
 function _gel(id) {

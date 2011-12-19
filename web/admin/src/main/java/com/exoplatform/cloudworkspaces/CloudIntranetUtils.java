@@ -101,6 +101,9 @@ public class CloudIntranetUtils
    private static final String CLOUD_ADMIN_MAIL_OWNER_INTRANET_CREATED_SUBJECT =
       "cloud.admin.mail.intranet.created.owner.subject";
    
+   private static final String CLOUD_ADMIN_MAIL_CONTACT_TEMPLATE =
+            "cloud.admin.mail.contact.template";
+   
    private static final String CLOUD_ADMIN_TENANT_MAXUSERS = "cloud.admin.tenant.maxusers";
 
    private CloudAdminConfiguration cloudAdminConfiguration;
@@ -688,6 +691,29 @@ public class CloudIntranetUtils
                + "'.", ex);
       }
    }
+   
+   public void sendContactUsEmail(String userMail, String firstName, String subject, String text){
+      
+      String mailTemplate = cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_CONTACT_TEMPLATE, "Contact-Us request.");
+      
+      Map<String, String> props = new HashMap<String, String>();
+      props.put("user.mail", userMail);
+      props.put("user.name", firstName);
+      props.put("message", text);
+      try
+      {
+            mailSender.sendMail("cloud-workspaces-developer@exoplatform.org", 
+                                 "Contact-Us message submitted: " + subject, 
+                                 mailTemplate, 
+                                 props);
+      }
+      catch (CloudAdminException ex)
+      {
+         LOG.error(
+            "Cannot send mail contactUs message. Message was : <<" + text + ">>. Sender email is: " + userMail);
+      }
+      
+   }
 
    public String getTenantNameFromWhitelist(String email) throws CloudAdminException
    {
@@ -776,8 +802,10 @@ public class CloudIntranetUtils
    public void joinAll(String tName) throws CloudAdminException
    {
 
-      String folderName = cloudAdminConfiguration.getProperty("cloud.admin.tenant.waiting.dir");
+      String folderName = getRegistrationWaitingFolder();
       File[] list = new File(folderName).listFiles();
+      if (list == null)
+         return;
       for (File one : list)
       {
          if (tName == null || one.getName().startsWith(tName + "_"))
@@ -845,6 +873,15 @@ public class CloudIntranetUtils
        tokens.length == 2 &&
        tokens[0].trim().length() > 0 && 
        tokens[1].trim().length() > 0;
+    }
+    
+    public String getRegistrationWaitingFolder() throws CloudAdminException{
+       String folder = cloudAdminConfiguration.getProperty("cloud.admin.tenant.waiting.dir", null);
+       if (folder == null){
+          LOG.error("Property cloud.admin.tenant.waiting.dir not found in admin configuration.");
+          throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
+       }
+       return folder;
     }
 
    /**
