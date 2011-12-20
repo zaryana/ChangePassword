@@ -72,7 +72,7 @@
 				<div class="Cols RCol FR">
 					<ul>
 						<li><a href="http://exoplatform.com/company/en/products/mobile"><img src="background/Stay-connect-mobile-apps.png" alt="Stay Connected with Mobile Apps for Cloud Workspaces" /></a> </li>
-						<li><a href="http://exoplatform.com/exo-platform-3-trial/eXoPlatform-3.zip"><img src="background/SocialIntranet-on-premise.png" alt="Want an On-Premise Social Intranet?" /></a></li>
+						<li><a href="http://exoplatform.com/company/en/products/overview" target="_blank"><img src="background/SocialIntranet-on-premise.png" alt="Want an On-Premise Social Intranet?" /></a></li>
 					</ul>
 				</div>
 			</div>
