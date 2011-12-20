@@ -29,6 +29,7 @@ import com.exoplatform.cloudworkspaces.TenantCreatedListenerThread;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
@@ -257,8 +258,7 @@ public class IntranetAdminService extends TenantCreator
          if (resp.getStatus() != 200)
             throw new CloudAdminException((String)resp.getEntity());
          TenantCreatedListenerThread thread =
-            new TenantCreatedListenerThread(tName, userMail, firstName, lastName, companyName, phone, password,
-               cloudInfoHolder, adminConfiguration);
+            new TenantCreatedListenerThread(tName,cloudInfoHolder, adminConfiguration);
          ExecutorService executor = Executors.newSingleThreadExecutor();
          executor.execute(thread);
          return Response.ok().build();
@@ -353,6 +353,7 @@ public class IntranetAdminService extends TenantCreator
       properties.put("phone", phone);
       properties.put("password", password);
       properties.put("confirmation-id", uuid);
+      properties.put("isadministrator", "false");
       
       try
       {
@@ -426,10 +427,17 @@ public class IntranetAdminService extends TenantCreator
          properties = new Properties();
          properties.load(io);
          io.close();
+         properties.put("isadministrator", "true");
+         properties.store(new FileOutputStream(propertyFile), "");
       }
-      catch (Exception ex)
+      catch (FileNotFoundException ex)
       {
          throw new CloudAdminException("Tenant data file not found on server anymore.");
+      }
+      catch (IOException e)
+      {
+         LOG.error("Failed to read property file", e);
+         throw new CloudAdminException("A problem happened during processing request . It was reported to developers. Please, try again later.");
       }
 
       if (decision.equalsIgnoreCase("accept"))
@@ -460,7 +468,7 @@ public class IntranetAdminService extends TenantCreator
                   }
                }
             }
-            propertyFile.delete();
+            //propertyFile.delete();
             return resp;
          }
          else

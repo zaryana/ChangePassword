@@ -24,8 +24,6 @@ import org.exoplatform.cloudmanagement.admin.queue.TenantQueueException;
 import org.exoplatform.cloudmanagement.admin.status.CloudInfoHolder;
 import org.exoplatform.cloudmanagement.status.TenantState;
 
-import java.util.HashMap;
-import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,38 +37,17 @@ public class TenantCreatedListenerThread implements Runnable
 
    private String tName;
 
-   private String email;
-
-   private String firstName;
-
-   private String companyName;
-
-   private String lastName;
-
-   private String phone;
-
-   private String password;
-
    private CloudInfoHolder cloudInfoHolder;
 
    private int interval = 15000;
 
    private CloudAdminConfiguration cloudAdminConfiguration;
 
-   public TenantCreatedListenerThread(String tName, String userMail, String firstName, String lastName,
-      String companyName, String phone, String password, CloudInfoHolder cloudInfoHolder,
-      CloudAdminConfiguration cloudAdminConfiguration)
+   public TenantCreatedListenerThread(String tName,  CloudInfoHolder cloudInfoHolder, CloudAdminConfiguration cloudAdminConfiguration)
    {
       this.tName = tName;
-      this.email = userMail;
-      this.firstName = firstName;
-      this.lastName = lastName;
-      this.companyName = companyName;
-      this.phone = phone;
-      this.password = password;
       this.cloudInfoHolder = cloudInfoHolder;
       this.cloudAdminConfiguration = cloudAdminConfiguration;
-
    }
 
    @Override
@@ -92,19 +69,6 @@ public class TenantCreatedListenerThread implements Runnable
                count += 15;
             }
             Thread.sleep(interval * 20); //To let the proxy to reload;
-            String username = email.substring(0, (email.indexOf("@")));
-            utils.storeUser(tName, email, firstName, lastName, password, true);
-            //utils.storeRoot(tName, email, "root", "root", root_password);
-            //String root_password = UUID.randomUUID().toString().replace("-", "").substring(0, 9);
-            Map<String, String> props = new HashMap<String, String>();
-            props.put("tenant.masterhost", cloudAdminConfiguration.getMasterHost());
-            props.put("tenant.repository.name", tName);
-            props.put("user.mail", email);
-           // props.put("root.password", root_password);
-            props.put("user.name", username);
-            props.put("first.name", firstName);
-            props.put("last.name", lastName);
-            utils.sendIntranetCreatedEmail(email, props);
             utils.joinAll(tName);
          }
          catch (TenantQueueException e)

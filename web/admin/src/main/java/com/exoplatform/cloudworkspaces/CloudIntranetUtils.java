@@ -825,7 +825,7 @@ public class CloudIntranetUtils
                   
                   try
                   {
-                     storeUser(tenant, userMail, fName, lName, newprops.getProperty("password"), false);
+                     
                      // Prepare properties for mailing
                      Map<String, String> props = new HashMap<String, String>();
                      props.put("tenant.masterhost", cloudAdminConfiguration.getMasterHost());
@@ -834,8 +834,20 @@ public class CloudIntranetUtils
                      props.put("user.name", userMail.substring(0, (userMail.indexOf("@"))));
                      props.put("first.name", fName);
                      props.put("last.name", lName);
-                     sendUserJoinedEmails(tName, fName, userMail, props);
-                     one.delete();
+
+                     
+                     if (Boolean.parseBoolean(newprops.getProperty("isadministrator")))
+                     {
+                        storeUser(tenant, userMail, fName, lName, newprops.getProperty("password"), true);
+                        sendIntranetCreatedEmail(userMail, props);
+                        one.delete();
+                     }
+                     else
+                     {
+                        storeUser(tenant, userMail, fName, lName, newprops.getProperty("password"), false);
+                        sendUserJoinedEmails(tName, fName, userMail, props);
+                        one.delete();
+                     }
                   }
                   catch (CloudAdminException e)
                   {
