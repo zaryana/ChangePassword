@@ -274,6 +274,7 @@ public class IntranetAdminService extends TenantCreator
     */
    @GET
    @Path("/status/{tenantname}")
+   @Produces(MediaType.TEXT_PLAIN)
    public Response tenantStatus(@PathParam("tenantname") String tenantName)
    {
       try
@@ -411,6 +412,7 @@ public class IntranetAdminService extends TenantCreator
    @GET
    @Path("/validate/{decision}/{filename}")
    @RolesAllowed("cloud-manager")
+   @Produces(MediaType.TEXT_PLAIN)
    public Response validate(@PathParam("decision") String decision, @PathParam("filename") String filename)
       throws CloudAdminException
    {
@@ -465,7 +467,6 @@ public class IntranetAdminService extends TenantCreator
          {
             throw new CloudAdminException("Can not apply this operation. Please contact support.");
          }
-
       }
       else if (decision.equalsIgnoreCase("refuse"))
       {

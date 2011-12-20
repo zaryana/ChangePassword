@@ -87,29 +87,17 @@ Tenants.prototype.init = function() {
       var form = _gel("validationTable");
       form.style.display="none";
       if (isClearStatus)
-        _gel("messageString").innerHTML="";
-//      _gel("ListTable").style.display="block";
+      _gel("messageString").innerHTML="";
       var checkURL = tenantSecureServicePath + "/requests/";
-      var xmlHttpReq = false;
-      var self = this;
-       if (window.XMLHttpRequest) {self.xmlHttpReq = new XMLHttpRequest(); }
-      else if (window.ActiveXObject) { self.xmlHttpReq = new ActiveXObject("Microsoft.XMLHTTP");   }
-      self.xmlHttpReq.open('GET', checkURL, true);
-      self.xmlHttpReq.setRequestHeader('Content-Type', 'text/html');
-      self.xmlHttpReq.setRequestHeader('Authorization', 'Basic ' + auth);
-      self.xmlHttpReq.onreadystatechange = function() {
-
-       if (self.xmlHttpReq.readyState == 4) {
-         try {
-         var resp = JSON.parse(self.xmlHttpReq.responseText);
-          _gel("ListTable").style.display="table";
-         } catch (e){
-            if (self.xmlHttpReq.responseText.indexOf("401") > -1){
-              tenants.showValidationForm(true);
-              _gel("messageString").innerHTML = "<div class=\"Ok\">Wrong workspaces manager credentials.</div>"; 
-          } else 
-           _gel("messageString").innerHTML = "<div class=\"Ok\">" + self.xmlHttpReq.responseText + "</div>";
-         }
+      var resp;
+      $.ajax({
+ 		url: checkURL, 
+ 		beforeSend : function(req) {
+ 	        req.setRequestHeader('Authorization', 'Basic ' + auth);
+ 	    },
+        success: function(data){
+    	  resp = data;
+    	  _gel("ListTable").style.display="table";
          var table = _gel("ListTable");
          //Clear table
          while (table.rows.length > 1){
@@ -155,30 +143,36 @@ Tenants.prototype.init = function() {
           cell_s.colSpan="6";
           cell_s.className="MyField";
           cell_s.innerHTML="<a href=\"javascript:void(0);\" onClick=\"tenants.showValidationList(true);\">Refresh</a>";
-        }
-      }
-      self.xmlHttpReq.send(null);
+        }, 
+    	error: function (request, status, error) {
+    		if (request.responseText.indexOf("HTTP Status 401") > -1){
+    	    	  tenants.showValidationForm(true);
+    	    	  _gel("messageString").innerHTML = "<div class=\"Ok\">Wrong workspaces manager credentials.</div>";
+    	    	  return;
+    		} else
+    	    _gel("messageString").innerHTML = "<div class=\"Ok\">" + request.responseText + "</div>";
+    	},
+    	dataType: 'json'});
  }
  
-    Tenants.prototype.validationAction = function(url){ 
-      var xmlHttpReq = false;
-      var self = this;
-      if (window.XMLHttpRequest) {self.xmlHttpReq = new XMLHttpRequest(); }
-      else if (window.ActiveXObject) { self.xmlHttpReq = new ActiveXObject("Microsoft.XMLHTTP");   }
-      self.xmlHttpReq.open('GET', url, true);
-      self.xmlHttpReq.setRequestHeader('Content-Type', 'text/html');
-      self.xmlHttpReq.setRequestHeader('Authorization', 'Basic ' + auth);
-      self.xmlHttpReq.onreadystatechange = function() {
-        if (self.xmlHttpReq.readyState == 4) {
-        if (self.xmlHttpReq.responseText == "") {
-         _gel("messageString").innerHTML = "<div class=\"Ok\"><span style=\"color:blue;\">Action successfull.</span></div>";
-         tenants.showValidationList(false); 
-         }
-        else
-        _gel("messageString").innerHTML = "<div class=\"Ok\">" + self.xmlHttpReq.responseText + "</div>";
-        }
-      }
-      self.xmlHttpReq.send(null);
+    Tenants.prototype.validationAction = function(url){
+    	$.ajax({
+    	url: url, 
+    	beforeSend : function(req) {
+ 	        req.setRequestHeader('Authorization', 'Basic ' + auth);
+ 	    },
+    	success: function(data){
+          if (data == "") {
+          _gel("messageString").innerHTML = "<div class=\"Ok\"><span style=\"color:blue;\">Action successfull.</span></div>";
+           tenants.showValidationList(false); 
+          }
+          else
+           _gel("messageString").innerHTML = "<div class=\"Ok\">" + data + "</div>";
+       }, 
+       error: function (request, status, error) {
+           _gel("messageString").innerHTML = "<div class=\"Ok\">" + request.responseText + "</div>";
+       },
+       dataType: 'text'});
     }
 
    Tenants.prototype.showValidationForm = function() {
@@ -262,21 +256,19 @@ Tenants.prototype.doLogin = function() {
    redirect += pass;
    redirect += '&initialURI=/portal/intranet/welcome';
    var checkURL = tenantServicePath + "/status/" + tname;
-   var xmlHttpReq = false;
-   var self = this;
-   if (window.XMLHttpRequest) {self.xmlHttpReq = new XMLHttpRequest(); }
-    else if (window.ActiveXObject) { self.xmlHttpReq = new ActiveXObject("Microsoft.XMLHTTP");   }
-   self.xmlHttpReq.open('GET', checkURL, true);
-   self.xmlHttpReq.setRequestHeader('Content-Type', 'text/html');
-   self.xmlHttpReq.onreadystatechange = function() {
-     if (self.xmlHttpReq.readyState == 4) {
-      if (self.xmlHttpReq.responseText != "NOT_FOUND")
-         window.location = redirect; 
-      else
-      _gel("messageString").innerHTML = "<div class=\"Ok\">The workspace " + tname + " does not exist.</div>"; 
-    }  
-  }
-    self.xmlHttpReq.send(null);
+   var search = "ONLINE";
+   $.ajax({
+	url: checkURL, 
+	success: function(data){
+	   if (data.substring(0, search.length) === search)
+	    window.location = redirect;
+	   else
+   	   _gel("messageString").innerHTML = "<div class=\"Ok\">The workspace " + tname + " does not exist or unreachable.</div>";
+   }, 
+   error: function (request, status, error) {
+       _gel("messageString").innerHTML = "<div class=\"Ok\">" + request.responseText + "</div>";
+   },
+   dataType: 'text'});
 }
 
 
