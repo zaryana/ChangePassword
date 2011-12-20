@@ -232,21 +232,16 @@ Tenants.prototype.doLogin = function() {
    var login = _gel("email").value;
    var pass = _gel("password").value;
    
-   if (tname.length == 0){
-     _gel("messageString").innerHTML = "<div class=\"Ok\">Please indicate workspace name.</div>";
-     return;
-   }
-   
-   if (login.length == 0){
-     _gel("messageString").innerHTML = "<div class=\"Ok\">Please indicate your login.</div>";
-      return;
-   }  
-   
-   
-   if (pass.length == 0){
-    _gel("messageString").innerHTML = "<div class=\"Ok\">Please enter your password.</div>";
-     return;
-   }  
+   jQuery.validator.setDefaults(                                                                                                                                                                      
+   {                                                                                                                                                                                                     
+    errorPlacement: function(error, element)                                                                                                                                                          
+      {                                                                                                                                                                                                 
+        error.appendTo(element.next());                                                                                                                                                                 
+      },                                                                                                                                                                                                 
+     });                                                                                                                                                                                                   
+                                                                                                                                                                                                   
+    var valid = $("#signinForm").valid();                                                                                                                                                             
+    if (!valid) return;
    
    var username = login.substring(0, login.indexOf('@'));
    var redirect = location.protocol + '//' + tname + '.' + location.hostname;
@@ -291,47 +286,38 @@ Tenants.prototype.doSingupRequest = function() {
 /* Sending creation request */
 Tenants.prototype.doCreationRequest = function() {
   var url = tenantServicePath + "/create";
-  
-  if (_gel("email").value.length == 0){
-    _gel("messageString").innerHTML = "<div class=\"Ok\">Cannot process request, email is not set.</div>";
-    return;
-    }
     
     if (_gel("confirmation-id").value.length == 0){
     _gel("messageString").innerHTML = "<div class=\"Ok\">Cannot process request, confirmation ID is not set.</div>";
     return;
     }
   
-   if (_gel("password").value.length <6) {
-    _gel("messageString").innerHTML = "<div class=\"Ok\">Password must consist of at least 6 characters.</div>";
-    return;
-    } 
-      
-    if (_gel("first_name").value.length == 0) {
-    _gel("messageString").innerHTML = "<div class=\"Ok\">Please, indicate your First name.</div>";
-    return;
+    jQuery.validator.setDefaults(                                                                                                                                                                      
+   {                                                                                                                                                                                                     
+    errorPlacement: function(error, element)                                                                                                                                                          
+      {                                                                                                                                                                                                 
+        error.appendTo(element.next());                                                                                                                                                                 
+      },                                                                                                                                                                                                 
+     });        
+     
+ 
+     $("#registrationForm").validate({
+       rules: {
+         password: {
+           required: true,
+           minlength: 6,
+       },
+       password2: {
+           required: true,
+           minlength: 6,
+           equalTo: "#password"
+       }
     }
-    
-    if (_gel("last_name").value.length == 0) {
-    _gel("messageString").innerHTML = "<div class=\"Ok\">Please, indicate your Last name.</div>";
-    return;
-    }
-    
-     if (_gel("phone_work").value.length == 0) {
-    _gel("messageString").innerHTML = "<div class=\"Ok\">Please, indicate your company phone.</div>";
-    return;
-    }
+   });        
 
-     if (_gel("company").value.length == 0) {
-    _gel("messageString").innerHTML = "<div class=\"Ok\">Please, indicate your company name.</div>";
-    return;
-    }
-  
+    var valid = $("#registrationForm").valid();                                                                                                                                                             
+    if (!valid) return;      
 
-  if (_gel("password").value != _gel("password2").value) {
-    _gel("messageString").innerHTML = "<div class=\"Ok\">Passwords do not match.</div>";
-    return;
-  }
 
   _gel("t_submit").value = "Wait...";
   _gel("t_submit").disabled = true;
@@ -344,36 +330,32 @@ Tenants.prototype.doCreationRequest = function() {
 Tenants.prototype.doJoinRequest = function() {
   var url = tenantServicePath + "/join";
   
-  if (_gel("email").value.length == 0){
-    _gel("messageString").innerHTML = "<div class=\"Ok\">Cannot process request, email is not set.</div>";
-    return;
+  jQuery.validator.setDefaults(                                                                                                                                                                      
+   {                                                                                                                                                                                                     
+    errorPlacement: function(error, element)                                                                                                                                                          
+      {                                                                                                                                                                                                 
+        error.appendTo(element.next());                                                                                                                                                                 
+      },                                                                                                                                                                                                 
+     });        
+     
+ 
+     $("#joinForm").validate({
+       rules: {
+         password: {
+           required: true,
+           minlength: 6,
+       },
+       password2: {
+           required: true,
+           minlength: 6,
+           equalTo: "#password"
+       }
     }
-    
-    if (_gel("workspace").value.length == 0){
-    _gel("messageString").innerHTML = "<div class=\"Ok\">Cannot process request, workspace is not set.</div>";
-    return;
-    }
-  
-  if (_gel("first_name").value.length == 0) {
-    _gel("messageString").innerHTML = "<div class=\"Ok\">Please, indicate your First name.</div>";
-    return;
-    }
-    
-    if (_gel("last_name").value.length == 0) {
-    _gel("messageString").innerHTML = "<div class=\"Ok\">Please, indicate your Last name.</div>";
-    return;
-    }
-  
-  
-   if (_gel("password").value.length <6) {
-    _gel("messageString").innerHTML = "<div class=\"Ok\">Password must consist of at least 6 characters.</div>";
-    return;
-    }
-    
-  if (_gel("password").value != _gel("password2").value) {
-    _gel("messageString").innerHTML = "<div class=\"Ok\">Passwords do not match.</div>";
-    return;
-  }
+   });        
+   
+   var valid = $("#joinForm").valid();                                                                                                                                                             
+    if (!valid) return;      
+
 
   _gel("t_submit").value = "Wait...";
   _gel("t_submit").disabled = true;
@@ -384,19 +366,11 @@ Tenants.prototype.doJoinRequest = function() {
 
 Tenants.prototype.doContactRequest = function() {
     var url = tenantServicePath + "/contactus";
-
-    if (_gel("email").value.length == 0) {
-		_gel("messageString").innerHTML = "<div class=\"Ok\">Please, indicate your email.</div>";
-		return;
-	}
-
-	if (_gel("subject").value.length == 0) {
-		_gel("messageString").innerHTML = "<div class=\"Ok\">Please, indicate message subject.</div>";
-		return;
-	}
-	  tenants.xmlhttpPost(url, tenants.handleContactResponse,
-	  tenants.getquerystringContactUs);
-	}
+    var valid = $("#contactForm").valid();                                                                                                                                                             
+    if (!valid) return;
+    tenants.xmlhttpPost(url, tenants.handleContactResponse,
+     tenants.getquerystringContactUs);
+}
 
 
 /*  Handle signup response */

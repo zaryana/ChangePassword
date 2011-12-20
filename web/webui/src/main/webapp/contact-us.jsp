@@ -21,21 +21,21 @@
 		
 		<div class="UIPageBody" id="Content" style="display:none;"></div>
 		<div class="UIPageBody ContactPages" id="ContactForm">
-		<form class="UIForm UIFormBox" action="javascript:void(0);"  method="POST" name="">
+		<form class="UIForm UIFormBox" action="javascript:void(0);"  method="POST" name="" id="contactForm">
 		<h1 class="TitleForm">Contact Us</h1>
 		<div id="messageString" class="TenantFormMsg"></div>
 		<table cols="2">
 		  <tr>
-		   <td class="Field">Your name:</td><td> <input class="InputText" type="text" name="name" id="name" value="" /></td>
+		   <td class="Field">Your name:</td><td> <input class="required InputText" type="text" name="name" id="name" value="" /></td>
 		 </tr>
 		 <tr>
-		  <td class="Field">Your email:</td><td> <input class="InputText" type="text" name="email" id="email" value="" /></td>
+		  <td class="Field">Your email:</td><td> <input class="required InputText" type="text" name="email" id="email" value="" /></td>
 		 </tr>
 		 <tr>
-		  <td class="Field">subject:</td><td> <input class="InputText" type="text" name="subject" id="subject" /></td>
+		  <td class="Field">subject:</td><td> <input class="required InputText" type="text" name="subject" id="subject" /></td>
 		 </tr>
 		 <tr>
-		  <td class="Field">Message:</td><td> <textarea type="text" name="ContactUs_Message__c" id="ContactUs_Message__c"></textarea></td>
+		  <td class="Field">Message:</td><td> <textarea class="required" type="text" name="ContactUs_Message__c" id="ContactUs_Message__c"></textarea></td>
 		 </tr>
 		 <tr>
 		  <td class="Field"></td>
