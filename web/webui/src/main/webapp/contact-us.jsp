@@ -21,7 +21,7 @@
 		
 		<div class="UIPageBody" id="Content" style="display:none;"></div>
 		<div class="UIPageBody ContactPages" id="ContactForm">
-		<form class="UIForm UIFormBox" action="javascript:void(0);"  method="POST" name="" id="contactForm">
+		<form class="UIForm UIFormBox" action="javascript:void(0);"  method="POST" name="" id="mycontactForm">
 		<h1 class="TitleForm">Contact Us</h1>
 		<div id="messageString" class="TenantFormMsg"></div>
 		<table cols="2">
