@@ -232,15 +232,14 @@ Tenants.prototype.doLogin = function() {
    var login = _gel("email").value;
    var pass = _gel("password").value;
    
-   jQuery.validator.setDefaults(                                                                                                                                                                      
-   {                                                                                                                                                                                                     
-    errorPlacement: function(error, element)                                                                                                                                                          
-      {                                                                                                                                                                                                 
-        error.appendTo(element.next());                                                                                                                                                                 
-      },                                                                                                                                                                                                 
-     });                                                                                                                                                                                                   
-                                                                                                                                                                                                   
-    var valid = $("#signinForm").valid();                                                                                                                                                             
+   jQuery.validator.setDefaults(
+   {
+    errorPlacement: function(error, element)
+      {
+        error.appendTo(element.next());
+      },
+     });
+    var valid = $("#signinForm").valid();
     if (!valid) return;
    
    var username = login.substring(0, login.indexOf('@'));
@@ -292,13 +291,13 @@ Tenants.prototype.doCreationRequest = function() {
     return;
     }
   
-    jQuery.validator.setDefaults(                                                                                                                                                                      
-   {                                                                                                                                                                                                     
-    errorPlacement: function(error, element)                                                                                                                                                          
-      {                                                                                                                                                                                                 
-        error.appendTo(element.next());                                                                                                                                                                 
-      },                                                                                                                                                                                                 
-     });        
+    jQuery.validator.setDefaults(
+   {
+    errorPlacement: function(error, element)
+      {
+        error.appendTo(element.next());
+      },
+     });
      
  
      $("#registrationForm").validate({
@@ -313,10 +312,10 @@ Tenants.prototype.doCreationRequest = function() {
            equalTo: "#password"
        }
     }
-   });        
+   });
 
-    var valid = $("#registrationForm").valid();                                                                                                                                                             
-    if (!valid) return;      
+    var valid = $("#registrationForm").valid();
+    if (!valid) return;
 
 
   _gel("t_submit").value = "Wait...";
@@ -330,13 +329,13 @@ Tenants.prototype.doCreationRequest = function() {
 Tenants.prototype.doJoinRequest = function() {
   var url = tenantServicePath + "/join";
   
-  jQuery.validator.setDefaults(                                                                                                                                                                      
-   {                                                                                                                                                                                                     
-    errorPlacement: function(error, element)                                                                                                                                                          
-      {                                                                                                                                                                                                 
-        error.appendTo(element.next());                                                                                                                                                                 
-      },                                                                                                                                                                                                 
-     });        
+  jQuery.validator.setDefaults(
+   {
+    errorPlacement: function(error, element)
+      {
+        error.appendTo(element.next());
+      },
+     });
      
  
      $("#joinForm").validate({
@@ -351,10 +350,10 @@ Tenants.prototype.doJoinRequest = function() {
            equalTo: "#password"
        }
     }
-   });        
+   });
    
-   var valid = $("#joinForm").valid();                                                                                                                                                             
-    if (!valid) return;      
+   var valid = $("#joinForm").valid();
+    if (!valid) return;
 
 
   _gel("t_submit").value = "Wait...";
@@ -366,7 +365,7 @@ Tenants.prototype.doJoinRequest = function() {
 
 Tenants.prototype.doContactRequest = function() {
     var url = tenantServicePath + "/contactus";
-    var valid = $("#contactForm").valid();                                                                                                                                                             
+    var valid = $("#mycontactForm").valid();
     if (!valid) return;
     tenants.xmlhttpPost(url, tenants.handleContactResponse,
      tenants.getquerystringContactUs);
