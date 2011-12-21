@@ -845,7 +845,7 @@ public class CloudIntranetUtils
                      else
                      {
                         storeUser(tenant, userMail, fName, lName, newprops.getProperty("password"), false);
-                        sendUserJoinedEmails(tName, fName, userMail, props);
+                        sendUserJoinedEmails(tenant, fName, userMail, props);
                         one.delete();
                      }
                   }

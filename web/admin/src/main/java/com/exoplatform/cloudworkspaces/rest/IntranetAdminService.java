@@ -495,5 +495,12 @@ public class IntranetAdminService extends TenantCreator
       }
 
    }
+   
+   @GET
+   @Path("autojoin")
+   public Response autojoin() throws CloudAdminException{
+      utils.joinAll(null);
+      return Response.ok().build();
+   }
 
 }
