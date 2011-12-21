@@ -838,12 +838,14 @@ public class CloudIntranetUtils
                      
                      if (Boolean.parseBoolean(newprops.getProperty("isadministrator")))
                      {
+                        LOG.info("Joining administrator " + userMail + " to tenant " + tenant);
                         storeUser(tenant, userMail, fName, lName, newprops.getProperty("password"), true);
                         sendIntranetCreatedEmail(userMail, props);
                         one.delete();
                      }
                      else
                      {
+                        LOG.info("Joining user " + userMail + " to tenant " + tenant);
                         storeUser(tenant, userMail, fName, lName, newprops.getProperty("password"), false);
                         sendUserJoinedEmails(tenant, fName, userMail, props);
                         one.delete();
