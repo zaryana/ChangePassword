@@ -843,13 +843,6 @@ public class CloudIntranetUtils
                         sendIntranetCreatedEmail(userMail, props);
                         one.delete();
                      }
-                     else
-                     {
-                        LOG.info("Joining user " + userMail + " to tenant " + tenant);
-                        storeUser(tenant, userMail, fName, lName, newprops.getProperty("password"), false);
-                        sendUserJoinedEmails(tenant, fName, userMail, props);
-                        one.delete();
-                     }
                   }
                   catch (CloudAdminException e)
                   {
@@ -863,6 +856,58 @@ public class CloudIntranetUtils
             }
          }
       }
+
+      File[] list2 = new File(folderName).listFiles();
+      if (list2 == null)
+         return;
+      for (File one : list2)
+      {
+         if (tName == null || one.getName().startsWith(tName + "_"))
+         {
+            try
+            {
+               FileInputStream io = new FileInputStream(one);
+               Properties newprops = new Properties();
+               newprops.load(io);
+               io.close();
+               if (newprops.getProperty("action").equalsIgnoreCase(RequestState.WAITING_JOIN.toString()))
+               {
+                  String tenant = newprops.getProperty("tenant");
+                  String userMail = newprops.getProperty("user-mail");
+                  String fName = newprops.getProperty("first-name");
+                  String lName = newprops.getProperty("last-name");
+                  
+                  try
+                  {
+                     
+                     // Prepare properties for mailing
+                     Map<String, String> props = new HashMap<String, String>();
+                     props.put("tenant.masterhost", cloudAdminConfiguration.getMasterHost());
+                     props.put("tenant.repository.name", tenant);
+                     props.put("user.mail", userMail);
+                     props.put("user.name", userMail.substring(0, (userMail.indexOf("@"))));
+                     props.put("first.name", fName);
+                     props.put("last.name", lName);
+
+                     LOG.info("Joining user " + userMail + " to tenant " + tenant);
+                     storeUser(tenant, userMail, fName, lName, newprops.getProperty("password"), false);
+                     sendUserJoinedEmails(tenant, fName, userMail, props);
+                     one.delete();
+                  }
+                  catch (CloudAdminException e)
+                  {
+                     LOG.error("An problem happened during joining user " + userMail
+                        + "  on tenant " + tenant + e.getMessage(), e);
+                  }
+               }
+            }
+            catch (IOException e)
+            {
+            }
+         }
+      }
+
+      
 
    }
 

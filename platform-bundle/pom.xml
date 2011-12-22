@@ -136,7 +136,7 @@ EXO_CLOUD_ADMIN_OPTS="-Dcloud.admin.log.dir=../logs/cloud-admin \
                     <zip destfile="${project.build.directory}/tomcat-source/webapps/platform-extension.war" basedir="${project.build.directory}/tomcat-source/webapps/platform-extension" />
                     <delete dir="${project.build.directory}/tomcat-source/webapps/platform-extension" />
                     <copy file="${project.basedir}/src/main/resources/tomcat/gatein/conf/configuration.properties" tofile="${project.build.directory}/tomcat-source/gatein/conf/configuration.properties" overwrite="true" />
-                    <copy file="${project.basedir}/src/main/resources/tomcat/gatein/conf/cloud-workspaces.properties" tofile="${project.build.directory}/tomcat-source/gatein/conf/cloud-workspaces.properties" overwrite="true" />
+                    <copy file="${project.basedir}/src/main/resources/tomcat/gatein/conf/cloud.properties" tofile="${project.build.directory}/tomcat-source/gatein/conf/cloud.properties" overwrite="true" />
                     <copy file="${project.basedir}/src/main/resources/tomcat/gatein/conf/cloud/users.properties" tofile="${project.build.directory}/tomcat-source/gatein/conf/cloud/users.properties" overwrite="true" />
                     <copy file="${project.basedir}/src/main/resources/tomcat/gatein/conf/portal/portal/configuration.xml" tofile="${project.build.directory}/tomcat-source/gatein/conf/portal/portal/configuration.xml" overwrite="true" />
                   </target>

@@ -34,7 +34,6 @@ public class AutoResumeListener implements ServletContextListener {
                new AutoResumeThread();
             ExecutorService executor = Executors.newSingleThreadExecutor();
             executor.execute(thread);
-
       
    }
 
