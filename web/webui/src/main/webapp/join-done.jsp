@@ -15,7 +15,14 @@
 			<p class="FillProfileInfo">Get started with Cloud Workspaces by checking out these helpful resources.</p>
 			<div class="LeftContent FL">
 				<h3>Watch the Getting Started video:</h3>
-				<div class="Video"><img alt="" src="background/ComingVideo.jpg" /></div>
+				<div class="Video">
+					<object width="302" height="201">
+						<param name="allowfullscreen" value="true" />
+						<param name="allowscriptaccess" value="always" />
+						<param name="movie" value="http://vimeo.com/moogaloop.swf?clip_id=33936181&amp;server=vimeo.com&amp;show_title=0&amp;show_byline=0&amp;show_portrait=0&amp;color=00adef&amp;fullscreen=1&amp;autoplay=0&amp;loop=0" />
+						<embed src="http://vimeo.com/moogaloop.swf?clip_id=33936181&amp;server=vimeo.com&amp;show_title=0&amp;show_byline=0&amp;show_portrait=0&amp;color=00adef&amp;fullscreen=1&amp;autoplay=0&amp;loop=0" type="application/x-shockwave-flash" allowfullscreen="true" allowscriptaccess="always" width="302" height="201"></embed>
+					</object>
+				</div>
 			</div>
 			<div class="RightContent FL">
 				<h3>Even more to explore:</h3>
