@@ -702,7 +702,7 @@ public class CloudIntranetUtils
       props.put("message", text);
       try
       {
-            mailSender.sendMail("cloud-workspaces-developer@exoplatform.org", 
+            mailSender.sendMail("support@cloud-workspaces.com", 
                                  "Contact-Us message submitted: " + subject, 
                                  mailTemplate, 
                                  props);
