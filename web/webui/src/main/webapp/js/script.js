@@ -135,7 +135,7 @@ Tenants.prototype.init = function() {
               //Action
               var cell5 = row.insertCell(5);
               cell5.className="MyFieldLeft";
-              cell5.innerHTML='<a href="#" onClick="tenants.validationAction(\''+tenantSecureServicePath +'/validate/accept/'+account +'\');">Accept</a>&nbsp;|&nbsp;<a href="#" onClick="tenants.validationAction(\''+tenantSecureServicePath+'/validate/refuse/'+account+'\');">Reject</a>&nbsp;';//|&nbsp;<a href="#" onClick="tenants.validationAction(\''+tenantSecureServicePath +'/validate/blacklist/'+account +'\');">Blacklist</a>&nbsp;';
+              cell5.innerHTML='<a href="#" onClick="tenants.validationAction(\''+tenantSecureServicePath +'/validate/accept/'+account +'\');">Accept</a>&nbsp;|&nbsp;<a href="#" onClick="tenants.validationAction(\''+tenantSecureServicePath+'/validate/refuse/'+account+'\');">Reject</a>&nbsp;|&nbsp;<a href="#" onClick="tenants.validationAction(\''+tenantSecureServicePath +'/validate/blacklist/'+account +'\');">Blacklist</a>&nbsp;';
             }
           }
           var row1 = table.insertRow(-1);

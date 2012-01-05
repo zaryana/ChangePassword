@@ -101,9 +101,23 @@ public class CloudIntranetUtils
    private static final String CLOUD_ADMIN_MAIL_OWNER_INTRANET_CREATED_SUBJECT =
       "cloud.admin.mail.intranet.created.owner.subject";
    
-   private static final String CLOUD_ADMIN_MAIL_CONTACT_TEMPLATE =
-            "cloud.admin.mail.contact.template";
-   
+   private static final String CLOUD_ADMIN_MAIL_CONTACT_TEMPLATE = "cloud.admin.mail.contact.template";
+
+   private static final String CLOUD_ADMIN_MAIL_REQUEST_QUEUED_TEMPLATE = "cloud.admin.mail.request.queued.template";
+
+   private static final String CLOUD_ADMIN_MAIL_REQUEST_QUEUED_SUBJECT = "cloud.admin.mail.request.queued.subject";
+
+   private static final String CLOUD_ADMIN_MAIL_REQUEST_QUEUED_DEVELOPERS_TEMPLATE =
+      "cloud.admin.mail.request.queued.developers.template";
+
+   private static final String CLOUD_ADMIN_MAIL_REQUEST_QUEUED_DEVELOPERS_SUBJECT =
+      "cloud.admin.mail.request.queued.developers.subject";
+
+   private static final String CLOUD_ADMIN_MAIL_REQUEST_REJECTED_TEMPLATE =
+      "cloud.admin.mail.request.rejected.template";
+
+   private static final String CLOUD_ADMIN_MAIL_REQUEST_REJECTED_SUBJECT = "cloud.admin.mail.request.rejected.subject";
+
    private static final String CLOUD_ADMIN_TENANT_MAXUSERS = "cloud.admin.tenant.maxusers";
 
    private CloudAdminConfiguration cloudAdminConfiguration;
@@ -111,6 +125,7 @@ public class CloudIntranetUtils
    private MailSender mailSender;
    
    private String whiteListConfigurationFile;
+   private String blackListConfigurationFile;
 
    private static final Logger LOG = LoggerFactory.getLogger(CloudIntranetUtils.class);
 
@@ -119,6 +134,7 @@ public class CloudIntranetUtils
       this.cloudAdminConfiguration = cloudAdminConfiguration;
       this.mailSender = new MailSender(cloudAdminConfiguration);
       this.whiteListConfigurationFile = System.getProperty("cloud.admin.whitelist");
+      this.blackListConfigurationFile = System.getProperty("cloud.admin.blacklist");
 
       Authenticator.setDefault(new AgentAuthenticator(cloudAdminConfiguration.getProperty("admin.agent.auth.username",
          null), cloudAdminConfiguration.getProperty("admin.agent.auth.password", null)));
@@ -561,6 +577,46 @@ public class CloudIntranetUtils
          LOG.error("Configuration error - join email not send.", e);
       }
    }
+   
+   public void sendCreationQueuedEmails(String tName, String userMail, Map<String, String> props)
+      throws CloudAdminException
+   {
+
+      String userTemplate = cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_REQUEST_QUEUED_TEMPLATE, null);
+      String devTemplate = cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_REQUEST_QUEUED_DEVELOPERS_TEMPLATE, null);
+      try
+      {
+         mailSender.sendMail(userMail, cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_REQUEST_QUEUED_SUBJECT),
+            userTemplate, props);
+         
+         mailSender.sendMail("support@cloud-workspaces.com", cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_REQUEST_QUEUED_DEVELOPERS_SUBJECT).replace("${workspace}", tName),
+            devTemplate, props);
+
+      }
+      catch (ConfigurationParameterNotFound e)
+      {
+         LOG.error("Configuration error - join rejected emails is not send", e);
+      }
+   }
+   
+   
+   public void sendCreationRejectedEmail(String tName, String userMail, Map<String, String> props)
+      throws CloudAdminException
+   {
+
+      String userTemplate = cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_REQUEST_REJECTED_TEMPLATE, null);
+      try
+      {
+         mailSender.sendMail(userMail, cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_REQUEST_REJECTED_SUBJECT),
+            userTemplate, props);
+
+      }
+      catch (ConfigurationParameterNotFound e)
+      {
+         LOG.error("Configuration error - join rejected emails is not send", e);
+      }
+
+   }
 
    public void sendJoinRejectedEmails(String tName, String userMail, Map<String, String> props) throws CloudAdminException
    {
@@ -721,8 +777,15 @@ public class CloudIntranetUtils
       if (whiteListConfigurationFile == null)
       {
          String tName = tail.substring(0,tail.indexOf("."));
-         LOG.info("White list not configured, allowing tenant " + tName + "from email:" + email);
-         return tName;
+         if (!isInBlackList(email))
+         {
+            LOG.info("White list not configured, allowing tenant " + tName + " from email:" + email);
+            return tName;
+         }
+         else
+         {
+            return null;
+         }
       }
       String value = null;
       String tName = null;
@@ -757,6 +820,67 @@ public class CloudIntranetUtils
          throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
       }
       return tName;
+   }
+   
+   public boolean isInBlackList(String email){
+      String tail = email.substring(email.indexOf("@") + 1);
+      File propertyFile = new File(blackListConfigurationFile);
+      if (blackListConfigurationFile == null)
+      {
+         String tName = tail.substring(0,tail.indexOf("."));
+         LOG.info("Black list not configured, allowing tenant " + tName + " from email:" + email);
+         return false;
+      }
+      try
+      {
+         FileInputStream io = new FileInputStream(propertyFile);
+         Properties properties = new Properties();
+         properties.load(io);
+         io.close();
+         return properties.containsKey(tail);
+      }
+      catch (FileNotFoundException e)
+      {
+         String tName = tail.substring(0,tail.indexOf("."));
+         LOG.info("Black list file not found, allowing tenant " + tName + " from email:" + email);
+      }
+      catch (IOException e)
+      {
+      }
+      return false;
+   }
+   
+   public void putInBlackList(String email){
+      String tail = email.substring(email.indexOf("@") + 1);
+      File propertyFile = new File(blackListConfigurationFile);
+      if (blackListConfigurationFile == null)
+      {
+         LOG.info("Black list not configured, cannot add new record");
+         return;
+      }
+      try
+      {
+         if (!propertyFile.exists())
+            propertyFile.createNewFile();
+         FileInputStream io = new FileInputStream(propertyFile);
+         Properties properties = new Properties();
+         properties.load(io);
+         io.close();
+         if(properties.containsKey(tail)){
+            return;
+         }
+         else {
+            properties.setProperty(tail, "");
+            properties.store(new FileOutputStream(propertyFile), "");
+         }
+      }
+      catch (FileNotFoundException e)
+      {
+         
+      }
+      catch (IOException e)
+      {
+      }
    }
 
    public int getMaxUsersForTenant(String email) throws CloudAdminException
@@ -827,6 +951,7 @@ public class CloudIntranetUtils
                   {
                      
                      // Prepare properties for mailing
+                     //TODO: check tenant status before join
                      Map<String, String> props = new HashMap<String, String>();
                      props.put("tenant.masterhost", cloudAdminConfiguration.getMasterHost());
                      props.put("tenant.repository.name", tenant);

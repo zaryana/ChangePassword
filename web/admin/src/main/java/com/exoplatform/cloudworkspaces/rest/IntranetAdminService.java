@@ -344,16 +344,16 @@ public class IntranetAdminService extends TenantCreator
       File propertyFile = new File(folderName + tName + "_"+ System.currentTimeMillis() + ".properties");
       
       Properties properties = new Properties();
-      properties.put("action", RequestState.WAITING_CREATION.toString());
-      properties.put("tenant", tName);
-      properties.put("user-mail", userMail);
-      properties.put("first-name", firstName);
-      properties.put("last-name", lastName);
-      properties.put("company-name", companyName);
-      properties.put("phone", phone);
-      properties.put("password", password);
-      properties.put("confirmation-id", uuid);
-      properties.put("isadministrator", "false");
+      properties.setProperty("action", RequestState.WAITING_CREATION.toString());
+      properties.setProperty("tenant", tName);
+      properties.setProperty("user-mail", userMail);
+      properties.setProperty("first-name", firstName);
+      properties.setProperty("last-name", lastName);
+      properties.setProperty("company-name", companyName);
+      properties.setProperty("phone", phone);
+      properties.setProperty("password", password);
+      properties.setProperty("confirmation-id", uuid);
+      properties.setProperty("isadministrator", "false");
       
       try
       {
@@ -366,7 +366,15 @@ public class IntranetAdminService extends TenantCreator
          LOG.error(e.getMessage());
          throw new CloudAdminException("A problem happened during processsing this request. It was reported to developers. Please, try again later.");
       }
-      
+      Map<String, String> props = new HashMap<String, String>();
+      String username = userMail.substring(0, (userMail.indexOf("@")));
+      props.put("tenant.masterhost", adminConfiguration.getMasterHost());
+      props.put("tenant.repository.name", tName);
+      props.put("user.mail", userMail);
+      props.put("user.name", username);
+      props.put("first.name", firstName);
+      props.put("last.name", lastName);
+      utils.sendCreationQueuedEmails(tName, userMail, props);
       return Response.ok().build();
    }
    
@@ -427,7 +435,7 @@ public class IntranetAdminService extends TenantCreator
          properties = new Properties();
          properties.load(io);
          io.close();
-         properties.put("isadministrator", "true");
+         properties.setProperty("isadministrator", "true");
          properties.store(new FileOutputStream(propertyFile), "");
       }
       catch (FileNotFoundException ex)
@@ -460,7 +468,7 @@ public class IntranetAdminService extends TenantCreator
                      Properties newprops = new Properties();
                      newprops.load(io);
                      io.close();
-                     newprops.put("action", RequestState.WAITING_JOIN.toString());
+                     newprops.setProperty("action", RequestState.WAITING_JOIN.toString());
                      newprops.store(new FileOutputStream(one), "");
                   }
                   catch (IOException e)
@@ -479,13 +487,21 @@ public class IntranetAdminService extends TenantCreator
       else if (decision.equalsIgnoreCase("refuse"))
       {
          LOG.info("Tenant " + properties.getProperty("tenant") + " creation was refused.");
+         Map<String, String> props = new HashMap<String, String>();
+         props.put("tenant.masterhost", adminConfiguration.getMasterHost());
+         props.put("user.name", properties.getProperty("first-name"));
+         utils.sendCreationRejectedEmail(properties.getProperty("tenant"), properties.getProperty("user-mail"), props);
          propertyFile.delete();
          return Response.ok().build();
       }
       else if (decision.equalsIgnoreCase("blacklist"))
       {
-         //TODO: real blacklist
          LOG.info("Tenant " + properties.getProperty("tenant") + " was blacklisted.");
+         Map<String, String> props = new HashMap<String, String>();
+         props.put("tenant.masterhost", adminConfiguration.getMasterHost());
+         props.put("user.name", properties.getProperty("first-name"));
+         utils.sendCreationRejectedEmail(properties.getProperty("tenant"), properties.getProperty("user-mail"), props);
+         utils.putInBlackList(properties.getProperty("user-mail"));
          propertyFile.delete();
          return Response.ok().build();
       }
