@@ -43,7 +43,7 @@
 				</ul>
 			</div>
 			<h3>Core Technology</h3>
-			<p>eXo Cloud Workspaces is powered by the upcoming <a href="http://exoplatform.com/exo-platform-3-trial/eXoPlatform-3.zip" title="eXo Platform 3.5"> eXo Platform 3.5</a>, the first and only cloud-ready enterprise Java portal and user experience platform. eXo Platform 3.5 is designed for on-premise or private cloud deployments.
+			<p>eXo Cloud Workspaces is powered by the upcoming <a href="http://exoplatform.com/company/en/products/overview" title="eXo Platform 3.5"> eXo Platform 3.5</a>, the first and only cloud-ready enterprise Java portal and user experience platform. eXo Platform 3.5 is designed for on-premise or private cloud deployments.
 			</p>
 		</div>
 		
