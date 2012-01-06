@@ -4,6 +4,11 @@
 	<head>
     <% String pageName = "Welcome to Cloud Workspaces"; %>
     <%@ include file="common/headStyle.jsp"%>
+    <%@ include file="common/headScript.jsp"%>
+       <!-- load ThickBox to display video (http://jquery.com/demo/thickbox/) -->
+       <link rel="stylesheet" href="/thickbox/thickbox.css" type="text/css" media="screen" />
+       <script src="/thickbox/thickbox.js" type="text/javascript"></script>
+        <script type="text/javascript">var tb_pathToImage = "/background/img_video.png";</script>
 	</head>
 	<body>
 		<!--begin header-->
@@ -15,14 +20,9 @@
 			<p class="FillProfileInfo">Get started with Cloud Workspaces by checking out these helpful resources.</p>
 			<div class="LeftContent FL">
 				<h3>Watch the Getting Started video:</h3>
-				<div class="Video">
-					<object width="302" height="201">
-						<param name="allowfullscreen" value="true" />
-						<param name="allowscriptaccess" value="always" />
-						<param name="movie" value="http://vimeo.com/moogaloop.swf?clip_id=33936181&amp;server=vimeo.com&amp;show_title=0&amp;show_byline=0&amp;show_portrait=0&amp;color=00adef&amp;fullscreen=1&amp;autoplay=0&amp;loop=0" />
-						<embed src="http://vimeo.com/moogaloop.swf?clip_id=33936181&amp;server=vimeo.com&amp;show_title=0&amp;show_byline=0&amp;show_portrait=0&amp;color=00adef&amp;fullscreen=1&amp;autoplay=0&amp;loop=0" type="application/x-shockwave-flash" allowfullscreen="true" allowscriptaccess="always" width="302" height="201"></embed>
-					</object>
-				</div>
+				<a href="#TB_inline?height=420&width=670&inlineId=videoLeft" class="thickbox">
+				<img src="/background/img_video.png" alt=""/>
+				</a>
 			</div>
 			<div class="RightContent FL">
 				<h3>Even more to explore:</h3>
@@ -35,5 +35,21 @@
 		
 		<!--begin Footer-->	
     <%@ include file="common/footer.jsp"%>
+    
+       <!-- VIdeo panel -->
+       <div class="video_display" id="videoLeft" name="videoLeft" style="display: none;">
+       <object width="640" height="350">
+        <param name="allowfullscreen" value="true" />
+        <param name="allowscriptaccess" value="always" />
+        <param name="movie" value="http://vimeo.com/moogaloop.swf?clip_id=33936181&amp;server=vimeo.com&amp;show_title=0&amp;show_byline=0&amp;show_portrait=0&amp;color=00adef&amp;fullscreen=1&amp;autoplay=0&amp;loop=0" />
+        <embed src="http://vimeo.com/moogaloop.swf?clip_id=33936181&amp;server=vimeo.com&amp;show_title=0&amp;show_byline=0&amp;show_portrait=0&amp;color=00adef&amp;fullscreen=1&amp;autoplay=0&amp;loop=0" type="application/x-shockwave-flash" allowfullscreen="true" allowscriptaccess="always" width="640" height="350"></embed>
+       </object>
+       <object>
+        <p style="font-size: 15px; font-family: arial, tahoma, verdana, sans-serif; color: #575757;">
+          View more resources in the <a style="color: #00AABF;" href="http://www.exoplatform.com/company/en/resource-center" target="_blank">eXo Resource Center</a>
+        </p>
+      </object>
+   </div>
+    
 	 </body>
 </html>
