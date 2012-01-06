@@ -11,7 +11,7 @@
     
 				<!--AboutPages-->	
 		 <div class="UIPageBody AboutPages">
-			<h1>About Cloud Workspaces</h1>
+			<h1>About eXo Cloud Workspaces</h1>
 			<h3>Cloud Workspaces: Your Company's Social Intranet in the Cloud</h3>
 			<p>Teams can share updates about their work activities, improving enterprise communication. But Cloud Workspaces lets you go beyond the basic chatter of activity streams, giving employees the tools to transform status updates into increased productivity. Individual users gain personalized dashboards that can act as the starting point for all their online work, while teams and projects can have their own dedicated workspace to connect, share resources and collaborate.
 			</p>
@@ -31,7 +31,7 @@
 			<div class="ClearFix">
 				<ul class="LeftContent">
 					<li><span>Personalized Dashboards:</span> Arrange gadgets to support your daily work. Share and reply to status updates, view documents, discussions and wiki pages you've bookmarked, see your to-do list and calendar events, all in one view.</li>
-					<li><span>Activity Streams:</span> Share and follow updates from your connections; view latest forum posts, wiki or content changes, calendar events and other activities happening within each workspace.</li>
+					<li><span>Activity Streams:</span> Share and follow updates from your connections; view latest forum posts, wiki or content changes, calendar events and other activities happening within each space.</li>
 					<li><span>Mobile:</span> Native iPhone, iPad, and Android apps let you take your intranet with you. Access your personalized gadget dashboard, activity stream, document repository and more.</li>
 					<li><span>Cloud IDE:</span> A full-featured development environment for building and integrating applications, gadgets and mashups.</li>
 				</ul>
