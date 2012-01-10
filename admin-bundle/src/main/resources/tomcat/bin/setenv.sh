@@ -26,6 +26,7 @@ EXO_CLOUD_ADMIN_OPTS="-Dcloud.admin.log.dir=$EXO_ADMIN_LOGS_DIR \
                       -Dtenant.masterhost=$TENANT_MASTERHOST \
                       -Dcloud.admin.configuration.dir=$EXO_ADMIN_CONF_DIR \
                       -Dcloud.admin.blacklist=$EXO_ADMIN_CONF_DIR/blacklist.properties \
+                      -Dcloud.admin.userlimit=$EXO_ADMIN_CONF_DIR/user-limits.properties \
                       -Dcloud.admin.configuration.file=$EXO_ADMIN_CONF_DIR/admin.properties "
 
 JMX_OPTS="-Dcom.sun.management.jmxremote=true -Djava.rmi.server.hostname=$HOST_EXTERNAL_ADDR \

@@ -125,7 +125,10 @@ public class CloudIntranetUtils
    private MailSender mailSender;
    
    private String whiteListConfigurationFile;
+   
    private String blackListConfigurationFile;
+   
+   private String maxUsersConfigurationFile;
 
    private static final Logger LOG = LoggerFactory.getLogger(CloudIntranetUtils.class);
 
@@ -135,6 +138,7 @@ public class CloudIntranetUtils
       this.mailSender = new MailSender(cloudAdminConfiguration);
       this.whiteListConfigurationFile = System.getProperty("cloud.admin.whitelist");
       this.blackListConfigurationFile = System.getProperty("cloud.admin.blacklist");
+      this.maxUsersConfigurationFile = System.getProperty("cloud.admin.userlimit");
 
       Authenticator.setDefault(new AgentAuthenticator(cloudAdminConfiguration.getProperty("admin.agent.auth.username",
          null), cloudAdminConfiguration.getProperty("admin.agent.auth.password", null)));
@@ -886,28 +890,27 @@ public class CloudIntranetUtils
    public int getMaxUsersForTenant(String email) throws CloudAdminException
    {
       String tail = email.substring(email.indexOf("@") + 1);
-      if (whiteListConfigurationFile == null)
+      String tName = tail.substring(0,tail.indexOf("."));
+      if (maxUsersConfigurationFile == null)
       {
          return Integer.parseInt(cloudAdminConfiguration.getProperty(CLOUD_ADMIN_TENANT_MAXUSERS, "20"));
       }
       String value = null;
-      int count = -1;
-      File propertyFile = new File(whiteListConfigurationFile);
+      int count;
+      File propertyFile = new File(maxUsersConfigurationFile);
       try
       {
          FileInputStream io = new FileInputStream(propertyFile);
          Properties properties = new Properties();
          properties.load(io);
-         value = properties.getProperty(tail);
-         if (value == null)
-            return Integer.parseInt(cloudAdminConfiguration.getProperty(CLOUD_ADMIN_TENANT_MAXUSERS, "20"));
-         if (value.indexOf(":") > -1)
+         value = properties.getProperty(tName);
+         if (value == null || value.equals(""))
          {
-            count = Integer.parseInt(value.substring(value.indexOf(":") + 1));
+            return Integer.parseInt(cloudAdminConfiguration.getProperty(CLOUD_ADMIN_TENANT_MAXUSERS, "20"));
          }
          else
          {
-            count = Integer.parseInt(cloudAdminConfiguration.getProperty(CLOUD_ADMIN_TENANT_MAXUSERS, "20"));
+            count = Integer.parseInt(value);
          }
          io.close();
       }
@@ -1001,6 +1004,7 @@ public class CloudIntranetUtils
                   String userMail = newprops.getProperty("user-mail");
                   String fName = newprops.getProperty("first-name");
                   String lName = newprops.getProperty("last-name");
+                  String username = userMail.substring(0, (userMail.indexOf("@")));
                   
                   try
                   {
@@ -1010,13 +1014,24 @@ public class CloudIntranetUtils
                      props.put("tenant.masterhost", cloudAdminConfiguration.getMasterHost());
                      props.put("tenant.repository.name", tenant);
                      props.put("user.mail", userMail);
-                     props.put("user.name", userMail.substring(0, (userMail.indexOf("@"))));
+                     props.put("user.name", username);
                      props.put("first.name", fName);
                      props.put("last.name", lName);
 
                      LOG.info("Joining user " + userMail + " to tenant " + tenant);
-                     storeUser(tenant, userMail, fName, lName, newprops.getProperty("password"), false);
-                     sendUserJoinedEmails(tenant, fName, userMail, props);
+                     int maxUsers = getMaxUsersForTenant(userMail);
+                     if (isNewUserAllowed(tName, username, maxUsers))
+                     {
+                        // Storing user & sending appropriate mails
+                        storeUser(tName, userMail, fName, lName, newprops.getProperty("password"), false);
+                        sendUserJoinedEmails(tName, fName, userMail, props);
+                     }
+                     else
+                     {
+                        // Limit reached
+                        props.put("users.maxallowed", Integer.toString(maxUsers));
+                        sendJoinRejectedEmails(tName, userMail, props);
+                     }
                      one.delete();
                   }
                   catch (CloudAdminException e)
