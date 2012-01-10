@@ -34,7 +34,7 @@ echo Starting eXo ...
 echo *****************
 
 if "%1" == "" (
-	set EXO_PROFILES=-Dexo.profiles=default,cloud,webos
+	set EXO_PROFILES=-Dexo.profiles=default,cloud
 ) else (
 	set EXO_PROFILES=-Dexo.profiles=%*
 )

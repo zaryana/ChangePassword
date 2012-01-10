@@ -49,7 +49,7 @@ echo Starting eXo ...
 cd ./bin
 
 if [ "$1" = "" ] ; then 
-	EXO_PROFILES="-Dexo.profiles=default,cloud,webos"
+	EXO_PROFILES="-Dexo.profiles=default,cloud"
 else
 	EXO_PROFILES="-Dexo.profiles=$*"
 fi

@@ -34,7 +34,7 @@
 [ -z "$HOST_EXTERNAL_ADDR" ]  && HOST_EXTERNAL_ADDR="localhost"
 
 # eXo profiles
-[ -z "$EXO_PROFILES" ]  && EXO_PROFILES="-Dexo.profiles=default,cloud,webos"
+[ -z "$EXO_PROFILES" ]  && EXO_PROFILES="-Dexo.profiles=default,cloud"
 
 LOG_OPTS="-Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.SimpleLog"
 SECURITY_OPTS="-Djava.security.auth.login.config=../conf/jaas.conf"

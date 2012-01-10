@@ -43,7 +43,7 @@ EXO_CLOUD_ADMIN_OPTS="-Dcloud.admin.log.dir=../logs/cloud-admin -Dcloud.admin.da
 REMOTE_DEBUG="-Xdebug -Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=n"
 
 if [ "$EXO_PROFILES" = "" ] ; then 
-	EXO_PROFILES="-Dexo.profiles=default,cloud,webos"
+	EXO_PROFILES="-Dexo.profiles=default,cloud"
 fi
 
 JAVA_OPTS="-Xms512m -Xmx2g -XX:MaxPermSize=256m -XX:+UseCompressedOops $JAVA_OPTS $LOG_OPTS $SECURITY_OPTS $EXO_OPTS $IDE_OPTS $EXO_PROFILES $EXO_CLOUD_SECURITY_OPTS $EXO_CLOUD_ADMIN_OPTS $EXO_CLOUD_OPTS $JMX_OPTS $REMOTE_DEBUG"

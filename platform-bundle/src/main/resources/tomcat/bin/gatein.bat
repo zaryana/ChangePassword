@@ -25,7 +25,7 @@ for %%i in ( !%~f0! ) do set BIN_DIR=%%~dpi
 cd %BIN_DIR%
 
 if "%EXO_PROFILES%" == "" (
-  set EXO_PROFILES=-Dexo.profiles=default,cloud,webos
+  set EXO_PROFILES=-Dexo.profiles=default,cloud
 )
 
 @REM set JVM64_OPTS=-XX:+UseCompressedOops
