@@ -191,5 +191,12 @@
         </p>
      </object>
     </div>
+    <!-- BEGIN: Google Analytics TRACKING -->
+      <script type="text/javascript" src="http://www.google-analytics.com/ga.js"></script>
+    <!-- END: Google Analytics TRACKING -->
+    <!-- BEGIN: LOOPFUSE TRACKING -->
+      <script type="text/javascript" src="http://lfov.net/webrecorder/js/listen.js"></script>
+    <!-- END: LOOPFUSE TRACKING -->
+      <script type="text/javascript" src="/js/trackers.js"></script>
 	</body>
 </html>
