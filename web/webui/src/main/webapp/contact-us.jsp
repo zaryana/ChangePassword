@@ -5,20 +5,8 @@
     <% String pageName = "Cloud-workspaces Contact Us"; %>
     <%@ include file="common/headStyle.jsp"%>
     <%@ include file="common/headScript.jsp"%>
-    <script language="javascript" type="text/javascript">
-
-    
-    function cancel() {
-      window.location = "/index.jsp";
-    }
-
-    </script>
 	</head>
 	<body onload="tenants.init();">
-		<div class="MarkLayer" id="MarkLayer" style="width: 100%; height: 630px;"><span></span></div>
-		<!--begin header-->
-    <%@ include file="common/header.jsp"%>
-		
 		<div class="UIPageBody" id="Content" style="display:none;"></div>
 		<div class="UIPageBody ContactPages" id="ContactForm">
 		<form class="UIForm UIFormBox" action="javascript:void(0);"  method="POST" name="" id="mycontactForm">
@@ -41,7 +29,7 @@
 		  <td class="Field"></td>
 		  <td>
 		    <input class="Button" type="submit"  id="" value="Send" onClick="tenants.doContactRequest();" />
-		    <input class="Button ButtonGray" type="" id="" value="Cancel" onClick="cancel();" />
+		    <input class="Button ButtonGray" type="" id="" value="Cancel" onClick="$('#MaskLayer').hide(); $('#ContactUsContainer').hide();" />
 		  </td>
 		 </tr>
 		</table>
@@ -51,8 +39,6 @@
 		</form>
 		</div>
 		
-		<!--begin Footer-->
-    <%@ include file="common/footer.jsp"%>
     <iframe id="loopfuseOutput" name="loopfuseOutput" style='display:none; visibility:hidden'></iframe>
     <!-- BEGIN: Google Analytics TRACKING -->
       <script type="text/javascript" src="http://www.google-analytics.com/ga.js"></script>

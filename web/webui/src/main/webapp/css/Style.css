@@ -112,10 +112,8 @@ p {
 }
 
 .UIPageBody {
-	margin: 30px auto;
 	width: 960px;
 	padding: 0px;
-	min-height: 430px;
 }
 
 /*UIHeader */
@@ -688,7 +686,7 @@ input.Button {
 }
 
 /* Contact us page */
-.MarkLayer{
+.MaskLayer{
 	background: black;
 	opacity: 0.4;
 	filter: alpha(opacity=40);
@@ -696,12 +694,17 @@ input.Button {
 	-khtml-opacity: 0.5;
 	-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
 	position: absolute;
+	left: 0px; 
+	top: 0px; 
+	width: 100%; 
+	height: 599px;
+	display: none;
 }
 
 .ContactPages .UIFormBox {
 	position: absolute;
 	z-index: 10;
-	top: 100px;
+	top: 66px;
 	left: 290px;
 	background: white;
 	border: none;

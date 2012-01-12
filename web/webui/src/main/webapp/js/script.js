@@ -17,6 +17,10 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
+var CONTACT_US_CONTAINER_ID = "ContactUsContainer";
+var MASK_LAYER_ID = "MaskLayer";
+
+
 function Tenants() {
 }
 
@@ -370,6 +374,9 @@ Tenants.prototype.doContactRequest = function() {
     if (!valid) return;
     tenants.xmlhttpPost(url, tenants.handleContactResponse,
      tenants.getquerystringContactUs);
+
+    document.getElementById(CONTACT_US_CONTAINER_ID).style.display = "none";
+    document.getElementById(MASK_LAYER_ID).style.display = "none";
 }
 
 
@@ -628,3 +635,189 @@ function isLoopfuseResponseReceived(iframeId) {
    }
 
 var tenants = new Tenants();
+
+
+
+/**
+ * --------------------- ajax library
+ */
+
+function sendRequest(parameters)
+{
+   if (! parameters.url)
+   {
+      return null;
+   }
+   
+   var url = parameters.url;   
+   var method = parameters.method || "GET";
+   var handler = parameters.handler || function(){};   
+   
+   if (parameters.isAssinchronous === false)
+   {
+      var isAssinchronous = false
+   }
+   else
+   {
+      var isAssinchronous = true;   
+   }
+   
+   var body = parameters.body || null;
+   var contentType = parameters.contentType || null;
+
+   if (parameters.showLoader === false)
+   {
+      var showLoader = false
+   }
+   else
+   {
+      var showLoader = true;   
+   }
+   
+   if (showLoader)
+   {
+      loader.show();
+   }
+   
+   var request = getRequest();
+   
+   if (request === null) 
+   {
+      return null;
+   }
+   
+   /* prepare request */
+   request.onreadystatechange = wrapperHandler(request, handler, showLoader);
+   request.open(method, url, isAssinchronous);
+   
+   if (contentType) 
+   {
+      try 
+      {
+	 request.setRequestHeader("Content-Type", contentType);
+      } 
+      catch (e) 
+      {
+	 if (showLoader)
+	 {
+	    loader.hide();
+	 }
+	 
+	 return null;
+      }
+   }
+   
+   if (showLoader)
+   {
+      setTimeout(function() {
+	 request.send(body);
+	 
+	 if (!isAssinchronous) 
+	 {
+	    if (showLoader)
+	    {
+	       loader.hide();
+	    }
+	    
+	    return handler(request, handler, showLoader);
+	 }
+	 
+	 return;
+      }, 0);  // to fix error with loader displaying in Google Chrome an IE (CM-357, CLDIDE-79)
+   }
+   else
+   {
+      request.send(body);
+      
+      if (!isAssinchronous) 
+      {
+	 return handler(request, handler, showLoader);
+      }
+   }   
+}
+
+function getRequest()
+{
+   // define the Ajax library
+   try 
+   {
+      // Firefox, Opera 8.0+, Safari
+      return new XMLHttpRequest();
+   } 
+   catch (e) 
+   {
+      // Internet Explorer
+      try 
+      {
+	 return new ActiveXObject("Msxml2.XMLHTTP");
+      } 
+      catch (e) 
+      {
+	 return new ActiveXObject("Microsoft.XMLHTTP");
+      }
+   }
+   
+   alert("Browser does not support HTTP Request");
+   return null;
+}
+
+
+function wrapperHandler(request, handler, hideLoader)
+{
+   function Handler()
+   {
+      this.execute = function()
+      {
+	 if (request.readyState == 4) 
+	 {
+	    if (hideLoader)
+	    {
+	       loader.hide();
+	    }
+	    
+	    handler(request);
+	 };
+      };
+   };
+   return (new Handler().execute);
+};
+
+function isSuccess(responseStatus)
+{
+   return (responseStatus >= 200 && responseStatus < 300) || responseStatus == 304 
+	     || responseStatus == 1223 ;  // 204 status = 1223 status in IE 8
+}
+
+function isRedirect(responseStatus, newLocation)
+{
+   return (newLocation != null) && (responseStatus != "") 
+	   && (responseStatus == 301 || responseStatus == 302 || responseStatus == 303);
+}
+
+
+
+/**
+ * Shows "Contact Us " form.
+ */
+
+function showContactUsForm(url) {
+   sendRequest({
+      url: url,
+      method: "GET", 
+      handler: onReceiveShowContactFormResponse,
+      isAssinchronous: false,
+      showLoader: false
+   });
+}
+
+
+function onReceiveShowContactFormResponse(request){
+   if (isSuccess(request.status)) 
+   {
+      var container = document.getElementById(CONTACT_US_CONTAINER_ID);
+      container.innerHTML = request.responseText;
+      document.getElementById(MASK_LAYER_ID).style.display = "block";
+      container.style.display = "block";
+   }
+}
+
