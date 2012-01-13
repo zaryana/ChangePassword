@@ -12,5 +12,5 @@
 			</div>
 		</div>
 
-		<div class="MarkLayer" id="MaskLayer" style="left: 0px; top: 0px; width: 100%; height: 599px; display: none;"></div>
+		<div class="MarkLayer" id="MaskLayer" style="width: 100%; display: none;"></div>
 		<div id="ContactUsContainer" style="display: none;"></div>

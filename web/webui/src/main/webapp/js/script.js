@@ -815,8 +815,15 @@ function onReceiveShowContactFormResponse(request){
    if (isSuccess(request.status)) 
    {
       var container = document.getElementById(CONTACT_US_CONTAINER_ID);
+      var maskLayer = document.getElementById(MASK_LAYER_ID);
+
+      var body = document.body, html = document.documentElement;
+      var height = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight);
+      maskLayer.style.height = height + "px";
+
       container.innerHTML = request.responseText;
-      document.getElementById(MASK_LAYER_ID).style.display = "block";
+      
+      maskLayer.style.display = "block";
       container.style.display = "block";
    }
 }
