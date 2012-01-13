@@ -36,8 +36,14 @@ import java.net.Authenticator;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -1114,5 +1120,29 @@ public class CloudIntranetUtils
       {
          return null;
       }
+   }
+   
+   public Map<String, String[]> sortByComparator(Map<String, String[]> unsortMap)
+   {
+
+      List<String> list = new LinkedList<String>(unsortMap.keySet());
+      //sort list based on comparator
+      Collections.sort(list, Collections.reverseOrder(new Comparator<String>()
+      {
+         public int compare(String o1, String o2)
+         {
+            Long f1 = Long.valueOf(o1.substring(o1.indexOf("_")+1));
+            Long f2 = Long.valueOf(o2.substring(o2.indexOf("_")+1));
+            return f1.compareTo(f2);
+         }
+      }));
+      //put sorted list into map again
+      Map<String, String[]> sortedMap = new LinkedHashMap<String, String[]>();
+      for (Iterator<String> it = list.iterator(); it.hasNext();)
+      {
+         String key = (String)it.next();
+         sortedMap.put(key, unsortMap.get(key));
+      }
+      return sortedMap;
    }
 }

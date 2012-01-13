@@ -32,6 +32,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -390,6 +392,7 @@ public class IntranetAdminService extends TenantCreator
       File[] list = new File(folder).listFiles();
       if (list == null)
          return result;
+      
       for (File one : list)
       {
          try
@@ -415,7 +418,9 @@ public class IntranetAdminService extends TenantCreator
             throw new CloudAdminException("A problem happened during retrieving requests list . It was reported to developers. Please, try again later.");
          }
       }
-      return result;
+      
+      return utils.sortByComparator(result);
+      
    }
 
    @GET
@@ -490,7 +495,7 @@ public class IntranetAdminService extends TenantCreator
          Map<String, String> props = new HashMap<String, String>();
          props.put("tenant.masterhost", adminConfiguration.getMasterHost());
          props.put("user.name", properties.getProperty("first-name"));
-         utils.sendCreationRejectedEmail(properties.getProperty("tenant"), properties.getProperty("user-mail"), props);
+         //utils.sendCreationRejectedEmail(properties.getProperty("tenant"), properties.getProperty("user-mail"), props);
          propertyFile.delete();
          return Response.ok().build();
       }
