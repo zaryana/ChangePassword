@@ -375,8 +375,10 @@ Tenants.prototype.doContactRequest = function() {
     tenants.xmlhttpPost(url, tenants.handleContactResponse,
      tenants.getquerystringContactUs);
 
-    document.getElementById(CONTACT_US_CONTAINER_ID).style.display = "none";
-    document.getElementById(MASK_LAYER_ID).style.display = "none";
+//    document.getElementById(CONTACT_US_CONTAINER_ID).style.display = "none";
+//    document.getElementById(MASK_LAYER_ID).style.display = "none";
+      _gel("submitButton").value = "Wait...";
+      _gel("cancelButton").disabled = true;
 }
 
 
@@ -463,6 +465,8 @@ Tenants.prototype.handleContactResponse = function(resp) {
 		     window.location = "/contact-us-done.jsp";
 		      });
 	  } else {
+	    _gel(CONTACT_US_CONTAINER_ID).style.display = "none";
+	    _gel(MASK_LAYER_ID).style.display = "none";
 	    _gel("messageString").innerHTML = resp;
 	  }
 	}
