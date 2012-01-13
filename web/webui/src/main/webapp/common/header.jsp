@@ -11,3 +11,6 @@
 				<div class="ClouIntranet FR"><h1>eXo Cloud Workspaces</h1><span>The Free Social Intranet for Your Company</span></div>
 			</div>
 		</div>
+
+		<div class="MarkLayer" id="MaskLayer" style="left: 0px; top: 0px; width: 100%; height: 599px; display: none;"></div>
+		<div id="ContactUsContainer" style="display: none;"></div>

@@ -6,10 +6,10 @@
     <%@ include file="common/headStyle.jsp"%>
     <%@ include file="common/headScript.jsp"%>
 	</head>
-	<body onload="tenants.init();">
+	<body>
 		<div class="UIPageBody" id="Content" style="display:none;"></div>
-		<div class="UIPageBody ContactPages" id="ContactForm">
-		<form class="UIForm UIFormBox" action="javascript:void(0);"  method="POST" name="" id="mycontactForm">
+		<div class="UIPageBody ContactPages" id="ContactForm" style="margin: 0px auto; min-height: 0px;">
+		<form class="UIForm UIFormBox" action="javascript:void(0);"  method="POST" name="" id="mycontactForm" style="top: 66px;">
 		<h1 class="TitleForm">Contact Us</h1>
 		<div id="messageString" class="TenantFormMsg"></div>
 		<table cols="2">

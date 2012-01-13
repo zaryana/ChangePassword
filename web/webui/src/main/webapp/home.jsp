@@ -191,10 +191,6 @@
         </p>
      </object>
     </div>
-
-    <div class="MaskLayer" id="MaskLayer"></div>
-    <div id="ContactUsContainer" style="display: none;"></div>
-
     <!-- BEGIN: Google Analytics TRACKING -->
       <script type="text/javascript" src="http://www.google-analytics.com/ga.js"></script>
     <!-- END: Google Analytics TRACKING -->
