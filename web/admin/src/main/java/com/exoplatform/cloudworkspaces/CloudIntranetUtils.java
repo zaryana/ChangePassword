@@ -36,7 +36,6 @@ import java.net.Authenticator;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -161,7 +160,7 @@ public class CloudIntranetUtils
       StringBuilder hostName = new StringBuilder();
       hostName.append(tName);
       hostName.append(".");
-      hostName.append(cloudAdminConfiguration.getProperty("cloud.admin.frontend.server.host"));
+      hostName.append(cloudAdminConfiguration.getProperty(CLOUD_ADMIN_FRONT_END_SERVER_HOST));
 
       StringBuilder strUrl = new StringBuilder();
       strUrl.append("http://");
@@ -237,75 +236,6 @@ public class CloudIntranetUtils
          }
       }
    }
-
-   @Deprecated
-   public void storeRoot(String tName, String userMail, String firstName, String lastName, String password)
-      throws CloudAdminException
-   {
-      URL url;
-      HttpURLConnection connection = null;
-      StringBuilder strUrl = new StringBuilder();
-      strUrl.append("http://");
-      strUrl.append(tName);
-      strUrl.append(".");
-      strUrl.append(cloudAdminConfiguration.getProperty(CLOUD_ADMIN_FRONT_END_SERVER_HOST));
-      strUrl.append("/cloud-agent/rest/organization/createroot");
-
-      StringBuilder params = new StringBuilder();
-      params.append("tname=" + tName);
-      params.append("&");
-      params.append("password=" + password);
-      params.append("&");
-      params.append("first-name=" + firstName);
-      params.append("&");
-      params.append("last-name=" + lastName);
-      params.append("&");
-      params.append("email=" + userMail);
-
-      try
-      {
-         url = new URL(strUrl.toString());
-         connection = (HttpURLConnection)url.openConnection();
-         connection.setRequestMethod("POST");
-         connection.setDoOutput(true);
-
-         OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
-         writer.write(params.toString());
-         writer.flush();
-         writer.close();
-         if (connection.getResponseCode() == 201)
-         {
-            return;
-         }
-         else
-         {
-            String err = readText(connection.getErrorStream());
-            LOG.error("Unable to add ROOT user to workspace " + tName + "- HTTP status:"
-               + connection.getResponseCode() + (err != null ? ". Server error: \r\n" + err + "\r\n" : ""));
-            throw new CloudAdminException("A problem happened during processsing this request. It was reported to developers. Please, try again later.");
-
-         }
-      }
-      catch (MalformedURLException e)
-      {
-         LOG.error(e.getMessage(), e);
-         throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
-
-      }
-      catch (IOException e)
-      {
-         LOG.error(e.getMessage(), e);
-         throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
-      }
-      finally
-      {
-         if (connection != null)
-         {
-            connection.disconnect();
-         }
-      }
-   }
-   
 
 
    public boolean isNewUserAllowed(String tName, String username, int maxUsers) throws CloudAdminException
@@ -479,100 +409,7 @@ public class CloudIntranetUtils
          }
       }
    }
-
-   @Deprecated
-   public String getTenantOwnerEmail(String tName) throws CloudAdminException
-   {
-
-      URL url;
-      HttpURLConnection connection = null;
-      StringBuilder strUrl = new StringBuilder();
-      strUrl.append("http://");
-      strUrl.append(cloudAdminConfiguration.getMasterHost());
-      strUrl.append("/rest/private/cloud-admin/info-service/users-list");
-      try
-      {
-         url = new URL(strUrl.toString());
-         connection = (HttpURLConnection)url.openConnection();
-         connection.setRequestMethod("GET");
-
-         InputStream io;
-         //read Response
-         if (connection.getResponseCode() < 400)
-         {
-            io = connection.getInputStream();
-         }
-         else
-         {
-            io = connection.getErrorStream();
-         }
-
-         if (connection.getResponseCode() == 200)
-         {
-            JsonParser jsonParser = new JsonParser();
-            jsonParser.parse(io);
-            ObjectValue responseObj = (ObjectValue)jsonParser.getJsonObject();
-            String email = "";
-
-            Iterator<String> as = responseObj.getKeys();
-            while (as.hasNext())
-            {
-               String asName = as.next();
-               Iterator<String> tenant = responseObj.getElement(asName).getKeys();
-               while (tenant.hasNext())
-               {
-                  String tenantName = tenant.next();
-                  if (tenantName.equalsIgnoreCase(tName))
-                  {
-                     Iterator<String> users = responseObj.getElement(asName).getElement(tenantName).getKeys();
-                     while (users.hasNext())
-                     {
-                        String userName = users.next();
-
-                        if (userName.equalsIgnoreCase("root"))
-                        {
-                           email =
-                              responseObj.getElement(asName).getElement(tenantName).getElement(userName)
-                                 .getStringValue();
-                           return email;
-                        }
-                     }
-                  }
-               }
-            }
-            return email;
-         }
-         else
-         {
-            String err = readText(connection.getErrorStream());
-            LOG.error("Unable to get owner email from workspace " + tName + " - HTTP status"
-               + connection.getResponseCode() + (err != null ? ". Server error: \r\n" + err + "\r\n" : ""));
-            throw new CloudAdminException("A problem happened during processsing this request. It was reported to developers. Please, try again later.");
-         }
-      }
-      catch (MalformedURLException e)
-      {
-         LOG.error(e.getMessage(), e);
-         throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
-      }
-      catch (IOException e)
-      {
-         LOG.error(e.getMessage(), e);
-         throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
-      }
-      catch (JsonException e)
-      {
-         LOG.error(e.getMessage(), e);
-         throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
-      }
-      finally
-      {
-         if (connection != null)
-         {
-            connection.disconnect();
-         }
-      }
-   }
+   
 
    public void sendOkToJoinEmail(String userMail, Map<String, String> props) throws CloudAdminException
    {
@@ -598,10 +435,8 @@ public class CloudIntranetUtils
       {
          mailSender.sendMail(userMail, cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_REQUEST_QUEUED_SUBJECT),
             userTemplate, props);
-         
          mailSender.sendMail("support@cloud-workspaces.com", cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_REQUEST_QUEUED_DEVELOPERS_SUBJECT).replace("${workspace}", tName),
             devTemplate, props);
-
       }
       catch (ConfigurationParameterNotFound e)
       {
@@ -619,7 +454,6 @@ public class CloudIntranetUtils
       {
          mailSender.sendMail(userMail, cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_REQUEST_REJECTED_SUBJECT),
             userTemplate, props);
-
       }
       catch (ConfigurationParameterNotFound e)
       {
@@ -658,7 +492,6 @@ public class CloudIntranetUtils
                   cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_JOIN_CLOSED_OWNER_SUBJECT).replace("${company}",
                      props.get("tenant.repository.name")), ownerTemplate, props);
          }
-
       }
       catch (ConfigurationParameterNotFound e)
       {
@@ -698,18 +531,12 @@ public class CloudIntranetUtils
    public void sendIntranetCreatedEmail(String userMail, Map<String, String> props) throws CloudAdminException
    {
       String userTemplate = cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_USER_INTRANET_CREATED_TEMPLATE, null);
-//      String ownerTemplate =
-//         cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_OWNER_INTRANET_CREATED_TEMPLATE, null);
       try
       {
          mailSender.sendMail(
             userMail,
             cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_USER_INTRANET_CREATED_SUBJECT).replace("${company}",
                props.get("tenant.repository.name")), userTemplate, props);
-//         mailSender.sendMail(
-//            userMail,
-//            cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_OWNER_INTRANET_CREATED_SUBJECT).replace("${company}",
-//               props.get("tenant.repository.name")), ownerTemplate, props);
       }
       catch (ConfigurationParameterNotFound e)
       {
@@ -770,15 +597,13 @@ public class CloudIntranetUtils
       {
             mailSender.sendMail("support@cloud-workspaces.com", 
                                  "Contact-Us message submitted: " + subject, 
-                                 mailTemplate, 
-                                 props);
+                                 mailTemplate, props);
       }
       catch (CloudAdminException ex)
       {
          LOG.error(
             "Cannot send mail contactUs message. Message was : <<" + text + ">>. Sender email is: " + userMail);
       }
-      
    }
 
    public String getTenantNameFromWhitelist(String email) throws CloudAdminException
@@ -893,10 +718,8 @@ public class CloudIntranetUtils
       }
    }
 
-   public int getMaxUsersForTenant(String email) throws CloudAdminException
+   public int getMaxUsersForTenant(String tName) throws CloudAdminException
    {
-      String tail = email.substring(email.indexOf("@") + 1);
-      String tName = tail.substring(0,tail.indexOf("."));
       if (maxUsersConfigurationFile == null)
       {
          return Integer.parseInt(cloudAdminConfiguration.getProperty(CLOUD_ADMIN_TENANT_MAXUSERS, "20"));
@@ -934,7 +757,6 @@ public class CloudIntranetUtils
    
    public void joinAll(String tName) throws CloudAdminException
    {
-
       String folderName = getRegistrationWaitingFolder();
       File[] list = new File(folderName).listFiles();
       if (list == null)
@@ -958,7 +780,6 @@ public class CloudIntranetUtils
                   
                   try
                   {
-                     
                      // Prepare properties for mailing
                      //TODO: check tenant status before join
                      Map<String, String> props = new HashMap<String, String>();
@@ -968,7 +789,6 @@ public class CloudIntranetUtils
                      props.put("user.name", userMail.substring(0, (userMail.indexOf("@"))));
                      props.put("first.name", fName);
                      props.put("last.name", lName);
-
                      
                      if (Boolean.parseBoolean(newprops.getProperty("isadministrator")))
                      {
@@ -1025,7 +845,7 @@ public class CloudIntranetUtils
                      props.put("last.name", lName);
 
                      LOG.info("Joining user " + userMail + " to tenant " + tenant);
-                     int maxUsers = getMaxUsersForTenant(userMail);
+                     int maxUsers = getMaxUsersForTenant(tenant);
                      if (isNewUserAllowed(tName, username, maxUsers))
                      {
                         // Storing user & sending appropriate mails
@@ -1052,9 +872,6 @@ public class CloudIntranetUtils
             }
          }
       }
-
-      
-
    }
 
    public boolean validateEmail(String aEmailAddress){

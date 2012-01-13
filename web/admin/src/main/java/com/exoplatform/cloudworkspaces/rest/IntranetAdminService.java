@@ -144,7 +144,7 @@ public class IntranetAdminService extends TenantCreator
 
          try
          {
-            int maxUsers = utils.getMaxUsersForTenant(userMail);
+            int maxUsers = utils.getMaxUsersForTenant(tName);
             if (utils.isNewUserAllowed(tName, username, maxUsers))
             {
                // send OK email
@@ -205,7 +205,7 @@ public class IntranetAdminService extends TenantCreator
          props.put("first.name", firstName);
          props.put("last.name", lastName);
 
-         int maxUsers = utils.getMaxUsersForTenant(userMail);
+         int maxUsers = utils.getMaxUsersForTenant(tName);
          if (utils.isNewUserAllowed(tName, username, maxUsers))
          {
             // Storing user & sending appropriate mails
@@ -418,9 +418,7 @@ public class IntranetAdminService extends TenantCreator
             throw new CloudAdminException("A problem happened during retrieving requests list . It was reported to developers. Please, try again later.");
          }
       }
-      
       return utils.sortByComparator(result);
-      
    }
 
    @GET
@@ -523,5 +521,17 @@ public class IntranetAdminService extends TenantCreator
       utils.joinAll(null);
       return Response.ok().build();
    }
-
+   
+   @GET
+   @Path("/isuserallowed/{tenantname}/{username}")
+   @Produces(MediaType.TEXT_PLAIN)
+   public Response isuserallowed(@PathParam("tenantname") String tName, @PathParam("username") String username)
+      throws CloudAdminException{
+      int maxUsers = utils.getMaxUsersForTenant(tName);
+      if (utils.isNewUserAllowed(tName, username, maxUsers))
+         return Response.ok("TRUE").build();
+      else
+         return Response.ok("FALSE").build();
+      
+   }
 }
