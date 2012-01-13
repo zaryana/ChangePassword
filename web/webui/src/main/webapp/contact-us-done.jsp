@@ -4,8 +4,9 @@
 	<head>
     <% String pageName = "Thank You for Contacting Us"; %>
     <%@ include file="common/headStyle.jsp"%>
+    <%@ include file="common/headScript.jsp"%>
 	</head>
-	<body>
+	<body onLoad="tenants.init();">
 		<!--begin header-->
     <%@ include file="common/header.jsp"%>
     
