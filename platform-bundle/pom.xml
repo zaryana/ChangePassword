@@ -7,7 +7,7 @@
   <parent>
     <groupId>com.exoplatform.cloudworkspaces</groupId>
     <artifactId>cloud-workspaces-parent</artifactId>
-    <version>1.0.0-Beta5-SNAPSHOT</version>
+    <version>1.0.0-Beta5</version>
   </parent>
   <artifactId>cloud-workspaces-platform-bundle</artifactId>
   <packaging>pom</packaging>
@@ -137,7 +137,7 @@ EXO_CLOUD_ADMIN_OPTS="-Dcloud.admin.log.dir=../logs/cloud-admin \
                     <delete dir="${project.build.directory}/tomcat-source/webapps/platform-extension" />
                     <unzip src="${project.build.directory}/tomcat-source/webapps/portal.war" dest="${project.build.directory}/tomcat-source/webapps/portal" />
                     <replace dir="${project.build.directory}/tomcat-source/webapps/portal/groovy/portal/webui/workspace">
-                    <include name="UIPortalApplicationChildren.gtmpl"/>
+                    <include name="UIPortalApplicationChildren.gtmpl" />
                     <replacetoken><![CDATA[</body>]]></replacetoken>
                     <replacevalue><![CDATA[<!-- BEGIN: Google Analytics TRACKING -->
                     <script type="text/javascript" src="http://www.google-analytics.com/ga.js"></script>
