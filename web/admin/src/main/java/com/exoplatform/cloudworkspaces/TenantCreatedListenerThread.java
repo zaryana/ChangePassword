@@ -54,11 +54,11 @@ public class TenantCreatedListenerThread implements Runnable
    public void run()
    {
       CloudIntranetUtils utils = new CloudIntranetUtils(cloudAdminConfiguration);
-      int limit = Integer.parseInt(cloudAdminConfiguration.getProperty(CLOUD_ADMIN_CREATION_TIMEOUT, "86400"));
+      long limit = Integer.parseInt(cloudAdminConfiguration.getProperty(CLOUD_ADMIN_CREATION_TIMEOUT, "86400")) * 1000; // in milliseconds
 
       if (cloudInfoHolder.isTenantExists(tName))
       {
-         int count = 0;
+         long count = 0;
          try
          {
             while (!cloudInfoHolder.getTenantStatus(tName).getState().equals(TenantState.ONLINE))
@@ -66,9 +66,9 @@ public class TenantCreatedListenerThread implements Runnable
                if (count > limit)
                   throw new CloudAdminException("Workspace creation timeout reached");
                Thread.sleep(interval);
-               count += 15;
+               count += interval;
             }
-            Thread.sleep(interval * 20); //To let the proxy to reload;
+            Thread.sleep(interval * 2); //To let the proxy to reload; 12.01.2012 changed from 5min(20) to 30sec(2)
             utils.joinAll(tName);
          }
          catch (TenantQueueException e)
