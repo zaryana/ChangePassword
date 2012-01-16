@@ -823,7 +823,7 @@ function onReceiveShowContactFormResponse(request){
 
       var body = document.body, html = document.documentElement;
       var height = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight);
-      maskLayer.style.height = height + "px";
+      maskLayer.style.height = height-140 + "px";
 
       container.innerHTML = request.responseText;
       
