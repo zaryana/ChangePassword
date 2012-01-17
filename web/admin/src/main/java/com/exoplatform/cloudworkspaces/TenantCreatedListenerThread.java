@@ -68,7 +68,7 @@ public class TenantCreatedListenerThread implements Runnable
                Thread.sleep(interval);
                count += interval;
             }
-            Thread.sleep(interval * 2); //To let the proxy to reload; 12.01.2012 changed from 5min(20) to 30sec(2)
+            Thread.sleep(interval * 20); //To let the proxy to reload; 12.01.2012 changed from 5min(20) to 30sec(2); 17.01.2012 back to 20
             utils.joinAll(tName);
          }
          catch (TenantQueueException e)
