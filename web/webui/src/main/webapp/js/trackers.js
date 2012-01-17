@@ -64,4 +64,4 @@ function testDomainPrefix(domainPrefix)
 {
    var pattern = new RegExp("^http[s]?:\/\/([a-z0-9]([a-z0-9\-]{0,61}[a-z0-9])[.])*" + domainPrefix + ".*$", "i");
    return pattern.test(document.URL); 
-}OQ
+}

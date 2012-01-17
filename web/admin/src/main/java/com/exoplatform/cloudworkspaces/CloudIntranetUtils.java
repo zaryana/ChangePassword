@@ -120,6 +120,10 @@ public class CloudIntranetUtils
 
    private static final String CLOUD_ADMIN_MAIL_REQUEST_REJECTED_TEMPLATE =
       "cloud.admin.mail.request.rejected.template";
+   
+   private static final String CLOUD_ADMIN_MAIL_CONTACTUS_EMAIL = "cloud.admin.mail.support.email";
+   
+   private static final String CLOUD_ADMIN_MAIL_MARKETING_EMAIL = "cloud.admin.mail.marketing.email";
 
    private static final String CLOUD_ADMIN_MAIL_REQUEST_REJECTED_SUBJECT = "cloud.admin.mail.request.rejected.subject";
 
@@ -433,14 +437,15 @@ public class CloudIntranetUtils
       String devTemplate = cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_REQUEST_QUEUED_DEVELOPERS_TEMPLATE, null);
       try
       {
+         String email = cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_MARKETING_EMAIL);
          mailSender.sendMail(userMail, cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_REQUEST_QUEUED_SUBJECT),
             userTemplate, props);
-         mailSender.sendMail("support@cloud-workspaces.com", cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_REQUEST_QUEUED_DEVELOPERS_SUBJECT).replace("${workspace}", tName),
+         mailSender.sendMail(email, cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_REQUEST_QUEUED_DEVELOPERS_SUBJECT).replace("${workspace}", tName),
             devTemplate, props);
       }
       catch (ConfigurationParameterNotFound e)
       {
-         LOG.error("Configuration error - join rejected emails is not send", e);
+         LOG.error("Configuration error - creation queued emails is not send", e);
       }
    }
    
@@ -588,6 +593,7 @@ public class CloudIntranetUtils
    public void sendContactUsEmail(String userMail, String firstName, String subject, String text){
       
       String mailTemplate = cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_CONTACT_TEMPLATE, "Contact-Us request.");
+      String email = cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_CONTACTUS_EMAIL, "support@cloud-workspaces.com");
       
       Map<String, String> props = new HashMap<String, String>();
       props.put("user.mail", userMail);
@@ -595,7 +601,7 @@ public class CloudIntranetUtils
       props.put("message", text);
       try
       {
-            mailSender.sendMail("support@cloud-workspaces.com", 
+            mailSender.sendMail(email, 
                                  "Contact-Us message submitted: " + subject, 
                                  mailTemplate, props);
       }
