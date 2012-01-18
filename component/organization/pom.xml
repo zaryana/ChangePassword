@@ -41,8 +41,5 @@
       <artifactId>exo.jcr.component.core</artifactId>
       <version>${org.exoplatform.jcr.version}</version>
     </dependency>
-
-    
   </dependencies>
-
 </project>
