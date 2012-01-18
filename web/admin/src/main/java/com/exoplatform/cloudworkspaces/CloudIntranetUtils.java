@@ -492,6 +492,8 @@ public class CloudIntranetUtils
          while (it.hasNext())
          {
             String username = it.next();
+            if (username.equals("root"))//Dont send those emails to root CLDINT-184
+               continue;
             String adminEmail = adminEmails.get(username);
             props.put("admin.firstname", username);
             if (adminEmail != null)
@@ -523,6 +525,8 @@ public class CloudIntranetUtils
          while (it.hasNext())
          {
             String username = it.next();
+            if (username.equals("root"))//Dont send those emails to root CLDINT-184
+               continue;
             String adminEmail = adminEmails.get(username);
             props.put("admin.firstname", username);
             if (adminEmail != null)
