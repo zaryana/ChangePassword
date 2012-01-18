@@ -22,6 +22,8 @@ import static org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConf
 import static org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration.CLOUD_ADMIN_MAIL_ADMIN_EMAIL;
 import static org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration.CLOUD_ADMIN_MAIL_ADMIN_ERROR_SUBJECT;
 import static org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration.CLOUD_ADMIN_MAIL_ADMIN_ERROR_TEMPLATE;
+import static java.net.HttpURLConnection.HTTP_OK;
+import static java.net.HttpURLConnection.HTTP_CREATED;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -208,7 +210,7 @@ public class CloudIntranetUtils
          writer.write(params.toString());
          writer.flush();
          writer.close();
-         if (connection.getResponseCode() == 201)
+         if (connection.getResponseCode() == HTTP_CREATED)
          {
             return;
          }
@@ -269,7 +271,7 @@ public class CloudIntranetUtils
             io = connection.getErrorStream();
          }
 
-         if (connection.getResponseCode() == 200)
+         if (connection.getResponseCode() == HTTP_OK)
          {
             JsonParser jsonParser = new JsonParser();
             jsonParser.parse(io);
@@ -363,7 +365,7 @@ public class CloudIntranetUtils
          url = new URL(strUrl.toString());
          connection = (HttpURLConnection)url.openConnection();
          connection.setRequestMethod("GET");
-         if (connection.getResponseCode() == 200)
+         if (connection.getResponseCode() == HTTP_OK)
          {
             io = connection.getInputStream();
             JsonParser jsonParser = new JsonParser();

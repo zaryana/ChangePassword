@@ -188,14 +188,8 @@ public class IntranetAdminService extends TenantCreator
          if (!utils.validateEmail(userMail))
             return Response.status(Status.BAD_REQUEST).entity("Please enter a valid email address.").build();
          String username = userMail.substring(0, (userMail.indexOf("@")));
-         tName = utils.getTenantNameFromWhitelist(userMail);
-         if (tName == null)
-         {
-            String domain = userMail.substring(userMail.indexOf("@"));
-            return Response.status(Status.BAD_REQUEST)
-               .entity("Sorry, we can't join you with an email address " + domain + ". Try with your work email.")
-               .build();
-         }
+         String tail = userMail.substring(userMail.indexOf("@") + 1);
+         tName = tail.substring(0,tail.indexOf("."));
          // Prepare properties for mailing
          Map<String, String> props = new HashMap<String, String>();
          props.put("tenant.masterhost", adminConfiguration.getMasterHost());
