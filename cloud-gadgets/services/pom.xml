@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<!-- Copyright (C) 2011 eXo Platform SAS. -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.exoplatform.cloudworkspaces</groupId>
+    <artifactId>cloud-gadgets</artifactId>
+    <version>1.0.0-Beta6-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>cloud-workspaces-gadget-services</artifactId>
+  <packaging>jar</packaging>
+  <name>eXo Cloud Workspaces :: Cloud Gadgets - Services</name>
+  <description>eXo Cloud Workspaces gadget services</description>
+
+  <properties>
+  	<version.compiler.plugin>2.3.1</version.compiler.plugin>
+  </properties>
+
+  <dependencies>
+    <dependency>
+    	<groupId>org.exoplatform.kernel</groupId>
+    	<artifactId>exo.kernel.container</artifactId>
+    	<version>${org.exoplatform.kernel.version}</version>
+    	<scope>provided</scope>
+    </dependency>
+    <dependency>
+    	<groupId>org.exoplatform.portal</groupId>
+    	<artifactId>exo.portal.component.portal</artifactId>
+    	<version>${org.exoplatform.portal.version}</version>
+    	<scope>provided</scope>
+    </dependency>
+    <dependency>
+    	<groupId>org.exoplatform.social</groupId>
+    	<artifactId>exo.social.component.core</artifactId>
+    	<version>${org.exoplatform.social.version}</version>
+    	<scope>provided</scope>
+    </dependency>
+    <dependency>
+    	<groupId>org.exoplatform.social</groupId>
+    	<artifactId>exo.social.component.common</artifactId>
+    	<version>${org.exoplatform.social.version}</version>
+    	<scope>provided</scope>
+    </dependency>
+  </dependencies>
+
+</project>

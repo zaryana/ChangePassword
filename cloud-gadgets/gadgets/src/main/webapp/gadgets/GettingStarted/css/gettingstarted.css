@@ -1,0 +1,102 @@
+/************** BookMarks **********/
+
+.Button {
+  vertical-align: text-top;  
+}
+
+.ItemList {
+  padding: 0px;
+}
+
+.ItemList ul {
+  padding-left: 0px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  float: left;
+}
+
+.ItemList ul li {
+  list-style-type: none;
+  font-family: verdana, arial,sans-serif;
+  font-size: 12px;
+  line-height: 23px;
+  background:url('../img/ArrowRight.gif') no-repeat left;
+}
+
+.ItemList ul li a {
+  margin: 10px 0px 10px 0px;
+  padding-left: 15px;
+  cursor: pointer;
+}
+
+.UIGadgetThemes .FavoritesList .ReadPost {
+ color:#cccccc;
+}
+
+.UIGadgetThemes .GadCont .Link {
+  text-decoration:underline;
+  color:#226ab4; 
+  cursor:pointer;
+  font-weight: normal;
+}
+
+.GadCont {
+ padding-bottom: 0px; 
+}
+
+.UIGadgetThemes .GadCont .selectedLink {
+    color: #1A1A1A;
+    font-weight: bold;
+  text-decoration: none;
+  cursor: default;
+}
+
+.done {  
+  text-decoration: line-through;
+  background:url('../img/check.png') no-repeat left !important;
+}
+
+.done a {
+ color: #808080; 
+}  
+  
+.done a:hover {  
+  text-decoration: none;
+}
+
+#gsTitles {
+  margin-bottom: 12px;
+}
+
+
+/*** progress bar**/
+
+#progress-shell {
+height: 16px;
+width: 170px;
+border: 1px #C7C7C7 solid;
+border-color: #C7C7C7 #C7C7C7 silver silver;
+float: left;
+margin-right: 8px;
+margin-top: 2px;
+margin-bottom: 8px;
+
+position: relative;
+background-color: white;
+
+}
+
+#progress-rate {
+height: 16px;
+background-image: url('../img/getting-started-progress.png');
+background-repeat: repeat-x;
+position: absolute;
+left: 0;
+top: 0;
+}
+
+#progress-label {
+ float: left;
+ margin-top: 4px; 
+ font-weight: bold;
+}
