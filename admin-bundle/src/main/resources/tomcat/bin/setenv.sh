@@ -27,7 +27,8 @@ EXO_CLOUD_ADMIN_OPTS="-Dcloud.admin.log.dir=$EXO_ADMIN_LOGS_DIR \
                       -Dcloud.admin.configuration.dir=$EXO_ADMIN_CONF_DIR \
                       -Dcloud.admin.blacklist=$EXO_ADMIN_CONF_DIR/blacklist.properties \
                       -Dcloud.admin.userlimit=$EXO_ADMIN_CONF_DIR/user-limits.properties \
-                      -Dcloud.admin.configuration.file=$EXO_ADMIN_CONF_DIR/admin.properties "
+                      -Dcloud.admin.configuration.file=$EXO_ADMIN_CONF_DIR/admin.properties \
+                      -Dlogback.configurationFile=$CATALINA_HOME/conf/logback.xml"
 
 JMX_OPTS="-Dcom.sun.management.jmxremote=true -Djava.rmi.server.hostname=$HOST_EXTERNAL_ADDR \
 	-Dcom.sun.management.jmxremote.authenticate=true \
