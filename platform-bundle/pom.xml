@@ -40,6 +40,23 @@
          <artifactId>cloud-workspaces-component-organization</artifactId>
          <version>${project.version}</version>
        </dependency>
+       <!-- cloud-gadgets -->
+       <dependency>
+         <groupId>com.exoplatform.cloudworkspaces</groupId>
+         <artifactId>cloud-workspaces-gadget-services</artifactId>
+         <version>${project.version}</version>
+       </dependency>
+       <dependency>
+         <groupId>com.exoplatform.cloudworkspaces</groupId>
+         <artifactId>cloud-workspaces-gadgets</artifactId>
+         <version>${project.version}</version>
+         <type>war</type>
+       </dependency>
+       <dependency>
+         <groupId>com.exoplatform.cloudworkspaces</groupId>
+         <artifactId>cloud-workspaces-gadget-config</artifactId>
+         <version>${project.version}</version>
+       </dependency>
       </dependencies>
       <build>
         <finalName>Cloud-Workspaces-Platform-${project.version}</finalName>

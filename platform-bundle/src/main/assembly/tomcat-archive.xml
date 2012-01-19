@@ -48,10 +48,20 @@
        <fileMode>0644</fileMode>
      </dependencySet>
      <dependencySet>
+       <outputDirectory>app-server-tomcat/webapps</outputDirectory>
+       <includes>
+         <include>com.exoplatform.cloudworkspaces:cloud-workspaces-gadgets:war</include>
+       </includes>
+       <outputFileNameMapping>cloud-workspaces-gadgets.war</outputFileNameMapping>
+       <fileMode>0644</fileMode>
+     </dependencySet>
+     <dependencySet>
        <outputDirectory>app-server-tomcat/lib</outputDirectory>
        <includes>
          <include>mysql:mysql-connector-java</include>
          <include>com.exoplatform.cloudworkspaces:cloud-workspaces-component-organization</include>
+         <include>com.exoplatform.cloudworkspaces:cloud-workspaces-gadget-services</include>
+         <include>com.exoplatform.cloudworkspaces:cloud-workspaces-gadget-config</include>
        </includes>
        <fileMode>0644</fileMode>
      </dependencySet>
