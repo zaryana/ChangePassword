@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 eXo Platform SAS.
+ * Copyright (C) 2011 eXo Platform SAS. 
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -45,13 +45,13 @@ public class AutoResumeThread implements Runnable
          URL url = new URL(strUrl.toString());
          HttpURLConnection connection = (HttpURLConnection)url.openConnection();
          connection.setRequestMethod("GET");
-         if (connection.getResponseCode() == 200)
+         if (connection.getResponseCode() == HttpURLConnection.HTTP_OK)
          {
             return;
          }
          else 
          {
-            LOG.error("Unable to autojoin user");
+            LOG.error("Unable to autojoin user. HTTP response: " + connection.getResponseCode());
          }
 
       }

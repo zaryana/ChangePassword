@@ -59,6 +59,8 @@ import org.exoplatform.cloudmanagement.admin.CloudAdminException;
 import org.exoplatform.cloudmanagement.admin.MailSender;
 import org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration;
 import org.exoplatform.cloudmanagement.admin.configuration.ConfigurationParameterNotFound;
+import org.exoplatform.cloudmanagement.admin.status.CloudInfoHolder;
+import org.exoplatform.cloudmanagement.status.TenantState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -132,6 +134,8 @@ public class CloudIntranetUtils
    private static final String CLOUD_ADMIN_TENANT_MAXUSERS = "cloud.admin.tenant.maxusers";
 
    private CloudAdminConfiguration cloudAdminConfiguration;
+   
+   private CloudInfoHolder holder;
 
    private MailSender mailSender;
    
@@ -143,9 +147,10 @@ public class CloudIntranetUtils
 
    private static final Logger LOG = LoggerFactory.getLogger(CloudIntranetUtils.class);
 
-   public CloudIntranetUtils(CloudAdminConfiguration cloudAdminConfiguration)
+   public CloudIntranetUtils(CloudAdminConfiguration cloudAdminConfiguration, CloudInfoHolder holder)
    {
       this.cloudAdminConfiguration = cloudAdminConfiguration;
+      this.holder = holder;
       this.mailSender = new MailSender(cloudAdminConfiguration);
       this.whiteListConfigurationFile = System.getProperty("cloud.admin.whitelist");
       this.blackListConfigurationFile = System.getProperty("cloud.admin.blacklist");
@@ -196,6 +201,7 @@ public class CloudIntranetUtils
       catch (UnsupportedEncodingException e)
       {
          LOG.error(e.getMessage(), e);
+         sendAdminErrorEmail(e.getMessage(), e);
          throw new CloudAdminException(
             "An problem happened during processsing this request. It was reported to developers. Please, try again later.");
       }
@@ -217,20 +223,24 @@ public class CloudIntranetUtils
          else
          {
             String err = readText(connection.getErrorStream());
-            LOG.error("Unable to add user to workspace " + tName + " (" + hostName
+            String msg = ("Unable to add user to workspace " + tName + " (" + hostName
                + ") - HTTP status:" + connection.getResponseCode()
                + (err != null ? ". Server error: \r\n" + err + "\r\n" : ""));
+            LOG.error(msg);
+            sendAdminErrorEmail(msg, null);
             throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
          }
       }
       catch (MalformedURLException e)
       {
          LOG.error(e.getMessage(), e);
+         sendAdminErrorEmail(e.getMessage(), e);
          throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
       }
       catch (IOException e)
       {
          LOG.error(e.getMessage(), e);
+         sendAdminErrorEmail(e.getMessage(), e);
          throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
 
       }
@@ -316,24 +326,29 @@ public class CloudIntranetUtils
          else
          {
             String err = readText(connection.getErrorStream());
-            LOG.error("Unable to get user list from workspace " + tName + " - HTTP status"
+            String msg = ("Unable to get user list from workspace " + tName + " - HTTP status"
                + connection.getResponseCode() + (err != null ? ". Server error: \r\n" + err + "\r\n" : ""));
+            LOG.error(msg);
+            sendAdminErrorEmail(msg, null);
             throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
          }
       }
       catch (MalformedURLException e)
       {
          LOG.error(e.getMessage(), e);
+         sendAdminErrorEmail(e.getMessage(), e);
          throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
       }
       catch (IOException e)
       {
          LOG.error(e.getMessage(), e);
+         sendAdminErrorEmail(e.getMessage(), e);
          throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
       }
       catch (JsonException e)
       {
          LOG.error(e.getMessage(), e);
+         sendAdminErrorEmail(e.getMessage(), e);
          throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
       }
       finally
@@ -383,27 +398,33 @@ public class CloudIntranetUtils
          else
          {
             String err = readText(connection.getErrorStream());
-            LOG.error("Unable to get administrators list from workspace " + tName 
+            String msg = 
+            ("Unable to get administrators list from workspace " + tName 
                + " - HTTP status:" + connection.getResponseCode()
                + (err != null ? ". Server error: \r\n" + err + "\r\n" : ""));
+            LOG.error(msg);
+            sendAdminErrorEmail(msg, null);
             throw new CloudAdminException("A problem happened during processsing this request. It was reported to developers. Please, try again later.");
          }
       }
       catch (MalformedURLException e)
       {
          LOG.error(e.getMessage(), e);
+         sendAdminErrorEmail(e.getMessage(), e);
          throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
 
       }
       catch (IOException e)
       {
          LOG.error(e.getMessage(), e);
+         sendAdminErrorEmail(e.getMessage(), e);
          throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
 
       }
       catch (JsonException e)
       {
          LOG.error(e.getMessage(), e);
+         sendAdminErrorEmail(e.getMessage(), e);
          throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
 
       }
@@ -427,6 +448,7 @@ public class CloudIntranetUtils
       }
       catch (ConfigurationParameterNotFound e)
       {
+         sendAdminErrorEmail("Configuration error - join email not send.", e);
          LOG.error("Configuration error - join email not send.", e);
       }
    }
@@ -447,6 +469,7 @@ public class CloudIntranetUtils
       }
       catch (ConfigurationParameterNotFound e)
       {
+         sendAdminErrorEmail("Configuration error - creation queued emails is not send", e);
          LOG.error("Configuration error - creation queued emails is not send", e);
       }
    }
@@ -464,7 +487,8 @@ public class CloudIntranetUtils
       }
       catch (ConfigurationParameterNotFound e)
       {
-         LOG.error("Configuration error - join rejected emails is not send", e);
+         sendAdminErrorEmail("Configuration error - creation rejected emails is not send", e);
+         LOG.error("Configuration error - creation rejected emails is not send", e);
       }
 
    }
@@ -504,6 +528,7 @@ public class CloudIntranetUtils
       }
       catch (ConfigurationParameterNotFound e)
       {
+         sendAdminErrorEmail("Configuration error - join rejected emails is not send", e);
          LOG.error("Configuration error - join rejected emails is not send", e);
       }
    }
@@ -535,6 +560,7 @@ public class CloudIntranetUtils
       }
       catch (ConfigurationParameterNotFound e)
       {
+         sendAdminErrorEmail("Configuration error - user joined but notification emails is not send.", e);
          LOG.error("Configuration error - user joined but notification emails is not send.", e);
       }
    }
@@ -551,6 +577,7 @@ public class CloudIntranetUtils
       }
       catch (ConfigurationParameterNotFound e)
       {
+         sendAdminErrorEmail("Configuration error - workspace created but owner email in not send", e);
          LOG.error("Configuration error - workspace created but owner email in not send", e);
       }
    }
@@ -560,27 +587,35 @@ public class CloudIntranetUtils
       String mailTemplate = cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_ADMIN_ERROR_TEMPLATE, null);
       String mailSubject =
          cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_ADMIN_ERROR_SUBJECT, "Cloud admin error");
+      msg = msg.replaceAll("(\r\n|\n\r|\r|\n)", "<br>");
 
       Map<String, String> props = new HashMap<String, String>();
       props.put("message", msg);
 
-      String prettyMsg = error.getMessage().replaceAll("(\r\n|\n\r|\r|\n)", "<br>");
-      prettyMsg = prettyMsg.replaceAll("(\t)", "&nbsp;&nbsp;&nbsp;&nbsp;");
-      props.put("exception.message", prettyMsg);
-
-      StringBuilder trace = new StringBuilder();
-      for (StackTraceElement item : error.getStackTrace())
+      if (error != null)
       {
-         String line = item.toString();
-         if (line.startsWith("at "))
-         {
-            trace.append("&nbsp;&nbsp;&nbsp;&nbsp;");
-         }
-         trace.append(item.toString());
-         trace.append("<br>");
-      }
-      props.put("stack.trace", trace.toString());
+         String prettyMsg = error.getMessage().replaceAll("(\r\n|\n\r|\r|\n)", "<br>");
+         prettyMsg = prettyMsg.replaceAll("(\t)", "&nbsp;&nbsp;&nbsp;&nbsp;");
+         props.put("exception.message", prettyMsg);
 
+         StringBuilder trace = new StringBuilder();
+         for (StackTraceElement item : error.getStackTrace())
+         {
+            String line = item.toString();
+            if (line.startsWith("at "))
+            {
+               trace.append("&nbsp;&nbsp;&nbsp;&nbsp;");
+            }
+            trace.append(item.toString());
+            trace.append("<br>");
+         }
+         props.put("stack.trace", trace.toString());
+      }
+      else
+      {
+         props.put("exception.message", "No exception message provided");
+         props.put("stack.trace", "No stack trace provided");
+      }
       try
       {
          for (String email : cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_ADMIN_EMAIL).split(","))
@@ -590,9 +625,8 @@ public class CloudIntranetUtils
       }
       catch (CloudAdminException ex)
       {
-         LOG.error(
-            "Cannot send mail message to admin. Message was '" + msg + "' it is caused by '" + error.getMessage()
-               + "'.", ex);
+         LOG.error("Cannot send mail message to admin. Message was '" + msg + "' it is caused by '"
+            + (error != null ? error.getMessage() : "[ no error message provided]") + "'.", ex);
       }
    }
    
@@ -613,8 +647,9 @@ public class CloudIntranetUtils
       }
       catch (CloudAdminException ex)
       {
-         LOG.error(
-            "Cannot send mail contactUs message. Message was : <<" + text + ">>. Sender email is: " + userMail);
+       String msg = ("Cannot send mail contactUs message. Message was : <<" + text + ">>. Sender email is: " + userMail);
+       LOG.error(msg);
+       sendAdminErrorEmail(msg, ex);
       }
    }
 
@@ -664,6 +699,7 @@ public class CloudIntranetUtils
       catch (IOException e)
       {
          LOG.error(e.getMessage(), e);
+         sendAdminErrorEmail(e.getMessage(), e);
          throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
       }
       return tName;
@@ -693,6 +729,8 @@ public class CloudIntranetUtils
       }
       catch (IOException e)
       {
+         LOG.error(e.getMessage(), e);
+         sendAdminErrorEmail(e.getMessage(), e);
       }
       return false;
    }
@@ -723,10 +761,13 @@ public class CloudIntranetUtils
       }
       catch (FileNotFoundException e)
       {
-         
+         LOG.error(e.getMessage(), e);
+         sendAdminErrorEmail(e.getMessage(), e);
       }
       catch (IOException e)
       {
+         LOG.error(e.getMessage(), e);
+         sendAdminErrorEmail(e.getMessage(), e);
       }
    }
 
@@ -762,6 +803,7 @@ public class CloudIntranetUtils
       catch (IOException e)
       {
          LOG.error(e.getMessage(), e);
+         sendAdminErrorEmail(e.getMessage(), e);
          throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
       }
       return count;
@@ -790,35 +832,45 @@ public class CloudIntranetUtils
                   String fName = newprops.getProperty("first-name");
                   String lName = newprops.getProperty("last-name");
                   
-                  try
+                  if (Boolean.parseBoolean(newprops.getProperty("isadministrator")))
                   {
-                     // Prepare properties for mailing
-                     //TODO: check tenant status before join
-                     Map<String, String> props = new HashMap<String, String>();
-                     props.put("tenant.masterhost", cloudAdminConfiguration.getMasterHost());
-                     props.put("tenant.repository.name", tenant);
-                     props.put("user.mail", userMail);
-                     props.put("user.name", userMail.substring(0, (userMail.indexOf("@"))));
-                     props.put("first.name", fName);
-                     props.put("last.name", lName);
-                     
-                     if (Boolean.parseBoolean(newprops.getProperty("isadministrator")))
+                     try
                      {
+                        // Checking status
+                        if (!holder.getTenantStatus(tenant).getState().equals(TenantState.ONLINE))
+                        {
+                           LOG.warn("Tenant " + tenant +" is not online, auto join skipped");
+                           continue;   
+                        }
+                        // Prepare properties for mailing
+                        Map<String, String> props = new HashMap<String, String>();
+                        props.put("tenant.masterhost", cloudAdminConfiguration.getMasterHost());
+                        props.put("tenant.repository.name", tenant);
+                        props.put("user.mail", userMail);
+                        props.put("user.name", userMail.substring(0, (userMail.indexOf("@"))));
+                        props.put("first.name", fName);
+                        props.put("last.name", lName);
+
                         LOG.info("Joining administrator " + userMail + " to tenant " + tenant);
                         storeUser(tenant, userMail, fName, lName, newprops.getProperty("password"), true);
                         sendIntranetCreatedEmail(userMail, props);
                         one.delete();
                      }
-                  }
-                  catch (CloudAdminException e)
-                  {
-                     LOG.error("An problem happened during joining user " + userMail
-                        + "  on tenant " + tenant + e.getMessage(), e);
+                     catch (CloudAdminException e)
+                     {
+                        String msg =
+                           ("An problem happened during creating administrator " + userMail + "  on tenant " + " : "+tenant + e
+                              .getMessage());
+                        LOG.error(msg, e);
+                        sendAdminErrorEmail(msg, null);
+                     }
                   }
                }
             }
             catch (IOException e)
             {
+               LOG.error(e.getMessage(), e);
+               sendAdminErrorEmail(e.getMessage(), e);
             }
          }
       }
@@ -846,7 +898,12 @@ public class CloudIntranetUtils
                   
                   try
                   {
-                     
+                     //Checking status
+                     if (!holder.getTenantStatus(tenant).getState().equals(TenantState.ONLINE))
+                     {
+                        LOG.warn("Tenant " + tenant +" is not online, auto join skipped");
+                        continue;   
+                     }
                      // Prepare properties for mailing
                      Map<String, String> props = new HashMap<String, String>();
                      props.put("tenant.masterhost", cloudAdminConfiguration.getMasterHost());
@@ -874,8 +931,10 @@ public class CloudIntranetUtils
                   }
                   catch (CloudAdminException e)
                   {
-                     LOG.error("An problem happened during joining user " + userMail
-                        + "  on tenant " + tenant + e.getMessage(), e);
+                     String msg = ("An problem happened during joining user " + userMail
+                        + "  on tenant " + tenant + " : "+ e.getMessage());
+                     LOG.error(msg, e);
+                     sendAdminErrorEmail(msg, e);
                   }
                }
             }
@@ -913,6 +972,7 @@ public class CloudIntranetUtils
        String folder = cloudAdminConfiguration.getProperty("cloud.admin.tenant.waiting.dir", null);
        if (folder == null){
           LOG.error("Property cloud.admin.tenant.waiting.dir not found in admin configuration.");
+          sendAdminErrorEmail("Property cloud.admin.tenant.waiting.dir not found in admin configuration.", null);
           throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
        }
        return folder;

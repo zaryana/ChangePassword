@@ -78,7 +78,7 @@ public class IntranetAdminService extends TenantCreator
       CloudAdminConfiguration cloudAdminConfiguration, TenantCreationSupervisor creationSupervisor)
    {
       super(cloudInfoHolder, tenantMetadataValidator, cloudAdminConfiguration, creationSupervisor);
-      this.utils = new CloudIntranetUtils(cloudAdminConfiguration);
+      this.utils = new CloudIntranetUtils(cloudAdminConfiguration, cloudInfoHolder);
    }
 
    /* (non-Javadoc)
@@ -333,6 +333,10 @@ public class IntranetAdminService extends TenantCreator
             }
             catch (IOException e)
             {
+               String msg = "Failed to read property file"; 
+               LOG.error(msg, e);
+               utils.sendAdminErrorEmail(msg, e);
+               throw new CloudAdminException("A problem happened during processing request . It was reported to developers. Please, try again later.");
             }
          }
       }
@@ -360,6 +364,7 @@ public class IntranetAdminService extends TenantCreator
       catch (Exception e)
       {
          LOG.error(e.getMessage());
+         utils.sendAdminErrorEmail(e.getMessage(), e);
          throw new CloudAdminException("A problem happened during processsing this request. It was reported to developers. Please, try again later.");
       }
       Map<String, String> props = new HashMap<String, String>();
@@ -409,6 +414,7 @@ public class IntranetAdminService extends TenantCreator
          catch (Exception e)
          {
             LOG.error(e.getMessage());
+            utils.sendAdminErrorEmail(e.getMessage(), e);
             throw new CloudAdminException("A problem happened during retrieving requests list . It was reported to developers. Please, try again later.");
          }
       }
@@ -441,7 +447,9 @@ public class IntranetAdminService extends TenantCreator
       }
       catch (IOException e)
       {
-         LOG.error("Failed to read property file", e);
+         String msg = "Failed to read property file"; 
+         LOG.error(msg, e);
+         utils.sendAdminErrorEmail(msg, e);
          throw new CloudAdminException("A problem happened during processing request . It was reported to developers. Please, try again later.");
       }
 
@@ -470,6 +478,9 @@ public class IntranetAdminService extends TenantCreator
                   }
                   catch (IOException e)
                   {
+                     String msg = "Failed to read property file"; 
+                     LOG.error(msg, e);
+                     utils.sendAdminErrorEmail(msg, e);
                   }
                }
             }

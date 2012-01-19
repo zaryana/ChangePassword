@@ -53,7 +53,7 @@ public class TenantCreatedListenerThread implements Runnable
    @Override
    public void run()
    {
-      CloudIntranetUtils utils = new CloudIntranetUtils(cloudAdminConfiguration);
+      CloudIntranetUtils utils = new CloudIntranetUtils(cloudAdminConfiguration, cloudInfoHolder);
       long limit = Integer.parseInt(cloudAdminConfiguration.getProperty(CLOUD_ADMIN_CREATION_TIMEOUT, "86400")) * 1000; // in milliseconds
 
       if (cloudInfoHolder.isTenantExists(tName))
