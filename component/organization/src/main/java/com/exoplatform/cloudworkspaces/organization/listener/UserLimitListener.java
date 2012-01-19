@@ -55,6 +55,9 @@ public class UserLimitListener extends UserEventListener
 
       if (isNew)
       {
+         if (user.getUserName().equals("root"))
+            return;
+         
          String tName = reposervice.getCurrentRepository().getConfiguration().getName();
          String masterhost = System.getProperty("tenant.masterhost");
          StringBuilder strUrl = new StringBuilder();
