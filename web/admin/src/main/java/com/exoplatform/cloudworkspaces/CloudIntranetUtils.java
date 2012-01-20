@@ -314,7 +314,7 @@ public class CloudIntranetUtils
                   }
                }
             }
-            if (maxUsers == -1 || counter <= maxUsers)
+            if (maxUsers == -1 || counter < maxUsers)
             {
                return true;
             }

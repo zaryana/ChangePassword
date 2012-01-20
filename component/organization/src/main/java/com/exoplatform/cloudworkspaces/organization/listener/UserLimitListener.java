@@ -92,7 +92,7 @@ public class UserLimitListener extends UserEventListener
             }
             else
             {
-               throw new RepositoryException("Unable to add user" + user.getUserName() + " to workspace " + tName + " - limit reached");
+               throw new RepositoryException("Unable to add user " + user.getUserName() + " to workspace " + tName + " - limit reached");
             }
          }
       }
