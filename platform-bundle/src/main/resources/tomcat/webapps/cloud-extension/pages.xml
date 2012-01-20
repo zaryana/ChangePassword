@@ -39,7 +39,7 @@
       <access-permissions>manager:/platform/administrators</access-permissions>
       <show-info-bar>false</show-info-bar>
     </portlet-application>
-  </page>           
+  </page>
   
   <page>
     <name>communityManagement</name>
@@ -121,7 +121,6 @@
 			<access-permissions>*:/platform/administrators</access-permissions>
 			<show-info-bar>false</show-info-bar>
 		</portlet-application>
-	</page>
   </page>
   
   <page>
