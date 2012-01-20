@@ -137,7 +137,7 @@
       <set-method>addListenerPlugin</set-method>
       <type>com.exoplatform.cloudworkspaces.organization.listener.UserLimitListener</type>
       <description>this listener controls users amount for a given workspace </description>
-    ></component-plugin>
+    </component-plugin>
   </external-component-plugins>
 
   <!-- MySQL Configuration -->
