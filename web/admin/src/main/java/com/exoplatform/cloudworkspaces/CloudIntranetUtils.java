@@ -839,7 +839,7 @@ public class CloudIntranetUtils
                         // Checking status
                         if (!holder.getTenantStatus(tenant).getState().equals(TenantState.ONLINE))
                         {
-                           String msg = "Tenant " + tenant +" is not online, auto join skipped fo user " + userMail;  
+                           String msg = "Tenant " + tenant +" is not online, auto join skipped for user " + userMail;  
                            LOG.warn(msg);
                            sendAdminErrorEmail(msg, null);
                            continue;   

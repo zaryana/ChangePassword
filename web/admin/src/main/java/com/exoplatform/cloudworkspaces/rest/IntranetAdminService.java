@@ -489,6 +489,7 @@ public class IntranetAdminService extends TenantCreator
          }
          else
          {
+            utils.sendAdminErrorEmail("Can not finish accept operation - service returned HTTP status "+ resp.getStatus(), null);
             throw new CloudAdminException("Can not apply this operation. Please contact support.");
          }
       }

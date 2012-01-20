@@ -63,8 +63,10 @@ public class TenantCreatedListenerThread implements Runnable
          {
             while (!cloudInfoHolder.getTenantStatus(tName).getState().equals(TenantState.ONLINE))
             {
-               if (count > limit)
-                  throw new CloudAdminException("Workspace creation timeout reached");
+               if (count > limit){
+                  utils.sendAdminErrorEmail("Workspace "+ tName + " creation timeout reached", null);
+                  throw new CloudAdminException("Workspace "+ tName + " creation timeout reached");
+               }
                Thread.sleep(interval);
                count += interval;
             }
