@@ -740,7 +740,9 @@ public class CloudIntranetUtils
       File propertyFile = new File(blackListConfigurationFile);
       if (blackListConfigurationFile == null)
       {
-         LOG.info("Black list not configured, cannot add new record");
+         String msg = "Blacklist action failed - list not configured, cannot add new record for " + tail;
+         LOG.warn(msg);
+         sendAdminErrorEmail(msg, null);
          return;
       }
       try

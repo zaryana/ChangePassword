@@ -333,7 +333,7 @@ public class IntranetAdminService extends TenantCreator
             }
             catch (IOException e)
             {
-               String msg = "Failed to read property file"; 
+               String msg = "Tenant queuing error : failed to read property file " + one.getName(); 
                LOG.error(msg, e);
                utils.sendAdminErrorEmail(msg, e);
                throw new CloudAdminException("A problem happened during processing request . It was reported to developers. Please, try again later.");
@@ -447,7 +447,7 @@ public class IntranetAdminService extends TenantCreator
       }
       catch (IOException e)
       {
-         String msg = "Failed to read property file"; 
+         String msg = "Tenant validation error: failed to read property file " + propertyFile.getName(); 
          LOG.error(msg, e);
          utils.sendAdminErrorEmail(msg, e);
          throw new CloudAdminException("A problem happened during processing request . It was reported to developers. Please, try again later.");
@@ -478,7 +478,7 @@ public class IntranetAdminService extends TenantCreator
                   }
                   catch (IOException e)
                   {
-                     String msg = "Failed to read property file"; 
+                     String msg = "Tenant validation error: failed to read property file " + propertyFile.getName(); 
                      LOG.error(msg, e);
                      utils.sendAdminErrorEmail(msg, e);
                   }
