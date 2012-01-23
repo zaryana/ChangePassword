@@ -152,6 +152,7 @@ public class IntranetAdminService extends TenantCreator
             }
             else
             {
+               LOG.info("User " + userMail + " was refused - users limit reached.");
                // send not allowed mails
                props.put("users.maxallowed", Integer.toString(maxUsers));
                utils.sendJoinRejectedEmails(tName, userMail, props);
@@ -209,6 +210,7 @@ public class IntranetAdminService extends TenantCreator
          else
          {
             // Limit reached
+            LOG.info("User " + userMail + " join was refused - users limit reached.");
             props.put("users.maxallowed", Integer.toString(maxUsers));
             utils.sendJoinRejectedEmails(tName, userMail, props);
          }

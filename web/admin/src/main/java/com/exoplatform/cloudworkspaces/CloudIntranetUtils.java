@@ -38,8 +38,11 @@ import java.net.Authenticator;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -757,7 +760,7 @@ public class CloudIntranetUtils
             return;
          }
          else {
-            properties.setProperty(tail, "");
+            properties.setProperty(tail, new SimpleDateFormat("yyyy/MM/dd").format(new Date()));
             properties.store(new FileOutputStream(propertyFile), "");
          }
       }
