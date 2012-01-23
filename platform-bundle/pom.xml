@@ -7,7 +7,7 @@
   <parent>
     <groupId>com.exoplatform.cloudworkspaces</groupId>
     <artifactId>cloud-workspaces-parent</artifactId>
-    <version>1.0.0-Beta6</version>
+    <version>1.0.0-Beta7-SNAPSHOT</version>
   </parent>
   <artifactId>cloud-workspaces-platform-bundle</artifactId>
   <packaging>pom</packaging>
