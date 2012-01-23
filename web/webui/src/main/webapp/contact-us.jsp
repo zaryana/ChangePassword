@@ -30,7 +30,7 @@
 		  <td class="Field"></td>
 		  <td>
 		    <input class="Button" type="submit"  id="submitButton" value="Send" onClick="tenants.doContactRequest();" />
-		    <input class="Button ButtonGray" type="" id="cancelButton" value="Cancel" onClick="$('#MaskLayer').hide(); $('#ContactUsContainer').hide();" />
+		    <input class="Button ButtonGray" type="" id="cancelButton" value="Cancel" onClick="$('#MaskLayer').hide(); hideContactUsForm();" />
 		  </td>
 		 </tr>
 		</table>

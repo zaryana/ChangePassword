@@ -832,3 +832,10 @@ function onReceiveShowContactFormResponse(request){
    }
 }
 
+function hideContactUsForm() {
+    var container = document.getElementById(CONTACT_US_CONTAINER_ID);
+    container.innerHTML = "";
+    container.style.display = "none";
+    return false;
+}
+
