@@ -437,7 +437,8 @@ Tenants.prototype.handleJoinResponse = function(resp) {
       "formid" : _gel('formid').value,
       "cid" : _gel('cid').value
     }, function() {
-      window.location = prefixUrl + "/join-done.jsp";
+     var tName = _gel('workspace').value
+      window.location = prefixUrl + "/join-done.jsp#"+tName;
     });
   } else {
     _gel("messageString").innerHTML = resp;

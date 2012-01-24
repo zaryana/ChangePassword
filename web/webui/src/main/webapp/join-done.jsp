@@ -8,7 +8,9 @@
        <!-- load ThickBox to display video (http://jquery.com/demo/thickbox/) -->
        <link rel="stylesheet" href="/thickbox/thickbox.css" type="text/css" media="screen" />
        <script src="/thickbox/thickbox.js" type="text/javascript"></script>
-        <script type="text/javascript">var tb_pathToImage = "/background/img_video.png";</script>
+        <script type="text/javascript">var tb_pathToImage = "/background/img_video.png";
+        var tName = location.hash.substring(1);
+        </script>
 	</head>
 	<body onLoad="tenants.init();">
 		<!--begin header-->
@@ -16,7 +18,7 @@
 		
 		<!--begin ThanksPages-->	
 		 <div class="UIPageBody ThanksPages ClearFix">
-			<h1>Welcome to Tenant-name Workspace</h1>
+			<h1>Welcome to <script type="text/javascript">document.write(tName);</script>  Workspace</h1>
 			<p class="FillProfileInfo">Get started with Cloud Workspaces by checking out these helpful resources.</p>
 			<div class="LeftContent FL">
 				<h3>Watch the Getting Started video:</h3>
