@@ -306,12 +306,13 @@ public class CloudIntranetUtils
                         String userName = users.next();
                         if (!userName.equalsIgnoreCase(username))
                         {
-                           counter++;
+                           if (!userName.equals("root"))
+                             counter++;
                         }
                         else
                         {
-                           throw new UserAlreadyExistsException("This user has already registered on workspace "
-                              + tenantName);
+                           LOG.warn("User "+ username +" already registered on workspace " + tName +". Join request rejected. User warned on the Sign Up form.");
+                           throw new UserAlreadyExistsException("This user has already registered on workspace " + tenantName);
                         }
                      }
                   }
