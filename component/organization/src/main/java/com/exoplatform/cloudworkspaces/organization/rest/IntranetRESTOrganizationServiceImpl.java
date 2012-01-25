@@ -82,34 +82,47 @@ public class IntranetRESTOrganizationServiceImpl
       try 
       {
         Enumeration<NetworkInterface> nis = NetworkInterface.getNetworkInterfaces();
-        String allIfs = "";
+
+        StringBuffer allIfs = new StringBuffer("");
         while (nis.hasMoreElements()) 
         {
           NetworkInterface ni = nis.nextElement();
           if (ni != null && !ni.isLoopback()) 
           {
             Enumeration<InetAddress> ia = ni.getInetAddresses();
-            String allAddrs = "";
+
+            StringBuffer allAddrs = new StringBuffer("");
             while (ia.hasMoreElements()) 
             {
               InetAddress n = ia.nextElement();
               if (n != null && !n.isLoopbackAddress()) 
               {
-                allAddrs += (allAddrs.length()>0 ? ", " : "") + n.getCanonicalHostName() + " (" + n.getHostAddress() + ")";
+
+                if (allAddrs.length() > 0) {
+
+                    allAddrs.append(", ");
+
+                } else {
+
+                    allAddrs.append("").append(n.getCanonicalHostName()).append(" (").append(n.getHostAddress()).append(")");
+                }
+
               }
             }
-            allIfs += "[" + allAddrs + "]";
+
+            allIfs.append("[").append(allAddrs).append("]");
           }
         }
-        
-        if (allIfs.length()>0) 
-        {
-          hostname = allIfs;
-        } 
-        else 
-        {
-          InetAddress lo = InetAddress.getLocalHost();
-          hostname = lo.getCanonicalHostName() + " (" + lo.getHostAddress() + ")";
+
+        if (allIfs.length()>0) {
+
+            hostname = allIfs.toString();
+
+        } else {
+
+            InetAddress lo = InetAddress.getLocalHost();
+            hostname = lo.getCanonicalHostName() + " (" + lo.getHostAddress() + ")";
+
         }
       } 
       catch(Throwable th) 
@@ -171,7 +184,7 @@ public class IntranetRESTOrganizationServiceImpl
       }
       catch (Exception e)
       {
-         String err = "Unable to store user in tenant " + tname;
+         String err = "Unable to store user "+ userName +" in tenant " + tname;
          LOG.error(err, e);
          throw new WebApplicationException(e, Response.status(HTTPStatus.INTERNAL_ERROR)
                                            .entity(errorMessage(err, e)).type("text/plain").build());
@@ -243,14 +256,14 @@ public class IntranetRESTOrganizationServiceImpl
             Collection<Group> groups = organizationService.getGroupHandler().findGroupsOfUser(one.getUserName());
             for (Group group : groups){
             if (group.getId().equalsIgnoreCase("/platform/administrators"))
-              result.put(one.getFirstName(), one.getEmail());
+              result.put(one.getUserName(), one.getEmail());
             }
          }
          return result;
       }
       catch (Exception e)
       {
-         String err = "Unable to get administrators in workspace " + tname;
+         String err = "Unable to get administrators list in workspace " + tname;
          LOG.error(err, e);
          throw new WebApplicationException(e, Response.status(HTTPStatus.INTERNAL_ERROR).entity(errorMessage(err, e))
             .type("text/plain").build());

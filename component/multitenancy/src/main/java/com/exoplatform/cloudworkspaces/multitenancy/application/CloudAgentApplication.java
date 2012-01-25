@@ -16,7 +16,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package com.exoplatform.wloudworkspaces.multitenancy.application;
+package com.exoplatform.cloudworkspaces.multitenancy.application;
 
 import org.exoplatform.cloudmanagement.mail.CloudMailService;
 import org.exoplatform.cloudmanagement.rest.CloudAgentInfoService;
