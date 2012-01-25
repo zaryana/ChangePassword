@@ -32,6 +32,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -62,6 +64,7 @@ import org.exoplatform.cloudmanagement.admin.TenantAlreadyExistException;
 import org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration;
 import org.exoplatform.cloudmanagement.admin.creation.TenantCreationSupervisor;
 import org.exoplatform.cloudmanagement.admin.status.CloudInfoHolder;
+import org.exoplatform.cloudmanagement.status.TenantState;
 import org.exoplatform.cloudmanagement.status.TenantStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -133,7 +136,12 @@ public class IntranetAdminService extends TenantCreator
                .entity("Sorry, we can't sign you up with an email address " + domain + ". Try with your work email.")
                .build();
          }
-         super.createTenantWithEmailConfirmation(tName, userMail);
+         if (!utils.isUserInQueue(tName, userMail)){
+           super.createTenantWithEmailConfirmation(tName, userMail);
+         }
+         else{
+            return Response.ok("You already signed up. Wait until your workspace will be created. We will inform you when it will be ready.").build();
+         }
       }
       catch (TenantAlreadyExistException ex)
       {
@@ -160,7 +168,8 @@ public class IntranetAdminService extends TenantCreator
          }
          catch (UserAlreadyExistsException e)
          {
-            return Response.ok(e.getMessage()).build();
+           // Custom status for disable ajax auto redirection; 
+           return Response.status(309).header("Location","http://" + adminConfiguration.getMasterHost() + "/signin.jsp?email=" + userMail).build();
          }
       }
       return Response.ok().build();
@@ -184,11 +193,12 @@ public class IntranetAdminService extends TenantCreator
       @FormParam("confirmation-id") String uuid) throws CloudAdminException
    {
       String tName = null;
+      String username = null;
       try
       {
          if (!utils.validateEmail(userMail))
             return Response.status(Status.BAD_REQUEST).entity("Please enter a valid email address.").build();
-         String username = userMail.substring(0, (userMail.indexOf("@")));
+         username = userMail.substring(0, (userMail.indexOf("@")));
          String tail = userMail.substring(userMail.indexOf("@") + 1);
          tName = tail.substring(0,tail.indexOf("."));
          // Prepare properties for mailing
@@ -204,8 +214,22 @@ public class IntranetAdminService extends TenantCreator
          if (utils.isNewUserAllowed(tName, username, maxUsers))
          {
             // Storing user & sending appropriate mails
-            utils.storeUser(tName, userMail, firstName, lastName, password, false);
-            utils.sendUserJoinedEmails(tName, firstName, userMail, props);
+            TenantState tState = cloudInfoHolder.getTenantStatus(tName).getState(); 
+            if (tState.equals(TenantState.ONLINE))
+            {
+               utils.storeUser(tName, userMail, firstName, lastName, password, false);
+               utils.sendUserJoinedEmails(tName, firstName, userMail, props);
+            }
+            else if (tState.equals(TenantState.CREATION) || cloudInfoHolder.getTenantStatus(tName).getState().equals(TenantState.WAITING_CREATION))
+            {
+               utils.putUserInQueue(tName, userMail, firstName, lastName, "", "", password, "", RequestState.WAITING_JOIN);
+            } 
+            else
+            {
+               String msg = "Sorry, we cannot process your join request right now, workspace seems not ready. Please, try again later.";
+               LOG.warn("Joining user " + userMail + " failed, tenant "+ tName + " state is " + cloudInfoHolder.getTenantStatus(tName).getState().toString());
+               throw new CloudAdminException(msg);
+            }
          }
          else
          {
@@ -218,6 +242,7 @@ public class IntranetAdminService extends TenantCreator
       }
       catch (UserAlreadyExistsException e)
       {
+         LOG.warn("User "+ username +" already registered on workspace " + tName +". Join request rejected. User warned on the Sign Up form.");
          return Response.ok(e.getMessage()).build();
       }
    }
@@ -314,63 +339,7 @@ public class IntranetAdminService extends TenantCreator
             .entity("Sorry, we can't create workspace with an email address " + domain + ". Try with your work email.")
             .build();
       }
-      
-      String folderName = utils.getRegistrationWaitingFolder();
-      File folder = new File(folderName);
-      if (!folder.exists())
-         folder.mkdir();
-      
-      File[] list = folder.listFiles();
-      for (File one : list)
-      {
-         if (one.getName().startsWith(tName + "_")){
-            try
-            {
-               FileInputStream io = new FileInputStream(one);
-               Properties newprops = new Properties();
-               newprops.load(io);
-               io.close();
-               if (newprops.getProperty("user-mail").equalsIgnoreCase(userMail)){
-                  LOG.warn("User "+ userMail +" already registered on workspace " + tName +". Tenant creation request rejected. User warned on the Sign Up form.");
-                  throw new CloudAdminException("Request to create a Cloud Workspace from " + userMail + " already submitted, it is on the processing currently. Wait for the creation will be done or use another email.");
-               }
-            }
-            catch (IOException e)
-            {
-               String msg = "Tenant queuing error : failed to read property file " + one.getName(); 
-               LOG.error(msg, e);
-               utils.sendAdminErrorEmail(msg, e);
-               throw new CloudAdminException("A problem happened during processing request . It was reported to developers. Please, try again later.");
-            }
-         }
-      }
-               
-      File propertyFile = new File(folderName + tName + "_"+ System.currentTimeMillis() + ".properties");
-      
-      Properties properties = new Properties();
-      properties.setProperty("action", RequestState.WAITING_CREATION.toString());
-      properties.setProperty("tenant", tName);
-      properties.setProperty("user-mail", userMail);
-      properties.setProperty("first-name", firstName);
-      properties.setProperty("last-name", lastName);
-      properties.setProperty("company-name", companyName);
-      properties.setProperty("phone", phone);
-      properties.setProperty("password", password);
-      properties.setProperty("confirmation-id", uuid);
-      properties.setProperty("isadministrator", "false");
-      
-      try
-      {
-         propertyFile.createNewFile();
-         properties.store(new FileOutputStream(propertyFile), "");
-         LOG.info("Tenant " + tName + " put in creation queue. Requestor: " + userMail);
-      }
-      catch (Exception e)
-      {
-         LOG.error(e.getMessage());
-         utils.sendAdminErrorEmail(e.getMessage(), e);
-         throw new CloudAdminException("A problem happened during processsing this request. It was reported to developers. Please, try again later.");
-      }
+      utils.putUserInQueue(tName, userMail, firstName, lastName, companyName, phone, password, uuid, RequestState.WAITING_CREATION);
       Map<String, String> props = new HashMap<String, String>();
       String username = userMail.substring(0, (userMail.indexOf("@")));
       props.put("tenant.masterhost", adminConfiguration.getMasterHost());

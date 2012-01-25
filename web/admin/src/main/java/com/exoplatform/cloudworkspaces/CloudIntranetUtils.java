@@ -39,7 +39,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -260,7 +259,7 @@ public class CloudIntranetUtils
    public boolean isNewUserAllowed(String tName, String username, int maxUsers) throws CloudAdminException
    {
       if (tName == null || username == null)
-         throw new CloudAdminException("Cannot validate user with such input data. Please, rewiev it.");
+         throw new CloudAdminException("Cannot validate user with such input data. Please, review it.");
       URL url;
       HttpURLConnection connection = null;
       StringBuilder strUrl = new StringBuilder();
@@ -311,7 +310,6 @@ public class CloudIntranetUtils
                         }
                         else
                         {
-                           LOG.warn("User "+ username +" already registered on workspace " + tName +". Join request rejected. User warned on the Sign Up form.");
                            throw new UserAlreadyExistsException("This user has already registered on workspace " + tenantName);
                         }
                      }
@@ -907,7 +905,8 @@ public class CloudIntranetUtils
                      //Checking status
                      if (!holder.getTenantStatus(tenant).getState().equals(TenantState.ONLINE))
                      {
-                        LOG.warn("Tenant " + tenant +" is not online, auto join skipped");
+                        String msg = "Tenant " + tenant +" is not online, auto join skipped for user " + userMail;
+                        LOG.warn(msg);
                         continue;   
                      }
                      // Prepare properties for mailing
@@ -921,11 +920,11 @@ public class CloudIntranetUtils
 
                      LOG.info("Joining user " + userMail + " to tenant " + tenant);
                      int maxUsers = getMaxUsersForTenant(tenant);
-                     if (isNewUserAllowed(tName, username, maxUsers))
+                     if (isNewUserAllowed(tenant, username, maxUsers))
                      {
                         // Storing user & sending appropriate mails
-                        storeUser(tName, userMail, fName, lName, newprops.getProperty("password"), false);
-                        sendUserJoinedEmails(tName, fName, userMail, props);
+                        storeUser(tenant, userMail, fName, lName, newprops.getProperty("password"), false);
+                        sendUserJoinedEmails(tenant, fName, userMail, props);
                      }
                      else
                      {
@@ -950,6 +949,83 @@ public class CloudIntranetUtils
          }
       }
    }
+   
+   
+   
+   public void putUserInQueue(String tName, String userMail, String firstName, String lastName, String companyName, String phone, String password, String uuid, RequestState state) throws CloudAdminException{
+      
+      String folderName = getRegistrationWaitingFolder();
+      
+      if (isUserInQueue(tName, userMail)){
+         LOG.warn("User "+ userMail +" already registered on workspace " + tName +". Tenant creation request rejected. User warned on the Sign Up form.");
+         throw new CloudAdminException("Request to create a Cloud Workspace from " + userMail + " already submitted, it is on the processing currently. Wait for the creation will be done or use another email.");
+      }
+      
+      File folder = new File(folderName);
+      if (!folder.exists())
+         folder.mkdir();
+               
+      File propertyFile = new File(folderName + tName + "_"+ System.currentTimeMillis() + ".properties");
+      
+      Properties properties = new Properties();
+      properties.setProperty("action", state.toString());
+      properties.setProperty("tenant", tName);
+      properties.setProperty("user-mail", userMail);
+      properties.setProperty("first-name", firstName);
+      properties.setProperty("last-name", lastName);
+      properties.setProperty("company-name", companyName);
+      properties.setProperty("phone", phone);
+      properties.setProperty("password", password);
+      properties.setProperty("confirmation-id", uuid);
+      properties.setProperty("isadministrator", "false");
+      
+      try
+      {
+         propertyFile.createNewFile();
+         properties.store(new FileOutputStream(propertyFile), "");
+         LOG.info("Tenant " + tName + " put in creation queue. Requestor: " + userMail);
+      }
+      catch (Exception e)
+      {
+         LOG.error(e.getMessage());
+         sendAdminErrorEmail(e.getMessage(), e);
+         throw new CloudAdminException("A problem happened during processsing this request. It was reported to developers. Please, try again later.");
+      }
+   }
+   
+   public boolean isUserInQueue(String tName, String userMail) throws CloudAdminException{
+      
+      String folderName = getRegistrationWaitingFolder();
+      File folder = new File(folderName);
+      if (!folder.exists())
+         return false;
+      
+      File[] list = folder.listFiles();
+      for (File one : list)
+      {
+         if (one.getName().startsWith(tName + "_")){
+            try
+            {
+               FileInputStream io = new FileInputStream(one);
+               Properties newprops = new Properties();
+               newprops.load(io);
+               io.close();
+               if (newprops.getProperty("user-mail").equalsIgnoreCase(userMail)){
+                 return true;                  
+               }
+            }
+            catch (IOException e)
+            {
+               String msg = "Tenant queuing error : failed to read property file " + one.getName(); 
+               LOG.error(msg, e);
+               sendAdminErrorEmail(msg, e);
+               throw new CloudAdminException("A problem happened during processing request . It was reported to developers. Please, try again later.");
+            }
+         }
+      }
+      return false;
+   }
+   
 
    public boolean validateEmail(String aEmailAddress){
       if (aEmailAddress == null) return false;
