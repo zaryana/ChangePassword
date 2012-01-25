@@ -490,6 +490,11 @@ Tenants.prototype.xmlhttpPost = function(strURL, handler, paramsMapper) {
       'application/x-www-form-urlencoded');
   self.xmlHttpReq.onreadystatechange = function() {
     if (self.xmlHttpReq.readyState == 4) {
+      if (self.xmlHttpReq.status == 309){ //Custom status to handle redirects;
+      window.location = self.xmlHttpReq.getResponseHeader("Location");
+      return;
+    }
+
       handler(self.xmlHttpReq.responseText);
     }
   }
