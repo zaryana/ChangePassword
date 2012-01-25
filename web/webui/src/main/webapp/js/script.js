@@ -225,6 +225,8 @@ Tenants.prototype.initSignInPage = function() {
   email = (email_start != -1) ? queryString.substring(email_start + 6) : null;
    if (email != null && email != "") {
    _gel("email").value = email;
+    var split = email.split('@');
+   _gel('workspace').value = split[1].substring(0, split[1].indexOf('.'));
   }
  }
 }
