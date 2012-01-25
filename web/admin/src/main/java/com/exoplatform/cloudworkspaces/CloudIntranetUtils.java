@@ -514,8 +514,6 @@ public class CloudIntranetUtils
                props.get("tenant.repository.name")), salesTemplate, props);
 
          Map<String,String> adminEmails = getTenantAdministrators(tName);
-         mailSender.sendMail(userMail, cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_USER_JOINED_SUBJECT)
-            .replace("${company}", tName), userTemplate, props);
          Iterator<String> it = adminEmails.keySet().iterator(); 
          while (it.hasNext())
          {
