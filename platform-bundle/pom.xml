@@ -40,6 +40,11 @@
          <artifactId>cloud-workspaces-component-organization</artifactId>
          <version>${project.version}</version>
        </dependency>
+       <dependency>
+         <groupId>com.exoplatform.cloudworkspaces</groupId>
+         <artifactId>cloud-workspaces-component-multitenancy</artifactId>
+         <version>${project.version}</version>
+       </dependency> 
        <!-- cloud-gadgets -->
        <dependency>
          <groupId>com.exoplatform.cloudworkspaces</groupId>
@@ -134,6 +139,7 @@ EXO_CLOUD_ADMIN_OPTS="-Dcloud.admin.log.dir=../logs/cloud-admin \
                     <unzip src="${project.build.directory}/tomcat-source/webapps/cloud-extension.war" dest="${project.build.directory}/tomcat-source/webapps/cloud-ext" />
                     <copy file="${project.basedir}/src/main/resources/tomcat/webapps/cloud-extension/pages.xml" tofile="${project.build.directory}/tomcat-source/webapps/cloud-ext/WEB-INF/conf/portal/group/platform/administrators/pages.xml" overwrite="true" />
                     <copy file="${project.basedir}/src/main/resources/tomcat/webapps/cloud-extension/navigation.xml" tofile="${project.build.directory}/tomcat-source/webapps/cloud-ext/WEB-INF/conf/portal/group/platform/administrators/navigation.xml" overwrite="true" />
+                    <copy file="${project.basedir}/src/main/resources/tomcat/webapps/cloud-extension/cloud-configuration.xml" tofile="${project.build.directory}/tomcat-source/webapps/cloud-ext/WEB-INF/conf/cloud/cloud-configuration.xml" overwrite="true" />
                     <zip destfile="${project.build.directory}/tomcat-source/webapps/cloud-extension.war" basedir="${project.build.directory}/tomcat-source/webapps/cloud-ext" />
                     <delete dir="${project.build.directory}/tomcat-source/webapps/cloud-ext" />
                     <!-- Delete acme-intranet welcome page -->
@@ -171,6 +177,7 @@ EXO_CLOUD_ADMIN_OPTS="-Dcloud.admin.log.dir=../logs/cloud-admin \
                     <copy file="${project.basedir}/src/main/resources/tomcat/gatein/conf/cloud.properties" tofile="${project.build.directory}/tomcat-source/gatein/conf/cloud.properties" overwrite="true" />
                     <copy file="${project.basedir}/src/main/resources/tomcat/gatein/conf/cloud/users.properties" tofile="${project.build.directory}/tomcat-source/gatein/conf/cloud/users.properties" overwrite="true" />
                     <copy file="${project.basedir}/src/main/resources/tomcat/gatein/conf/portal/portal/configuration.xml" tofile="${project.build.directory}/tomcat-source/gatein/conf/portal/portal/configuration.xml" overwrite="true" />
+                    <copy file="${project.basedir}/src/main/resources/tomcat/conf/server.xml" tofile="${project.build.directory}/tomcat-source/conf/server.xml" overwrite="true" />
                   </target>
                 </configuration>
                 <goals>
