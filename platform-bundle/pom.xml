@@ -162,10 +162,7 @@ EXO_CLOUD_ADMIN_OPTS="-Dcloud.admin.log.dir=../logs/cloud-admin \
                     <replace dir="${project.build.directory}/tomcat-source/webapps/portal/groovy/portal/webui/workspace">
                     <include name="UIPortalApplicationChildren.gtmpl" />
                     <replacetoken><![CDATA[</body>]]></replacetoken>
-                    <replacevalue><![CDATA[<!-- BEGIN: Google Analytics TRACKING -->
-                    <script type="text/javascript" src="http://www.google-analytics.com/ga.js"></script>
-                    <!-- END: Google Analytics TRACKING -->
-                    <!-- BEGIN: LOOPFUSE TRACKING -->
+                    <replacevalue><![CDATA[<!-- BEGIN: LOOPFUSE TRACKING -->
                     <script type="text/javascript" src="http://lfov.net/webrecorder/js/listen.js"></script>
                     <!-- END: LOOPFUSE TRACKING -->
                     <script type="text/javascript" src="http://cloud-workspaces.com/js/trackers.js"></script>
