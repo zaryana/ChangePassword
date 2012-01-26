@@ -159,6 +159,17 @@ EXO_CLOUD_ADMIN_OPTS="-Dcloud.admin.log.dir=../logs/cloud-admin \
                     <zip destfile="${project.build.directory}/tomcat-source/webapps/platform-extension.war" basedir="${project.build.directory}/tomcat-source/webapps/platform-extension" />
                     <delete dir="${project.build.directory}/tomcat-source/webapps/platform-extension" />
                     <unzip src="${project.build.directory}/tomcat-source/webapps/portal.war" dest="${project.build.directory}/tomcat-source/webapps/portal" />
+                     <replace dir="${project.build.directory}/tomcat-source/webapps/portal/groovy/portal/webui/workspace">                                                                             
+                     <include name="UIPortalApplication.gtmpl" />
+                     <replacetoken><![CDATA[</head>]]></replacetoken>
+                     <replacevalue><![CDATA[<script type="text/javascript">
+                     var _gaq = _gaq || [];
+                     _gaq.push(['_setAccount', 'UA-1292368-30']);
+                     _gaq.push(['_setDomainName', '.cloud-workspaces.com']);
+                     _gaq.push(['_trackPageview']);
+                     </script>
+                    </head>]]></replacevalue>
+                    </replace> 
                     <replace dir="${project.build.directory}/tomcat-source/webapps/portal/groovy/portal/webui/workspace">
                     <include name="UIPortalApplicationChildren.gtmpl" />
                     <replacetoken><![CDATA[</body>]]></replacetoken>
