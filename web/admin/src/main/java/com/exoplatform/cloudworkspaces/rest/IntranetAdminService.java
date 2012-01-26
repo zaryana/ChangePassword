@@ -217,8 +217,17 @@ public class IntranetAdminService extends TenantCreator
             TenantState tState = cloudInfoHolder.getTenantStatus(tName).getState(); 
             if (tState.equals(TenantState.ONLINE))
             {
-               utils.storeUser(tName, userMail, firstName, lastName, password, false);
-               utils.sendUserJoinedEmails(tName, firstName, userMail, props);
+               try
+               {
+                  utils.storeUser(tName, userMail, firstName, lastName, password, false);
+                  utils.sendUserJoinedEmails(tName, firstName, userMail, props);
+               }
+               catch (CloudAdminException e)
+               {
+                  LOG.warn("User " + username + " join failed, put him in join queue.");
+                  utils.putUserInQueue(tName, userMail, firstName, lastName, "", "", password, "",
+                     RequestState.WAITING_JOIN);
+               }
             }
             else if (tState.equals(TenantState.CREATION) || cloudInfoHolder.getTenantStatus(tName).getState().equals(TenantState.WAITING_CREATION))
             {
