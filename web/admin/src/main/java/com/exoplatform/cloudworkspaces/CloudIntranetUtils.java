@@ -957,7 +957,7 @@ public class CloudIntranetUtils
       String folderName = getRegistrationWaitingFolder();
       
       if (isUserInQueue(tName, userMail)){
-         LOG.warn("User "+ userMail +" already registered on workspace " + tName +". Tenant creation request rejected. User warned on the Sign Up form.");
+         LOG.info("User "+ userMail +" already registered on workspace " + tName +". Tenant creation request rejected. User warned on the Sign Up form.");
          throw new CloudAdminException("Request to create a Cloud Workspace from " + userMail + " already submitted, it is on the processing currently. Wait for the creation will be done or use another email.");
       }
       
