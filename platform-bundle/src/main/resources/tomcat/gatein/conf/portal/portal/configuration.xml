@@ -215,7 +215,7 @@
   <external-component-plugins>
     <target-component>org.exoplatform.portal.config.UserPortalConfigService</target-component>
     <component-plugin>
-      <name>intranent.portal.config.user.listener</name>
+      <name>intranet.portal.config.user.listener</name>
       <set-method>initListener</set-method>
       <type>org.exoplatform.portal.config.NewPortalConfigListener</type>
       <description>this listener init the portal configuration</description>
