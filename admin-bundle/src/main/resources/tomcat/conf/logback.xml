@@ -52,7 +52,7 @@
       <SSL>false</SSL>
       <username></username>
       <password></password>
-      <to>logs@cloud-workspaces.com</to>
+      <to>${logback.loggerEmail}</to>
       <from>noreply@cloud-workspaces.com</from>
       <subject>Cloud-Admin error: %logger{20} - %m</subject>
       <layout class="ch.qos.logback.classic.PatternLayout">

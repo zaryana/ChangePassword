@@ -16,12 +16,16 @@
 # admin config
 [ -z "$EXO_ADMIN_CONF_DIR" ]  && EXO_ADMIN_CONF_DIR="$CATALINA_HOME/exo-admin-conf"
 
+# logger email
+[ -z "$LOGGER_EMAIL" ]  && LOGGER_EMAIL="exo.cwks.log@gmail.com"
+
 # this host external address
 # HOST_EXTERNAL_ADDR=`ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}'`
 [ -z "$HOST_EXTERNAL_ADDR" ]  && HOST_EXTERNAL_ADDR="localhost"
 
 # admin variables
 EXO_CLOUD_ADMIN_OPTS="-Dcloud.admin.log.dir=$EXO_ADMIN_LOGS_DIR \
+                      -Dlogback.loggerEmail=$LOGGER_EMAIL \
                       -Dcloud.admin.data.dir=$EXO_ADMIN_DATA_DIR \
                       -Dtenant.masterhost=$TENANT_MASTERHOST \
                       -Dcloud.admin.configuration.dir=$EXO_ADMIN_CONF_DIR \
