@@ -137,10 +137,26 @@ EXO_CLOUD_ADMIN_OPTS="-Dcloud.admin.log.dir=../logs/cloud-admin \
                     </delete>
                     <!-- Delete tenants management page -->
                     <unzip src="${project.build.directory}/tomcat-source/webapps/cloud-extension.war" dest="${project.build.directory}/tomcat-source/webapps/cloud-ext" />
-                    <copy file="${project.basedir}/src/main/resources/tomcat/webapps/cloud-extension/pages.xml" tofile="${project.build.directory}/tomcat-source/webapps/cloud-ext/WEB-INF/conf/portal/group/platform/administrators/pages.xml" overwrite="true" />
+                    <!--
+					<copy file="${project.basedir}/src/main/resources/tomcat/webapps/cloud-extension/pages.xml" tofile="${project.build.directory}/tomcat-source/webapps/cloud-ext/WEB-INF/conf/portal/group/platform/administrators/pages.xml" overwrite="true" />
                     <copy file="${project.basedir}/src/main/resources/tomcat/webapps/cloud-extension/navigation.xml" tofile="${project.build.directory}/tomcat-source/webapps/cloud-ext/WEB-INF/conf/portal/group/platform/administrators/navigation.xml" overwrite="true" />
-                    <copy file="${project.basedir}/src/main/resources/tomcat/webapps/cloud-extension/cloud-configuration.xml" tofile="${project.build.directory}/tomcat-source/webapps/cloud-ext/WEB-INF/conf/cloud/cloud-configuration.xml" overwrite="true" />
-                    <zip destfile="${project.build.directory}/tomcat-source/webapps/cloud-extension.war" basedir="${project.build.directory}/tomcat-source/webapps/cloud-ext" />
+                    -->
+					<delete dir="${project.build.directory}/tomcat-source/webapps/cloud-ext/WEB-INF/conf/portal" />
+					<copy file="${project.basedir}/src/main/resources/tomcat/webapps/cloud-extension/cloud-configuration.xml" tofile="${project.build.directory}/tomcat-source/webapps/cloud-ext/WEB-INF/conf/cloud/cloud-configuration.xml" overwrite="true" />
+					
+					<copy file="${project.basedir}/src/main/resources/tomcat/webapps/cloud-extension/configuration.xml" tofile="${project.build.directory}/tomcat-source/webapps/cloud-ext/WEB-INF/conf/configuration.xml" overwrite="true" />
+                    
+					<copy file="${project.basedir}/src/main/resources/tomcat/webapps/cloud-extension/portal/portal-configuration.xml" tofile="${project.build.directory}/tomcat-source/webapps/cloud-ext/WEB-INF/conf/cloud/portal/portal-configuration.xml" overwrite="true" />
+					<copy file="${project.basedir}/src/main/resources/tomcat/webapps/cloud-extension/portal/resource-bundle-configuration.xml" tofile="${project.build.directory}/tomcat-source/webapps/cloud-ext/WEB-INF/conf/cloud/portal/resource-bundle-configuration.xml" overwrite="true" />
+					
+					<!-- Add web-contributors navigation -->
+					<copy file="${project.basedir}/src/main/resources/tomcat/webapps/cloud-extension/portal/group/platform/web-contributors/navigation.xml" tofile="${project.build.directory}/tomcat-source/webapps/cloud-ext/WEB-INF/conf/cloud/portal/group/platform/web-contributors/navigation.xml" overwrite="true" />
+					<copy file="${project.basedir}/src/main/resources/tomcat/webapps/cloud-extension/portal/group/platform/web-contributors/pages.xml" tofile="${project.build.directory}/tomcat-source/webapps/cloud-ext/WEB-INF/conf/cloud/portal/group/platform/web-contributors/pages.xml" overwrite="true" />
+					<!-- Add I18N for web-contributors navigation group -->
+					<copy file="${project.basedir}/src/main/resources/tomcat/webapps/cloud-extension/portal/classes/locale/navigation/group/platform/web-contributors_vi.xml" tofile="${project.build.directory}/tomcat-source/webapps/cloud-ext/WEB-INF/classes/locale/navigation/group/platform/web-contributors_vi.xml" overwrite="true" />
+					<copy file="${project.basedir}/src/main/resources/tomcat/webapps/cloud-extension/portal/classes/locale/navigation/group/platform/web-contributors_fr.xml" tofile="${project.build.directory}/tomcat-source/webapps/cloud-ext/WEB-INF/classes/locale/navigation/group/platform/web-contributors_fr.xml" overwrite="true" />
+					<copy file="${project.basedir}/src/main/resources/tomcat/webapps/cloud-extension/portal/classes/locale/navigation/group/platform/web-contributors_en.xml" tofile="${project.build.directory}/tomcat-source/webapps/cloud-ext/WEB-INF/classes/locale/navigation/group/platform/web-contributors_en.xml" overwrite="true" />
+					<zip destfile="${project.build.directory}/tomcat-source/webapps/cloud-extension.war" basedir="${project.build.directory}/tomcat-source/webapps/cloud-ext" />
                     <delete dir="${project.build.directory}/tomcat-source/webapps/cloud-ext" />
                     <!-- Delete acme-intranet welcome page -->
                     <unzip src="${project.build.directory}/tomcat-source/webapps/acme-intranet.war" dest="${project.build.directory}/tomcat-source/webapps/acme-intranet" />
