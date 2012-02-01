@@ -17,7 +17,14 @@
 [ -z "$EXO_ADMIN_CONF_DIR" ]  && EXO_ADMIN_CONF_DIR="$CATALINA_HOME/exo-admin-conf"
 
 # logger email
-[ -z "$LOGGER_EMAIL" ]  && LOGGER_EMAIL="exo.cwks.log@gmail.com"
+[ -z "$LOGGER_EMAIL_TO" ]  && LOGGER_EMAIL_TO="exo.cwks.log@gmail.com"
+[ -z "$LOGGER_EMAIL_FROM" ]  && LOGGER_EMAIL_FROM="noreply@cloud-workspaces.com"
+[ -z "$LOGGER_EMAIL_USER" ]  && LOGGER_EMAIL_USER="exo.plf.cloud.test1@gmail.com"
+[ -z "$LOGGER_EMAIL_PASS" ]  && LOGGER_EMAIL_PASS="exo.plf.cloud.test112321"
+[ -z "$LOGGER_EMAIL_HOST" ]  && LOGGER_EMAIL_HOST="smtp.gmail.com"
+[ -z "$LOGGER_EMAIL_PORT" ]  && LOGGER_EMAIL_PORT="465"
+[ -z "$LOGGER_EMAIL_SSL" ]  && LOGGER_EMAIL_SSL="true"
+
 
 # this host external address
 # HOST_EXTERNAL_ADDR=`ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}'`
@@ -25,7 +32,13 @@
 
 # admin variables
 EXO_CLOUD_ADMIN_OPTS="-Dcloud.admin.log.dir=$EXO_ADMIN_LOGS_DIR \
-                      -Dlogback.loggerEmail=$LOGGER_EMAIL \
+                      -Dlogback.loggerEmailTo=$LOGGER_EMAIL_TO \
+                      -Dlogback.loggerEmailFrom=$LOGGER_EMAIL_FROM \
+                      -Dlogback.loggerEmailUser=$LOGGER_EMAIL_USER \
+                      -Dlogback.loggerEmailPass=$LOGGER_EMAIL_PASS \
+                      -Dlogback.loggerEmailHost=$LOGGER_EMAIL_HOST \
+                      -Dlogback.loggerEmailPort=$LOGGER_EMAIL_PORT \
+                      -Dlogback.loggerEmailSSL=$LOGGER_EMAIL_SSL \
                       -Dcloud.admin.data.dir=$EXO_ADMIN_DATA_DIR \
                       -Dtenant.masterhost=$TENANT_MASTERHOST \
                       -Dcloud.admin.configuration.dir=$EXO_ADMIN_CONF_DIR \

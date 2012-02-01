@@ -47,20 +47,13 @@
 
 
    <appender name="email" class="ch.qos.logback.classic.net.SMTPAppender">
-      <!-- SMTPHost>smtp.gmail.com</SMTPHost>
-      <SMTPPort>465</SMTPPort>
-      <SSL>true</SSL>
-      <username>exo.plf.cloud.test1@gmail.com</username>
-      <password>exo.plf.cloud.test112321</password>
-      <to>exo.plf.cloud.test1@gmail.com</to>
-      <from>exo.plf.cloud.test1@gmail.com</from -->
-      <SMTPHost>localhost</SMTPHost>
-      <SMTPPort>25</SMTPPort>
-      <SSL>false</SSL>
-      <username></username>
-      <password></password>
-      <to>${logback.loggerEmail}</to>
-      <from>noreply@cloud-workspaces.com</from>
+      <SMTPHost>${logback.loggerEmailHost}</SMTPHost>
+      <SMTPPort>${logback.loggerEmailPort}</SMTPPort>
+      <SSL>${logback.loggerEmailSSL}</SSL>
+      <username>${logback.loggerEmailUser}</username>
+      <password>${logback.loggerEmailPass}</password>
+      <to>${logback.loggerEmailTo}</to>
+      <from>${logback.loggerEmailFrom}</from>
       <subject>Cloud-Admin error: %logger{20} - %m</subject>
       <layout class="ch.qos.logback.classic.PatternLayout">
          <pattern>%-41(%date[%.15thread])%-45([%-5level] [%.30logger{30} %L]) - %msg%n</pattern>
