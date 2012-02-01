@@ -19,26 +19,16 @@
 package com.exoplatform.cloudworkspaces.rest;
 
 import static org.exoplatform.cloudmanagement.rest.admin.CloudAdminRestServicePaths.CLOUD_ADMIN_PUBLIC_TENANT_CREATION_SERVICE;
-
+import com.exoplatform.cloudworkspaces.listener.TenantCreatedListenerThread;
+import com.exoplatform.cloudworkspaces.UserRequest;
+import com.exoplatform.cloudworkspaces.UserRequestDAO;
 import com.exoplatform.cloudworkspaces.RequestState;
-
 import com.exoplatform.cloudworkspaces.UserAlreadyExistsException;
-
 import com.exoplatform.cloudworkspaces.CloudIntranetUtils;
-import com.exoplatform.cloudworkspaces.TenantCreatedListenerThread;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import org.slf4j.Logger;
@@ -74,6 +64,8 @@ public class IntranetAdminService extends TenantCreator
 {
 
    CloudIntranetUtils utils;
+   
+   UserRequestDAO requestDao;
 
    private static final Logger LOG = LoggerFactory.getLogger(IntranetAdminService.class);
 
@@ -81,7 +73,9 @@ public class IntranetAdminService extends TenantCreator
       CloudAdminConfiguration cloudAdminConfiguration, TenantCreationSupervisor creationSupervisor)
    {
       super(cloudInfoHolder, tenantMetadataValidator, cloudAdminConfiguration, creationSupervisor);
-      this.utils = new CloudIntranetUtils(cloudAdminConfiguration, cloudInfoHolder);
+      this.requestDao = new UserRequestDAO(cloudAdminConfiguration);
+      this.utils = new CloudIntranetUtils(cloudAdminConfiguration, cloudInfoHolder, requestDao);
+
    }
 
    /* (non-Javadoc)
@@ -136,7 +130,7 @@ public class IntranetAdminService extends TenantCreator
                .entity("Sorry, we can't sign you up with an email address " + domain + ". Try with your work email.")
                .build();
          }
-         if (!utils.isUserInQueue(tName, userMail)){
+         if (requestDao.searchByEmail(userMail) == null){
            super.createTenantWithEmailConfirmation(tName, userMail);
          }
          else{
@@ -160,7 +154,9 @@ public class IntranetAdminService extends TenantCreator
             }
             else
             {
-               LOG.info("User " + userMail + " was refused - users limit reached.");
+               LOG.info("User " + userMail + " was put in waiting state - users limit reached.");
+               UserRequest req = new UserRequest("", tName, userMail, "", "", "", "", "", "", false, RequestState.WAITING_LIMIT);
+               requestDao.put(req);
                // send not allowed mails
                props.put("users.maxallowed", Integer.toString(maxUsers));
                utils.sendJoinRejectedEmails(tName, userMail, props);
@@ -225,13 +221,14 @@ public class IntranetAdminService extends TenantCreator
                catch (CloudAdminException e)
                {
                   LOG.warn("User " + username + " join failed, put him in join queue.");
-                  utils.putUserInQueue(tName, userMail, firstName, lastName, "", "", password, "",
-                     RequestState.WAITING_JOIN);
+                  UserRequest req = new UserRequest("", tName, userMail, firstName, lastName, "", "", password, "", false, RequestState.WAITING_JOIN);
+                  requestDao.put(req);
                }
             }
             else if (tState.equals(TenantState.CREATION) || cloudInfoHolder.getTenantStatus(tName).getState().equals(TenantState.WAITING_CREATION))
             {
-               utils.putUserInQueue(tName, userMail, firstName, lastName, "", "", password, "", RequestState.WAITING_JOIN);
+               UserRequest req = new UserRequest("", tName, userMail, firstName, lastName, "", "", password, "", false, RequestState.WAITING_JOIN);
+               requestDao.put(req);
             } 
             else
             {
@@ -243,7 +240,9 @@ public class IntranetAdminService extends TenantCreator
          else
          {
             // Limit reached
-            LOG.info("User " + userMail + " join was refused - users limit reached.");
+            LOG.info("User " + userMail + " join was put in waiting state - users limit reached.");
+            UserRequest req = new UserRequest("", tName, userMail, firstName, lastName, "", "", password, "", false, RequestState.WAITING_LIMIT);
+            requestDao.put(req);
             props.put("users.maxallowed", Integer.toString(maxUsers));
             utils.sendJoinRejectedEmails(tName, userMail, props);
          }
@@ -290,7 +289,7 @@ public class IntranetAdminService extends TenantCreator
          if (resp.getStatus() != 200)
             throw new CloudAdminException((String)resp.getEntity());
          TenantCreatedListenerThread thread =
-            new TenantCreatedListenerThread(tName,cloudInfoHolder, adminConfiguration);
+            new TenantCreatedListenerThread(tName,cloudInfoHolder, adminConfiguration, requestDao);
          ExecutorService executor = Executors.newSingleThreadExecutor();
          executor.execute(thread);
          return Response.ok().build();
@@ -348,7 +347,8 @@ public class IntranetAdminService extends TenantCreator
             .entity("Sorry, we can't create workspace with an email address " + domain + ". Try with your work email.")
             .build();
       }
-      utils.putUserInQueue(tName, userMail, firstName, lastName, companyName, phone, password, uuid, RequestState.WAITING_CREATION);
+      UserRequest req = new UserRequest("", tName, userMail, firstName, lastName, companyName, phone, password, uuid, true, RequestState.WAITING_CREATION);
+      requestDao.put(req);
       Map<String, String> props = new HashMap<String, String>();
       String username = userMail.substring(0, (userMail.indexOf("@")));
       props.put("tenant.masterhost", adminConfiguration.getMasterHost());
@@ -369,29 +369,22 @@ public class IntranetAdminService extends TenantCreator
    public Map<String, String[]> getTenantRequests() throws CloudAdminException
    {
       Map<String, String[]> result = new HashMap<String, String[]>();
-      String folder = utils.getRegistrationWaitingFolder();
-      File[] list = new File(folder).listFiles();
-      if (list == null)
+      List<UserRequest> list = requestDao.search(null, RequestState.WAITING_CREATION);
+      if (list.isEmpty())
          return result;
       
-      for (File one : list)
+      for (UserRequest one : list)
       {
          try
          {
-            FileInputStream io = new FileInputStream(one);
-            Properties properties = new Properties();
-            properties.load(io);
-            io.close();
-            if (!properties.getProperty("action").equalsIgnoreCase(RequestState.WAITING_CREATION.toString()))
-               continue;
-            String tName = properties.getProperty("tenant");
+            String tName = one.getTenantName();
             String[] data = new String[5];
             data[0] = tName;
-            data[1] = properties.getProperty("user-mail");
-            data[2] = properties.getProperty("first-name") + " " + properties.getProperty("last-name");
-            data[3] = properties.getProperty("company-name");
-            data[4] = properties.getProperty("phone");
-            result.put(one.getName().substring(0, one.getName().indexOf(".")), data);
+            data[1] = one.getUserEmail();
+            data[2] = one.getFirstName() + " " + one.getLastName();
+            data[3] = one.getCompanyName();
+            data[4] = one.getPhone();
+            result.put(one.getFileName().substring(0, one.getFileName().indexOf(".")), data);
          }
          catch (Exception e)
          {
@@ -411,102 +404,72 @@ public class IntranetAdminService extends TenantCreator
       throws CloudAdminException
    {
 
-      String folderName  = utils.getRegistrationWaitingFolder();
-      File propertyFile = new File(folderName + filename + ".properties");
-      Properties properties;
-      try
-      {
-         FileInputStream io = new FileInputStream(propertyFile);
-         properties = new Properties();
-         properties.load(io);
-         io.close();
-         properties.setProperty("isadministrator", "true");
-         properties.store(new FileOutputStream(propertyFile), "");
-      }
-      catch (FileNotFoundException ex)
-      {
-         throw new CloudAdminException("Tenant data file not found on server anymore.");
-      }
-      catch (IOException e)
-      {
-         String msg = "Tenant validation error: failed to read property file " + propertyFile.getName(); 
-         LOG.error(msg, e);
-         utils.sendAdminErrorEmail(msg, e);
-         throw new CloudAdminException("A problem happened during processing request . It was reported to developers. Please, try again later.");
-      }
+      filename = filename + ".properties";
+      UserRequest req = requestDao.searchByFilename(filename);
+      if (req == null)
+         throw new CloudAdminException("Such file not found on server anymore;");
 
       if (decision.equalsIgnoreCase("accept"))
       {
          Response resp =
-            createIntranet(properties.getProperty("user-mail"), properties.getProperty("first-name"),
-               properties.getProperty("last-name"), properties.getProperty("company-name"),
-               properties.getProperty("phone"), properties.getProperty("password"),
-               properties.getProperty("confirmation-id"));
+            createIntranet(req.getUserEmail(), req.getFirstName(), req.getLastName(), req.getCompanyName(),
+               req.getPhone(), req.getPassword(), req.getConfirmationId());
 
          if (resp.getStatus() == 200 && resp.getEntity() == null)
          {
-            File[] list = new File(folderName).listFiles();
-            for (File one : list)
+            List<UserRequest> list = requestDao.search(req.getTenantName(), RequestState.WAITING_CREATION);
+            for (UserRequest one : list)
             {
-               if (one.getName().startsWith(properties.getProperty("tenant") + "_")){
-                  try
-                  {
-                     FileInputStream io = new FileInputStream(one);
-                     Properties newprops = new Properties();
-                     newprops.load(io);
-                     io.close();
-                     newprops.setProperty("action", RequestState.WAITING_JOIN.toString());
-                     newprops.store(new FileOutputStream(one), "");
-                  }
-                  catch (IOException e)
-                  {
-                     String msg = "Tenant validation error: failed to read property file " + propertyFile.getName(); 
-                     LOG.error(msg, e);
-                     utils.sendAdminErrorEmail(msg, e);
-                  }
+               UserRequest req_new =
+                  new UserRequest(one.getFileName(), one.getTenantName(), one.getUserEmail(), one.getFirstName(),
+                     one.getLastName(), one.getCompanyName(), one.getPhone(), one.getPassword(),
+                     one.getConfirmationId(), one.getUserEmail().equals(req.getUserEmail()) ? true : false, RequestState.WAITING_JOIN);
+               requestDao.delete(one);
+               try
+               {
+                  Thread.sleep(100); //To let FS finish
                }
+               catch (InterruptedException e)
+               {
+               } 
+               requestDao.put(req_new);
             }
-            //propertyFile.delete();
             return resp;
          }
          else
          {
-            utils.sendAdminErrorEmail("Can not finish accept operation - service returned HTTP status "+ resp.getStatus(), null);
+            utils.sendAdminErrorEmail(
+               "Can not finish accept operation - service returned HTTP status " + resp.getStatus(), null);
             throw new CloudAdminException("Can not apply this operation. Please contact support.");
          }
       }
       else if (decision.equalsIgnoreCase("refuse"))
       {
-         LOG.info("Tenant " + properties.getProperty("tenant") + " creation was refused.");
-         Map<String, String> props = new HashMap<String, String>();
-         props.put("tenant.masterhost", adminConfiguration.getMasterHost());
-         props.put("user.name", properties.getProperty("first-name"));
-         //utils.sendCreationRejectedEmail(properties.getProperty("tenant"), properties.getProperty("user-mail"), props);
-         propertyFile.delete();
+         LOG.info("Tenant " + req.getTenantName() + " creation was refused.");
+         requestDao.delete(req);
          return Response.ok().build();
       }
       else if (decision.equalsIgnoreCase("blacklist"))
       {
-         LOG.info("Tenant " + properties.getProperty("tenant") + " was blacklisted.");
+         LOG.info("Tenant " + req.getTenantName() + " was blacklisted.");
          Map<String, String> props = new HashMap<String, String>();
          props.put("tenant.masterhost", adminConfiguration.getMasterHost());
-         props.put("user.name", properties.getProperty("first-name"));
-         utils.sendCreationRejectedEmail(properties.getProperty("tenant"), properties.getProperty("user-mail"), props);
-         utils.putInBlackList(properties.getProperty("user-mail"));
-         propertyFile.delete();
+         props.put("user.name", req.getFirstName());
+         utils.sendCreationRejectedEmail(req.getTenantName(), req.getUserEmail(), props);
+         utils.putInBlackList(req.getUserEmail());
+         requestDao.delete(req);
          return Response.ok().build();
       }
       else
       {
          throw new CloudAdminException("Unknown action.");
       }
-
    }
    
    @GET
-   @Path("autojoin")
-   public Response autojoin() throws CloudAdminException{
-      utils.joinAll(null);
+   @Path("autojoin/{state}")
+   public Response autojoin(@PathParam("state") String state) throws CloudAdminException{
+      utils.joinAll(null, RequestState.valueOf(state));
       return Response.ok().build();
    }
    

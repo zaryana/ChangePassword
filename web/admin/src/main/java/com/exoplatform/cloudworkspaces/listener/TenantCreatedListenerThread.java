@@ -16,7 +16,11 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package com.exoplatform.cloudworkspaces;
+package com.exoplatform.cloudworkspaces.listener;
+
+import com.exoplatform.cloudworkspaces.CloudIntranetUtils;
+import com.exoplatform.cloudworkspaces.RequestState;
+import com.exoplatform.cloudworkspaces.UserRequestDAO;
 
 import org.exoplatform.cloudmanagement.admin.CloudAdminException;
 import org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration;
@@ -38,22 +42,25 @@ public class TenantCreatedListenerThread implements Runnable
    private String tName;
 
    private CloudInfoHolder cloudInfoHolder;
+   
+   UserRequestDAO requestDao;
 
    private int interval = 15000;
 
    private CloudAdminConfiguration cloudAdminConfiguration;
 
-   public TenantCreatedListenerThread(String tName,  CloudInfoHolder cloudInfoHolder, CloudAdminConfiguration cloudAdminConfiguration)
+   public TenantCreatedListenerThread(String tName,  CloudInfoHolder cloudInfoHolder, CloudAdminConfiguration cloudAdminConfiguration, UserRequestDAO requestDao)
    {
       this.tName = tName;
       this.cloudInfoHolder = cloudInfoHolder;
       this.cloudAdminConfiguration = cloudAdminConfiguration;
+      this.requestDao = requestDao;
    }
 
    @Override
    public void run()
    {
-      CloudIntranetUtils utils = new CloudIntranetUtils(cloudAdminConfiguration, cloudInfoHolder);
+      CloudIntranetUtils utils = new CloudIntranetUtils(cloudAdminConfiguration, cloudInfoHolder, requestDao);
       long limit = Integer.parseInt(cloudAdminConfiguration.getProperty(CLOUD_ADMIN_CREATION_TIMEOUT, "86400")) * 1000; // in milliseconds
 
       if (cloudInfoHolder.isTenantExists(tName))
@@ -71,7 +78,7 @@ public class TenantCreatedListenerThread implements Runnable
                count += interval;
             }
             Thread.sleep(interval * 20); //To let the proxy to reload; 12.01.2012 changed from 5min(20) to 30sec(2); 17.01.2012 back to 20
-            utils.joinAll(tName);
+            utils.joinAll(tName, RequestState.WAITING_JOIN);
          }
          catch (TenantQueueException e)
          {

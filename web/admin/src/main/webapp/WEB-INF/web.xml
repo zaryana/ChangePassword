@@ -49,7 +49,7 @@
 
    <listener>
       <description>ServletContextListener</description>
-      <listener-class>com.exoplatform.cloudworkspaces.AutoResumeListener</listener-class>
+      <listener-class>com.exoplatform.cloudworkspaces.listener.AutoResumeListener</listener-class>
     </listener>
 
    <servlet>

@@ -16,7 +16,9 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package com.exoplatform.cloudworkspaces;
+package com.exoplatform.cloudworkspaces.listener;
+
+import com.exoplatform.cloudworkspaces.RequestState;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -28,9 +30,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class AutoResumeThread implements Runnable
+public class AutoJoinThread implements Runnable
 {
-   private static final Logger LOG = LoggerFactory.getLogger(AutoResumeThread.class);
+   private static final Logger LOG = LoggerFactory.getLogger(AutoJoinThread.class);
    
    @Override
    public void run()
@@ -41,7 +43,7 @@ public class AutoResumeThread implements Runnable
          StringBuilder strUrl = new StringBuilder();
          strUrl.append("http://");
          strUrl.append(System.getProperty("tenant.masterhost"));
-         strUrl.append("/rest/cloud-admin/public-tenant-service/autojoin");
+         strUrl.append("/rest/cloud-admin/public-tenant-service/autojoin/" + RequestState.WAITING_JOIN.toString());
          URL url = new URL(strUrl.toString());
          HttpURLConnection connection = (HttpURLConnection)url.openConnection();
          connection.setRequestMethod("GET");

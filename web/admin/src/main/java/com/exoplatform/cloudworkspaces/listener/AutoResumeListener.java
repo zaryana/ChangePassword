@@ -16,7 +16,8 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package com.exoplatform.cloudworkspaces;
+package com.exoplatform.cloudworkspaces.listener;
+
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -30,11 +31,9 @@ public class AutoResumeListener implements ServletContextListener {
 
    public void contextInitialized(ServletContextEvent sce) {
       
-      AutoResumeThread thread =
-               new AutoResumeThread();
             ExecutorService executor = Executors.newSingleThreadExecutor();
-            executor.execute(thread);
-      
+            executor.execute(new AutoJoinThread());
+            executor.execute(new UserLimitListenerThread());
    }
 
    public void contextDestroyed(ServletContextEvent sce) {
