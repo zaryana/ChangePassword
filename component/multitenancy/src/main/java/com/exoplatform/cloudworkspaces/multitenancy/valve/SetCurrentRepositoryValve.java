@@ -57,7 +57,6 @@ public class SetCurrentRepositoryValve extends org.exoplatform.cloud.tomcat.SetC
          LOG.warn("Cannot read request URI", ex);
          requestUri = null;
       }
-         
       if (masterHost != null && masterHost.length()>0 && requestUri != null && requestUri.getHost().contains(masterHost)) 
       {
          super.invoke(request, response);
