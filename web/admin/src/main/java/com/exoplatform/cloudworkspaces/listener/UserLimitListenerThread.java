@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2011 eXo Platform SAS. 
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ */
 package com.exoplatform.cloudworkspaces.listener;
 
 import com.exoplatform.cloudworkspaces.RequestState;
@@ -13,31 +31,35 @@ public class UserLimitListenerThread implements Runnable
 {
 
    private static final Logger LOG = LoggerFactory.getLogger(UserLimitListenerThread.class);
-   
+
    private long modificationTimeOnStartup;
-   
+
    @Override
    public void run()
    {
       try
       {
          String maxUsersConfigurationFileName = System.getProperty("cloud.admin.userlimit");
-         if (maxUsersConfigurationFileName == null){
+         if (maxUsersConfigurationFileName == null)
+         {
             LOG.warn("Maxusers configuration file not found, limit listener shutdown");
             return;
          }
          modificationTimeOnStartup = new File(maxUsersConfigurationFileName).lastModified();
-         
-         while (true){
-            Thread.sleep(18000); //3 min
+
+         while (true)
+         {
+            Thread.sleep(30000); //30 sec
             Long modificationTime = new File(maxUsersConfigurationFileName).lastModified();
-            if (modificationTime > modificationTimeOnStartup){
+            if (modificationTime > modificationTimeOnStartup)
+            {
                LOG.info("Limit file changed, trying to join users waiting for limit.");
                modificationTimeOnStartup = modificationTime;
                StringBuilder strUrl = new StringBuilder();
                strUrl.append("http://");
                strUrl.append(System.getProperty("tenant.masterhost"));
-               strUrl.append("/rest/cloud-admin/public-tenant-service/autojoin/" + RequestState.WAITING_LIMIT.toString());
+               strUrl.append("/rest/cloud-admin/public-tenant-service/autojoin/"
+                  + RequestState.WAITING_LIMIT.toString());
                URL url = new URL(strUrl.toString());
                HttpURLConnection connection = (HttpURLConnection)url.openConnection();
                connection.setRequestMethod("GET");
