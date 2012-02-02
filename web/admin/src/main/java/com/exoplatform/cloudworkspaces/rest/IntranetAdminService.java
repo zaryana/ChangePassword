@@ -20,7 +20,7 @@ package com.exoplatform.cloudworkspaces.rest;
 
 import static org.exoplatform.cloudmanagement.rest.admin.CloudAdminRestServicePaths.CLOUD_ADMIN_PUBLIC_TENANT_CREATION_SERVICE;
 
-import com.exoplatform.cloudworkspaces.HashProvider;
+import com.exoplatform.cloudworkspaces.ReferencesManager;
 
 import com.exoplatform.cloudworkspaces.listener.TenantCreatedListenerThread;
 import com.exoplatform.cloudworkspaces.UserRequest;
@@ -146,7 +146,7 @@ public class IntranetAdminService extends TenantCreator
          props.put("tenant.masterhost", adminConfiguration.getMasterHost());
          props.put("tenant.repository.name", tName);
          props.put("user.mail", userMail);
-         props.put("rfid", HashProvider.putEmail(userMail));
+         props.put("rfid", new ReferencesManager(adminConfiguration).putEmail(userMail));
 
          try
          {
@@ -221,7 +221,7 @@ public class IntranetAdminService extends TenantCreator
          if (!utils.validateUUID(userMail, hash))
             return Response.status(Status.BAD_REQUEST).entity("Email address provided does not match with hash.").build();
          else
-            HashProvider.removeEmail(userMail);
+            new ReferencesManager(adminConfiguration).removeEmail(userMail);
          
          username = userMail.substring(0, (userMail.indexOf("@")));
          String tail = userMail.substring(userMail.indexOf("@") + 1);
@@ -526,7 +526,7 @@ public class IntranetAdminService extends TenantCreator
    @Path("uuid/{uuid}")
    @Produces(MediaType.TEXT_PLAIN)
    public Response uuid(@PathParam("uuid") String uuid) throws CloudAdminException{
-      String email = HashProvider.getEmail(uuid);
+      String email = new ReferencesManager(adminConfiguration).getEmail(uuid);
       if (email != null)
         return Response.ok(email).build();
       else

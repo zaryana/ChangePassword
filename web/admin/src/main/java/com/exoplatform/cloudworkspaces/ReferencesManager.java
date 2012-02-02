@@ -19,6 +19,7 @@
 package com.exoplatform.cloudworkspaces;
 
 import org.exoplatform.cloudmanagement.admin.CloudAdminException;
+import org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,19 +31,28 @@ import java.util.Enumeration;
 import java.util.Properties;
 import java.util.UUID;
 
-public class HashProvider
+public class ReferencesManager
 {
-   private static final Logger LOG = LoggerFactory.getLogger(HashProvider.class);
    
-   public static String getHash(String email) throws CloudAdminException{
+  public ReferencesManager(CloudAdminConfiguration cloudAdminConfiguration){
+    this.cloudAdminConfiguration = cloudAdminConfiguration;     
+  }
+   
+   private CloudAdminConfiguration cloudAdminConfiguration;
+   
+   private String referenceFilename = "requests.properties";
+   
+   private static final Logger LOG = LoggerFactory.getLogger(ReferencesManager.class);
+   
+   public  String getHash(String email) throws CloudAdminException{
       
-      String hashFileName = System.getProperty("cloud.admin.hashfile.dir");
+      String hashFileName = getReferencesFolder();
       File hashDir = new File(hashFileName);
       if (!hashDir.exists())
         hashDir.mkdir();
       try
       {
-         File file = new File(hashDir + "requests.properties");
+         File file = new File(hashDir + "/" + referenceFilename);
          if (!file.exists())
             return null;
          FileInputStream io = new FileInputStream(file);
@@ -59,14 +69,14 @@ public class HashProvider
    }
    
    
-   public static String getEmail(String hash) throws CloudAdminException{
-      String hashFileName = System.getProperty("cloud.admin.hashfile.dir");
+   public  String getEmail(String hash) throws CloudAdminException{
+      String hashFileName = getReferencesFolder();
       File hashDir = new File(hashFileName);
       if (!hashDir.exists())
          hashDir.mkdir();
       try
       {
-         File file = new File(hashDir + "requests.properties");
+         File file = new File(hashDir  + "/" + referenceFilename);
          if (!file.exists())
             return null;
          FileInputStream io = new FileInputStream(file);
@@ -89,14 +99,14 @@ public class HashProvider
    }
       
 
-   public static String putEmail(String email) throws CloudAdminException{
-      String hashFileName = System.getProperty("cloud.admin.hashfile.dir");
+   public  String putEmail(String email) throws CloudAdminException{
+      String hashFileName = getReferencesFolder();
       File hashDir = new File(hashFileName);
       if (!hashDir.exists())
          hashDir.mkdir();
       try
       {
-         File file = new File(hashDir + "requests.properties");
+         File file = new File(hashDir  + "/" + referenceFilename);
          if (!file.exists())
             file.createNewFile();
          FileInputStream io = new FileInputStream(file);
@@ -116,14 +126,14 @@ public class HashProvider
       
    }
    
-   public static void removeEmail(String email) throws CloudAdminException{
-      String hashFileName = System.getProperty("cloud.admin.hashfile.dir");
+   public  void removeEmail(String email) throws CloudAdminException{
+      String hashFileName = getReferencesFolder();
       File hashDir = new File(hashFileName);
       if (!hashDir.exists())
          hashDir.mkdir();
       try
       {
-         File file = new File(hashDir + "requests.properties");
+         File file = new File(hashDir  + "/" + referenceFilename);
          if (!file.exists())
             return;
          FileInputStream io = new FileInputStream(file);
@@ -140,8 +150,17 @@ public class HashProvider
       }
    }
    
-   private static String generateHash(){
+   private  String generateHash(){
       return UUID.randomUUID().toString();
    } 
+   
+   private String getReferencesFolder() throws CloudAdminException{
+      String folder = cloudAdminConfiguration.getProperty("cloud.admin.hashfile.dir", null);
+      if (folder == null){
+         LOG.error("References dir is not defined in the admin configuration");
+         throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
+      }
+      return folder;
+   }
 
 }

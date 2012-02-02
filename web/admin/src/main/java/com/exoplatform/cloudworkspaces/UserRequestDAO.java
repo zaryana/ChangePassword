@@ -190,6 +190,7 @@ public class UserRequestDAO
    private String getRegistrationWaitingFolder() throws CloudAdminException{
       String folder = cloudAdminConfiguration.getProperty("cloud.admin.tenant.waiting.dir", null);
       if (folder == null){
+         LOG.error("Registration waitind dir is not defined in the admin configuration");
          throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
       }
       return folder;
