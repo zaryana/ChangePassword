@@ -84,7 +84,7 @@
 						<p><a href="http://community.exoplatform.org" target="_blank">Ask a question in the forum, submit your feedback, or contact our sales team.	</a></p>
 					</div>
 					<div class="FormBox">
-						<div class="BoxContent">
+						<div class="BoxContent ClearFix">
 							
 							<form class="UIForm" action="javascript:void(0);"   method="POST" name="cloud-workspaces-profile">
 								<p class="SignUpInfo">eXo Cloud Workspaces is currently in private beta. To participate, register with your work email address. We'll keep you updated when your company's social intranet is ready.</p>
