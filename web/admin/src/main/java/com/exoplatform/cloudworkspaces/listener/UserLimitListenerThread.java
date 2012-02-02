@@ -49,7 +49,7 @@ public class UserLimitListenerThread implements Runnable
 
          while (true)
          {
-            Thread.sleep(30000); //30 sec
+            Thread.sleep(120000); //2 min
             Long modificationTime = new File(maxUsersConfigurationFileName).lastModified();
             if (modificationTime > modificationTimeOnStartup)
             {
