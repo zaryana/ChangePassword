@@ -146,26 +146,45 @@ public class IntranetAdminService extends TenantCreator
 
          try
          {
-            int maxUsers = utils.getMaxUsersForTenant(tName);
-            if (utils.isNewUserAllowed(tName, username, maxUsers))
+            if (cloudInfoHolder.getTenantStatus(tName).getState().equals(TenantState.CREATION)
+               || cloudInfoHolder.getTenantStatus(tName).getState().equals(TenantState.WAITING_CREATION))
             {
-               // send OK email
                utils.sendOkToJoinEmail(userMail, props);
+            }
+            else if (cloudInfoHolder.getTenantStatus(tName).getState().equals(TenantState.ONLINE))
+            {
+               int maxUsers = utils.getMaxUsersForTenant(tName);
+               if (utils.isNewUserAllowed(tName, username, maxUsers))
+               {
+                  // send OK email
+                  utils.sendOkToJoinEmail(userMail, props);
+               }
+               else
+               {
+                  LOG.info("User " + userMail + " was put in waiting state - users limit reached.");
+                  UserRequest req =
+                     new UserRequest("", tName, userMail, "", "", "", "", "", "", false, RequestState.WAITING_LIMIT);
+                  requestDao.put(req);
+                  // send not allowed mails
+                  props.put("users.maxallowed", Integer.toString(maxUsers));
+                  utils.sendJoinRejectedEmails(tName, userMail, props);
+               }
             }
             else
             {
-               LOG.info("User " + userMail + " was put in waiting state - users limit reached.");
-               UserRequest req = new UserRequest("", tName, userMail, "", "", "", "", "", "", false, RequestState.WAITING_LIMIT);
-               requestDao.put(req);
-               // send not allowed mails
-               props.put("users.maxallowed", Integer.toString(maxUsers));
-               utils.sendJoinRejectedEmails(tName, userMail, props);
+               String msg =
+                  "Sorry, we cannot process your join request right now, workspace seems not ready. Please, try again later.";
+               LOG.warn("Joining user " + userMail + " failed, tenant " + tName + " state is "
+                  + cloudInfoHolder.getTenantStatus(tName).getState().toString());
+               throw new CloudAdminException(msg);
             }
          }
          catch (UserAlreadyExistsException e)
          {
-           // Custom status for disable ajax auto redirection; 
-           return Response.status(309).header("Location","http://" + adminConfiguration.getMasterHost() + "/signin.jsp?email=" + userMail).build();
+            // Custom status for disable ajax auto redirection; 
+            return Response.status(309)
+               .header("Location", "http://" + adminConfiguration.getMasterHost() + "/signin.jsp?email=" + userMail)
+               .build();
          }
       }
       return Response.ok().build();
@@ -225,7 +244,7 @@ public class IntranetAdminService extends TenantCreator
                   requestDao.put(req);
                }
             }
-            else if (tState.equals(TenantState.CREATION) || cloudInfoHolder.getTenantStatus(tName).getState().equals(TenantState.WAITING_CREATION))
+            else if (tState.equals(TenantState.CREATION) || tState.equals(TenantState.WAITING_CREATION))
             {
                UserRequest req = new UserRequest("", tName, userMail, firstName, lastName, "", "", password, "", false, RequestState.WAITING_JOIN);
                requestDao.put(req);
