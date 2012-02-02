@@ -769,6 +769,7 @@ public class CloudIntranetUtils
             props.put("tenant.masterhost", cloudAdminConfiguration.getMasterHost());
             props.put("tenant.repository.name", tenant);
             props.put("user.mail", userMail);
+            props.put("rfid", HashProvider.putEmail(userMail));
             sendOkToJoinEmail(userMail, props);
             requestDao.delete(one);
             continue;
@@ -901,6 +902,11 @@ public class CloudIntranetUtils
        tokens.length == 2 &&
        tokens[0].trim().length() > 0 && 
        tokens[1].trim().length() > 0;
+    }
+    
+    
+    public boolean validateUUID(String aEmailAddress, String UUID) throws CloudAdminException{
+       return HashProvider.getHash(aEmailAddress).equals(UUID);
     }
 
    /**

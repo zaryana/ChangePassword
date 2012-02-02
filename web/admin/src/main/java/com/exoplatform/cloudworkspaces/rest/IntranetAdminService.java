@@ -19,6 +19,9 @@
 package com.exoplatform.cloudworkspaces.rest;
 
 import static org.exoplatform.cloudmanagement.rest.admin.CloudAdminRestServicePaths.CLOUD_ADMIN_PUBLIC_TENANT_CREATION_SERVICE;
+
+import com.exoplatform.cloudworkspaces.HashProvider;
+
 import com.exoplatform.cloudworkspaces.listener.TenantCreatedListenerThread;
 import com.exoplatform.cloudworkspaces.UserRequest;
 import com.exoplatform.cloudworkspaces.UserRequestDAO;
@@ -143,6 +146,7 @@ public class IntranetAdminService extends TenantCreator
          props.put("tenant.masterhost", adminConfiguration.getMasterHost());
          props.put("tenant.repository.name", tName);
          props.put("user.mail", userMail);
+         props.put("rfid", HashProvider.putEmail(userMail));
 
          try
          {
@@ -205,7 +209,7 @@ public class IntranetAdminService extends TenantCreator
    @Path("/join")
    public Response joinIntranet(@FormParam("user-mail") String userMail, @FormParam("first-name") String firstName,
       @FormParam("last-name") String lastName, @FormParam("password") String password,
-      @FormParam("confirmation-id") String uuid) throws CloudAdminException
+      @FormParam("confirmation-id") String uuid, @FormParam("rfid") String hash) throws CloudAdminException
    {
       String tName = null;
       String username = null;
@@ -213,6 +217,12 @@ public class IntranetAdminService extends TenantCreator
       {
          if (!utils.validateEmail(userMail))
             return Response.status(Status.BAD_REQUEST).entity("Please enter a valid email address.").build();
+         
+         if (!utils.validateUUID(userMail, hash))
+            return Response.status(Status.BAD_REQUEST).entity("Email address provided does not match with hash.").build();
+         else
+            HashProvider.removeEmail(userMail);
+         
          username = userMail.substring(0, (userMail.indexOf("@")));
          String tail = userMail.substring(userMail.indexOf("@") + 1);
          tName = tail.substring(0,tail.indexOf("."));
@@ -296,6 +306,7 @@ public class IntranetAdminService extends TenantCreator
    {
          if (!utils.validateEmail(userMail))
             return Response.status(Status.BAD_REQUEST).entity("Please enter a valid email address.").build();
+
          String tName = utils.getTenantNameFromWhitelist(userMail);
          if (tName == null)
          {
@@ -358,6 +369,12 @@ public class IntranetAdminService extends TenantCreator
    {
       if (!utils.validateEmail(userMail))
          return Response.status(Status.BAD_REQUEST).entity("Please enter a valid email address.").build();
+      
+//      if (!utils.validateUUID(userMail, hash))
+//         return Response.status(Status.BAD_REQUEST).entity("Email address provided does not match with hash.").build();
+//      else
+//         EmailHasher.removeEmail(userMail);
+      
       String tName = utils.getTenantNameFromWhitelist(userMail);
       if (tName == null)
       {
@@ -503,5 +520,16 @@ public class IntranetAdminService extends TenantCreator
       else
          return Response.ok("FALSE").build();
       
+   }
+   
+   @GET
+   @Path("uuid/{uuid}")
+   @Produces(MediaType.TEXT_PLAIN)
+   public Response uuid(@PathParam("uuid") String uuid) throws CloudAdminException{
+      String email = HashProvider.getEmail(uuid);
+      if (email != null)
+        return Response.ok(email).build();
+      else
+         return Response.status(Status.BAD_REQUEST).entity("Warning! You are using broken link to the Registration Page. Please sign up again.").build();
    }
 }

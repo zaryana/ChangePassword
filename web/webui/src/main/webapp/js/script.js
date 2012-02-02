@@ -194,26 +194,45 @@ Tenants.prototype.init = function() {
 
   Tenants.prototype.initJoinPage = function() {
     tenants.init();
+    var email;
     if (queryString != null && queryString != "") {
-    var email_start = queryString.indexOf('email=');
-     email = (email_start != -1) ? queryString.substring(email_start + 6) : null;
-    if (email != null && email != "") {
-    var split = email.split('@');
-     _gel('email').value = email;
-     var prefix = split[0];
-     _gel('username').value = prefix;
-     if (prefix.indexOf('.') > -1){
-     var splittedName = prefix.split('.');
-     _gel('first_name').value = splittedName[0];
-     _gel('last_name').value = splittedName[1];
-     } else {
-     _gel('first_name').value = prefix;
+    var rfid_start = queryString.indexOf('rfid=');
+     rfid = (rfid_start != -1) ? queryString.substring(rfid_start + 5) : null;
+     if (rfid == null){
+     _gel("joinForm").innerHTML="<br><center><a class=\"BackIcon\" href=\"/index.jsp\">Home</a></center>";
+     _gel("messageString").innerHTML = "<div class=\"Ok\">Warning! You are using an old link to the Registration Page. Please <a class=\"TenantFormMsg\" href=\"index.jsp\"><u>sign up</u></a> again.</div>";
+     return;
      }
-    _gel('workspace').value = split[1].substring(0, split[1].indexOf('.'));
-    }else{
-    _gel("messageString").innerHTML = "<div class=\"Ok\">Application error: email is not found. Please contact support.</div>";
-    }
-    
+     
+     var checkURL = tenantServicePath + "/uuid/" + rfid;
+     $.ajax({
+       url: checkURL,
+       success: function(data){
+//       alert(data);
+         email = data;
+         if (email != null && email != "") {
+         var split = email.split('@');
+         _gel('email').value = email;
+         var prefix = split[0];
+        _gel('username').value = prefix;
+         if (prefix.indexOf('.') > -1){
+            var splittedName = prefix.split('.');
+            _gel('first_name').value = splittedName[0];
+            _gel('last_name').value = splittedName[1];
+         } else {
+            _gel('first_name').value = prefix;
+         }
+        _gel('workspace').value = split[1].substring(0, split[1].indexOf('.'));
+        _gel('rfid').value = rfid;
+         }else{
+        _gel("messageString").innerHTML = "<div class=\"Ok\">Application error: email is not found. Please contact support.</div>";
+         }
+       },
+        error: function (request, status, error) {
+        _gel("joinForm").innerHTML="<br><center><a class=\"BackIcon\" href=\"/index.jsp\">Home</a></center>";
+        _gel("messageString").innerHTML = "<div class=\"Ok\">" + request.responseText + "</div>";
+      },
+     dataType: 'text'});
    }
  }
 
@@ -511,6 +530,7 @@ Tenants.prototype.getquerystringJoin = function() {
   qstr += '&first-name=' + jQuery.trim(_gel('first_name').value);
   qstr += '&last-name=' + jQuery.trim(_gel('last_name').value);
   qstr += '&password=' + jQuery.trim(_gel('password').value);
+  qstr += '&rfid=' + jQuery.trim(_gel('rfid').value);
   return encodeURI(qstr);
 }
 
@@ -671,7 +691,7 @@ function sendRequest(parameters)
    }
    else
    {
-      var isAssinchronous = true;   
+      var isAssinchronous = true;
    }
    
    var body = parameters.body || null;

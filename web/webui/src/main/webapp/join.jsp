@@ -42,7 +42,7 @@
 						<td class="Field"></td><td> <input class="Button" type="submit"  id="t_submit" value="Submit" onClick="tenants.doJoinRequest();" /></td>
 					</tr>
 				</table>
-				
+				<input type="hidden"  id="rfid" name="rfid"/>
 				<input type="hidden"  id="formid" name="formid" value="147cd324-b524-4679-bcad-5f5708ad5beb" />
 				<input type="hidden" id="cid" name="cid" value="LF_df197061" />
 				<iframe id="loopfuseOutput" name="loopfuseOutput" style='display:none; visibility:hidden'></iframe>
