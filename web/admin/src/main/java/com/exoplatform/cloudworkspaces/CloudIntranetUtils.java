@@ -906,7 +906,11 @@ public class CloudIntranetUtils
     
     
     public boolean validateUUID(String aEmailAddress, String UUID) throws CloudAdminException{
-       return HashProvider.getHash(aEmailAddress).equals(UUID);
+       String hash = HashProvider.getHash(aEmailAddress);
+       if (hash == null)
+          return false;
+       else
+        return hash.equals(UUID);
     }
 
    /**

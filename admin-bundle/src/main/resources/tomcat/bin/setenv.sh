@@ -44,7 +44,6 @@ EXO_CLOUD_ADMIN_OPTS="-Dcloud.admin.log.dir=$EXO_ADMIN_LOGS_DIR \
                       -Dcloud.admin.configuration.dir=$EXO_ADMIN_CONF_DIR \
                       -Dcloud.admin.blacklist=$EXO_ADMIN_CONF_DIR/blacklist.properties \
                       -Dcloud.admin.userlimit=$EXO_ADMIN_CONF_DIR/user-limits.properties \
-                      -Dcloud.admin.hashfile=$EXO_ADMIN_CONF_DIR/email-hash.properties \
                       -Dcloud.admin.configuration.file=$EXO_ADMIN_CONF_DIR/admin.properties \
                       -Dlogback.configurationFile=$CATALINA_HOME/conf/logback.xml"
 

@@ -36,15 +36,15 @@ public class HashProvider
    
    public static String getHash(String email) throws CloudAdminException{
       
-      String hashFileName = System.getProperty("cloud.admin.hashfile");
-      File file = new File(hashFileName);
-      if (!file.exists())
-      {
-         LOG.error("Email-hash file does not exist. Please create it.");
-         throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
-      }
+      String hashFileName = System.getProperty("cloud.admin.hashfile.dir");
+      File hashDir = new File(hashFileName);
+      if (!hashDir.exists())
+        hashDir.mkdir();
       try
       {
+         File file = new File(hashDir + "requests.properties");
+         if (!file.exists())
+            return null;
          FileInputStream io = new FileInputStream(file);
          Properties properties = new Properties();
          properties.load(io);
@@ -60,15 +60,15 @@ public class HashProvider
    
    
    public static String getEmail(String hash) throws CloudAdminException{
-      String hashFileName = System.getProperty("cloud.admin.hashfile");
-      File file = new File(hashFileName);
-      if (!file.exists()) 
-      {
-         LOG.error("Email-hash file does not exist. Please create it.");
-         throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
-      }
+      String hashFileName = System.getProperty("cloud.admin.hashfile.dir");
+      File hashDir = new File(hashFileName);
+      if (!hashDir.exists())
+         hashDir.mkdir();
       try
       {
+         File file = new File(hashDir + "requests.properties");
+         if (!file.exists())
+            return null;
          FileInputStream io = new FileInputStream(file);
          Properties properties = new Properties();
          properties.load(io);
@@ -90,13 +90,15 @@ public class HashProvider
       
 
    public static String putEmail(String email) throws CloudAdminException{
-      String hashFileName = System.getProperty("cloud.admin.hashfile");
-      File file = new File(hashFileName);
+      String hashFileName = System.getProperty("cloud.admin.hashfile.dir");
+      File hashDir = new File(hashFileName);
+      if (!hashDir.exists())
+         hashDir.mkdir();
       try
       {
+         File file = new File(hashDir + "requests.properties");
          if (!file.exists())
             file.createNewFile();
-
          FileInputStream io = new FileInputStream(file);
          Properties properties = new Properties();
          properties.load(io);
@@ -115,12 +117,15 @@ public class HashProvider
    }
    
    public static void removeEmail(String email) throws CloudAdminException{
-      String hashFileName = System.getProperty("cloud.admin.hashfile");
-      File file = new File(hashFileName);
+      String hashFileName = System.getProperty("cloud.admin.hashfile.dir");
+      File hashDir = new File(hashFileName);
+      if (!hashDir.exists())
+         hashDir.mkdir();
       try
       {
+         File file = new File(hashDir + "requests.properties");
          if (!file.exists())
-           return;
+            return;
          FileInputStream io = new FileInputStream(file);
          Properties properties = new Properties();
          properties.load(io);
