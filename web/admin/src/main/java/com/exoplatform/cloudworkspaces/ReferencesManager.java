@@ -33,16 +33,19 @@ import java.util.UUID;
 
 public class ReferencesManager
 {
-   
-  public ReferencesManager(CloudAdminConfiguration cloudAdminConfiguration){
-    this.cloudAdminConfiguration = cloudAdminConfiguration;     
-  }
-   
+
    private CloudAdminConfiguration cloudAdminConfiguration;
    
-   private String referenceFilename = "requests.properties";
+   private String referenceFilename; 
    
    private static final Logger LOG = LoggerFactory.getLogger(ReferencesManager.class);
+   
+   
+  public ReferencesManager(CloudAdminConfiguration cloudAdminConfiguration){
+    this.cloudAdminConfiguration = cloudAdminConfiguration;
+    this.referenceFilename = cloudAdminConfiguration.getProperty("cloud.admin.references.file", null);
+  }
+   
    
    public  String getHash(String email) throws CloudAdminException{
       
@@ -155,8 +158,8 @@ public class ReferencesManager
    } 
    
    private String getReferencesFolder() throws CloudAdminException{
-      String folder = cloudAdminConfiguration.getProperty("cloud.admin.hashfile.dir", null);
-      if (folder == null){
+      String folder = cloudAdminConfiguration.getProperty("cloud.admin.references.dir", null);
+      if (folder == null || referenceFilename == null){
          LOG.error("References dir is not defined in the admin configuration");
          throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
       }

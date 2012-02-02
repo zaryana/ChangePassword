@@ -81,7 +81,7 @@ public class CloudIntranetUtils
    
    private String whiteListConfigurationFile;
    
-   private String blackListConfigurationFile;
+   private String blackListConfigurationFolder;
    
    private String maxUsersConfigurationFile;
 
@@ -93,7 +93,7 @@ public class CloudIntranetUtils
       this.holder = holder;
       this.mailSender = new MailSender(cloudAdminConfiguration);
       this.whiteListConfigurationFile = System.getProperty("cloud.admin.whitelist");
-      this.blackListConfigurationFile = System.getProperty("cloud.admin.blacklist");
+      this.blackListConfigurationFolder = cloudAdminConfiguration.getProperty("cloud.admin.blacklist.dir", null);
       this.maxUsersConfigurationFile = System.getProperty("cloud.admin.userlimit");
       this.requestDao = requestDao;
 
@@ -645,15 +645,18 @@ public class CloudIntranetUtils
    
    public boolean isInBlackList(String email){
       String tail = email.substring(email.indexOf("@") + 1);
-      File propertyFile = new File(blackListConfigurationFile);
-      if (blackListConfigurationFile == null)
+      if (blackListConfigurationFolder == null || (cloudAdminConfiguration.getProperty("cloud.admin.blacklist.file", null)) == null)
       {
          String tName = tail.substring(0,tail.indexOf("."));
          LOG.info("Black list not configured, allowing tenant " + tName + " from email:" + email);
          return false;
       }
+      File blacklistFolder = new File(blackListConfigurationFolder);
+      if (!blacklistFolder.exists())
+        return false;
       try
       {
+         File propertyFile = new File(blacklistFolder + "/" + cloudAdminConfiguration.getProperty("cloud.admin.blacklist.file", null));
          FileInputStream io = new FileInputStream(propertyFile);
          Properties properties = new Properties();
          properties.load(io);
@@ -675,16 +678,19 @@ public class CloudIntranetUtils
    
    public void putInBlackList(String email){
       String tail = email.substring(email.indexOf("@") + 1);
-      File propertyFile = new File(blackListConfigurationFile);
-      if (blackListConfigurationFile == null)
+      if (blackListConfigurationFolder == null || (cloudAdminConfiguration.getProperty("cloud.admin.blacklist.file", null)) == null)
       {
-         String msg = "Blacklist action failed - list not configured, cannot add new record for " + tail;
+         String msg = "Blacklist action failed - blacklist folder/file not configured, cannot add new record for " + tail;
          LOG.warn(msg);
          sendAdminErrorEmail(msg, null);
          return;
       }
+      File blacklistFolder = new File(blackListConfigurationFolder);
+      if (!blacklistFolder.exists())
+         blacklistFolder.mkdir();
       try
       {
+         File propertyFile = new File(blacklistFolder + "/" + cloudAdminConfiguration.getProperty("cloud.admin.blacklist.file", null));
          if (!propertyFile.exists())
             propertyFile.createNewFile();
          FileInputStream io = new FileInputStream(propertyFile);
