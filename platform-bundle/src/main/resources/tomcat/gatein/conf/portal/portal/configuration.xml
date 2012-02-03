@@ -82,11 +82,23 @@
         <name>working-conf</name>
         <description>working-conf</description>
         <property name="persister-class-name" value="org.exoplatform.services.jcr.impl.config.JDBCConfigurationPersister" />
-        <property name="source-name" value="jcr_conf" />
+        <property name="source-name" value="${tenant.repository.name}" />
         <property name="dialect" value="${gatein.jcr.datasource.dialect}" />
       </properties-param>
     </init-params>
   </component>
+
+  <!-- component>
+        <key>org.exoplatform.services.jcr.config.RepositoryServiceConfiguration</key>
+        <type>org.exoplatform.services.jcr.impl.config.RepositoryServiceConfigurationImpl</type>
+        <init-params>
+            <value-param>
+                <name>conf-path</name>
+                <description>JCR configuration file</description>
+                <value>file:/${tenant.data.dir}/repo-configs/empty-repository-service-configuration.xml</value>
+            </value-param>
+        </init-params>
+  </component -->
 
   <!-- MySQL configuration -->
   <component>
@@ -176,7 +188,7 @@
         </properties-param>
       </init-params>
     </component-plugin>
-    <component-plugin>
+    <!-- component-plugin>
       <name>bind.datasource</name>
       <set-method>addPlugin</set-method>
       <type>org.exoplatform.services.naming.BindReferencePlugin</type>
@@ -209,7 +221,7 @@
         </properties-param>
       </init-params>
     </component-plugin>
-  </external-component-plugins>
+  </external-component-plugins -->
 
   <!-- temporarily for 1.0.0-Beta2, PLF-2644 -->
   <external-component-plugins>
