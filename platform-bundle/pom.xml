@@ -202,6 +202,7 @@ EXO_CLOUD_ADMIN_OPTS="-Dcloud.admin.log.dir=../logs/cloud-admin \
                     <copy file="${project.basedir}/src/main/resources/tomcat/gatein/conf/configuration.properties" tofile="${project.build.directory}/tomcat-source/gatein/conf/configuration.properties" overwrite="true" />
                     <copy file="${project.basedir}/src/main/resources/tomcat/gatein/conf/cloud.properties" tofile="${project.build.directory}/tomcat-source/gatein/conf/cloud.properties" overwrite="true" />
                     <copy file="${project.basedir}/src/main/resources/tomcat/gatein/conf/cloud/users.properties" tofile="${project.build.directory}/tomcat-source/gatein/conf/cloud/users.properties" overwrite="true" />
+                    <copy file="${project.basedir}/src/main/resources/tomcat/gatein/conf/cloud/agent-configuration.xml" tofile="${project.build.directory}/tomcat-source/gatein/conf/cloud/agent-configuration.xml" overwrite="true" />
                     <copy file="${project.basedir}/src/main/resources/tomcat/gatein/conf/portal/portal/configuration.xml" tofile="${project.build.directory}/tomcat-source/gatein/conf/portal/portal/configuration.xml" overwrite="true" />
                     <copy file="${project.basedir}/src/main/resources/tomcat/conf/server.xml" tofile="${project.build.directory}/tomcat-source/conf/server.xml" overwrite="true" />
                   </target>
