@@ -40,6 +40,18 @@ public class AutoJoinThread implements Runnable
       try
       {
          Thread.sleep(20000);
+         joinWaitingJoinUsers();
+         joinWaitingLimitUsers();
+      }
+      catch (InterruptedException e)
+      {
+         LOG.error("Unable to autojoin user", e);
+      }
+      
+   }
+   
+   private void joinWaitingJoinUsers(){
+      try {
          StringBuilder strUrl = new StringBuilder();
          strUrl.append("http://");
          strUrl.append(System.getProperty("tenant.masterhost"));
@@ -55,11 +67,6 @@ public class AutoJoinThread implements Runnable
          {
             LOG.error("Unable to autojoin user. HTTP response: " + connection.getResponseCode());
          }
-
-      }
-      catch (InterruptedException e)
-      {
-         LOG.error("Unable to autojoin user", e);
       }
       catch (MalformedURLException e)
       {
@@ -75,4 +82,36 @@ public class AutoJoinThread implements Runnable
       }
    }
 
+   
+   private void joinWaitingLimitUsers(){
+      try {
+         StringBuilder strUrl = new StringBuilder();
+         strUrl.append("http://");
+         strUrl.append(System.getProperty("tenant.masterhost"));
+         strUrl.append("/rest/cloud-admin/public-tenant-service/autojoin/" + RequestState.WAITING_LIMIT.toString());
+         URL url = new URL(strUrl.toString());
+         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+         connection.setRequestMethod("GET");
+         if (connection.getResponseCode() == HttpURLConnection.HTTP_OK)
+         {
+            return;
+         }
+         else 
+         {
+            LOG.error("Unable to autojoin user. HTTP response: " + connection.getResponseCode());
+         }
+      }
+      catch (MalformedURLException e)
+      {
+         LOG.error("Unable to autojoin user", e);
+      }
+      catch (ProtocolException e)
+      {
+         LOG.error("Unable to autojoin user", e);
+      }
+      catch (IOException e)
+      {
+         LOG.error("Unable to autojoin user", e);
+      }
+   }
 }

@@ -770,6 +770,7 @@ public class CloudIntranetUtils
          
          //Whose who only signed up - sending them join links
          if (one.getState().equals(RequestState.WAITING_LIMIT) && one.getPassword().equals("")){
+            if (isNewUserAllowed(tenant, username, getMaxUsersForTenant(tenant))) {
             LOG.info("Sending join letter to " + userMail + " - his tenant is raised user limit;");
             Map<String, String> props = new HashMap<String, String>();
             props.put("tenant.masterhost", cloudAdminConfiguration.getMasterHost());
@@ -779,6 +780,10 @@ public class CloudIntranetUtils
             sendOkToJoinEmail(userMail, props);
             requestDao.delete(one);
             continue;
+            } else {
+               //Do nothing, limit is low
+               continue;
+            }
          }
 
          try
@@ -802,7 +807,6 @@ public class CloudIntranetUtils
 
             if (one.isAdministrator())
             {
-
                LOG.info("Joining administrator " + userMail + " to tenant " + tenant);
                storeUser(tenant, userMail, fName, lName, one.getPassword(), true);
                sendIntranetCreatedEmail(userMail, props);
@@ -852,17 +856,17 @@ public class CloudIntranetUtils
             props.put("first.name", fName);
             props.put("last.name", lName);
 
-            if (one.isAdministrator())
+            if (one.isAdministrator() || (one.getState().equals(RequestState.WAITING_LIMIT) && one.getPassword().equals("")))
             {
                continue;
             }
             else
             {
-               LOG.info("Joining user " + userMail + " to tenant " + tenant);
                int maxUsers = getMaxUsersForTenant(tenant);
                if (isNewUserAllowed(tenant, username, maxUsers))
                {
                   // Storing user & sending appropriate mails
+                  LOG.info("Joining user " + userMail + " to tenant " + tenant);
                   storeUser(tenant, userMail, fName, lName, one.getPassword(), false);
                   sendUserJoinedEmails(tenant, fName, userMail, props);
                }
