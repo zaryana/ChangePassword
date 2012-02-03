@@ -200,7 +200,7 @@ Tenants.prototype.init = function() {
      rfid = (rfid_start != -1) ? queryString.substring(rfid_start + 5) : null;
      if (rfid == null){
      _gel("joinForm").innerHTML="<br><center><a class=\"BackIcon\" href=\"/index.jsp\">Home</a></center>";
-     _gel("messageString").innerHTML = "<div class=\"Ok\">Warning! You are using an old link to the Registration Page. Please <a class=\"TenantFormMsg\" href=\"index.jsp\"><u>sign up</u></a> again.</div>";
+     _gel("messageString").innerHTML = "<div class=\"Ok\">Sorry, your registration link has expired. Please <a class=\"TenantFormMsg\" href=\"index.jsp\"><u>sign up</u></a> again.</div>";
      return;
      }
      
