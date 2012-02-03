@@ -197,7 +197,7 @@
           <name>ref-addresses</name>
           <description>ref-addresses</description>
           <property name="driverClassName" value="com.mysql.jdbc.Driver" />
-          <property name="url" value="jdbc:mysql://localhost:3306/jcr_conf_serv1" />
+          <property name="url" value="jdbc:mysql://localhost:3306/jcr_conf_${exo.app.server.name}" />
           <property name="username" value="clouduser" />
           <property name="password" value="cloud12321" />
           <property name="maxActive" value="50" />
