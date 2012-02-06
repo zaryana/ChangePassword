@@ -220,8 +220,8 @@
           <property name="timeBetweenEvictionRunsMillis" value="300000" />
         </properties-param>
       </init-params>
-    </component-plugin>
-  </external-component-plugins -->
+    </component-plugin-->
+  </external-component-plugins>
 
   <!-- temporarily for 1.0.0-Beta2, PLF-2644 -->
   <external-component-plugins>
