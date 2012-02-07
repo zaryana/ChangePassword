@@ -49,6 +49,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.UUID;
 
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
@@ -194,10 +195,12 @@ public class CloudIntranetUtils
       }
    }
 
-   public boolean isNewUserAllowed(String tName, String username, int maxUsers) throws CloudAdminException
+   public boolean isNewUserAllowed(String tName, String username) throws CloudAdminException
    {
       if (tName == null || username == null)
          throw new CloudAdminException("Cannot validate user with such input data. Please, review it.");
+      
+      int maxUsers = getMaxUsersForTenant(tName);
       URL url;
       HttpURLConnection connection = null;
       StringBuilder strUrl = new StringBuilder();
@@ -599,7 +602,6 @@ public class CloudIntranetUtils
          String tName = tail.substring(0,tail.indexOf("."));
          if (!isInBlackList(email))
          {
-            LOG.info("White list not configured, allowing tenant " + tName + " from email:" + email);
             return tName;
          }
          else
@@ -656,7 +658,7 @@ public class CloudIntranetUtils
         return false;
       try
       {
-         File propertyFile = new File(blacklistFolder + "/" + cloudAdminConfiguration.getProperty("cloud.admin.blacklist.file", null));
+         File propertyFile = new File(blacklistFolder + "/" + cloudAdminConfiguration.getProperty("cloud.admin.blacklist.file"));
          FileInputStream io = new FileInputStream(propertyFile);
          Properties properties = new Properties();
          properties.load(io);
@@ -672,6 +674,11 @@ public class CloudIntranetUtils
       {
          LOG.error(e.getMessage(), e);
          sendAdminErrorEmail(e.getMessage(), e);
+      }
+      catch (ConfigurationParameterNotFound e)
+      {
+         LOG.error(e.getMessage(), e);
+         sendAdminErrorEmail(e.getMessage(), e);      
       }
       return false;
    }
@@ -690,20 +697,23 @@ public class CloudIntranetUtils
          blacklistFolder.mkdir();
       try
       {
-         File propertyFile = new File(blacklistFolder + "/" + cloudAdminConfiguration.getProperty("cloud.admin.blacklist.file", null));
+         File propertyFile = new File(blacklistFolder + "/" + cloudAdminConfiguration.getProperty("cloud.admin.blacklist.file"));
          if (!propertyFile.exists())
             propertyFile.createNewFile();
          FileInputStream io = new FileInputStream(propertyFile);
          Properties properties = new Properties();
          properties.load(io);
          io.close();
-         if(properties.containsKey(tail)){
+         if(properties.containsKey(tail))
+         {
             return;
          }
-         else {
-            properties.setProperty(tail, new SimpleDateFormat("yyyy/MM/dd").format(new Date()));
+         else 
+         {
+            properties.setProperty(tail, new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
             properties.store(new FileOutputStream(propertyFile), "");
          }
+         LOG.info("Registrations from " + tail + " was blacklisted.");
       }
       catch (FileNotFoundException e)
       {
@@ -714,6 +724,11 @@ public class CloudIntranetUtils
       {
          LOG.error(e.getMessage(), e);
          sendAdminErrorEmail(e.getMessage(), e);
+      }
+      catch (ConfigurationParameterNotFound e)
+      {
+         LOG.error(e.getMessage(), e);
+         sendAdminErrorEmail(e.getMessage(), e);      
       }
    }
 
@@ -770,16 +785,16 @@ public class CloudIntranetUtils
          
          //Whose who only signed up - sending them join links
          if (one.getState().equals(RequestState.WAITING_LIMIT) && one.getPassword().equals("")){
-            if (isNewUserAllowed(tenant, username, getMaxUsersForTenant(tenant))) {
-            LOG.info("Sending join letter to " + userMail + " - his tenant is raised user limit;");
-            Map<String, String> props = new HashMap<String, String>();
-            props.put("tenant.masterhost", cloudAdminConfiguration.getMasterHost());
-            props.put("tenant.repository.name", tenant);
-            props.put("user.mail", userMail);
-            props.put("rfid", new ReferencesManager(cloudAdminConfiguration).putEmail(userMail));
-            sendOkToJoinEmail(userMail, props);
-            requestDao.delete(one);
-            continue;
+            if (isNewUserAllowed(tenant, username)) {
+              LOG.info("Sending join letter to " + userMail + " - his tenant is raised user limit;");
+              Map<String, String> props = new HashMap<String, String>();
+              props.put("tenant.masterhost", cloudAdminConfiguration.getMasterHost());
+              props.put("tenant.repository.name", tenant);
+              props.put("user.mail", userMail);
+              props.put("rfid", new ReferencesManager(cloudAdminConfiguration).putEmail(userMail,UUID.randomUUID().toString()));
+              sendOkToJoinEmail(userMail, props);
+              requestDao.delete(one);
+              continue;
             } else {
                //Do nothing, limit is low
                continue;
@@ -862,8 +877,7 @@ public class CloudIntranetUtils
             }
             else
             {
-               int maxUsers = getMaxUsersForTenant(tenant);
-               if (isNewUserAllowed(tenant, username, maxUsers))
+               if (isNewUserAllowed(tenant, username))
                {
                   // Storing user & sending appropriate mails
                   LOG.info("Joining user " + userMail + " to tenant " + tenant);
@@ -873,7 +887,7 @@ public class CloudIntranetUtils
                else
                {
                   // Limit reached
-                  props.put("users.maxallowed", Integer.toString(maxUsers));
+                  props.put("users.maxallowed", Integer.toString(getMaxUsersForTenant(tenant)));
                   sendJoinRejectedEmails(tenant, userMail, props);
                }
                requestDao.delete(one);

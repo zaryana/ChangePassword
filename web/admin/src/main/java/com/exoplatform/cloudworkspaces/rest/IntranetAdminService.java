@@ -32,6 +32,7 @@ import com.exoplatform.cloudworkspaces.CloudIntranetUtils;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import org.slf4j.Logger;
@@ -134,7 +135,8 @@ public class IntranetAdminService extends TenantCreator
                .build();
          }
          if (requestDao.searchByEmail(userMail) == null){
-           super.createTenantWithEmailConfirmation(tName, userMail);
+            Response resp =  super.createTenantWithEmailConfirmation(tName, userMail);
+            new ReferencesManager(adminConfiguration).putEmail(userMail, (String)resp.getEntity());
          }
          else{
             return Response.ok("You already signed up. Wait until your workspace will be created. We will inform you when it will be ready.").build();
@@ -146,7 +148,7 @@ public class IntranetAdminService extends TenantCreator
          props.put("tenant.masterhost", adminConfiguration.getMasterHost());
          props.put("tenant.repository.name", tName);
          props.put("user.mail", userMail);
-         props.put("rfid", new ReferencesManager(adminConfiguration).putEmail(userMail));
+         props.put("rfid", new ReferencesManager(adminConfiguration).putEmail(userMail, UUID.randomUUID().toString()));
 
          try
          {
@@ -157,8 +159,7 @@ public class IntranetAdminService extends TenantCreator
             }
             else if (cloudInfoHolder.getTenantStatus(tName).getState().equals(TenantState.ONLINE))
             {
-               int maxUsers = utils.getMaxUsersForTenant(tName);
-               if (utils.isNewUserAllowed(tName, username, maxUsers))
+               if (utils.isNewUserAllowed(tName, username))
                {
                   // send OK email
                   utils.sendOkToJoinEmail(userMail, props);
@@ -170,7 +171,7 @@ public class IntranetAdminService extends TenantCreator
                      new UserRequest("", tName, userMail, "", "", "", "", "", "", false, RequestState.WAITING_LIMIT);
                   requestDao.put(req);
                   // send not allowed mails
-                  props.put("users.maxallowed", Integer.toString(maxUsers));
+                  props.put("users.maxallowed", Integer.toString(utils.getMaxUsersForTenant(tName)));
                   utils.sendJoinRejectedEmails(tName, userMail, props);
                }
             }
@@ -235,8 +236,7 @@ public class IntranetAdminService extends TenantCreator
          props.put("first.name", firstName);
          props.put("last.name", lastName);
 
-         int maxUsers = utils.getMaxUsersForTenant(tName);
-         if (utils.isNewUserAllowed(tName, username, maxUsers))
+         if (utils.isNewUserAllowed(tName, username))
          {
             // Storing user & sending appropriate mails
             TenantState tState = cloudInfoHolder.getTenantStatus(tName).getState(); 
@@ -272,7 +272,7 @@ public class IntranetAdminService extends TenantCreator
             LOG.info("User " + userMail + " join was put in waiting state - users limit reached.");
             UserRequest req = new UserRequest("", tName, userMail, firstName, lastName, "", "", password, "", false, RequestState.WAITING_LIMIT);
             requestDao.put(req);
-            props.put("users.maxallowed", Integer.toString(maxUsers));
+            props.put("users.maxallowed", Integer.toString(utils.getMaxUsersForTenant(tName)));
             utils.sendJoinRejectedEmails(tName, userMail, props);
          }
          return Response.ok().build();
@@ -370,10 +370,11 @@ public class IntranetAdminService extends TenantCreator
       if (!utils.validateEmail(userMail))
          return Response.status(Status.BAD_REQUEST).entity("Please enter a valid email address.").build();
       
-//      if (!utils.validateUUID(userMail, hash))
-//         return Response.status(Status.BAD_REQUEST).entity("Email address provided does not match with hash.").build();
-//      else
-//         EmailHasher.removeEmail(userMail);
+      if (utils.validateUUID(userMail, uuid))
+         new ReferencesManager(adminConfiguration).removeEmail(userMail);
+         //return Response.status(Status.BAD_REQUEST).entity("Email address provided does not match with hash.").build();
+      //else
+         //new ReferencesManager(adminConfiguration).removeEmail(userMail);
       
       String tName = utils.getTenantNameFromWhitelist(userMail);
       if (tName == null)
@@ -487,7 +488,6 @@ public class IntranetAdminService extends TenantCreator
       }
       else if (decision.equalsIgnoreCase("blacklist"))
       {
-         LOG.info("Tenant " + req.getTenantName() + " was blacklisted.");
          Map<String, String> props = new HashMap<String, String>();
          props.put("tenant.masterhost", adminConfiguration.getMasterHost());
          props.put("user.name", req.getFirstName());
@@ -514,8 +514,7 @@ public class IntranetAdminService extends TenantCreator
    @Produces(MediaType.TEXT_PLAIN)
    public Response isuserallowed(@PathParam("tenantname") String tName, @PathParam("username") String username)
       throws CloudAdminException{
-      int maxUsers = utils.getMaxUsersForTenant(tName);
-      if (utils.isNewUserAllowed(tName, username, maxUsers))
+      if (utils.isNewUserAllowed(tName, username))
          return Response.ok("TRUE").build();
       else
          return Response.ok("FALSE").build();

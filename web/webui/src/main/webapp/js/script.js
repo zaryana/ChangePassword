@@ -53,9 +53,15 @@ Tenants.prototype.init = function() {
   var email_start = queryString.indexOf('email=');
   var uuid_start = queryString.indexOf('id=');
   var uuid = "";
-  email = (email_start != -1) ? queryString.substring(email_start + 6, uuid_start-1) : null;
+  var email; // = (email_start != -1) ? queryString.substring(email_start + 6, uuid_start-1) : null;
   uuid =  (uuid_start != -1) ? queryString.substring(uuid_start + 3) : null;
-  if (email != null && email != "") {
+  var checkURL = tenantServicePath + "/uuid/" + uuid;
+  $.ajax({
+  url: checkURL,
+   success: function(data){
+ //       alert(data);
+  email = data;
+  if (email != null && email != "") { 
   var split = email.split('@');
   var prefix = split[0];
    _gel('email').value = email;
@@ -74,9 +80,35 @@ Tenants.prototype.init = function() {
    _gel('confirmation-id').value = uuid;
    else
    _gel("messageString").innerHTML = "<div class=\"Ok\">Application error: damaged form confirmation-id. Please contact support.</div>"
-  }
- }
+  },
+  dataType: 'text',
+  error: function(request, status, error)
+   {
+    email = (email_start != -1) ? queryString.substring(email_start + 6, uuid_start-1) : null; 
+     if (email != null && email != "") {
+        var split = email.split('@');
+        var prefix = split[0];
+        _gel('email').value = email;
+        _gel('username').value = prefix;
+        if (prefix.indexOf('.') > -1){
+         var splittedName = prefix.split('.');
+          _gel('first_name').value = splittedName[0];
+          _gel('last_name').value = splittedName[1];
+        } else {
+          _gel('first_name').value = prefix;
+        }
+      } else {
+       _gel("messageString").innerHTML = "<div class=\"Ok\">Warning! You are using broken link to the Registration Page. Please sign up again.</div>";
+      }
+       if (uuid != "")
+        _gel('confirmation-id').value = uuid;
+       else
+        _gel("messageString").innerHTML = "<div class=\"Ok\">Application error: damaged form confirmation-id. Please contact support.</div>"
 
+   }
+  });
+ }
+}
 /*Those methods written for pre-moderating tenants on private demo*/
  Tenants.prototype.initValidationPage = function() {
       tenants.init();

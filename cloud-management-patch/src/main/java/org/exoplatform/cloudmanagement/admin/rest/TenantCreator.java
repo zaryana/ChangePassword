@@ -80,7 +80,7 @@ public class TenantCreator
    public Response createTenantWithEmailConfirmation(@PathParam("tenantname") String tenantName,
       @PathParam("user-mail") String userMail) throws CloudAdminException
    {
-      LOG.info("Recived tenant creation request for {} from {}", tenantName, userMail);
+      LOG.info("Received tenant creation request for {} from {}", tenantName, userMail);
       TransientTenantStatus tenantStatus = new TransientTenantStatus(tenantName);
       tenantStatus.setProperty(TenantStatus.PROPERTY_USER_MAIL, userMail);
       tenantStatus.setProperty(TenantStatus.PROPERTY_TEMPLATE_ID,
@@ -107,7 +107,7 @@ public class TenantCreator
       mailSender.sendMail(userMail, adminConfiguration.getProperty(CLOUD_ADMIN_MAIL_CONFIRMATION_SUBJECT),
          mailTemplate, props);
 
-      return Response.ok().build();
+      return Response.ok(tenantStatus.getUuid()).build();
    }
 
    @POST

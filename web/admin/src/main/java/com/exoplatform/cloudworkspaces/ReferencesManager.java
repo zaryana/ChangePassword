@@ -100,9 +100,9 @@ public class ReferencesManager
       }
       return null;
    }
-      
-
-   public  String putEmail(String email) throws CloudAdminException{
+  
+   
+   public  String putEmail(String email, String uuid) throws CloudAdminException{
       String hashFileName = getReferencesFolder();
       File hashDir = new File(hashFileName);
       if (!hashDir.exists())
@@ -116,8 +116,7 @@ public class ReferencesManager
          Properties properties = new Properties();
          properties.load(io);
          io.close();
-         String uuid = generateHash();
-         properties.setProperty(email, uuid );
+         properties.setProperty(email, uuid);
          properties.store(new FileOutputStream(file), "");
          return uuid;
       }
@@ -152,10 +151,7 @@ public class ReferencesManager
          throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
       }
    }
-   
-   private  String generateHash(){
-      return UUID.randomUUID().toString();
-   } 
+    
    
    private String getReferencesFolder() throws CloudAdminException{
       String folder = cloudAdminConfiguration.getProperty("cloud.admin.references.dir", null);
