@@ -181,28 +181,28 @@ p {
 .Logo{
 	margin-top: 43px;
 }
+
 .ClouIntranet {
 	text-align:right;
 	color: #fff;
 	font-size: 18px;
 	width: 80%;
 }
+
 .ClouIntranet h1 {	
 	margin: 15px 0 0 0;
-	font-family: MyriadProSemibold, arial, tahoma;
+	font-family: 'Myriad Pro', arial, tahoma;
 	font-size: 36px;
-	color: #fff;
-	font-weight: normal;
+	font-weight: bold;
+	color: white;
 	text-align: right;
 }
 
 .ClouIntranet span {
-	font-size: 18px;
-	font-weight: normal;
-	font-family: 'Myriad Pro',arial,tahoma;
+	font-size: 16px;
+	font-family: MyriadProSemibold, arial, tahoma;
 	display: block;
 	margin-top: -6px;
-	letter-spacing: 1px;
 }
 
 /*UIBanner*/

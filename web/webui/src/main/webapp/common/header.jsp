@@ -8,7 +8,7 @@
 				  <li class="last"><a class="Tab OrangeTab" onclick="showContactUsForm('<%=request.getContextPath()%>/contact-us.jsp');">Contact us</a></li>
 				</ul>
 				<div class="Logo FL"><a href="/<%=request.getContextPath()%>"><img src="<%=request.getContextPath()%>/background/logo.png"/></a></div>
-				<div class="ClouIntranet FR"><h1>eXo Cloud Workspaces</h1><span>The Free Social Intranet for Your Company</span></div>
+				<div class="ClouIntranet FR"><h1>Cloud Workspaces</h1><span>The Free Social Intranet for Your Company</span></div>
 			</div>
 		</div>
 

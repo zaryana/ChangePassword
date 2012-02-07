@@ -87,7 +87,7 @@
 						<div class="BoxContent ClearFix">
 							
 							<form class="UIForm" action="javascript:void(0);"   method="POST" name="cloud-workspaces-profile">
-								<p class="SignUpInfo">eXo Cloud Workspaces is currently in private beta. To participate, register with your work email address. We'll keep you updated when your company's social intranet is ready.</p>
+								<p class="SignUpInfo">Cloud Workspaces is currently in private beta. To participate, register with your work email address. We'll keep you updated when your company's social intranet is ready.</p>
 								<div id="messageString" class="TenantFormMsg"></div>
 								<input class="InputText" type="text" name="email" id="email" value="Enter your professional email" onclick="this.value='';" />
 								<input class="Button" type="submit" id="t_submit"  value="Sign Up" onClick="tenants.doSingupRequest();" />
@@ -110,9 +110,9 @@
 		<div class="UI-Intro">
 			<div class="MainContent ClearFix" >
 				<div class="Cols LCol FL">
-					<h3>About eXo Cloud Workspaces</h3>
-					<p><b>eXo Cloud Workspaces</b> is a private social intranet that makes it easy to connect and collaborate with your coworkers.</p> 
-					<p>Going beyond simple status updates, eXo Cloud Workspaces provides tools that let you capture, organize and act on your team's internal knowledge, from a full-featured enterprise wiki, rich content management system, forums and more.</p>
+					<h3>About Cloud Workspaces</h3>
+					<p><b>Cloud Workspaces</b> is a private social intranet that makes it easy to connect and collaborate with your coworkers.</p> 
+					<p>Going beyond simple status updates, Cloud Workspaces provides tools that let you capture, organize and act on your team's internal knowledge, from a full-featured enterprise wiki, rich content management system, forums and more.</p>
 					<a href="/about.jsp" class="Readmore">Learn more</a>
 				</div>
 				<div class="Cols MCol FL">

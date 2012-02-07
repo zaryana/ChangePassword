@@ -17,7 +17,7 @@
 				  <li class="last"><a class="Tab OrangeTab" href="/contact-us.jsp">Contact us</a></li>
 				</ul>
 				<div class="Logo FL"><a href="/cloud"><img src="background/logo.png"/></a></div>
-				<div class="ClouIntranet FR"><h1>eXo Cloud Workspaces</h1><span>The free Social Intranet for your company</span></div>
+				<div class="ClouIntranet FR"><h1>Cloud Workspaces</h1><span>The free Social Intranet for your company</span></div>
 			</div>
 		</div>
 		 <div class="UIPageBody ErrorPages">
@@ -28,8 +28,8 @@
 		<!--begin Footer-->	
 		<div class="UIFooterPortlet">
 			<div class="MainContent ClearFix">
-				<p class="FL">Cloud-intranet.com is brought to you by <span><a href="http://www.exoplatform.com">eXo</a></span></p>
-				<p class="FR">Copyright &copy; 2000-2011. All rights Reserved, eXo Platform SAS.</p>
+				<p class="FL">Cloud Workspaces is Brought to You by <span><a href="http://www.exoplatform.com">eXo</a></span></p>
+				<p class="FR">Copyright &copy; 2000-2012. All Rights Reserved, eXo Platform SAS.</p>
 			</div>
 		</div>
 	 </body>

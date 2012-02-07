@@ -12,7 +12,7 @@
     
 				<!--AboutPages-->	
 		 <div class="UIPageBody AboutPages">
-			<h1>About eXo Cloud Workspaces</h1>
+			<h1>About Cloud Workspaces</h1>
 			<h3>Cloud Workspaces: Your Company's Social Intranet in the Cloud</h3>
 			<p>Teams can share updates about their work activities, improving enterprise communication. But Cloud Workspaces lets you go beyond the basic chatter of activity streams, giving employees the tools to transform status updates into increased productivity. Individual users gain personalized dashboards that can act as the starting point for all their online work, while teams and projects can have their own dedicated workspace to connect, share resources and collaborate.
 			</p>
@@ -44,7 +44,7 @@
 				</ul>
 			</div>
 			<h3>Core Technology</h3>
-			<p>eXo Cloud Workspaces is powered by the upcoming <a href="http://exoplatform.com/company/en/products/overview" title="eXo Platform 3.5"> eXo Platform 3.5</a>, the first and only cloud-ready enterprise Java portal and user experience platform. eXo Platform 3.5 is designed for on-premise or private cloud deployments.
+			<p>Cloud Workspaces is powered by the upcoming <a href="http://exoplatform.com/company/en/products/overview" title="eXo Platform 3.5"> eXo Platform 3.5</a>, the first and only cloud-ready enterprise Java portal and user experience platform. eXo Platform 3.5 is designed for on-premise or private cloud deployments.
 			</p>
 		</div>
 		
