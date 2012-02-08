@@ -53,7 +53,8 @@ public class UserLimitListenerThread implements Runnable
             Long modificationTime = new File(maxUsersConfigurationFileName).lastModified();
             if (modificationTime > modificationTimeOnStartup)
             {
-               LOG.info("Limit file changed, trying to join users waiting for limit.");
+               if (LOG.isDebugEnabled())
+                 LOG.debug("Limit file changed, trying to join users waiting for limit.");
                modificationTimeOnStartup = modificationTime;
                StringBuilder strUrl = new StringBuilder();
                strUrl.append("http://");

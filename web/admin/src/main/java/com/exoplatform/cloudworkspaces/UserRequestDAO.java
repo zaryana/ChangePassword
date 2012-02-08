@@ -180,6 +180,7 @@ public class UserRequestDAO
       catch (IOException e)
       {
          String msg = "Tenant queuing error : failed to read property file " + propertyFile.getName();
+         LOG.error(msg, e);
          throw new CloudAdminException(
             "A problem happened during processing request . It was reported to developers. Please, try again later.");
       }
