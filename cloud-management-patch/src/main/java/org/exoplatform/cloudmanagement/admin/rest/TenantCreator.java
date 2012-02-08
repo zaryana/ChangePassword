@@ -27,6 +27,7 @@ import org.exoplatform.cloudmanagement.admin.CloudAdminException;
 import org.exoplatform.cloudmanagement.admin.MailSender;
 import org.exoplatform.cloudmanagement.admin.TenantMetadataValidator;
 import org.exoplatform.cloudmanagement.admin.TenantRegistrationException;
+import org.exoplatform.cloudmanagement.admin.WorkspacesMailSender;
 import org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration;
 import org.exoplatform.cloudmanagement.admin.creation.TenantCreationSupervisor;
 import org.exoplatform.cloudmanagement.admin.status.CloudInfoHolder;
@@ -102,10 +103,10 @@ public class TenantCreator
       props.put("user.mail", userMail);
       props.put("id", tenantStatus.getUuid());
 
-      MailSender mailSender = new MailSender(adminConfiguration);
+      WorkspacesMailSender mailSender = new WorkspacesMailSender(adminConfiguration);
 
       mailSender.sendMail(userMail, adminConfiguration.getProperty(CLOUD_ADMIN_MAIL_CONFIRMATION_SUBJECT),
-         mailTemplate, props);
+         mailTemplate, props, false);
 
       return Response.ok(tenantStatus.getUuid()).build();
    }

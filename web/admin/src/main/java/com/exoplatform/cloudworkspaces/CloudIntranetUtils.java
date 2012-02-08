@@ -59,7 +59,7 @@ import org.everrest.core.impl.provider.json.JsonParser;
 import org.everrest.core.impl.provider.json.ObjectValue;
 import org.exoplatform.cloudmanagement.admin.AgentAuthenticator;
 import org.exoplatform.cloudmanagement.admin.CloudAdminException;
-import org.exoplatform.cloudmanagement.admin.MailSender;
+import org.exoplatform.cloudmanagement.admin.WorkspacesMailSender;
 import org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration;
 import org.exoplatform.cloudmanagement.admin.configuration.ConfigurationParameterNotFound;
 import org.exoplatform.cloudmanagement.admin.status.CloudInfoHolder;
@@ -76,7 +76,7 @@ public class CloudIntranetUtils
    
    private CloudInfoHolder holder;
 
-   private MailSender mailSender;
+   private WorkspacesMailSender mailSender;
    
    UserRequestDAO requestDao;
    
@@ -92,7 +92,7 @@ public class CloudIntranetUtils
    {
       this.cloudAdminConfiguration = cloudAdminConfiguration;
       this.holder = holder;
-      this.mailSender = new MailSender(cloudAdminConfiguration);
+      this.mailSender = new WorkspacesMailSender(cloudAdminConfiguration);
       this.whiteListConfigurationFile = System.getProperty("cloud.admin.whitelist");
       this.blackListConfigurationFolder = cloudAdminConfiguration.getProperty("cloud.admin.blacklist.dir", null);
       this.maxUsersConfigurationFile = System.getProperty("cloud.admin.userlimit");
@@ -387,7 +387,7 @@ public class CloudIntranetUtils
       try
       {
          mailSender.sendMail(userMail, cloudAdminConfiguration.getProperty(MailingProperties.CLOUD_ADMIN_MAIL_JOIN_SUBJECT),
-            mailTemplate, props);
+            mailTemplate, props, false);
       }
       catch (ConfigurationParameterNotFound e)
       {
@@ -406,9 +406,9 @@ public class CloudIntranetUtils
       {
          String email = cloudAdminConfiguration.getProperty(MailingProperties.CLOUD_ADMIN_MAIL_MARKETING_EMAIL);
          mailSender.sendMail(userMail, cloudAdminConfiguration.getProperty(MailingProperties.CLOUD_ADMIN_MAIL_REQUEST_QUEUED_SUBJECT),
-            userTemplate, props);
+            userTemplate, props, false);
          mailSender.sendMail(email, cloudAdminConfiguration.getProperty(MailingProperties.CLOUD_ADMIN_MAIL_REQUEST_QUEUED_DEVELOPERS_SUBJECT).replace("${workspace}", tName),
-            devTemplate, props);
+            devTemplate, props, false);
       }
       catch (ConfigurationParameterNotFound e)
       {
@@ -426,7 +426,7 @@ public class CloudIntranetUtils
       try
       {
          mailSender.sendMail(userMail, cloudAdminConfiguration.getProperty(MailingProperties.CLOUD_ADMIN_MAIL_REQUEST_REJECTED_SUBJECT),
-            userTemplate, props);
+            userTemplate, props, false);
       }
       catch (ConfigurationParameterNotFound e)
       {
@@ -446,11 +446,11 @@ public class CloudIntranetUtils
       try
       {
          mailSender.sendMail(userMail, cloudAdminConfiguration.getProperty(MailingProperties.CLOUD_ADMIN_MAIL_JOIN_CLOSED_USER_SUBJECT),
-            userTemplate, props);
+            userTemplate, props, false);
          mailSender.sendMail(
             salesEmail,
             cloudAdminConfiguration.getProperty(MailingProperties.CLOUD_ADMIN_MAIL_JOIN_CLOSED_SALES_SUBJECT).replace("${company}",
-               props.get("tenant.repository.name")), salesTemplate, props);
+               props.get("tenant.repository.name")), salesTemplate, props, true);
 
          Map<String,String> adminEmails = getTenantAdministrators(tName);
          Iterator<String> it = adminEmails.keySet().iterator(); 
@@ -464,7 +464,7 @@ public class CloudIntranetUtils
             if (adminEmail != null)
                mailSender.sendMail(adminEmail,
                   cloudAdminConfiguration.getProperty(MailingProperties.CLOUD_ADMIN_MAIL_JOIN_CLOSED_OWNER_SUBJECT).replace("${company}",
-                     props.get("tenant.repository.name")), ownerTemplate, props);
+                     props.get("tenant.repository.name")), ownerTemplate, props, false);
          }
       }
       catch (ConfigurationParameterNotFound e)
@@ -486,7 +486,7 @@ public class CloudIntranetUtils
       {
          Map<String,String> adminEmails = getTenantAdministrators(tName);
          mailSender.sendMail(userMail, cloudAdminConfiguration.getProperty(MailingProperties.CLOUD_ADMIN_MAIL_USER_JOINED_SUBJECT)
-            .replace("${company}", tName), userTemplate, props);
+            .replace("${company}", tName), userTemplate, props, false);
          Iterator<String> it =adminEmails.keySet().iterator(); 
          while (it.hasNext())
          {
@@ -496,7 +496,7 @@ public class CloudIntranetUtils
             String adminEmail = adminEmails.get(username);
             props.put("admin.firstname", username);
             if (adminEmail != null)
-               mailSender.sendMail(adminEmail, ownerSubject, ownerTemplate, props);
+               mailSender.sendMail(adminEmail, ownerSubject, ownerTemplate, props, false);
          }
       }
       catch (ConfigurationParameterNotFound e)
@@ -514,7 +514,7 @@ public class CloudIntranetUtils
          mailSender.sendMail(
             userMail,
             cloudAdminConfiguration.getProperty(MailingProperties.CLOUD_ADMIN_MAIL_USER_INTRANET_CREATED_SUBJECT).replace("${company}",
-               props.get("tenant.repository.name")), userTemplate, props);
+               props.get("tenant.repository.name")), userTemplate, props, false);
       }
       catch (ConfigurationParameterNotFound e)
       {
@@ -561,7 +561,7 @@ public class CloudIntranetUtils
       {
          for (String email : cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_ADMIN_EMAIL).split(","))
          {
-            mailSender.sendMail(email.trim(), mailSubject, mailTemplate, props);
+            mailSender.sendMail(email.trim(), mailSubject, mailTemplate, props, true);
          }
       }
       catch (CloudAdminException ex)
@@ -584,7 +584,7 @@ public class CloudIntranetUtils
       {
             mailSender.sendMail(email, 
                                  "Contact-Us message submitted: " + subject, 
-                                 mailTemplate, props);
+                                 mailTemplate, props, false, userMail);
       }
       catch (CloudAdminException ex)
       {
