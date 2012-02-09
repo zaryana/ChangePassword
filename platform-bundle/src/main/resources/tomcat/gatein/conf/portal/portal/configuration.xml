@@ -109,9 +109,9 @@
         <name>db-connection</name>
         <description>database connection properties</description>
         <property name="driverClassName" value="com.mysql.jdbc.Driver" />
-        <property name="url" value="jdbc:mysql://${tenanat.db.host}/" />
-        <property name="username" value="${tenanat.db.user}" />
-        <property name="password" value="${tenanat.db.password}" />
+        <property name="url" value="jdbc:mysql://${tenant.db.host}/" />
+        <property name="username" value="${tenant.db.user}" />
+        <property name="password" value="${tenant.db.password}" />
         <property name="maxActive" value="5" />
         <property name="maxIdle" value="2" />
         <property name="initialSize" value="2" />
@@ -176,9 +176,9 @@
           <name>ref-addresses</name>
           <description>ref-addresses</description>
           <property name="driverClassName" value="com.mysql.jdbc.Driver" />
-          <property name="url" value="jdbc:mysql://${tenanat.db.host}/${tenant.repository.name}" />
-          <property name="username" value="${tenanat.db.user}" />
-          <property name="password" value="${tenanat.db.password}" />
+          <property name="url" value="jdbc:mysql://${tenant.db.host}/${tenant.repository.name}" />
+          <property name="username" value="${tenant.db.user}" />
+          <property name="password" value="${tenant.db.password}" />
           <property name="maxActive" value="50" />
           <property name="maxIdle" value="2" />
           <property name="initialSize" value="5" />
