@@ -69,7 +69,7 @@
      </init-params>
   </component -->
 
-  <component>
+  <!-- component>
     <key>org.exoplatform.services.jcr.config.RepositoryServiceConfiguration</key>
     <type>org.exoplatform.services.jcr.impl.config.RepositoryServiceConfigurationImpl</type>
     <init-params>
@@ -86,19 +86,19 @@
         <property name="dialect" value="${gatein.jcr.datasource.dialect}" />
       </properties-param>
     </init-params>
-  </component>
-
-  <!-- component>
-        <key>org.exoplatform.services.jcr.config.RepositoryServiceConfiguration</key>
-        <type>org.exoplatform.services.jcr.impl.config.RepositoryServiceConfigurationImpl</type>
-        <init-params>
-            <value-param>
-                <name>conf-path</name>
-                <description>JCR configuration file</description>
-                <value>file:/${tenant.data.dir}/repo-configs/empty-repository-service-configuration.xml</value>
-            </value-param>
-        </init-params>
   </component -->
+
+  <component>
+    <key>org.exoplatform.services.jcr.config.RepositoryServiceConfiguration</key>
+    <type>org.exoplatform.services.jcr.impl.config.RepositoryServiceConfigurationImpl</type>
+      <init-params>
+        <value-param>
+        <name>conf-path</name>
+        <description>JCR configuration file</description>
+        <value>file:///${tenant.data.dir}/jcr/configuration/repository-configuration.xml</value>
+      </value-param>
+    </init-params>
+  </component>
 
   <!-- MySQL configuration -->
   <component>
