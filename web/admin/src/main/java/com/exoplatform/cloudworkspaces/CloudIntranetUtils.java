@@ -807,8 +807,7 @@ public class CloudIntranetUtils
             if (!holder.getTenantStatus(tenant).getState().equals(TenantState.ONLINE))
             {
                String msg = "Tenant " + tenant + " is not online, auto join skipped for user " + userMail;
-               LOG.warn(msg);
-               sendAdminErrorEmail(msg, null);
+               LOG.info(msg);
                continue;
             }
             // Prepare properties for mailing
@@ -859,7 +858,6 @@ public class CloudIntranetUtils
             {
                String msg = "Tenant " + tenant + " is not online, auto join skipped for user " + userMail;
                LOG.warn(msg);
-               sendAdminErrorEmail(msg, null);
                continue;
             }
             // Prepare properties for mailing

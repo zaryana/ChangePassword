@@ -442,7 +442,6 @@ public class IntranetAdminService extends TenantCreator
    public Response validate(@PathParam("decision") String decision, @PathParam("filename") String filename)
       throws CloudAdminException
    {
-
       filename = filename + ".properties";
       UserRequest req = requestDao.searchByFilename(filename);
       if (req == null){
@@ -481,7 +480,7 @@ public class IntranetAdminService extends TenantCreator
          else
          {
             String msg = "Can not finish accept operation - service returned HTTP status " + resp.getStatus(); 
-            LOG.warn(msg);
+            LOG.error(msg);
             utils.sendAdminErrorEmail(msg, null);
             return Response.serverError().entity("Operation failed. It was reported to developers.").build();
          }
