@@ -26,6 +26,11 @@
 # master tenant repository
 [ -z "$TENANT_REPOSITORY" ]  && TENANT_REPOSITORY="repository"
 
+# cloud database
+[ -z "$EXO_DB_HOST" ]  && EXO_DB_HOST="localhost:3306"
+[ -z "$EXO_DB_USER" ]  && EXO_DB_USER="clouduser"
+[ -z "$EXO_DB_PASSWORD" ]  && EXO_DB_PASSWORD="cloud12321"
+
 # dir for jcr data for all tenants
 [ -z "$EXO_TENANT_DATA_DIR" ]  && EXO_TENANT_DATA_DIR="$CATALINA_HOME/gatein/data/jcr"
 
@@ -46,7 +51,10 @@ EXO_CLOUD_OPTS="-javaagent:../lib/cloud-instrument-1.1-M2.jar=../gatein/conf/clo
 	-Dgroovy.script.method.iteration.time=60000 \
 	-Dtenant.masterhost=$TENANT_MASTERHOST \
 	-Dtenant.repository.name=$TENANT_REPOSITORY \
-	-Dtenant.data.dir=$EXO_TENANT_DATA_DIR"
+	-Dtenant.data.dir=$EXO_TENANT_DATA_DIR \
+	-Dtenant.db.host=$EXO_DB_HOST \
+	-Dtenant.db.user=$EXO_DB_USER \
+	-Dtenant.db.password=$EXO_DB_PASSWORD"
 
 EXO_CLOUD_SECURITY_OPTS="-Djava.security.manager=org.exoplatform.cloudmanagement.security.TenantSecurityManager \
 	-Djava.security.policy==../conf/catalina.policy"

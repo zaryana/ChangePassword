@@ -95,7 +95,7 @@
         <value-param>
         <name>conf-path</name>
         <description>JCR configuration file</description>
-        <value>file:///${tenant.data.dir}/jcr/configuration/repository-configuration.xml</value>
+        <value>file:///${tenant.data.dir}/configuration/repository-configuration.xml</value>
       </value-param>
     </init-params>
   </component>
@@ -109,9 +109,9 @@
         <name>db-connection</name>
         <description>database connection properties</description>
         <property name="driverClassName" value="com.mysql.jdbc.Driver" />
-        <property name="url" value="jdbc:mysql://localhost:3306/" />
-        <property name="username" value="cloudadmin" />
-        <property name="password" value="cloud12321" />
+        <property name="url" value="jdbc:mysql://${tenanat.db.host}/" />
+        <property name="username" value="${tenanat.db.user}" />
+        <property name="password" value="${tenanat.db.password}" />
         <property name="maxActive" value="5" />
         <property name="maxIdle" value="2" />
         <property name="initialSize" value="2" />
@@ -176,9 +176,9 @@
           <name>ref-addresses</name>
           <description>ref-addresses</description>
           <property name="driverClassName" value="com.mysql.jdbc.Driver" />
-          <property name="url" value="jdbc:mysql://localhost:3306/${tenant.repository.name}" />
-          <property name="username" value="clouduser" />
-          <property name="password" value="cloud12321" />
+          <property name="url" value="jdbc:mysql://${tenanat.db.host}/${tenant.repository.name}" />
+          <property name="username" value="${tenanat.db.user}" />
+          <property name="password" value="${tenanat.db.password}" />
           <property name="maxActive" value="50" />
           <property name="maxIdle" value="2" />
           <property name="initialSize" value="5" />

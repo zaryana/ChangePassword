@@ -33,11 +33,10 @@
 [ -z "$CLOUD_MAIL_SMTP_SOCKETFACTORY_FALLBACK" ]  && CLOUD_MAIL_SMTP_SOCKETFACTORY_FALLBACK="false"
 [ -z "$CLOUD_MAIL_SMTP_SOCKETFACTORY_PORT" ]  && CLOUD_MAIL_SMTP_SOCKETFACTORY_PORT="465"
 [ -z "$CLOUD_MAIL_SMTP_AUTH" ]  && CLOUD_MAIL_SMTP_AUTH="true"
-[ -z "$CLOUD_MAIL_SMTP_AUTH" ]  && CLOUD_MAIL_SMTP_AUTH="true"
 [ -z "$CLOUD_ADMIN_EMAIL" ]  && CLOUD_ADMIN_EMAIL="exo.plf.cloud.test1@gmail.com"
 [ -z "$CLOUD_LOGGER_EMAIL" ]  && CLOUD_LOGGER_EMAIL="exo.plf.cloud.test1@gmail.com"
-[ -z "$CLOUD_SUPPORT_SENDER" ]  && CLOUD_SUPPORT_SENDER="Cloud Workspaces Beta<exo.plf.cloud.test1@gmail.com>"
 [ -z "$CLOUD_SUPPORT_EMAIL" ]  && CLOUD_SUPPORT_EMAIL="exo.plf.cloud.test1@gmail.com"
+[ -z "$CLOUD_SUPPORT_SENDER" ]  && CLOUD_SUPPORT_SENDER="Cloud Workspaces Beta<exo.plf.cloud.test1@gmail.com>"
 [ -z "$CLOUD_SALES_EMAIL" ]  && CLOUD_SALES_EMAIL="exo.plf.cloud.test1@gmail.com"
 
 # admin variables

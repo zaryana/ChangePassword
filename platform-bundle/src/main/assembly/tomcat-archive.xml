@@ -37,7 +37,7 @@
          </includes>
          <fileMode>0755</fileMode>
       </fileSet>
-      <!-- Dynamic JCR configs -->
+      <!-- PLF data -->
       <fileSet>
          <directory>src/main/resources/tomcat</directory>
          <outputDirectory>app-server-tomcat</outputDirectory>
