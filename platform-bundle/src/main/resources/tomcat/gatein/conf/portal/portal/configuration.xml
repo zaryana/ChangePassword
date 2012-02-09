@@ -123,8 +123,8 @@
         <name>db-creation</name>
         <description>database creation properties</description>
         <property name="scriptPath" value="../${exo.conf.dir.name}/cloud/databases/mysqldb-schema.sql" />
-        <property name="username" value="cloudadmin" />
-        <property name="password" value="cloud12321" />
+        <property name="username" value="${tenant.db.user}" />
+        <property name="password" value="${tenant.db.password}" />
       </properties-param>
     </init-params>
   </component>
