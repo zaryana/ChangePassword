@@ -37,6 +37,16 @@
          </includes>
          <fileMode>0755</fileMode>
       </fileSet>
+      <!-- Dynamic JCR configs -->
+      <fileSet>
+         <directory>src/main/resources/tomcat</directory>
+         <outputDirectory>app-server-tomcat</outputDirectory>
+         <includes>
+           <include>gatein/**/*.xml</include>
+           <include>gatein/**/*.txt</include>
+         </includes>
+         <fileMode>0644</fileMode>
+      </fileSet>
    </fileSets>
    <dependencySets>
      <dependencySet>

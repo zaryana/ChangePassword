@@ -46,8 +46,7 @@ EXO_CLOUD_OPTS="-javaagent:../lib/cloud-instrument-1.1-M2.jar=../gatein/conf/clo
 	-Dgroovy.script.method.iteration.time=60000 \
 	-Dtenant.masterhost=$TENANT_MASTERHOST \
 	-Dtenant.repository.name=$TENANT_REPOSITORY \
-	-Dtenant.data.dir=$EXO_TENANT_DATA_DIR \
-	-Dexo.app.server.name=$TENANT_REPOSITORY"
+	-Dtenant.data.dir=$EXO_TENANT_DATA_DIR"
 
 EXO_CLOUD_SECURITY_OPTS="-Djava.security.manager=org.exoplatform.cloudmanagement.security.TenantSecurityManager \
 	-Djava.security.policy==../conf/catalina.policy"

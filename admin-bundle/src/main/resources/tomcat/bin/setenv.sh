@@ -7,6 +7,9 @@
 # master tenant name
 [ -z "$TENANT_MASTERHOST" ]  && TENANT_MASTERHOST="cloud-workspaces.com"
 
+# default app server
+[ -z "$TENANT_DEFAULT_HOST" ]  && TENANT_DEFAULT_HOST="as1:8080"
+
 # dir for admin data
 [ -z "$EXO_ADMIN_DATA_DIR" ]  && EXO_ADMIN_DATA_DIR="$CATALINA_HOME/data"
 
@@ -16,31 +19,46 @@
 # admin config
 [ -z "$EXO_ADMIN_CONF_DIR" ]  && EXO_ADMIN_CONF_DIR="$CATALINA_HOME/exo-admin-conf"
 
-# logger email
-[ -z "$LOGGER_EMAIL_TO" ]  && LOGGER_EMAIL_TO="exo.cwks.log@gmail.com"
-[ -z "$LOGGER_EMAIL_FROM" ]  && LOGGER_EMAIL_FROM="noreply@cloud-workspaces.com"
-[ -z "$LOGGER_EMAIL_USER" ]  && LOGGER_EMAIL_USER="exo.plf.cloud.test1@gmail.com"
-[ -z "$LOGGER_EMAIL_PASS" ]  && LOGGER_EMAIL_PASS="exo.plf.cloud.test112321"
-[ -z "$LOGGER_EMAIL_HOST" ]  && LOGGER_EMAIL_HOST="smtp.gmail.com"
-[ -z "$LOGGER_EMAIL_PORT" ]  && LOGGER_EMAIL_PORT="465"
-[ -z "$LOGGER_EMAIL_SSL" ]  && LOGGER_EMAIL_SSL="true"
-
-
 # this host external address
 # HOST_EXTERNAL_ADDR=`ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}'`
 [ -z "$HOST_EXTERNAL_ADDR" ]  && HOST_EXTERNAL_ADDR="localhost"
 
+# Cloud email
+[ -z "$CLOUD_MAIL_HOST" ]  && CLOUD_MAIL_HOST="smtp.gmail.com"
+[ -z "$CLOUD_MAIL_PORT" ]  && CLOUD_MAIL_PORT="465"
+[ -z "$CLOUD_MAIL_SSL" ]  && CLOUD_MAIL_SSL="true"
+[ -z "$CLOUD_MAIL_USER" ]  && CLOUD_MAIL_USER="exo.plf.cloud.test1@gmail.com"
+[ -z "$CLOUD_MAIL_PASSWORD" ]  && CLOUD_MAIL_PASSWORD="exo.plf.cloud.test112321"
+[ -z "$CLOUD_MAIL_SMTP_SOCKETFACTORY_CLASS" ]  && CLOUD_MAIL_SMTP_SOCKETFACTORY_CLASS="javax.net.ssl.SSLSocketFactory"
+[ -z "$CLOUD_MAIL_SMTP_SOCKETFACTORY_FALLBACK" ]  && CLOUD_MAIL_SMTP_SOCKETFACTORY_FALLBACK="false"
+[ -z "$CLOUD_MAIL_SMTP_SOCKETFACTORY_PORT" ]  && CLOUD_MAIL_SMTP_SOCKETFACTORY_PORT="465"
+[ -z "$CLOUD_MAIL_SMTP_AUTH" ]  && CLOUD_MAIL_SMTP_AUTH="true"
+[ -z "$CLOUD_MAIL_SMTP_AUTH" ]  && CLOUD_MAIL_SMTP_AUTH="true"
+[ -z "$CLOUD_ADMIN_EMAIL" ]  && CLOUD_ADMIN_EMAIL="exo.plf.cloud.test1@gmail.com"
+[ -z "$CLOUD_LOGGER_EMAIL" ]  && CLOUD_LOGGER_EMAIL="exo.plf.cloud.test1@gmail.com"
+[ -z "$CLOUD_SUPPORT_SENDER" ]  && CLOUD_SUPPORT_SENDER="Cloud Workspaces Beta<exo.plf.cloud.test1@gmail.com>"
+[ -z "$CLOUD_SUPPORT_EMAIL" ]  && CLOUD_SUPPORT_EMAIL="exo.plf.cloud.test1@gmail.com"
+[ -z "$CLOUD_SALES_EMAIL" ]  && CLOUD_SALES_EMAIL="exo.plf.cloud.test1@gmail.com"
+
 # admin variables
 EXO_CLOUD_ADMIN_OPTS="-Dcloud.admin.log.dir=$EXO_ADMIN_LOGS_DIR \
-                      -Dlogback.loggerEmailTo=$LOGGER_EMAIL_TO \
-                      -Dlogback.loggerEmailFrom=$LOGGER_EMAIL_FROM \
-                      -Dlogback.loggerEmailUser=$LOGGER_EMAIL_USER \
-                      -Dlogback.loggerEmailPass=$LOGGER_EMAIL_PASS \
-                      -Dlogback.loggerEmailHost=$LOGGER_EMAIL_HOST \
-                      -Dlogback.loggerEmailPort=$LOGGER_EMAIL_PORT \
-                      -Dlogback.loggerEmailSSL=$LOGGER_EMAIL_SSL \
+                      -Dcloud.admin.mail.host=$CLOUD_MAIL_HOST \
+                      -Dcloud.admin.mail.port=$CLOUD_MAIL_PORT \
+                      -Dcloud.admin.mail.ssl=$CLOUD_MAIL_SSL \
+                      -Dcloud.admin.mail.user=$CLOUD_MAIL_USER \
+                      -Dcloud.admin.mail.password=$CLOUD_MAIL_PASSWORD \
+                      -Dcloud.admin.mail.smtp.socketFactory.class=$CLOUD_MAIL_SMTP_SOCKETFACTORY_CLASS \
+                      -Dcloud.admin.mail.smtp.socketFactory.fallback=$CLOUD_MAIL_SMTP_SOCKETFACTORY_FALLBACK \
+                      -Dcloud.admin.mail.smtp.socketFactory.port=$CLOUD_MAIL_SMTP_SOCKETFACTORY_PORT \
+                      -Dcloud.admin.mail.smtp.auth=$CLOUD_MAIL_SMTP_AUTH \
+                      -Dcloud.admin.mail.admin.email=$CLOUD_ADMIN_EMAIL \
+                      -Dcloud.admin.mail.logger.email=$CLOUD_LOGGER_EMAIL \
+                      -Dcloud.admin.mail.support.email=$CLOUD_SUPPORT_EMAIL \
+                      -Dcloud.admin.mail.support.sender=$CLOUD_SUPPORT_SENDER \
+                      -Dcloud.admin.mail.sales.email=$CLOUD_SALES_EMAIL \
                       -Dcloud.admin.data.dir=$EXO_ADMIN_DATA_DIR \
                       -Dtenant.masterhost=$TENANT_MASTERHOST \
+                      -Dcloud.admin.haproxy.default.host=$TENANT_DEFAULT_HOST \
                       -Dcloud.admin.configuration.dir=$EXO_ADMIN_CONF_DIR \
                       -Dcloud.admin.userlimit=$EXO_ADMIN_CONF_DIR/user-limits.properties \
                       -Dcloud.admin.configuration.file=$EXO_ADMIN_CONF_DIR/admin.properties \
