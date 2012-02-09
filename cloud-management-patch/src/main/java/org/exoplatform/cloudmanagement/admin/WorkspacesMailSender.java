@@ -129,7 +129,7 @@ public class WorkspacesMailSender
         if (isAdminMail){
          message.setFrom(new InternetAddress(cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_SENDER)));
         } else {
-         message.setFrom(new InternetAddress(cloudAdminConfiguration.getProperty("cloud.admin.mail.user.sender")));
+         message.setFrom(new InternetAddress(cloudAdminConfiguration.getProperty("cloud.admin.mail.support.sender")));
         }
         if (replyTo != null)
         {   

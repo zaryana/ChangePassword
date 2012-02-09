@@ -77,11 +77,9 @@ public class MailingProperties
    public static final String CLOUD_ADMIN_MAIL_REQUEST_REJECTED_TEMPLATE =
       "cloud.admin.mail.request.rejected.template";
    
-   public static final String CLOUD_ADMIN_MAIL_CONTACTUS_EMAIL = "cloud.admin.mail.support.email";
+   public static final String CLOUD_ADMIN_MAIL_SUPPOR_EMAIL = "cloud.admin.mail.support.email";
    
    public static final String CLOUD_ADMIN_MAIL_MARKETING_EMAIL = "cloud.admin.mail.marketing.email";
-   
-   public static final String CLOUD_ADMIN_MAIL_USER_SENDER = "cloud.admin.mail.user.sender";
 
    public static final String CLOUD_ADMIN_MAIL_REQUEST_REJECTED_SUBJECT = "cloud.admin.mail.request.rejected.subject";
 

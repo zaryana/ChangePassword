@@ -404,7 +404,7 @@ public class CloudIntranetUtils
       String devTemplate = cloudAdminConfiguration.getProperty(MailingProperties.CLOUD_ADMIN_MAIL_REQUEST_QUEUED_DEVELOPERS_TEMPLATE, null);
       try
       {
-         String email = cloudAdminConfiguration.getProperty(MailingProperties.CLOUD_ADMIN_MAIL_MARKETING_EMAIL);
+         String email = cloudAdminConfiguration.getProperty(MailingProperties.CLOUD_ADMIN_MAIL_SUPPOR_EMAIL);
          mailSender.sendMail(userMail, cloudAdminConfiguration.getProperty(MailingProperties.CLOUD_ADMIN_MAIL_REQUEST_QUEUED_SUBJECT),
             userTemplate, props, false);
          mailSender.sendMail(email, cloudAdminConfiguration.getProperty(MailingProperties.CLOUD_ADMIN_MAIL_REQUEST_QUEUED_DEVELOPERS_SUBJECT).replace("${workspace}", tName),
@@ -574,7 +574,7 @@ public class CloudIntranetUtils
    public void sendContactUsEmail(String userMail, String firstName, String subject, String text){
       
       String mailTemplate = cloudAdminConfiguration.getProperty(MailingProperties.CLOUD_ADMIN_MAIL_CONTACT_TEMPLATE, "Contact-Us request.");
-      String email = cloudAdminConfiguration.getProperty(MailingProperties.CLOUD_ADMIN_MAIL_CONTACTUS_EMAIL, "support@cloud-workspaces.com");
+      String email = cloudAdminConfiguration.getProperty(MailingProperties.CLOUD_ADMIN_MAIL_SUPPOR_EMAIL, "support@cloud-workspaces.com");
       
       Map<String, String> props = new HashMap<String, String>();
       props.put("user.mail", userMail);

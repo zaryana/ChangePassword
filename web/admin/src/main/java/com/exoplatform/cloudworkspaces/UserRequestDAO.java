@@ -112,6 +112,7 @@ public class UserRequestDAO
             catch (IOException e)
             {
               LOG.error(e.getMessage(), e);
+              throw new CloudAdminException("A problem happened during processsing this request. It was reported to developers. Please, try again later.");
             }
          }
       }
@@ -150,6 +151,7 @@ public class UserRequestDAO
          catch (IOException e)
          {
             String msg = "Tenant queuing error : failed to read property file " + one.getName();
+            LOG.error(msg, e);
             throw new CloudAdminException(
                "A problem happened during processing request . It was reported to developers. Please, try again later.");
          }

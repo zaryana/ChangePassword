@@ -134,11 +134,13 @@ public class IntranetAdminService extends TenantCreator
                .entity("Sorry, we can't sign you up with an email address " + domain + ". Try with your work email.")
                .build();
          }
-         if (requestDao.searchByEmail(userMail) == null){
+         if (requestDao.searchByEmail(userMail) == null)
+         {
             Response resp =  super.createTenantWithEmailConfirmation(tName, userMail);
             new ReferencesManager(adminConfiguration).putEmail(userMail, (String)resp.getEntity());
          }
-         else{
+         else
+         {
             return Response.ok("You already signed up. Wait until your workspace will be created. We will inform you when it will be ready.").build();
          }
       }
@@ -181,7 +183,7 @@ public class IntranetAdminService extends TenantCreator
                   "Sorry, we cannot process your join request right now, workspace seems not ready. Please, try again later.";
                LOG.warn("Joining user " + userMail + " failed, tenant " + tName + " state is "
                   + cloudInfoHolder.getTenantStatus(tName).getState().toString());
-               throw new CloudAdminException(msg);
+               return Response.status(Status.BAD_REQUEST).entity(msg).build();
             }
          }
          catch (UserAlreadyExistsException e)
@@ -263,7 +265,7 @@ public class IntranetAdminService extends TenantCreator
             {
                String msg = "Sorry, we cannot process your join request right now, workspace seems not ready. Please, try again later.";
                LOG.warn("Joining user " + userMail + " failed, tenant "+ tName + " state is " + cloudInfoHolder.getTenantStatus(tName).getState().toString());
-               throw new CloudAdminException(msg);
+               return Response.status(Status.BAD_REQUEST).entity(msg).build();
             }
          }
          else
@@ -317,7 +319,7 @@ public class IntranetAdminService extends TenantCreator
          }
          Response resp = super.createTenantWithConfirmedEmail(uuid);
          if (resp.getStatus() != 200)
-            throw new CloudAdminException((String)resp.getEntity());
+            return Response.serverError().entity((String)resp.getEntity()).build();
          TenantCreatedListenerThread thread =
             new TenantCreatedListenerThread(tName,cloudInfoHolder, adminConfiguration, requestDao);
          ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -443,8 +445,10 @@ public class IntranetAdminService extends TenantCreator
 
       filename = filename + ".properties";
       UserRequest req = requestDao.searchByFilename(filename);
-      if (req == null)
-         throw new CloudAdminException("Such file not found on server anymore;");
+      if (req == null){
+         LOG.warn("Validation requested file which can not be found anymore: " + filename);
+         return Response.serverError().entity("File can not be found on server anymore.").build();
+      }
 
       if (decision.equalsIgnoreCase("accept"))
       {
@@ -468,6 +472,7 @@ public class IntranetAdminService extends TenantCreator
                }
                catch (InterruptedException e)
                {
+                  LOG.warn(e.getMessage());
                } 
                requestDao.put(req_new);
             }
@@ -475,9 +480,10 @@ public class IntranetAdminService extends TenantCreator
          }
          else
          {
-            utils.sendAdminErrorEmail(
-               "Can not finish accept operation - service returned HTTP status " + resp.getStatus(), null);
-            throw new CloudAdminException("Can not apply this operation. Please contact support.");
+            String msg = "Can not finish accept operation - service returned HTTP status " + resp.getStatus(); 
+            LOG.warn(msg);
+            utils.sendAdminErrorEmail(msg, null);
+            return Response.serverError().entity("Operation failed. It was reported to developers.").build();
          }
       }
       else if (decision.equalsIgnoreCase("refuse"))
