@@ -29,9 +29,5 @@
   <component>
     <type>com.exoplatform.cloudworkspaces.gadget.services.GettingStarted.GettingStartedRestService</type>
   </component>
-  <!-- INVITE JOIN WORKSPACE -->
-  <component>
-    <type>com.exoplatform.cloudworkspaces.gadget.services.InviteJoinWs.InviteJoinWsRESTService</type>
-  </component>  
 
 </configuration>

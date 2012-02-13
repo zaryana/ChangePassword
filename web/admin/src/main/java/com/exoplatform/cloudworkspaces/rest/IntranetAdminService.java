@@ -63,9 +63,6 @@ import org.exoplatform.cloudmanagement.status.TenantStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.exoplatform.cloudmanagement.status.TransientTenantStatus;
-import org.json.JSONObject;
-
 @Path(CLOUD_ADMIN_PUBLIC_TENANT_CREATION_SERVICE)
 public class IntranetAdminService extends TenantCreator
 {
@@ -538,54 +535,5 @@ public class IntranetAdminService extends TenantCreator
         return Response.ok(email).build();
       else
          return Response.status(Status.BAD_REQUEST).entity("Warning! You are using broken link to the Registration Page. Please sign up again.").build();
-   }
-   
-   	@GET
-	@Path("/get-properties/{email}")
-	public String getProperties(@PathParam("email") String email, @QueryParam("callback") String callback) throws Exception {
-		try {
-
-		    String tail = email.substring(email.indexOf("@") + 1);
-		    String tenantName = tail.substring(0,tail.indexOf("."));
-			TransientTenantStatus tenantStatus = new TransientTenantStatus(tenantName);
-			
-			String[] myProperties = {"mailProtocol", "mailHost", "mailPort", "auth", "socketPort", "socketClass", "socketFallback", "userName", "password", "blackList", "uuid", "exist"};
-			String[] value = new String[12];
-			value[0]  = adminConfiguration.getProperty("cloud.admin.mail.transport.protocol");
-			value[1]  = adminConfiguration.getProperty("cloud.admin.mail.host");
-			value[2]  = adminConfiguration.getProperty("cloud.admin.mail.port");
-			value[3]  = adminConfiguration.getProperty("cloud.admin.mail.smtp.auth");
-			value[4]  = adminConfiguration.getProperty("cloud.admin.mail.smtp.socketFactory.port");
-			value[5]  = adminConfiguration.getProperty("cloud.admin.mail.smtp.socketFactory.class");
-			value[6]  = adminConfiguration.getProperty("cloud.admin.mail.smtp.socketFactory.fallback");
-			value[7]  = adminConfiguration.getProperty("cloud.admin.mail.smtp.auth.username");
-			value[8]  = adminConfiguration.getProperty("cloud.admin.mail.smtp.auth.password");
-			value[9]  = new Boolean(utils.isInBlackList(email)).toString();
-			value[10] = tenantStatus.getUuid();
-			value[11] = getExist(tenantName);
-
-			JSONObject json = new JSONObject();                    
-
-			for (int i=0; i<12; i++){
-				json.put(myProperties[i], value[i]);
-			}    
-			return callback + "(" + json.toString() + ")";
-		}
-		catch (Exception e) {
-			LOG.error(e.getMessage(), e);
-			return "Internal Error";
-		}
-	}
-   
-   public String getExist(String tenantName){
-	      try
-	      {
-	         TenantStatus status = cloudInfoHolder.getTenantStatus(tenantName);
-	        	 return status.getState().toString();
-	      }
-	      catch (TenantQueueException e)
-	      {
-	    		 return "NOT_FOUND";
-	      }
    }
 }
