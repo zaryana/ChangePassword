@@ -26,6 +26,8 @@ import org.exoplatform.services.organization.UserEventListener;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.jcr.core.ManageableRepository;
+import org.exoplatform.services.organization.OrganizationService;
+import org.exoplatform.commons.utils.ListAccess;
 
 import javax.jcr.RepositoryException;
 import java.io.IOException;
@@ -52,21 +54,23 @@ public class UserLimitListener extends UserEventListener
 
       ExoContainer container = ExoContainerContext.getCurrentContainer();
       RepositoryService reposervice = (RepositoryService)container.getComponentInstanceOfType(RepositoryService.class);
+      OrganizationService organizationService = (OrganizationService)container.getComponentInstanceOfType(OrganizationService.class);
 
       if (isNew)
       {
-         if (user.getUserName().equals("root"))
+         if (user.getUserName().equals("root")){
             return;
+         }
          
+         ListAccess<User> list = organizationService.getUserHandler().findAllUsers();
+
          String tName = reposervice.getCurrentRepository().getConfiguration().getName();
          String masterhost = System.getProperty("tenant.masterhost");
          StringBuilder strUrl = new StringBuilder();
          strUrl.append("http://");
          strUrl.append(masterhost);
-         strUrl.append("/rest/cloud-admin/public-tenant-service/isuserallowed/");
+         strUrl.append("/rest/cloud-admin/public-tenant-service/maxallowed/");
          strUrl.append(tName);
-         strUrl.append("/");
-         strUrl.append(user.getUserName());
 
          url = new URL(strUrl.toString());
          connection = (HttpURLConnection)url.openConnection();
@@ -76,7 +80,8 @@ public class UserLimitListener extends UserEventListener
             String err = readText(connection.getErrorStream());
             LOG.error("Unable to add user to workspace " + tName + " - HTTP status:" + connection.getResponseCode()
                + (err != null ? ". Server error: \r\n" + err + "\r\n" : ""));
-            throw new RepositoryException("Unable to add user" + user.getUserName() + " to workspace " + tName + " - HTTP confirmation error.");
+            throw new RepositoryException("Unable to add user " + user.getUserName() + " to workspace " + tName
+               + " - HTTP confirmation error.");
          }
          else
          {
@@ -86,14 +91,10 @@ public class UserLimitListener extends UserEventListener
             while ((inputLine = in.readLine()) != null)
                resp_body = resp_body.concat(inputLine);
             in.close();
-            if (resp_body.equalsIgnoreCase("TRUE"))
-            {
+            if (Integer.parseInt(resp_body) > list.getSize()-1) //minus root
                return;
-            }
             else
-            {
-               throw new RepositoryException("Unable to add user " + user.getUserName() + " to workspace " + tName + " - limit reached");
-            }
+              throw new RepositoryException("Unable to add user " + user.getUserName() + " to workspace " + tName + " - limit reached");  
          }
       }
    }

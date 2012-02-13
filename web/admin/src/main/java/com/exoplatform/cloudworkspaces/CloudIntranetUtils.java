@@ -205,8 +205,13 @@ public class CloudIntranetUtils
       HttpURLConnection connection = null;
       StringBuilder strUrl = new StringBuilder();
       strUrl.append("http://");
-      strUrl.append(cloudAdminConfiguration.getMasterHost());
-      strUrl.append("/rest/private/cloud-admin/info-service/users-list");
+      strUrl.append(tName);
+      strUrl.append(".");
+      strUrl.append(cloudAdminConfiguration.getProperty(CLOUD_ADMIN_FRONT_END_SERVER_HOST));
+      strUrl.append("/cloud-agent/rest/organization/users/"+ tName);
+      strUrl.append("?");
+      strUrl.append("administratorsonly=false");
+      
       try
       {
          url = new URL(strUrl.toString());
@@ -230,32 +235,20 @@ public class CloudIntranetUtils
             jsonParser.parse(io);
             ObjectValue responseObj = (ObjectValue)jsonParser.getJsonObject();
             int counter = 0;
-            Iterator<String> as = responseObj.getKeys();
-            while (as.hasNext())
+            Iterator<String> users = responseObj.getKeys();
+            while (users.hasNext())
             {
-               String asName = as.next();
-               Iterator<String> tenant = responseObj.getElement(asName).getKeys();
-               while (tenant.hasNext())
-               {
-                  String tenantName = tenant.next();
-                  if (tenantName.equalsIgnoreCase(tName))
-                  {
-                     Iterator<String> users = responseObj.getElement(asName).getElement(tenantName).getKeys();
-                     while (users.hasNext())
-                     {
-                        String userName = users.next();
-                        if (!userName.equalsIgnoreCase(username))
-                        {
-                           if (!userName.equals("root"))
-                             counter++;
-                        }
-                        else
-                        {
-                           throw new UserAlreadyExistsException("This user has already registered on workspace " + tenantName);
-                        }
-                     }
-                  }
-               }
+               String userName = users.next();
+               String email = responseObj.getElement(userName).getStringValue();
+               if (!userName.equalsIgnoreCase(username))
+                {
+                   if (!userName.equals("root"))
+                     counter++;
+                }
+                else
+                {
+                   throw new UserAlreadyExistsException("This user has already registered on workspace " + tName);
+                }
             }
             if (maxUsers == -1 || counter < maxUsers)
             {
@@ -314,8 +307,10 @@ public class CloudIntranetUtils
       strUrl.append("http://");
       strUrl.append(tName);
       strUrl.append(".");
-      strUrl.append(cloudAdminConfiguration.getProperty("cloud.admin.frontend.server.host"));
-      strUrl.append("/cloud-agent/rest/organization/administrators/"+ tName);
+      strUrl.append(cloudAdminConfiguration.getProperty(CLOUD_ADMIN_FRONT_END_SERVER_HOST));
+      strUrl.append("/cloud-agent/rest/organization/users/"+ tName);
+      strUrl.append("?");
+      strUrl.append("administratorsonly=true");
       
       InputStream io;
       try
@@ -807,7 +802,7 @@ public class CloudIntranetUtils
             if (!holder.getTenantStatus(tenant).getState().equals(TenantState.ONLINE))
             {
                String msg = "Tenant " + tenant + " is not online, auto join skipped for user " + userMail;
-               LOG.info(msg);
+               LOG.warn(msg);
                continue;
             }
             // Prepare properties for mailing

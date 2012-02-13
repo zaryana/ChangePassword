@@ -37,6 +37,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -242,9 +243,9 @@ public class IntranetRESTOrganizationServiceImpl
     */
    @GET
    @Produces(MediaType.APPLICATION_JSON)
-   @Path("/administrators/{tname}")
+   @Path("/users/{tname}")
    @RolesAllowed("cloud-admin")
-   public Map<String, String> getAdministratorsList(@PathParam("tname") String tname) throws Exception
+   public Map<String, String> getUsersList(@PathParam("tname") String tname, @QueryParam("administratorsonly") String onlyAdmins) throws Exception
    {
       try
       {
@@ -255,7 +256,7 @@ public class IntranetRESTOrganizationServiceImpl
          {
             Collection<Group> groups = organizationService.getGroupHandler().findGroupsOfUser(one.getUserName());
             for (Group group : groups){
-            if (group.getId().equalsIgnoreCase("/platform/administrators"))
+            if (!Boolean.parseBoolean(onlyAdmins) || group.getId().equalsIgnoreCase("/platform/administrators"))
               result.put(one.getUserName(), one.getEmail());
             }
          }

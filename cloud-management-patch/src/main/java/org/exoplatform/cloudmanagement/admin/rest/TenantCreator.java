@@ -24,7 +24,6 @@ import static org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConf
 import static org.exoplatform.cloudmanagement.rest.admin.CloudAdminRestServicePaths.CLOUD_ADMIN_PUBLIC_TENANT_CREATION_SERVICE;
 
 import org.exoplatform.cloudmanagement.admin.CloudAdminException;
-import org.exoplatform.cloudmanagement.admin.MailSender;
 import org.exoplatform.cloudmanagement.admin.TenantMetadataValidator;
 import org.exoplatform.cloudmanagement.admin.TenantRegistrationException;
 import org.exoplatform.cloudmanagement.admin.WorkspacesMailSender;

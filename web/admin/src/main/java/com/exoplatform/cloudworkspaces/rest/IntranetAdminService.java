@@ -150,13 +150,13 @@ public class IntranetAdminService extends TenantCreator
          props.put("tenant.masterhost", adminConfiguration.getMasterHost());
          props.put("tenant.repository.name", tName);
          props.put("user.mail", userMail);
-         props.put("rfid", new ReferencesManager(adminConfiguration).putEmail(userMail, UUID.randomUUID().toString()));
 
          try
          {
             if (cloudInfoHolder.getTenantStatus(tName).getState().equals(TenantState.CREATION)
                || cloudInfoHolder.getTenantStatus(tName).getState().equals(TenantState.WAITING_CREATION))
             {
+               props.put("rfid", new ReferencesManager(adminConfiguration).putEmail(userMail, UUID.randomUUID().toString()));
                utils.sendOkToJoinEmail(userMail, props);
             }
             else if (cloudInfoHolder.getTenantStatus(tName).getState().equals(TenantState.ONLINE))
@@ -164,6 +164,7 @@ public class IntranetAdminService extends TenantCreator
                if (utils.isNewUserAllowed(tName, username))
                {
                   // send OK email
+                  props.put("rfid", new ReferencesManager(adminConfiguration).putEmail(userMail, UUID.randomUUID().toString()));
                   utils.sendOkToJoinEmail(userMail, props);
                }
                else
@@ -514,17 +515,26 @@ public class IntranetAdminService extends TenantCreator
       return Response.ok().build();
    }
    
+//   @GET
+//   @Path("/isuserallowed/{tenantname}/{username}")
+//   @Produces(MediaType.TEXT_PLAIN)
+//   public Response isuserallowed(@PathParam("tenantname") String tName, @PathParam("username") String username)
+//      throws CloudAdminException{
+//      if (utils.isNewUserAllowed(tName, username))
+//         return Response.ok("TRUE").build();
+//      else
+//         return Response.ok("FALSE").build();
+//      
+//   }
+   
    @GET
-   @Path("/isuserallowed/{tenantname}/{username}")
+   @Path("/maxallowed/{tenantname}")
    @Produces(MediaType.TEXT_PLAIN)
-   public Response isuserallowed(@PathParam("tenantname") String tName, @PathParam("username") String username)
+   public Response maxallowed(@PathParam("tenantname") String tName)
       throws CloudAdminException{
-      if (utils.isNewUserAllowed(tName, username))
-         return Response.ok("TRUE").build();
-      else
-         return Response.ok("FALSE").build();
-      
+         return Response.ok(Integer.toString(utils.getMaxUsersForTenant(tName))).build();
    }
+   
    
    @GET
    @Path("uuid/{uuid}")
