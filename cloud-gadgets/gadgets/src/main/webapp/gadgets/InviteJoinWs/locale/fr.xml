@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
 <!--
 
     Copyright (C) 2009 eXo Platform SAS.
@@ -20,18 +19,14 @@
 
 -->
 
-<configuration
-   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd http://www.exoplatform.org/xml/ns/kernel_1_2.xsd"
-   xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
-
-  <!-- GETTING STARTED -->
-  <component>
-    <type>com.exoplatform.cloudworkspaces.gadget.services.GettingStarted.GettingStartedRestService</type>
-  </component>
-  <!-- INVITE JOIN WORKSPACE -->
-  <component>
-    <type>com.exoplatform.cloudworkspaces.gadget.services.InviteJoinWs.InviteJoinWsRESTService</type>
-  </component>  
-
-</configuration>
+<messagebundle>
+  <msg name="title">
+    Inviter Collègues
+  </msg>
+  <msg name="email">
+    Mél:
+  </msg>
+  <msg name="send">
+    Envoyer
+  </msg>
+</messagebundle>
