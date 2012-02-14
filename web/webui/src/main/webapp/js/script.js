@@ -121,11 +121,11 @@ Tenants.prototype.initDonePage = function() {
          _gel("sign_link").setAttribute("href","/signin.jsp?email=" + email);
        }
        else {
-       _gel("sign_link").innerHTML="Thanks for joining Cloud Workspaces!";
+       _gel("sign_link").innerHTML="Workspace " + tName +" will be created soon. You will be informed by the Email.";
        }
     },
     error: function (request, status, error) {
-      _gel("sign_link").innerHTML="Thanks for joining Cloud Workspaces!";
+      _gel("sign_link").innerHTML="Workspace " + tName + " will be created soon. You will be informed by the Email.";
     },
   dataType: 'text'});
 }
