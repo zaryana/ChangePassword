@@ -109,6 +109,29 @@ Tenants.prototype.init = function() {
   });
  }
 }
+
+Tenants.prototype.initDonePage = function() {
+   tenants.init();
+   var checkURL = tenantServicePath + "/status/" + tName;
+   var search = "ONLINE";
+   $.ajax({
+     url: checkURL,
+     success: function(data){
+       if (data.substring(0, search.length) === search){
+         _gel("sign_link").setAttribute("href","/signin.jsp?email=" + email);
+       }
+       else {
+       _gel("sign_link").innerHTML="Thanks for joining Cloud Workspaces!";
+       }
+    },
+    error: function (request, status, error) {
+      _gel("sign_link").innerHTML="Thanks for joining Cloud Workspaces!";
+    },
+  dataType: 'text'});
+}
+
+
+
 /*Those methods written for pre-moderating tenants on private demo*/
  Tenants.prototype.initValidationPage = function() {
       tenants.init();
@@ -490,8 +513,7 @@ Tenants.prototype.handleJoinResponse = function(resp) {
       "formid" : _gel('formid').value,
       "cid" : _gel('cid').value
     }, function() {
-     var tName = _gel('workspace').value
-      window.location = prefixUrl + "/join-done.jsp#"+tName;
+      window.location = prefixUrl + "/join-done.jsp#"+_gel('email').value;
     });
   } else {
     _gel("messageString").innerHTML = resp;

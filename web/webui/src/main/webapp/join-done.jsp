@@ -5,21 +5,24 @@
     <% String pageName = "Welcome to Cloud Workspaces"; %>
     <%@ include file="common/headStyle.jsp"%>
     <%@ include file="common/headScript.jsp"%>
-       <!-- load ThickBox to display video (http://jquery.com/demo/thickbox/) -->
-       <link rel="stylesheet" href="/thickbox/thickbox.css" type="text/css" media="screen" />
-       <script src="/thickbox/thickbox.js" type="text/javascript"></script>
+        <!-- load ThickBox to display video (http://jquery.com/demo/thickbox/) -->
+        <link rel="stylesheet" href="/thickbox/thickbox.css" type="text/css" media="screen" />
+        <script src="/thickbox/thickbox.js" type="text/javascript"></script>
         <script type="text/javascript">var tb_pathToImage = "/background/img_video.png";
-        var tName = location.hash.substring(1);
+        var email = location.hash.substring(1);
+        var split = email.split('@');
+        var tName = split[1].substring(0, split[1].indexOf('.'));
         </script>
 	</head>
-	<body onLoad="tenants.init();">
+	<body onLoad="tenants.initDonePage();">
 		<!--begin header-->
     <%@ include file="common/header.jsp"%>
 		
 		<!--begin ThanksPages-->	
 		 <div class="UIPageBody ThanksPages ClearFix">
-			<h1>Welcome to <script type="text/javascript">document.write(tName);</script>  Workspace</h1>
-			<p class="FillProfileInfo">Get started with Cloud Workspaces by checking out these helpful resources.</p>
+			<!-- h1>Welcome to <script type="text/javascript">document.write(tName);</script>  Workspace</h1 -->
+			<h1><a style="color:#2882A3;" id="sign_link">Now you can <span style="color:#19BBE7;">Sign-In</span> the Workspace <script type="text/javascript">document.write(tName);</script>!</a></h1>
+			<p class="FillProfileInfo">Get started with Cloud Workspaces by checking out these helpful resources:</p>
 			<div class="LeftContent FL">
 				<h3>Watch the Getting Started video:</h3>
 				<a href="#TB_inline?height=420&width=670&inlineId=videoLeft" class="thickbox">
