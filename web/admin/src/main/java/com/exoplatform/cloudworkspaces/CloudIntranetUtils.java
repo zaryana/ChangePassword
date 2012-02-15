@@ -25,6 +25,10 @@ import static org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConf
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.net.HttpURLConnection.HTTP_CREATED;
 
+import com.exoplatform.cloudworkspaces.listener.TenantResumeThread;
+
+import com.exoplatform.cloudworkspaces.listener.TenantCreatedListenerThread;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -50,6 +54,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
@@ -768,8 +774,6 @@ public class CloudIntranetUtils
    public void joinAll(String tName, RequestState state) throws CloudAdminException
    {
       List<UserRequest> list = requestDao.search(tName, state);
-
-      //Looking for administrators first
       for (UserRequest one : list)
       {
          String tenant = one.getTenantName();
@@ -777,22 +781,73 @@ public class CloudIntranetUtils
          String fName = one.getFirstName();
          String lName = one.getLastName();
          String username = userMail.substring(0, (userMail.indexOf("@")));
-         
-         //Whose who only signed up - sending them join links
-         if (one.getState().equals(RequestState.WAITING_LIMIT) && one.getPassword().equals("")){
-            if (isNewUserAllowed(tenant, username)) {
-              LOG.info("Sending join letter to " + userMail + " - his tenant is raised user limit;");
-              Map<String, String> props = new HashMap<String, String>();
-              props.put("tenant.masterhost", cloudAdminConfiguration.getMasterHost());
-              props.put("tenant.repository.name", tenant);
-              props.put("user.mail", userMail);
-              props.put("rfid", new ReferencesManager(cloudAdminConfiguration).putEmail(userMail,UUID.randomUUID().toString()));
-              sendOkToJoinEmail(userMail, props);
-              requestDao.delete(one);
-              continue;
-            } else {
+
+         //Whose who only signed up and stopped on limit - sending them join links
+         if (one.getState().equals(RequestState.WAITING_LIMIT) && one.getPassword().equals(""))
+         {
+            Map<String, String> props = new HashMap<String, String>();
+            props.put("tenant.masterhost", cloudAdminConfiguration.getMasterHost());
+            props.put("tenant.repository.name", tenant);
+            props.put("user.mail", userMail);
+            props.put("rfid",
+               new ReferencesManager(cloudAdminConfiguration).putEmail(userMail, UUID.randomUUID().toString()));
+            if (isNewUserAllowed(tenant, username))
+            {
+               LOG.info("Sending join letter to " + userMail + " - his tenant is raised user limit.");
+               sendOkToJoinEmail(userMail, props);
+               requestDao.delete(one);
+               continue;
+            }
+            else
+            {
                //Do nothing, limit is low
                continue;
+            }
+         }
+
+         //Whose who only signed up on tenant suspend - sending them join links
+         if (one.getState().equals(RequestState.WAITING_JOIN) && one.getPassword().equals(""))
+         {
+            LOG.info("Sending join letter to " + userMail + " - his tenant is resumed.");
+            Map<String, String> props = new HashMap<String, String>();
+            props.put("tenant.masterhost", cloudAdminConfiguration.getMasterHost());
+            props.put("tenant.repository.name", tenant);
+            props.put("user.mail", userMail);
+            props.put("rfid",
+               new ReferencesManager(cloudAdminConfiguration).putEmail(userMail, UUID.randomUUID().toString()));
+            try
+            {
+               if (isNewUserAllowed(tenant, username))
+               {
+                  sendOkToJoinEmail(userMail, props);
+                  requestDao.delete(one);
+                  continue;
+               }
+               else
+               {
+                  //Changing type from WAILTING_JOIN to WAITING_LIMIT
+                  UserRequest two =
+                     new UserRequest("", one.getTenantName(), one.getUserEmail(), one.getFirstName(),
+                        one.getLastName(), one.getCompanyName(), one.getPhone(), one.getPassword(),
+                        one.getConfirmationId(), one.isAdministrator(), RequestState.WAITING_LIMIT);
+                  requestDao.delete(one);
+                  try
+                  {
+                     Thread.sleep(500);
+                  }
+                  catch (InterruptedException e)
+                  {
+                     LOG.warn(e.getMessage());
+                  }
+                  requestDao.put(two);
+                  sendJoinRejectedEmails(tName, userMail, props);
+                  continue;
+               }
+            }
+            catch (UserAlreadyExistsException e)
+            {
+               //User already exist. do nothing;
+               requestDao.delete(one);
             }
          }
 
@@ -805,17 +860,17 @@ public class CloudIntranetUtils
                LOG.warn(msg);
                continue;
             }
-            // Prepare properties for mailing
-            Map<String, String> props = new HashMap<String, String>();
-            props.put("tenant.masterhost", cloudAdminConfiguration.getMasterHost());
-            props.put("tenant.repository.name", tenant);
-            props.put("user.mail", userMail);
-            props.put("user.name", username);
-            props.put("first.name", fName);
-            props.put("last.name", lName);
-
+            //Looking for administrators first
             if (one.isAdministrator())
             {
+               // Prepare properties for mailing
+               Map<String, String> props = new HashMap<String, String>();
+               props.put("tenant.masterhost", cloudAdminConfiguration.getMasterHost());
+               props.put("tenant.repository.name", tenant);
+               props.put("user.mail", userMail);
+               props.put("user.name", username);
+               props.put("first.name", fName);
+               props.put("last.name", lName);
                LOG.info("Joining administrator " + userMail + " to tenant " + tenant);
                storeUser(tenant, userMail, fName, lName, one.getPassword(), true);
                sendIntranetCreatedEmail(userMail, props);
@@ -864,7 +919,7 @@ public class CloudIntranetUtils
             props.put("first.name", fName);
             props.put("last.name", lName);
 
-            if (one.isAdministrator() || (one.getState().equals(RequestState.WAITING_LIMIT) && one.getPassword().equals("")))
+            if (one.isAdministrator() || one.getPassword().equals(""))
             {
                continue;
             }
@@ -876,20 +931,35 @@ public class CloudIntranetUtils
                   LOG.info("Joining user " + userMail + " to tenant " + tenant);
                   storeUser(tenant, userMail, fName, lName, one.getPassword(), false);
                   sendUserJoinedEmails(tenant, fName, userMail, props);
+                  requestDao.delete(one);
                }
                else
                {
                   // Limit reached
                   props.put("users.maxallowed", Integer.toString(getMaxUsersForTenant(tenant)));
                   sendJoinRejectedEmails(tenant, userMail, props);
+                  //Changing type from WAILTING_JOIN to WAITING_LIMIT
+                  UserRequest two =
+                     new UserRequest("", one.getTenantName(), one.getUserEmail(), one.getFirstName(),
+                        one.getLastName(), one.getCompanyName(), one.getPhone(), one.getPassword(),
+                        one.getConfirmationId(), one.isAdministrator(), RequestState.WAITING_LIMIT);
+                  requestDao.delete(one);
+                  try
+                  {
+                     Thread.sleep(500);
+                  }
+                  catch (InterruptedException e)
+                  {
+                     LOG.warn(e.getMessage());
+                  }
+                  requestDao.put(two);
                }
-               requestDao.delete(one);
             }
          }
          catch (CloudAdminException e)
          {
             String msg =
-               ("An problem happened during creating administrator " + userMail + "  on tenant " + " : " + tenant + e
+               ("An problem happened during creating user " + userMail + "  on tenant " + " : " + tenant + e
                   .getMessage());
             LOG.error(msg, e);
             sendAdminErrorEmail(msg, null);
@@ -929,6 +999,16 @@ public class CloudIntranetUtils
        else
         return hash.equals(UUID);
     }
+    
+    
+   public void resumeTenant(String tName) throws CloudAdminException
+   {
+      TenantResumeThread thread =
+               new TenantResumeThread(cloudAdminConfiguration, tName);
+            ExecutorService executor = Executors.newSingleThreadExecutor();
+            executor.execute(thread);
+      
+   }
 
    /**
     * Read text message from InputStream. 

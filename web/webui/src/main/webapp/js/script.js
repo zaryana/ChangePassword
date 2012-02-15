@@ -325,6 +325,20 @@ Tenants.prototype.initSignInPage = function() {
 
 
 
+Tenants.prototype.initResumingPage = function() {
+ tenants.init();
+ if (queryString != null && queryString != "") {
+   var email_start = queryString.indexOf('email=');
+   email = (email_start != -1) ? queryString.substring(email_start + 6) : null;
+   var split = email.split('@');
+   var workspace = split[1].substring(0, split[1].indexOf('.'));
+   _gel("h1").innerHTML = "The Workspace " + workspace + " was suspened and resuming now.";
+   _gel("li1").innerHTML = "If you are already a member of " + workspace + ", please wait and <a href=\"/signin.jsp?email=" + email + "\"> sign-in</a> again.";
+   _gel("li2").innerHTML = "If you want join Workspace " + workspace +  ", check you mail box for an Invitation message.";
+  }
+}
+
+
 /* Login redirect */
 Tenants.prototype.doLogin = function() {
    var tname = _gel("workspace").value;

@@ -156,14 +156,15 @@ public class IntranetAdminService extends TenantCreator
 
          try
          {
-            if (cloudInfoHolder.getTenantStatus(tName).getState().equals(TenantState.CREATION)
-               || cloudInfoHolder.getTenantStatus(tName).getState().equals(TenantState.WAITING_CREATION))
+            TenantState tState = cloudInfoHolder.getTenantStatus(tName).getState();
+            switch (tState) {
+            case CREATION: case WAITING_CREATION:
             {
                props.put("rfid",
                   new ReferencesManager(adminConfiguration).putEmail(userMail, UUID.randomUUID().toString()));
                utils.sendOkToJoinEmail(userMail, props);
             }
-            else if (cloudInfoHolder.getTenantStatus(tName).getState().equals(TenantState.ONLINE))
+            case ONLINE:
             {
                if (utils.isNewUserAllowed(tName, username))
                {
@@ -183,7 +184,22 @@ public class IntranetAdminService extends TenantCreator
                   utils.sendJoinRejectedEmails(tName, userMail, props);
                }
             }
-            else
+            case SUSPENDED:
+            {
+               LOG.info("User " + userMail + " was put in waiting state after singup - tenant suspended.");
+               utils.resumeTenant(tName);
+               UserRequest req =
+                  new UserRequest("", tName, userMail, "", "", "", "", "", "", false, RequestState.WAITING_JOIN);
+               requestDao.put(req);
+               TenantCreatedListenerThread thread =
+                        new TenantCreatedListenerThread(tName, cloudInfoHolder, adminConfiguration, requestDao);
+                     ExecutorService executor = Executors.newSingleThreadExecutor();
+                     executor.execute(thread);
+               return Response.status(309)
+                        .header("Location", "http://" + adminConfiguration.getMasterHost() + "/resuming.jsp?email=" + userMail)
+                        .build();
+            }
+            default:
             {
                String msg =
                   "Sorry, we cannot process your join request right now, workspace seems not ready. Please, try again later.";
@@ -191,6 +207,7 @@ public class IntranetAdminService extends TenantCreator
                   + cloudInfoHolder.getTenantStatus(tName).getState().toString());
                return Response.status(Status.BAD_REQUEST).entity(msg).build();
             }
+           }
          }
          catch (UserAlreadyExistsException e)
          {
@@ -245,34 +262,67 @@ public class IntranetAdminService extends TenantCreator
          props.put("first.name", firstName);
          props.put("last.name", lastName);
 
-         if (utils.isNewUserAllowed(tName, username))
+         // Storing user & sending appropriate mails
+         TenantState tState = cloudInfoHolder.getTenantStatus(tName).getState();
+         switch (tState)
          {
-            // Storing user & sending appropriate mails
-            TenantState tState = cloudInfoHolder.getTenantStatus(tName).getState();
-            if (tState.equals(TenantState.ONLINE))
+            case ONLINE : 
             {
+
                try
                {
-                  utils.storeUser(tName, userMail, firstName, lastName, password, false);
-                  utils.sendUserJoinedEmails(tName, firstName, userMail, props);
+                  if (utils.isNewUserAllowed(tName, username))
+                  {
+                     utils.storeUser(tName, userMail, firstName, lastName, password, false);
+                     utils.sendUserJoinedEmails(tName, firstName, userMail, props);
+                  }
+                  else
+                  {
+                     // Limit reached
+                     LOG.info("User " + userMail + " join was put in waiting state - users limit reached.");
+                     UserRequest req =
+                        new UserRequest("", tName, userMail, firstName, lastName, "", "", password, "", false,
+                           RequestState.WAITING_LIMIT);
+                     requestDao.put(req);
+                     props.put("users.maxallowed", Integer.toString(utils.getMaxUsersForTenant(tName)));
+                     utils.sendJoinRejectedEmails(tName, userMail, props);
+                  }
+
                }
-               catch (CloudAdminException e)
+               catch (UserAlreadyExistsException e)
                {
-                  LOG.warn("User " + username + " join failed, put him in join queue.");
-                  UserRequest req =
-                     new UserRequest("", tName, userMail, firstName, lastName, "", "", password, "", false,
-                        RequestState.WAITING_JOIN);
-                  requestDao.put(req);
+                  LOG.warn("User " + username + " already registered on workspace " + tName
+                     + ". Join request rejected. User warned on the Sign Up form.");
+                  return Response.ok(e.getMessage()).build();
                }
+
             }
-            else if (tState.equals(TenantState.CREATION) || tState.equals(TenantState.WAITING_CREATION))
+            case CREATION : 
+            case WAITING_CREATION : 
             {
                UserRequest req =
                   new UserRequest("", tName, userMail, firstName, lastName, "", "", password, "", false,
                      RequestState.WAITING_JOIN);
                requestDao.put(req);
             }
-            else
+            case SUSPENDED : 
+            {
+               utils.resumeTenant(tName);
+               LOG.info("User " + userMail + " was put in waiting state after join - tenant suspended.");
+               UserRequest req =
+                  new UserRequest("", tName, userMail, firstName, lastName, "", "", password, "", false,
+                     RequestState.WAITING_JOIN);
+               requestDao.put(req);
+               TenantCreatedListenerThread thread =
+                  new TenantCreatedListenerThread(tName, cloudInfoHolder, adminConfiguration, requestDao);
+               ExecutorService executor = Executors.newSingleThreadExecutor();
+               executor.execute(thread);
+               return Response
+                  .status(309)
+                  .header("Location",
+                     "http://" + adminConfiguration.getMasterHost() + "/resuming.jsp?email=" + userMail).build();
+            }
+            default : 
             {
                String msg =
                   "Sorry, we cannot process your join request right now, workspace seems not ready. Please, try again later.";
@@ -281,25 +331,17 @@ public class IntranetAdminService extends TenantCreator
                return Response.status(Status.BAD_REQUEST).entity(msg).build();
             }
          }
-         else
-         {
-            // Limit reached
-            LOG.info("User " + userMail + " join was put in waiting state - users limit reached.");
-            UserRequest req =
-               new UserRequest("", tName, userMail, firstName, lastName, "", "", password, "", false,
-                  RequestState.WAITING_LIMIT);
-            requestDao.put(req);
-            props.put("users.maxallowed", Integer.toString(utils.getMaxUsersForTenant(tName)));
-            utils.sendJoinRejectedEmails(tName, userMail, props);
-         }
-         return Response.ok().build();
+
       }
-      catch (UserAlreadyExistsException e)
+      catch (CloudAdminException e)
       {
-         LOG.warn("User " + username + " already registered on workspace " + tName
-            + ". Join request rejected. User warned on the Sign Up form.");
-         return Response.ok(e.getMessage()).build();
+         LOG.warn("User " + username + " join failed, put him in join queue.");
+         UserRequest req =
+            new UserRequest("", tName, userMail, firstName, lastName, "", "", password, "", false,
+               RequestState.WAITING_JOIN);
+         requestDao.put(req);
       }
+      return Response.ok().build();
    }
 
    /**
@@ -582,4 +624,17 @@ public class IntranetAdminService extends TenantCreator
          return Response.status(Status.BAD_REQUEST)
             .entity("Warning! You are using broken link to the Registration Page. Please sign up again.").build();
    }
+   
+   //For the invitation gadget
+   @GET
+   @Path("blacklisted/{email}")
+   @Produces(MediaType.TEXT_PLAIN)
+   public Response balcklisted(@PathParam("email") String email) throws CloudAdminException
+   {
+      if (utils.isInBlackList(email))
+         return Response.ok("TRUE").build();
+      else
+         return Response.ok("FALSE").build();
+   }
+   
 }
