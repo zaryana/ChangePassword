@@ -808,7 +808,6 @@ public class CloudIntranetUtils
          //Whose who only signed up on tenant suspend - sending them join links
          if (one.getState().equals(RequestState.WAITING_JOIN) && one.getPassword().equals(""))
          {
-            LOG.info("Sending join letter to " + userMail + " - his tenant is resumed.");
             Map<String, String> props = new HashMap<String, String>();
             props.put("tenant.masterhost", cloudAdminConfiguration.getMasterHost());
             props.put("tenant.repository.name", tenant);
@@ -819,6 +818,7 @@ public class CloudIntranetUtils
             {
                if (isNewUserAllowed(tenant, username))
                {
+                  LOG.info("Sending join letter to " + userMail + " - his tenant is resumed.");
                   sendOkToJoinEmail(userMail, props);
                   requestDao.delete(one);
                   continue;
