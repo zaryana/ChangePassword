@@ -333,7 +333,7 @@ Tenants.prototype.initResumingPage = function() {
    var split = email.split('@');
    var workspace = split[1].substring(0, split[1].indexOf('.'));
    _gel("h1").innerHTML = "The Workspace " + workspace + " was suspened and resuming now.";
-   _gel("li1").innerHTML = "If you are already a member of " + workspace + ", please wait and <a href=\"/signin.jsp?email=" + email + "\"> sign-in</a> again.";
+   _gel("li1").innerHTML = "If you are already a member of " + workspace + ", please wait approx. 5 min and <a href=\"/signin.jsp?email=" + email + "\"> sign-in</a> again.";
    _gel("li2").innerHTML = "If you want join Workspace " + workspace +  ", check you mail box for an Invitation message.";
   }
 }
