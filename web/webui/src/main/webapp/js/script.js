@@ -113,19 +113,37 @@ Tenants.prototype.init = function() {
 Tenants.prototype.initDonePage = function() {
    tenants.init();
    var checkURL = tenantServicePath + "/status/" + tName;
-   var search = "ONLINE";
    $.ajax({
      url: checkURL,
      success: function(data){
+       var search = "ONLINE";
        if (data.substring(0, search.length) === search){
-         _gel("sign_link").setAttribute("href","/signin.jsp?email=" + email);
+          var checkURL = tenantServicePath + "/isuserexist/" + tName + "/" + split[0];
+          $.ajax({
+             url: checkURL,
+             success: function(data){
+             var search = "TRUE";
+             if (data.substring(0, search.length) === search){
+                   _gel("sign_link").innerHTML = "You can now <span style=\"color:#19BBE7;\"><u>sign-in</u></span> the "+ tName+ "  Workspace.";
+                   _gel("sign_link").setAttribute("href","/signin.jsp?email=" + email);
+              }
+              else {
+//                    _gel("sign_link").innerHTML="We cannot add you to the " + tName +" Workspace at the moment. Please check that the Workspace hasn't reached its user limit. The Workspace administrator has been notified of your attempt to join.";
+                    _gel("sign_link").innerHTML="<span style=\"color:#b81919;\">We cannot add you to the " + tName +" Workspace at the moment. The Workspace administrator has been notified of your attempt to join.</span>";
+               }
+              },
+             error: function (request, status, error) {
+               _gel("sign_link").innerHTML="The " + tName + " Workspace is beind created.<br/> We will inform you by email when ready.";
+              },
+           dataType: 'text'});
+       
        }
        else {
-       _gel("sign_link").innerHTML="Workspace " + tName +" will be created soon. You will be informed by the Email.";
+        _gel("sign_link").innerHTML="The " + tName + " Workspace is beind created.<br/> We will inform you by email when ready.";
        }
     },
     error: function (request, status, error) {
-      _gel("sign_link").innerHTML="Workspace " + tName + " will be created soon. You will be informed by the Email.";
+      _gel("sign_link").innerHTML="The " + tName + " Workspace is beind created.<br/> We will inform you by email when ready.";
     },
   dataType: 'text'});
 }

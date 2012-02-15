@@ -21,7 +21,7 @@
 		<!--begin ThanksPages-->	
 		 <div class="UIPageBody ThanksPages ClearFix">
 			<!-- h1>Welcome to <script type="text/javascript">document.write(tName);</script>  Workspace</h1 -->
-			<h1><a style="color:#2882A3;" id="sign_link">Now you can <span style="color:#19BBE7;">Sign-In</span> the Workspace <script type="text/javascript">document.write(tName);</script>!</a></h1>
+			<h1><a style="color:#2882A3;" id="sign_link"></a></h1>
 			<p class="FillProfileInfo">Get started with Cloud Workspaces by checking out these helpful resources:</p>
 			<div class="LeftContent FL">
 				<h3>Watch the Getting Started video:</h3>

@@ -187,7 +187,7 @@ public class IntranetAdminService extends TenantCreator
             {
                String msg =
                   "Sorry, we cannot process your join request right now, workspace seems not ready. Please, try again later.";
-               LOG.warn("Joining user " + userMail + " failed, tenant " + tName + " state is "
+               LOG.warn("Sign-up user " + userMail + " failed, tenant " + tName + " state is "
                   + cloudInfoHolder.getTenantStatus(tName).getState().toString());
                return Response.status(Status.BAD_REQUEST).entity(msg).build();
             }
@@ -543,6 +543,24 @@ public class IntranetAdminService extends TenantCreator
    //         return Response.ok("FALSE").build();
    //      
    //   }
+   
+   
+      @GET
+      @Path("/isuserexist/{tenantname}/{username}")
+      @Produces(MediaType.TEXT_PLAIN)
+      public Response isuserexist(@PathParam("tenantname") String tName, @PathParam("username") String username)
+         throws CloudAdminException{
+          try 
+          {
+             utils.isNewUserAllowed(tName, username);
+             return Response.ok("FALSE").build();
+          }
+          catch (UserAlreadyExistsException e){
+             return Response.ok("TRUE").build();
+          }
+      }
+
+   
 
    @GET
    @Path("/maxallowed/{tenantname}")
