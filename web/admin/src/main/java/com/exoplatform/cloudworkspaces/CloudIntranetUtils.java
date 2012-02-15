@@ -840,7 +840,8 @@ public class CloudIntranetUtils
                      LOG.warn(e.getMessage());
                   }
                   requestDao.put(two);
-                  sendJoinRejectedEmails(tName, userMail, props);
+                  props.put("users.maxallowed", Integer.toString(getMaxUsersForTenant(tenant)));
+                  sendJoinRejectedEmails(tenant, userMail, props);
                   continue;
                }
             }
