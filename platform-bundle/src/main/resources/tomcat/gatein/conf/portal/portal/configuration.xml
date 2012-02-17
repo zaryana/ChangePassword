@@ -24,17 +24,6 @@
   xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
 
   <component>
-    <key>PropertyManagerConfigurator</key>
-    <type>org.exoplatform.container.PropertyConfigurator</type>
-    <init-params>
-      <value-param>
-        <name>properties.url</name>
-        <value>file:${catalina.home}/${exo.conf.dir.name}/cloud.properties</value>
-      </value-param>
-    </init-params>
-  </component>
-
-  <component>
     <key>org.exoplatform.services.security.Authenticator</key>
     <type>com.exoplatform.cloudworkspaces.organization.authenticator.IntranetAuthenticatorImpl</type>
   </component>
@@ -67,25 +56,6 @@
          <value>true</value>
        </value-param>
      </init-params>
-  </component -->
-
-  <!-- component>
-    <key>org.exoplatform.services.jcr.config.RepositoryServiceConfiguration</key>
-    <type>org.exoplatform.services.jcr.impl.config.RepositoryServiceConfigurationImpl</type>
-    <init-params>
-      <value-param>
-        <name>conf-path</name>
-        <description>JCR configuration file</description>
-        <value>war:/conf/jcr/repository-configuration.xml</value>
-      </value-param>
-      <properties-param>
-        <name>working-conf</name>
-        <description>working-conf</description>
-        <property name="persister-class-name" value="org.exoplatform.services.jcr.impl.config.JDBCConfigurationPersister" />
-        <property name="source-name" value="${tenant.repository.name}" />
-        <property name="dialect" value="${gatein.jcr.datasource.dialect}" />
-      </properties-param>
-    </init-params>
   </component -->
 
   <component>
@@ -188,39 +158,6 @@
         </properties-param>
       </init-params>
     </component-plugin>
-    <!-- component-plugin>
-      <name>bind.datasource</name>
-      <set-method>addPlugin</set-method>
-      <type>org.exoplatform.services.naming.BindReferencePlugin</type>
-      <init-params>
-        <value-param>
-          <name>bind-name</name>
-          <value>jcr_conf</value>
-        </value-param>
-        <value-param>
-          <name>class-name</name>
-          <value>javax.sql.DataSource</value>
-        </value-param>
-        <value-param>
-          <name>factory</name>
-          <value>org.apache.commons.dbcp.BasicDataSourceFactory</value>
-        </value-param>
-        <properties-param>
-          <name>ref-addresses</name>
-          <description>ref-addresses</description>
-          <property name="driverClassName" value="com.mysql.jdbc.Driver" />
-          <property name="url" value="jdbc:mysql://localhost:3306/jcr_conf_${exo.app.server.name}" />
-          <property name="username" value="clouduser" />
-          <property name="password" value="cloud12321" />
-          <property name="maxActive" value="50" />
-          <property name="maxIdle" value="2" />
-          <property name="initialSize" value="5" />
-          <property name="validationQuery" value="select 1" />
-          <property name="testOnReturn" value="true" />
-          <property name="timeBetweenEvictionRunsMillis" value="300000" />
-        </properties-param>
-      </init-params>
-    </component-plugin-->
   </external-component-plugins>
 
   <!-- temporarily for 1.0.0-Beta2, PLF-2644 -->

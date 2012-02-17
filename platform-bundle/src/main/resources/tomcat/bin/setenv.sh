@@ -20,6 +20,9 @@
 
 # production script to set environment variables for eXo Platform
 
+# custom JAVA options
+[ -z "$EXO_JAVA_OPTS" ]  && EXO_JAVA_OPTS="-Xms1g -Xmx4g -XX:MaxPermSize=256m -XX:+UseCompressedOops"
+
 # master tenant name
 [ -z "$TENANT_MASTERHOST" ]  && TENANT_MASTERHOST="cloud-workspaces.com"
 
@@ -33,6 +36,9 @@
 
 # dir for jcr data for all tenants
 [ -z "$EXO_TENANT_DATA_DIR" ]  && EXO_TENANT_DATA_DIR="$CATALINA_HOME/gatein/data/jcr"
+
+# dir for jcr backup files 
+[ -z "$EXO_BACKUP_DIR" ]  && EXO_BACKUP_DIR="$CATALINA_HOME/gatein/backup"
 
 # this host external address
 # HOST_EXTERNAL_ADDR=`ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}'`
@@ -54,7 +60,8 @@ EXO_CLOUD_OPTS="-javaagent:../lib/cloud-instrument-1.1-M2.jar=../gatein/conf/clo
 	-Dtenant.data.dir=$EXO_TENANT_DATA_DIR \
 	-Dtenant.db.host=$EXO_DB_HOST \
 	-Dtenant.db.user=$EXO_DB_USER \
-	-Dtenant.db.password=$EXO_DB_PASSWORD"
+	-Dtenant.db.password=$EXO_DB_PASSWORD \
+	-Dexo.backup.dir=$EXO_BACKUP_DIR"
 
 EXO_CLOUD_SECURITY_OPTS="-Djava.security.manager=org.exoplatform.cloudmanagement.security.TenantSecurityManager \
 	-Djava.security.policy==../conf/catalina.policy"
@@ -65,15 +72,11 @@ JMX_OPTS="-Dcom.sun.management.jmxremote=true -Djava.rmi.server.hostname=$HOST_E
 	-Dcom.sun.management.jmxremote.authenticate=true \
 	-Dcom.sun.management.jmxremote.ssl=false"
 
-# JVM parameters
-JVM64_OPTS="-XX:+UseCompressedOops"
-JAVA_OPTS="$JAVA_OPTS -Xms1g -Xmx4g -XX:MaxPermSize=256m $JVM64_OPTS"
-
 # Remote debug configuration
 #REMOTE_DEBUG="-Xdebug -Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=n"
+REMOTE_DEBUG=""
 
-JAVA_OPTS="$JAVA_OPTS $LOG_OPTS $SECURITY_OPTS $EXO_OPTS $IDE_OPTS $EXO_CLOUD_OPTS $EXO_CLOUD_SECURITY_OPTS $EXO_CLOUD_ADMIN_OPTS $JMX_OPTS $REMOTE_DEBUG $EXO_PROFILES"
-export JAVA_OPTS
+export JAVA_OPTS="$EXO_JAVA_OPTS $JAVA_OPTS $LOG_OPTS $SECURITY_OPTS $EXO_OPTS $IDE_OPTS $EXO_CLOUD_OPTS $EXO_CLOUD_SECURITY_OPTS $EXO_CLOUD_ADMIN_OPTS $JMX_OPTS $REMOTE_DEBUG $EXO_PROFILES"
 
 export CLASSPATH="$CATALINA_HOME/lib/cloud-security-1.1-M2.jar:$CATALINA_HOME/conf/:$CATALINA_HOME/lib/jul-to-slf4j-1.5.8.jar:$CATALINA_HOME/lib/slf4j-api-1.5.8.jar:$CATALINA_HOME/lib/cloud-logback-logging-1.1-M2.jar:$CATALINA_HOME/lib/logback-classic-0.9.20.jar:$CATALINA_HOME/lib/logback-core-0.9.20.jar"
 

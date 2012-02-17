@@ -2,8 +2,14 @@
 #
 # JAVA_OPTS override jvm options for example: Xmx, Xms etc.
 
-# Set global cloud names
+# custom JAVA options
+[ -z "$EXO_JAVA_OPTS" ]  && EXO_JAVA_OPTS="-Xms1g -Xmx4g"
 
+# this host external address
+# HOST_EXTERNAL_ADDR=`ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}'`
+[ -z "$HOST_EXTERNAL_ADDR" ]  && HOST_EXTERNAL_ADDR="localhost"
+
+# Set global cloud names
 # master tenant name
 [ -z "$TENANT_MASTERHOST" ]  && TENANT_MASTERHOST="cloud-workspaces.com"
 
@@ -19,11 +25,7 @@
 # admin config
 [ -z "$EXO_ADMIN_CONF_DIR" ]  && EXO_ADMIN_CONF_DIR="$CATALINA_HOME/exo-admin-conf"
 
-# this host external address
-# HOST_EXTERNAL_ADDR=`ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}'`
-[ -z "$HOST_EXTERNAL_ADDR" ]  && HOST_EXTERNAL_ADDR="localhost"
-
-# Cloud email
+# admin email
 [ -z "$CLOUD_MAIL_HOST" ]  && CLOUD_MAIL_HOST="smtp.gmail.com"
 [ -z "$CLOUD_MAIL_PORT" ]  && CLOUD_MAIL_PORT="465"
 [ -z "$CLOUD_MAIL_SSL" ]  && CLOUD_MAIL_SSL="true"
@@ -39,8 +41,14 @@
 [ -z "$CLOUD_SUPPORT_SENDER" ]  && CLOUD_SUPPORT_SENDER="exo.plf.cloud.test1@gmail.com"
 [ -z "$CLOUD_SALES_EMAIL" ]  && CLOUD_SALES_EMAIL="exo.plf.cloud.test1@gmail.com"
 
+# admin credentials
+[ -z "$CLOUD_AGENT_USERNAME" ]  && CLOUD_AGENT_USERNAME="cloudadmin"
+[ -z "$CLOUD_AGENT_PASSWORD" ]  && CLOUD_AGENT_PASSWORD="cloudadmin"
+
 # admin variables
-EXO_CLOUD_ADMIN_OPTS="-Dcloud.admin.log.dir=$EXO_ADMIN_LOGS_DIR \
+EXO_CLOUD_ADMIN_OPTS="-Dadmin.agent.auth.username=$CLOUD_AGENT_USERNAME \
+                      -Dadmin.agent.auth.password=$CLOUD_AGENT_PASSWORD \
+                      -Dcloud.admin.log.dir=$EXO_ADMIN_LOGS_DIR \
                       -Dcloud.admin.mail.host=$CLOUD_MAIL_HOST \
                       -Dcloud.admin.mail.port=$CLOUD_MAIL_PORT \
                       -Dcloud.admin.mail.ssl=$CLOUD_MAIL_SSL \
@@ -73,7 +81,7 @@ JMX_OPTS="-Dcom.sun.management.jmxremote=true -Djava.rmi.server.hostname=$HOST_E
 #REMOTE_DEBUG="-Xdebug -Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=y"
 REMOTE_DEBUG=""
 
-export JAVA_OPTS="-Xms1g -Xmx4g $JAVA_OPTS $EXO_CLOUD_ADMIN_OPTS $REMOTE_DEBUG $JMX_OPTS"
+export JAVA_OPTS="$EXO_JAVA_OPTS $JAVA_OPTS $EXO_CLOUD_ADMIN_OPTS $REMOTE_DEBUG $JMX_OPTS"
 
 # Catalina pid file
 [ -z "$CATALINA_PID" ]  && CATALINA_PID="$CATALINA_HOME/temp/catalina.tmp"
