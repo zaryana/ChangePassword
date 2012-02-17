@@ -875,3 +875,8 @@ input.Button {
 .ThankyouPage ul  li a.Back  {
 	background: url("../background/back-icon.png") no-repeat left 5px;
 }
+
+/** Reset Password page **/
+.UIResetPassPage .Button {
+	width: 210px;
+}
