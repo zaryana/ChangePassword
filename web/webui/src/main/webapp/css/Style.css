@@ -877,6 +877,6 @@ input.Button {
 }
 
 /** Reset Password page **/
-.UIResetPassPage .Button {
+.UIResetPassword .Button {
 	width: 210px;
 }
