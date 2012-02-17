@@ -7,7 +7,7 @@
   <parent>
     <groupId>com.exoplatform.cloudworkspaces</groupId>
     <artifactId>cloud-workspaces-parent</artifactId>
-    <version>1.0.8-SNAPSHOT</version>
+    <version>1.0.0-Beta8-SNAPSHOT</version>
   </parent>
   <artifactId>cloud-workspaces-platform-bundle</artifactId>
   <packaging>pom</packaging>
@@ -199,7 +199,7 @@ EXO_CLOUD_ADMIN_OPTS="-Dcloud.admin.log.dir=../logs/cloud-admin \
                    </replace>
                     <zip destfile="${project.build.directory}/tomcat-source/webapps/ecm-wcm-extension.war" basedir="${project.build.directory}/tomcat-source/webapps/ecm-wcm-extension" />
                     <delete dir="${project.build.directory}/tomcat-source/webapps/ecm-wcm-extension" />
-                    <copy file="${project.basedir}/src/main/resources/tomcat/conf/tomcat-users.xml" tofile="${project.build.directory}/tomcat-source/conf/tomcat-users.xml" overwrite="true" />
+                    <copy file="${project.basedir}/src/main/resources/tomcat/gatein/conf/configuration.properties" tofile="${project.build.directory}/tomcat-source/gatein/conf/configuration.properties" overwrite="true" />
                     <copy file="${project.basedir}/src/main/resources/tomcat/gatein/conf/cloud.properties" tofile="${project.build.directory}/tomcat-source/gatein/conf/cloud.properties" overwrite="true" />
                     <copy file="${project.basedir}/src/main/resources/tomcat/gatein/conf/cloud/users.properties" tofile="${project.build.directory}/tomcat-source/gatein/conf/cloud/users.properties" overwrite="true" />
                     <copy file="${project.basedir}/src/main/resources/tomcat/gatein/conf/cloud/agent-configuration.xml" tofile="${project.build.directory}/tomcat-source/gatein/conf/cloud/agent-configuration.xml" overwrite="true" />
