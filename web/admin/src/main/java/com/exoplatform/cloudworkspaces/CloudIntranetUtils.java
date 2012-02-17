@@ -681,12 +681,13 @@ public class CloudIntranetUtils
       }
    }
    
-   public void sendPasswordRestoreEmail(String email, String tName, String uuid){
+   public void sendPasswordRestoreEmail(String email, String tName, String uuid) throws CloudAdminException{
       
       String mailTemplate = cloudAdminConfiguration.getProperty(MailingProperties.CLOUD_ADMIN_MAIL_PASSWORD_RESTORE_TEMPLATE, "");
       Map<String, String> props = new HashMap<String, String>();
       props.put("user.mail", email);
       props.put("uid", uuid);
+      props.put("tenant.masterhost", cloudAdminConfiguration.getMasterHost());
       props.put("tenant.repository.name", tName);
       try
       {
