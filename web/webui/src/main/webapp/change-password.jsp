@@ -2,38 +2,36 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
 	<head>
-    <% String pageName = "Create Your Cloud Workspace"; %>
+    <% String pageName = "Change password"; %>
     <%@ include file="common/headStyle.jsp"%>
     <%@ include file="common/headScript.jsp"%>
 	</head>
-	<body onLoad="tenants.initRegistrationPage();">
+	<body onLoad="tenants.initChange();">
 		<!--begin header-->
     <%@ include file="common/header.jsp"%>
     
 		<!--begin FormPages-->	
 		<div class="UIPageBody UIChangePassword">
-			<form class="UIFormBox" method="POST">
+			<form class="UIFormBox" action="javascript:void(0);"  method="POST" id="changeForm">
 				<h1 class="TitleForm">Change Password</h1>
 				<div class="TenantFormMsg" id="messageString"></div>
 				<table>
 					<tbody>
 						<tr>
-							<td class="Field">&nbsp;</td><td><input class="required InputText  DisabledArea" type="text" disabled="disabled" value="your.name@yourcompany.com" /></td>
+							<td class="Field">New Password:</td><td><input type="password" id="password" name="password" class="required InputText" /><span class="Star">*</span></td>
 						</tr>
 						<tr>
-							<td class="Field">New Password:</td><td><input type="password" id="password" name="password" class="required InputText" /></td>
-						</tr>
-						<tr>
-							<td class="Field">Confirm New Password:</td><td><input type="password" id="password" name="re-password" class="required InputText" /></td>
+							<td class="Field">Confirm New Password:</td><td><input type="password" id="password2" name="password2" class="required InputText" /><span class="Star">*</span></td>
 						</tr>
 						<tr>
 							<td class="Field">&nbsp;</td>
 							<td>
-								<input type="submit" value="Submit" class="Button" />
+								<input type="submit" id="submitButton" value="Submit" class="Button" onClick="tenants.doChange();" />
 							</td>
 						</tr>
 					</tbody>
 				</table>
+				<input type="hidden"  id="id" name="id"/>
 			</form>
 		</div>
 		<!--begin Footer-->	

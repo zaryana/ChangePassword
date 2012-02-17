@@ -265,10 +265,14 @@ public class CloudIntranetUtils
                return false;
             }
          }
+         else if (connection.getResponseCode() == 502)
+         {
+            throw new CloudAdminException("An problem happened during processsing this request: Workspace is not created yet or it was suspended.");
+         }
          else
          {
             String err = readText(connection.getErrorStream());
-            String msg = ("Unable to get user list from workspace " + tName + " - HTTP status"
+            String msg = ("Unable to get user list from workspace " + tName + " - HTTP status:"
                + connection.getResponseCode() + (err != null ? ". Server error: \r\n" + err + "\r\n" : ""));
             LOG.error(msg);
             sendAdminErrorEmail(msg, null);
@@ -292,6 +296,88 @@ public class CloudIntranetUtils
          LOG.error(e.getMessage(), e);
          sendAdminErrorEmail(e.getMessage(), e);
          throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
+      }
+      finally
+      {
+         if (connection != null)
+         {
+            connection.disconnect();
+         }
+      }
+   }
+   
+   public void updatePassword(String email, String password) throws CloudAdminException
+   {
+      if (email == null || password == null)
+         throw new CloudAdminException("Cannot validate user with such input data. Please, review it.");
+
+      String username = email.substring(0, (email.indexOf("@")));
+      String tail = email.substring(email.indexOf("@") + 1);
+      String tName = tail.substring(0, tail.indexOf("."));
+      URL url;
+      HttpURLConnection connection = null;
+      StringBuilder strUrl = new StringBuilder();
+      strUrl.append("http://");
+      strUrl.append(tName);
+      strUrl.append(".");
+      strUrl.append(cloudAdminConfiguration.getProperty(CLOUD_ADMIN_FRONT_END_SERVER_HOST));
+      strUrl.append("/cloud-agent/rest/organization/newpassword/");
+      StringBuilder params;
+      try
+      {
+         params = new StringBuilder();
+         params.append("tname=" + tName);
+         params.append("&");
+         params.append("username="+ java.net.URLEncoder.encode(username, "utf-8"));
+         params.append("&");
+         params.append("password="+ java.net.URLEncoder.encode(password, "utf-8"));
+      }
+      catch (UnsupportedEncodingException e)
+      {
+         LOG.error(e.getMessage(), e);
+         sendAdminErrorEmail(e.getMessage(), e);
+         throw new CloudAdminException(
+            "An problem happened during processsing this request. It was reported to developers. Please, try again later.");
+      }
+      try
+      {
+         url = new URL(strUrl.toString());
+         connection = (HttpURLConnection)url.openConnection();
+         connection.setRequestMethod("POST");
+         connection.setDoOutput(true);
+         OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
+         writer.write(params.toString());
+         writer.flush();
+         writer.close();
+         if (connection.getResponseCode() == HTTP_OK)
+         {
+            return;
+         }
+         else
+         {
+            String err = readText(connection.getErrorStream());
+            String msg =
+               ("Unable to change password user "+ email +" to workspace " + tName +  " - HTTP status:"
+                  + connection.getResponseCode() + (err != null ? ". Server error: \r\n" + err + "\r\n" : ""));
+            LOG.error(msg);
+            sendAdminErrorEmail(msg, null);
+            throw new CloudAdminException(
+               "An problem happened during processsing this request. It was reported to developers. Please, try again later.");
+         }
+      }
+      catch (MalformedURLException e)
+      {
+         LOG.error(e.getMessage(), e);
+         sendAdminErrorEmail(e.getMessage(), e);
+         throw new CloudAdminException(
+            "An problem happened during processsing this request. It was reported to developers. Please, try again later.");
+      }
+      catch (IOException e)
+      {
+         LOG.error(e.getMessage(), e);
+         sendAdminErrorEmail(e.getMessage(), e);
+         throw new CloudAdminException(
+            "An problem happened during processsing this request. It was reported to developers. Please, try again later.");
       }
       finally
       {
@@ -574,7 +660,7 @@ public class CloudIntranetUtils
    
    public void sendContactUsEmail(String userMail, String firstName, String subject, String text){
       
-      String mailTemplate = cloudAdminConfiguration.getProperty(MailingProperties.CLOUD_ADMIN_MAIL_CONTACT_TEMPLATE, "Contact-Us request.");
+      String mailTemplate = cloudAdminConfiguration.getProperty(MailingProperties.CLOUD_ADMIN_MAIL_CONTACT_TEMPLATE, "");
       String email = cloudAdminConfiguration.getProperty(MailingProperties.CLOUD_ADMIN_MAIL_SUPPOR_EMAIL, "support@cloud-workspaces.com");
       
       Map<String, String> props = new HashMap<String, String>();
@@ -593,6 +679,28 @@ public class CloudIntranetUtils
        LOG.error(msg);
        sendAdminErrorEmail(msg, ex);
       }
+   }
+   
+   public void sendPasswordRestoreEmail(String email, String tName, String uuid){
+      
+      String mailTemplate = cloudAdminConfiguration.getProperty(MailingProperties.CLOUD_ADMIN_MAIL_PASSWORD_RESTORE_TEMPLATE, "");
+      Map<String, String> props = new HashMap<String, String>();
+      props.put("user.mail", email);
+      props.put("uid", uuid);
+      props.put("tenant.repository.name", tName);
+      try
+      {
+            mailSender.sendMail(email, 
+               cloudAdminConfiguration.getProperty(MailingProperties.CLOUD_ADMIN_MAIL_PASSWORD_RESTORE_SUBJECT), 
+                                 mailTemplate, props, false, "noreply@cloud-workspaces.com");
+      }
+      catch (CloudAdminException ex)
+      {
+       String msg = ("Cannot send mail password restore message. Requestor email is: " + email);
+       LOG.error(msg);
+       sendAdminErrorEmail(msg, ex);
+      }
+      
    }
 
    public String getTenantNameFromWhitelist(String email) throws CloudAdminException

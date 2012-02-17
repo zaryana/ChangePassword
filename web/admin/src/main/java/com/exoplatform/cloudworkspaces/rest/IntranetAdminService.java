@@ -20,6 +20,8 @@ package com.exoplatform.cloudworkspaces.rest;
 
 import static org.exoplatform.cloudmanagement.rest.admin.CloudAdminRestServicePaths.CLOUD_ADMIN_PUBLIC_TENANT_CREATION_SERVICE;
 
+import com.exoplatform.cloudworkspaces.ChangePasswordManager;
+
 import com.exoplatform.cloudworkspaces.ReferencesManager;
 
 import com.exoplatform.cloudworkspaces.listener.TenantCreatedListenerThread;
@@ -163,6 +165,7 @@ public class IntranetAdminService extends TenantCreator
                props.put("rfid",
                   new ReferencesManager(adminConfiguration).putEmail(userMail, UUID.randomUUID().toString()));
                utils.sendOkToJoinEmail(userMail, props);
+               return Response.ok().build();
             }
             case ONLINE:
             {
@@ -172,6 +175,7 @@ public class IntranetAdminService extends TenantCreator
                   props.put("rfid",
                      new ReferencesManager(adminConfiguration).putEmail(userMail, UUID.randomUUID().toString()));
                   utils.sendOkToJoinEmail(userMail, props);
+                  return Response.ok().build();
                }
                else
                {
@@ -182,6 +186,7 @@ public class IntranetAdminService extends TenantCreator
                   // send not allowed mails
                   props.put("users.maxallowed", Integer.toString(utils.getMaxUsersForTenant(tName)));
                   utils.sendJoinRejectedEmails(tName, userMail, props);
+                  return Response.ok().build();
                }
             }
             case SUSPENDED:
@@ -286,6 +291,7 @@ public class IntranetAdminService extends TenantCreator
                      requestDao.put(req);
                      props.put("users.maxallowed", Integer.toString(utils.getMaxUsersForTenant(tName)));
                      utils.sendJoinRejectedEmails(tName, userMail, props);
+                     return Response.ok().build();
                   }
 
                }
@@ -304,6 +310,7 @@ public class IntranetAdminService extends TenantCreator
                   new UserRequest("", tName, userMail, firstName, lastName, "", "", password, "", false,
                      RequestState.WAITING_JOIN);
                requestDao.put(req);
+               return Response.ok().build();
             }
             case SUSPENDED : 
             {
@@ -623,6 +630,47 @@ public class IntranetAdminService extends TenantCreator
       else
          return Response.status(Status.BAD_REQUEST)
             .entity("Warning! You are using broken link to the Registration Page. Please sign up again.").build();
+   }
+   
+   
+   @GET
+   @Path("passrestore/{email}")
+   @Produces(MediaType.TEXT_PLAIN)
+   public Response passrestore(@PathParam("email") String email) throws CloudAdminException
+   {
+      if (!utils.validateEmail(email))
+         return Response.status(Status.BAD_REQUEST).entity("Please enter a valid email address.").build();
+      
+      ChangePasswordManager manager = new ChangePasswordManager(adminConfiguration);
+      String username = email.substring(0, (email.indexOf("@")));
+      String tail = email.substring(email.indexOf("@") + 1);
+      String tName = tail.substring(0, tail.indexOf("."));
+      if (isuserexist(tName, username).getEntity().equals("TRUE"))
+      {
+        String uuid = manager.addReference(email);
+        utils.sendPasswordRestoreEmail(email, tName, uuid);
+      } else 
+      {
+         return Response.status(Status.BAD_REQUEST).entity("Such user is not found on workspace workspace").build();
+      }
+      return Response.ok().build();
+   }
+   
+   @POST
+   @Path("passconfirm")
+   @Produces(MediaType.TEXT_PLAIN)
+   public Response passconfirm(@FormParam("uuid") String uuid, @FormParam("password") String password) throws CloudAdminException
+   {
+      ChangePasswordManager manager = new ChangePasswordManager(adminConfiguration);
+      try 
+      {
+         String email =  manager.validateReference(uuid);
+         utils.updatePassword(email, password);
+         return Response.ok().build();
+      } catch (CloudAdminException e)
+      {
+         return Response.serverError().entity(e.getMessage()).build();
+      }
    }
    
    //For the invitation gadget

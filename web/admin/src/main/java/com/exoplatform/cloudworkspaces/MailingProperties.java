@@ -63,7 +63,11 @@ public class MailingProperties
       "cloud.admin.mail.intranet.created.owner.subject";
    
    public static final String CLOUD_ADMIN_MAIL_CONTACT_TEMPLATE = "cloud.admin.mail.contact.template";
+   
+   public static final String CLOUD_ADMIN_MAIL_PASSWORD_RESTORE_TEMPLATE = "cloud.admin.mail.password.reset.template";
 
+   public static final String CLOUD_ADMIN_MAIL_PASSWORD_RESTORE_SUBJECT = "cloud.admin.mail.password.reset.subject";
+   
    public static final String CLOUD_ADMIN_MAIL_REQUEST_QUEUED_TEMPLATE = "cloud.admin.mail.request.queued.template";
 
    public static final String CLOUD_ADMIN_MAIL_REQUEST_QUEUED_SUBJECT = "cloud.admin.mail.request.queued.subject";

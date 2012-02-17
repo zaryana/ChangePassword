@@ -236,6 +236,20 @@ public class IntranetRESTOrganizationServiceImpl
             .type("text/plain").build());
       }
    }
+   
+   
+   @POST
+   @Path("/newpassword")
+   @RolesAllowed("cloud-admin")
+   public Response updatePassword(@FormParam("tname") String tname, 
+      @FormParam("username") String userName, @FormParam("password") String password) throws Exception
+   {
+      repositoryService.setCurrentRepositoryName(tname);
+      User user = organizationService.getUserHandler().findUserByName(userName);
+      user.setPassword(password);
+      organizationService.getUserHandler().saveUser(user, true);
+      return Response.ok().build();
+   }
 
    protected String errorMessage(String message, Exception err)
    {

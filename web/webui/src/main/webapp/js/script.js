@@ -323,7 +323,20 @@ Tenants.prototype.initSignInPage = function() {
  }
 }
 
-
+Tenants.prototype.initChange = function() {
+  tenants.init();
+  if (queryString != null && queryString != "") {
+  var id_start = queryString.indexOf('id=');
+  id = (id_start != -1) ? queryString.substring(id_start + 3) : null;
+  if (id != null && id != "") {
+   _gel("id").value = id;
+   } else {
+   _gel("messageString").innerHTML = "<div class=\"Ok\">Your link to this page is broken. Please, re-request it.</div>";
+   }
+  } else {
+  _gel("messageString").innerHTML = "<div class=\"Ok\">Your link to this page is broken. Please, re-request it.</div>";   
+  }
+}
 
 Tenants.prototype.initResumingPage = function() {
  tenants.init();
@@ -487,6 +500,91 @@ Tenants.prototype.doContactRequest = function() {
       _gel("submitButton").value = "Wait...";
       _gel("cancelButton").disabled = true;
 }
+
+Tenants.prototype.doChange = function() {
+
+  _gel("submitButton").value = "Wait...";
+  var url = tenantServicePath + "/passconfirm";
+  jQuery.validator.setDefaults(
+  {
+   errorPlacement: function(error, element)
+     {
+      error.appendTo(element.next());
+     },
+   });
+
+   $("#changeForm").validate({
+    rules: {
+      password: {
+        required: true,
+        minlength: 6,
+      },
+      password2: {
+        required: true,
+        minlength: 6,
+        equalTo: "#password"
+      }
+     }
+    });
+   var valid = $("#changeForm").valid();
+   if (!valid) return;
+   
+   var fdata = "uuid="+_gel("id").value + "&password=" +_gel("password").value.trim();
+   $.ajax({
+     url: url,
+     type: 'POST',
+     data: fdata,
+     dataType: 'text',
+     processData: false,
+     success: function(data){
+      alert("succ");
+      _gel("submitButton").value = "Submit";
+      _gel("messageString").innerHTML = "<div class=\"Ok\"><span style=\"color:#19BBE7;\">Request completed, you can use new password now.</span></div>";
+     },
+     error: function (request, status, error) {
+     alert(status + error);
+      _gel("messageString").innerHTML = "<div class=\"Ok\">" + request.responseText + "</div>";
+     _gel("submitButton").value = "Submit";
+    }});
+}
+
+
+
+Tenants.prototype.doReset = function() {
+    _gel("submitButton").value = "Wait...";
+    var url = tenantServicePath + "/passrestore";
+    jQuery.validator.setDefaults(
+    {
+      errorPlacement: function(error, element)
+      {
+       error.appendTo(element.next());
+      },
+    });
+    
+     $("#resetForm").validate({
+       rules: {
+         email: {
+         required: true,
+       }
+      },
+      });
+    var valid = $("#resetForm").valid();
+    if (!valid){_gel("submitButton").value = "Change my password"; return;}
+    var checkURL = url + "/" + _gel("email").value;
+    
+    $.ajax({
+    url: checkURL,
+    success: function(data){
+         _gel("submitButton").value = "Change my password";
+         _gel("submitButton").style.display = "none"; 
+        _gel("messageString").innerHTML = "<div class=\"Ok\"><span style=\"color:#19BBE7;\">Request completed, check your email for instructions.</span></div>";
+      },
+     error: function (request, status, error) {
+       _gel("messageString").innerHTML = "<div class=\"Ok\">" + request.responseText + "</div>";
+       _gel("submitButton").value = "Change my password";
+       },
+      dataType: 'text'});                                                                                                                                                                                                                                            _gel("submitButton").value = "Wait...";                                                                                                                                                         
+  } 
 
 
 /*  Handle signup response */
