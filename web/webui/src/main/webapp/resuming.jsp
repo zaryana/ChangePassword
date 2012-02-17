@@ -16,7 +16,7 @@
     
 		<!--begin ThanksPages-->	
 		 <div class="UIPageBody ThanksPages ClearFix">
-			<h1 id="h1"></h1>
+			<h1 id="h1">You're workspace hasn't been accessed for a while. We are currently working on resuming it.</h1>
 			<ul><li id="li1">If you are already a member of, please wait and sign-in again</li><li id="li2">If you want join Workspace , check you mail box for an Invitation message.</li></ul>
 			<div class="LeftContent FL">
 				<h3>Watch the Getting Started video:</h3>
