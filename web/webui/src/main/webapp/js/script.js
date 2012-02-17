@@ -537,12 +537,10 @@ Tenants.prototype.doChange = function() {
      dataType: 'text',
      processData: false,
      success: function(data){
-      alert("succ");
       _gel("submitButton").value = "Submit";
       _gel("messageString").innerHTML = "<div class=\"Ok\"><span style=\"color:#19BBE7;\">Request completed, you can use new password now.</span></div>";
      },
      error: function (request, status, error) {
-     alert(status + error);
       _gel("messageString").innerHTML = "<div class=\"Ok\">" + request.responseText + "</div>";
      _gel("submitButton").value = "Submit";
     }});
