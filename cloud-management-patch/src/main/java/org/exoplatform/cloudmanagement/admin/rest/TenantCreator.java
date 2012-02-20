@@ -109,6 +109,29 @@ public class TenantCreator
 
       return Response.ok(tenantStatus.getUuid()).build();
    }
+   
+   /**
+    * Create tenant request record in Cloud Admin and return Id of this request.
+    * This method doesn't send any email messages to an user.
+    * 
+    * @param tenantName String, requested tenant name
+    * @param userMail String, user email address
+    * @return String with tenant request Id 
+    * @throws CloudAdminException if error occurs
+    */
+   public String createTenant(String tenantName, String userMail) throws CloudAdminException {
+     TransientTenantStatus tenantStatus = new TransientTenantStatus(tenantName);
+     tenantStatus.setProperty(TenantStatus.PROPERTY_USER_MAIL, userMail);
+     tenantStatus.setProperty(TenantStatus.PROPERTY_TEMPLATE_ID,
+                             adminConfiguration.getProperty(CLOUD_ADMIN_TENANT_BACKUP_ID));
+
+     tenantMetadataValidator.validate(tenantStatus);
+     cloudInfoHolder.updateTenantState(tenantStatus,
+                                      TenantState.UNKNOWN,
+                                      TenantState.VALIDATING_EMAIL);
+
+     return tenantStatus.getUuid();
+   }
 
    @POST
    @Path("/create-confirmed")
