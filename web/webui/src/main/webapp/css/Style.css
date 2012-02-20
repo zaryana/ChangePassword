@@ -880,3 +880,11 @@ input.Button {
 .UIResetPassword .Button {
 	width: 210px;
 }
+
+.UIPageBody table td.ForgotPass {
+	padding-bottom: 5px;
+}
+
+.UIPageBody table td.ForgotPass a {
+	padding-left: 28px;
+}

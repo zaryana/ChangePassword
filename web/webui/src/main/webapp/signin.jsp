@@ -25,7 +25,7 @@
 						<td class="Field">Workspace:</td><td> <input class="required InputText" type="text" name="workspace" id="workspace" value="mycompany" onclick="this.value='';" /><span class="Star">*</span></td>
 					</tr>
 					<tr>
-					  <td class="Field"></td><td><a href="/reset-password.jsp">Forgot password?</a></td>
+					  <td class="Field"></td><td class="ForgotPass"><a href="/reset-password.jsp">Forgot Password?</a></td>
 					</tr>
 					<tr>
 						<td class="Field"></td><td> <div id="" class="info">If you don't remember your workspace name, look in your registration mailbox.</div></td>
