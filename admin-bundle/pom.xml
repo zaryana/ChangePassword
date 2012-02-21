@@ -21,12 +21,6 @@
       <version>${project.version}</version>
       <type>war</type>
     </dependency>
-    <!-- dependency>
-      <groupId>com.exoplatform.cloudworkspaces</groupId>
-      <artifactId>cloud-workspaces-webui</artifactId>
-      <version>${project.version}</version>
-      <type>war</type>
-    </dependency -->
     <dependency>
       <groupId>org.exoplatform.cloud-management</groupId>
       <artifactId>cloud-admin-valve</artifactId>
@@ -47,67 +41,62 @@
   <profiles>
     <profile>
       <id>distrib</id>
-        <build>
-          <finalName>Cloud-Workspaces-Admin-${project.version}</finalName>
-          <plugins>
+      <build>
+        <finalName>Cloud-Workspaces-Admin-${project.version}</finalName>
+        <plugins>
           <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>copy-dependencies-war</id>
-            <phase>process-resources</phase>
-            <goals>
-              <goal>copy-dependencies</goal>
-            </goals>
-            <configuration>
-              <includeTypes>war</includeTypes>
-              <stripVersion>false</stripVersion>
-              <outputDirectory>${project.build.directory}/packager-conf/war</outputDirectory>
-            </configuration>
-          </execution>
-          <execution>
-            <id>copy-dependencies-jar</id>
-            <phase>process-resources</phase>
-            <goals>
-              <goal>copy-dependencies</goal>
-            </goals>
-            <configuration>
-              <includeTypes>jar</includeTypes>
-              <stripVersion>false</stripVersion>
-              <outputDirectory>${project.build.directory}/packager-conf/jar</outputDirectory>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>copy-clear-tomcat</id>
-            <phase>process-resources</phase>
-            <configuration>
-              <tasks>
-                <copy todir="${project.build.directory}/admin-tomcat">
-                  <fileset dir="${exo.projects.directory.dependencies}/${exo.projects.app.tomcat.version}/">
-                    <exclude name="**/ROOT/**" />
-                    <exclude name="**/docs/**" />
-                    <exclude name="**/examples/**" />
-                  </fileset>
-                </copy>
-              </tasks>
-            </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>copy-dependencies-war</id>
+                <phase>process-resources</phase>
+                <goals>
+                  <goal>copy-dependencies</goal>
+                </goals>
+                <configuration>
+                  <includeTypes>war</includeTypes>
+                  <stripVersion>false</stripVersion>
+                  <outputDirectory>${project.build.directory}/packager-conf/war</outputDirectory>
+                </configuration>
+              </execution>
+              <execution>
+                <id>copy-dependencies-jar</id>
+                <phase>process-resources</phase>
+                <goals>
+                  <goal>copy-dependencies</goal>
+                </goals>
+                <configuration>
+                  <includeTypes>jar</includeTypes>
+                  <stripVersion>false</stripVersion>
+                  <outputDirectory>${project.build.directory}/packager-conf/jar</outputDirectory>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
           <plugin>
             <artifactId>maven-antrun-plugin</artifactId>
             <executions>
               <execution>
-                <id>-01-configure-cloud-admin</id>
+                <id>01-copy-clear-tomcat</id>
+                <phase>process-resources</phase>
+                <configuration>
+                  <tasks>
+                    <copy todir="${project.build.directory}/admin-tomcat">
+                      <fileset dir="${exo.projects.directory.dependencies}/${exo.projects.app.tomcat.version}/">
+                        <exclude name="**/ROOT/**" />
+                        <exclude name="**/docs/**" />
+                        <exclude name="**/examples/**" />
+                      </fileset>
+                    </copy>
+                  </tasks>
+                </configuration>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+              </execution>          
+              <execution>
+                <id>02-configure-cloud-admin</id>
                 <phase>prepare-package</phase>
                 <configuration>
                   <tasks>
@@ -121,17 +110,13 @@
                     <copy todir="${project.build.directory}/admin-tomcat/conf" overwrite="true">
                       <fileset dir="${basedir}/src/main/resources/tomcat/conf" />
                     </copy>
-
                     <echo message="Deploy cloud-workspaces-web-admin.war" />
                     <copy file="${project.build.directory}/packager-conf/war/cloud-workspaces-web-admin-${project.version}.war" tofile="${project.build.directory}/admin-tomcat/webapps/ROOT.war" />
                     <chmod file="${project.build.directory}/admin-tomcat/bin/*.sh" perm="+x" />
-
                     <echo message="Copy cloud-admin-valve.jar" />
                     <copy file="${project.build.directory}/packager-conf/jar/cloud-admin-valve-${org.exoplatform.cloud-management.version}.jar" tofile="${project.build.directory}/admin-tomcat/lib/cloud-admin-valve-${project.version}.jar" />
-
                     <echo message="Copy cloud-services-common.jar" />
                     <copy file="${project.build.directory}/packager-conf/jar/cloud-services-common-${org.exoplatform.cloud-management.version}.jar" tofile="${project.build.directory}/admin-tomcat/lib/cloud-services-common-${project.version}.jar" />
-
                     <echo message="Copy tomcat-catalina-jmx-remote.jar" />
                     <copy file="${project.build.directory}/packager-conf/jar/tomcat-catalina-jmx-remote-${tomcat.version}.jar" tofile="${project.build.directory}/admin-tomcat/lib/tomcat-catalina-jmx-remote-${tomcat.version}.jar" />
                   </tasks>

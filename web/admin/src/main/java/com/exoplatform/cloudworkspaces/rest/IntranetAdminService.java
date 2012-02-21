@@ -233,18 +233,27 @@ public class IntranetAdminService extends TenantCreator
    }
    
    /**
-    * Sign-up the Cloud. Result is a registration URL for a registeration or to join of an existing tenant. 
-    * This URL can be used to proceed the user registration on to the Cloud. 
+    * Sign-up the Cloud. Result is a registration URL for a registeration or to join to an existing tenant.<br/> 
+    * This URL can be used to proceed the user registration on to the Cloud.<br/> 
+    * 
+    * <p>Specification</p>
+    * <ul> 
+    * <li>Service return status 201 Created if such tenant can be created in the cloud, the response entity will contain an URL for a registration of a new tenant. This registration URL will be actual during some fixed period in time (6h currently).</li>
+    * <li>If requested tenant already exists and this user can be joined, the service will return status 200 OK and a link to join to the tenant.</li>
+    * <li>If such tenant already exists and an user already signed up to the tenant (or it is in progress), the service will return client error 409 Conflict and a message "User EMAIL already signed up to TENANT_NAME.".</li>
+    * <li>In case if a tenant creation isn't possible a related message will be returned with status 400 Bad Request.</li> 
+    * <li>For an error, teh error message will be returned with status 500 Internal Server Error.</li>
+    * </ul>
     * 
     * @param String userMail email address of user to signup/join.
-    * @return Response with Id of just crated signup request.
+    * @return Response with URL for a registration/join or with a client error.
     * @throws CloudAdminException if error occurs
     */
    @POST
    @Path("/signup-link")
    public Response signupLink(@FormParam("user-mail") String userMail) throws CloudAdminException
    {
-      // TODO 2012-02-20: copy of signup() method due to logic and need of other messages in responses
+      // 2012-02-20: copy of signup() method due to logic and need of other messages in responses
      
       LOG.info("Received Signup Link request for " + userMail);
       String tName = null;

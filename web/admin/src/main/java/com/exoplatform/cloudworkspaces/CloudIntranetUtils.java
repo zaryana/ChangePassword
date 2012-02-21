@@ -18,16 +18,12 @@
  */
 package com.exoplatform.cloudworkspaces;
 
+import static java.net.HttpURLConnection.HTTP_CREATED;
+import static java.net.HttpURLConnection.HTTP_OK;
 import static org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration.CLOUD_ADMIN_FRONT_END_SERVER_HOST;
 import static org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration.CLOUD_ADMIN_MAIL_ADMIN_EMAIL;
 import static org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration.CLOUD_ADMIN_MAIL_ADMIN_ERROR_SUBJECT;
 import static org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration.CLOUD_ADMIN_MAIL_ADMIN_ERROR_TEMPLATE;
-import static java.net.HttpURLConnection.HTTP_OK;
-import static java.net.HttpURLConnection.HTTP_CREATED;
-
-import com.exoplatform.cloudworkspaces.listener.TenantResumeThread;
-
-import com.exoplatform.cloudworkspaces.listener.TenantCreatedListenerThread;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -72,6 +68,8 @@ import org.exoplatform.cloudmanagement.admin.status.CloudInfoHolder;
 import org.exoplatform.cloudmanagement.status.TenantState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.exoplatform.cloudworkspaces.listener.TenantResumeThread;
 
 public class CloudIntranetUtils
 {
