@@ -289,11 +289,6 @@ public class IntranetAdminService extends TenantCreator
       }
       catch (TenantAlreadyExistException ex)
       {
-         /*Map<String, String> props = new HashMap<String, String>();
-         props.put("tenant.masterhost", adminConfiguration.getMasterHost());
-         props.put("tenant.repository.name", tName);
-         props.put("user.mail", userMail);*/
-
          try
          {
             TenantState tState = cloudInfoHolder.getTenantStatus(tName).getState();
