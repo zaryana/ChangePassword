@@ -130,8 +130,11 @@ public class IntranetAdminService extends TenantCreator
       String username = null;
       try
       {
-         if (!utils.validateEmail(userMail))
+         if (!utils.validateEmail(userMail)) 
+         {
+            LOG.info("User " + userMail + " rejected. Need valid email address.");
             return Response.status(Status.BAD_REQUEST).entity("Please enter a valid email address.").build();
+         }
 
          username = userMail.substring(0, (userMail.indexOf("@")));
          tName = utils.getTenantNameFromWhitelist(userMail);
@@ -139,6 +142,7 @@ public class IntranetAdminService extends TenantCreator
          if (tName == null)
          {
             String domain = userMail.substring(userMail.indexOf("@"));
+            LOG.info("User " + userMail + " rejected. Need work email address.");
             return Response.status(Status.BAD_REQUEST)
                .entity("Sorry, we can't sign you up with an email address " + domain + ". Try with your work email.")
                .build();
@@ -150,6 +154,7 @@ public class IntranetAdminService extends TenantCreator
          }
          else
          {
+            LOG.info("User " + userMail + " already signed up to " + tName + ". Wait until a workspace will be created.");
             return Response
                .ok(
                   "You already signed up. Wait until your workspace will be created. We will inform you when it will be ready.")
@@ -215,7 +220,7 @@ public class IntranetAdminService extends TenantCreator
             {
                String msg =
                   "Sorry, we cannot process your join request right now, workspace seems not ready. Please, try again later.";
-               LOG.warn("Sign-up user " + userMail + " failed, tenant " + tName + " state is "
+               LOG.warn("Signup failed for user " + userMail + ", tenant " + tName + " state is "
                   + cloudInfoHolder.getTenantStatus(tName).getState().toString());
                return Response.status(Status.BAD_REQUEST).entity(msg).build();
             }
@@ -223,7 +228,8 @@ public class IntranetAdminService extends TenantCreator
          }
          catch (UserAlreadyExistsException e)
          {
-            // Custom status for disable ajax auto redirection; 
+            // Custom status for disable ajax auto redirection;
+            LOG.info("User " + userMail + " already signed up to " + tName + ". Redirect to signin page.");
             return Response.status(309)
                .header("Location", "http://" + adminConfiguration.getMasterHost() + "/signin.jsp?email=" + userMail)
                .build();
@@ -283,6 +289,7 @@ public class IntranetAdminService extends TenantCreator
          }
          else
          {
+            LOG.info("Client error: user " + userMail + " already signed up to " + tName + ". Wait until a workspace will be created.");
             return Response.status(Status.CONFLICT).entity("User " + userMail + " already signed up to " + tName + 
                    ". Wait until a workspace will be created. The user will be informed when it will be ready.").build();
          }
@@ -327,6 +334,7 @@ public class IntranetAdminService extends TenantCreator
          }
          catch (UserAlreadyExistsException e)
          {
+            LOG.info("Client error: user " + userMail + " already signed up to " + tName + ".");
             return Response.status(Status.CONFLICT).entity("User " + userMail + " already signed up to " + tName + ".").build();
          }
       }
