@@ -14,18 +14,10 @@
 		 <div class="UIPageBody AboutPages">
 			<h1>About Cloud Workspaces</h1>
 			<h3>Cloud Workspaces: Your Company's Social Intranet in the Cloud</h3>
-			<p>Teams can share updates about their work activities, improving enterprise communication. But Cloud Workspaces lets you go beyond the basic chatter of activity streams, giving employees the tools to transform status updates into increased productivity. Individual users gain personalized dashboards that can act as the starting point for all their online work, while teams and projects can have their own dedicated workspace to connect, share resources and collaborate.
+			<p>Cloud Workspaces is a free cloud-based social intranet. It provides tools that let you capture, organize and act on your team's internal knowledge, from a full-featured enterprise wiki, powerful document management system, forums, calendars and more.
 			</p>
-			<dl>			
-				<dt>Personalized Dashboards</dt>
-				<dd>
-					<p>Personalized dashboards serve as the home base for your online work. Upcoming calendar events, to-do lists, bookmarks to your most-used resources, and other key information is visible at-a-glance. From your dashboard you can quickly post updates about your work, share links and files with co-workers, see what others are working on and provide feedback. </p>
-				</dd>
-				<dt>Spaces</dt>
-				<dd>
-					<p>The concept of a workspace, or "space", is central to the modern social intranet. A user or group of users sets up a space, which can be dedicated to a specific team, topic or cross-departmental project. Every space is a toolbox of user experience features, ready to support your team or project with an enterprise wiki, calendars, forums, a document repository and more.</p>
-				</dd>
-			</dl>
+			<p>Cloud Workspaces lets you go beyond the basic chatter of activity streams, giving employees the tools to customize their working environment. Individual users can create personalized dashboards to act as the starting point for all their online work, while teams and projects can have their own dedicated workspace to connect, share resources and collaborate. Finally, developers can build and deploy custom apps with the embedded web-based IDE.
+			</p>
 			<h3>Availability</h3>
 			<p>Cloud Workspaces is currently in private beta. This means we're initially limiting the number of accounts while we continue testing the service and gathering feedback from users. Sign up for updates with your professional email and we?ll send you an invitation to participate as the program expands. </p>
 			<h3>Features & Benefits</h3>
