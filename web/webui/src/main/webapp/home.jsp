@@ -116,7 +116,7 @@
 					<a href="/about.jsp" class="Readmore">Learn more</a>
 				</div>
 				<div class="Cols MCol FL">
-					<h3>What is a Social Intranet?</h3>
+					<h3>What Can You Do with Cloud Workspaces?</h3>
 					<a href="#TB_inline?height=420&width=670&inlineId=videoLeft" class="thickbox">
 					<img src="/background/img_video.png" alt=""/>
 					</a>
