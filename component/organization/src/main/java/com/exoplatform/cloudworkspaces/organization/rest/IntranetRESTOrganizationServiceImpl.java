@@ -41,6 +41,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.exoplatform.common.http.HTTPStatus;
 import org.exoplatform.commons.utils.ListAccess;
@@ -244,11 +245,40 @@ public class IntranetRESTOrganizationServiceImpl
    public Response updatePassword(@FormParam("tname") String tname, 
       @FormParam("username") String userName, @FormParam("password") String password) throws Exception
    {
-      repositoryService.setCurrentRepositoryName(tname);
-      User user = organizationService.getUserHandler().findUserByName(userName);
-      user.setPassword(password);
-      organizationService.getUserHandler().saveUser(user, true);
-      return Response.ok().build();
+      try 
+      {
+        repositoryService.setCurrentRepositoryName(tname);
+        User user = organizationService.getUserHandler().findUserByName(userName);
+        
+        if (user != null) 
+        {
+          // save new instance of an User object to workaround JCR org service caching to let PasswordEncrypterUserListener to know that we have to encript this password
+          User updatedUser = organizationService.getUserHandler().createUserInstance(user.getUserName());
+          updatedUser.setFirstName(user.getFirstName());
+          updatedUser.setLastName(user.getLastName());
+          updatedUser.setFullName(user.getFullName());
+          updatedUser.setEmail(user.getEmail());
+          updatedUser.setOrganizationId(user.getOrganizationId());
+          updatedUser.setPassword(password);
+          // and deprecated
+          updatedUser.setCreatedDate(user.getCreatedDate());
+          updatedUser.setLastLoginTime(user.getLastLoginTime());
+          
+          organizationService.getUserHandler().saveUser(updatedUser, true);
+          return Response.ok().build();
+        } 
+        else 
+        {
+          return Response.status(Status.BAD_REQUEST).entity("User " + userName + " not found on " + tname).build();
+        }
+      } 
+      catch(Exception e) 
+      {
+        String err = "Unable to change password of user " + userName + " on " + tname;
+        LOG.error(err, e);
+        throw new WebApplicationException(e, Response.status(HTTPStatus.INTERNAL_ERROR).entity(errorMessage(err, e))
+           .type("text/plain").build());
+      }
    }
 
    protected String errorMessage(String message, Exception err)
