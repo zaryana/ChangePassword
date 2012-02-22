@@ -19,7 +19,7 @@
 			<p>Cloud Workspaces lets you go beyond the basic chatter of activity streams, giving employees the tools to customize their working environment. Individual users can create personalized dashboards to act as the starting point for all their online work, while teams and projects can have their own dedicated workspace to connect, share resources and collaborate. Finally, developers can build and deploy custom apps with the embedded web-based IDE.
 			</p>
 			<h3>Availability</h3>
-			<p>Cloud Workspaces is currently in private beta. This means we're initially limiting the number of accounts while we continue testing the service and gathering feedback from users. Sign up for updates with your professional email and we?ll send you an invitation to participate as the program expands. </p>
+			<p>Cloud Workspaces is currently in private beta. This means we're initially limiting the number of accounts while we continue testing the service and gathering feedback from users. Sign up for updates with your professional email and we'll send you an invitation to participate as the program expands. </p>
 			<h3>Features & Benefits</h3>
 			<div class="ClearFix">
 				<ul class="LeftContent">
