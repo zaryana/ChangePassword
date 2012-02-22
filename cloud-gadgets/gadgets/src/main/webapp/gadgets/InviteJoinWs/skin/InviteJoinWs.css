@@ -1,0 +1,12 @@
+.UIGadgetThemes input {
+        font-size: 12px;
+}
+
+.Message {
+        padding: 10px 15px;
+}
+
+.Warning {
+        padding: 10px 15px;
+        color: #FF0000;
+}

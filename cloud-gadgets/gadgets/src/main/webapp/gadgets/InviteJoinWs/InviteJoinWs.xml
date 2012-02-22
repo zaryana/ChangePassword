@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Module>
+  <ModulePrefs author="eXoPlatform" title="Invite Join Workspace">
+    <Locale messages="locale/default.xml" />
+    <Locale lang="fr" messages="locale/fr.xml" />
+    <Require feature="opensocial-0.8" />
+    <Require feature="dynamic-height"/>
+  </ModulePrefs>
+  <Content type="html">
+    <![CDATA[     
+    
+    <head>
+      <link type="text/css" rel="stylesheet" href="/exo-gadget-resources/skin/exo-gadget/gadget-common.css" />
+      <link type="text/css" rel="stylesheet" href="skin/InviteJoinWs.css" />
+      <script language="javascript" type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+      <script type="text/javascript">
+        
+        function handleRequest() {
+                               
+              var inputTxt = document.getElementById("email");
+              var email = inputTxt.value;
+              var notifyMsg = document.getElementById("notifyMsg");
+              var regex = /^[\w\.-_\+]+@[\w-]+(\.\w{2,4})+$/;  //regular expression for email validation
+              if (email.length == 0 || !regex.test(email)) {
+              
+                    notifyMsg.innerHTML = '<div class="Warning">Please enter a valid email address.</div>';
+                    gadgets.window.adjustHeight($("#content").get(0).offsetHeight);
+              } else {
+                  
+                    var hostname = location.hostname;
+                    if (location.port) {
+                        hostname += ":" + location.port;
+                    }
+                    
+                    document.getElementById("send").disabled = true;
+                    notifyMsg.innerHTML = '<div class="Message">Waiting...</div>';
+                    gadgets.window.adjustHeight($("#content").get(0).offsetHeight);
+                                  
+
+                    var mainUrl = "/rest/invite-join-ws/send-mail/" + email + "/" + hostname;
+
+                    $.ajax({
+                         url: mainUrl,
+                         success: function(status) {
+                                 var notifyMsg = document.getElementById("notifyMsg");
+                                 if (status.indexOf("Message sent") != -1) {
+                                           alert("Invitation sent.");
+                                           notifyMsg.innerHTML = "";
+                                 }
+                                 else if (status.indexOf("Invalid email") != -1) notifyMsg.innerHTML = '<div class="Warning">Please enter a valid email address.</div>';
+                                 
+                                 else if (status.indexOf("Blacklisted email") != -1) notifyMsg.innerHTML = '<div class="Warning">Please use a corporate email address.</div>';
+
+                                 else notifyMsg.innerHTML = '<div class="Warning">Error sending the invitation. Please try again.</div>';
+
+                                 document.getElementById("send").disabled = false;
+                                 gadgets.window.adjustHeight($("#content").get(0).offsetHeight);
+
+                        },
+                        error: function(request, status, error){
+                                notifyMsg.innerHTML = request.responseText;
+                        },
+                        dataType: 'text'
+                        });
+                }                                  
+        }
+                          
+    function init() {
+
+      $("#send").click(function (){
+        handleRequest();
+      });
+          
+      $("#email").focus(function (){
+        
+        document.getElementById("email").value = "";
+        document.getElementById("notifyMsg").innerHTML = "";
+        gadgets.window.adjustHeight($("#content").get(0).offsetHeight);
+        
+      });
+      
+      gadgets.window.adjustHeight($("#content").get(0).offsetHeight);
+    }
+
+    gadgets.util.registerOnLoadHandler(init);
+                                  
+
+      </script>
+            
+    </head>
+    <body>
+      <div id="content">
+         <div id="Invitation" class="UIGadgetThemes">
+            <div class="TitGad ClearFix">
+               <div class="ContTit">__MSG_title__</div>
+            </div>
+            <div class="GadCont">
+               <div id="notifyMsg"></div>
+               <table>
+                  <tr>
+                  <td>__MSG_email__ </td>
+                  <td><input type="text" id="email" name="email-adresse"></td>
+                  <td><input type="button" id="send" value="__MSG_send__"></td>
+                  </tr>
+               </table>
+           </div>
+         </div>
+      </div>
+    </body>
+    
+    ]]></Content>
+</Module>

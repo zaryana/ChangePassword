@@ -25,5 +25,8 @@
   <gadget name="GettingStarted">
     <path>/gadgets/GettingStarted/GettingStarted.xml</path>
   </gadget>
+  <gadget name="InviteJoinWs">
+    <path>/gadgets/InviteJoinWs/InviteJoinWs.xml</path>
+  </gadget>  
 
 </gadgets>
