@@ -140,7 +140,7 @@ public class InviteJoinWsRESTService implements ResourceContainer {
 		            connection.disconnect();
 		         }
 		      }
-		
+		log.info("Get registration link for email address " + email);
 		return result;
 		}	
 	
@@ -268,18 +268,20 @@ public class InviteJoinWsRESTService implements ResourceContainer {
 			  message.setBody(mailContent);
 			  message.setMimeType("text/html");
 			  mailService.sendMessage(message);
+	          return Response.ok("Message sent", MediaType.APPLICATION_JSON).cacheControl(cacheControl).build();
 		    
 			  }catch (Exception e){
 				  e.printStackTrace();
+				  return Response.status(HTTPStatus.INTERNAL_ERROR).cacheControl(cacheControl).build();
 			  }
          
-            return Response.ok("Message sent", MediaType.APPLICATION_JSON).cacheControl(cacheControl).build();
+
       } catch (Exception e){
             log.error(e.getMessage(), e);
             return Response.status(HTTPStatus.INTERNAL_ERROR).cacheControl(cacheControl).build();
       }
       } else {
-    	  return Response.status(Status.BAD_REQUEST).entity("User cannot be invited").build();
+    	  return Response.status(Status.BAD_REQUEST).entity("Cannot invite this user").build();
       }
     }
     
@@ -333,7 +335,7 @@ public class InviteJoinWsRESTService implements ResourceContainer {
 	            connection.disconnect();
 	         }
 	      }
-		
+		log.info("Current status of tenant " + tenantName + " is: " + result);
 		return result;    	
     }
     
@@ -387,7 +389,7 @@ public class InviteJoinWsRESTService implements ResourceContainer {
 	            connection.disconnect();
 	         }
 	      }
-		
+		log.info("Email address " + email + " is blacklisted: " + result);
 		return result;    	
     }
     

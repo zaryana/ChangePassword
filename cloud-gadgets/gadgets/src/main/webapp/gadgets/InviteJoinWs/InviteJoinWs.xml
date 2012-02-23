@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Module>
-  <ModulePrefs author="eXoPlatform" title="Invite Join Workspace">
+  <ModulePrefs author="eXoPlatform" title="Invite Join Workspace"
+   description="Invite people join Cloud Workspace.">
     <Locale messages="locale/default.xml" />
     <Locale lang="fr" messages="locale/fr.xml" />
     <Require feature="opensocial-0.8" />
@@ -51,7 +52,7 @@
                                  
                                  else if (status.indexOf("Blacklisted email") != -1) notifyMsg.innerHTML = '<div class="Warning">Please use a corporate email address.</div>';
 
-                                 else notifyMsg.innerHTML = '<div class="Warning">Error sending the invitation. Please try again.</div>';
+                                 else notifyMsg.innerHTML = '<div class="Warning">Error sending the invitation. Please try again later.</div>';
 
                                  document.getElementById("send").disabled = false;
                                  gadgets.window.adjustHeight($("#content").get(0).offsetHeight);
@@ -100,7 +101,10 @@
                   <tr>
                   <td>__MSG_email__ </td>
                   <td><input type="text" id="email" name="email-adresse"></td>
-                  <td><input type="button" id="send" value="__MSG_send__"></td>
+                  </tr>
+                  <tr>
+                  <td></td>
+                  <td><input style="float: right" type="button" id="send" value="__MSG_send__"></td>
                   </tr>
                </table>
            </div>
