@@ -61,14 +61,11 @@ import org.exoplatform.cloudmanagement.admin.rest.TenantCreator;
 import org.exoplatform.cloudmanagement.admin.CloudAdminException;
 import org.exoplatform.cloudmanagement.admin.TenantMetadataValidator;
 import org.exoplatform.cloudmanagement.admin.TenantAlreadyExistException;
-import org.exoplatform.cloudmanagement.admin.TenantRegistrationException;
-import org.exoplatform.cloudmanagement.admin.WorkspacesMailSender;
 import org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration;
 import org.exoplatform.cloudmanagement.admin.creation.TenantCreationSupervisor;
 import org.exoplatform.cloudmanagement.admin.status.CloudInfoHolder;
 import org.exoplatform.cloudmanagement.status.TenantState;
 import org.exoplatform.cloudmanagement.status.TenantStatus;
-import org.exoplatform.cloudmanagement.status.TransientTenantStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -755,22 +752,52 @@ public class IntranetAdminService extends TenantCreator
    {
       if (!utils.validateEmail(email))
          return Response.status(Status.BAD_REQUEST).entity("Please enter a valid email address.").build();
-      
+
       ChangePasswordManager manager = new ChangePasswordManager(adminConfiguration);
       String username = email.substring(0, (email.indexOf("@")));
       String tail = email.substring(email.indexOf("@") + 1);
       String tName = tail.substring(0, tail.indexOf("."));
-      if (isuserexist(tName, username).getEntity().equals("TRUE"))
+
+      TenantState tState;
+      try
       {
-        String uuid = manager.addReference(email);
-        utils.sendPasswordRestoreEmail(email, tName, uuid);
-      } else 
-      {
-         return Response.status(Status.BAD_REQUEST).entity("This email is not registered on Cloud Workspaces.").build();
+         tState = cloudInfoHolder.getTenantStatus(tName).getState();
       }
-      return Response.ok().build();
+      catch (TenantQueueException e)
+      {
+         return Response.status(Status.BAD_REQUEST)
+            .entity("This email " + email + " is not registered on Cloud Workspaces.").build();
+      }
+      switch (tState)
+      {
+         case ONLINE : {
+
+            if (isuserexist(tName, username).getEntity().equals("TRUE"))
+            {
+               String uuid = manager.addReference(email);
+               utils.sendPasswordRestoreEmail(email, tName, uuid);
+            }
+            else
+            {
+               return Response.status(Status.BAD_REQUEST)
+                  .entity("User with email " + email + " is not registered on Cloud Workspaces.").build();
+            }
+            return Response.ok().build();
+         }
+
+         case SUSPENDED : {
+            return Response.status(309)
+               .header("Location", "http://" + adminConfiguration.getMasterHost() + "/resuming.jsp?email=" + email)
+               .build();
+         }
+         
+         default: {
+            return Response.status(Status.BAD_REQUEST)
+                     .entity("Workspace " + tName + " seems not ready. Please, try again later.").build();
+         }
+      }
    }
-   
+
    @POST
    @Path("passconfirm")
    @Produces(MediaType.TEXT_PLAIN)
