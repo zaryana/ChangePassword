@@ -766,7 +766,7 @@ public class IntranetAdminService extends TenantCreator
         utils.sendPasswordRestoreEmail(email, tName, uuid);
       } else 
       {
-         return Response.status(Status.BAD_REQUEST).entity("Such user is not found on workspace workspace").build();
+         return Response.status(Status.BAD_REQUEST).entity("This email is not registered on Cloud Workspaces.").build();
       }
       return Response.ok().build();
    }

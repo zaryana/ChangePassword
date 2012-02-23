@@ -265,7 +265,7 @@ public class CloudIntranetUtils
          }
          else if (connection.getResponseCode() == 502)
          {
-            throw new CloudAdminException("An problem happened during processsing this request: Workspace is not created yet or it was suspended.");
+            throw new CloudAdminException("Workspace "+ tName + " is not created yet or it was suspended. Please try again later.");
          }
          else
          {
