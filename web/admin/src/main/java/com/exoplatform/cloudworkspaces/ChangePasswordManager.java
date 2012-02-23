@@ -55,8 +55,9 @@ public class ChangePasswordManager
    public String validateReference(String uuid) throws CloudAdminException{
       String folderName = getPasswordReferencesFolder();
       File folder = new File(folderName);
+      final String errMessage = "Your confirmation link has expired. Please <a href='/reset-password.jsp'>try again</a>.";
       if (!folder.exists())
-         throw new CloudAdminException("Your confirmation link is broken. Please, re-request it.");
+         throw new CloudAdminException(errMessage);
       File propertyFile = new File(folderName + uuid + ".properties");
       try
       {
@@ -67,17 +68,17 @@ public class ChangePasswordManager
          String timestamp = newprops.getProperty("created");
          if ((System.currentTimeMillis() - Long.valueOf(timestamp)) > (360*60*1000)){
             propertyFile.delete();
-            throw new CloudAdminException("Your confirmation link is expired. Please, re-request it.");
+            throw new CloudAdminException(errMessage);
          }
          if (!newprops.getProperty("uuid").equals(uuid)){
             propertyFile.delete();
-            throw new CloudAdminException("Your confirmation link is broken. Please, re-request it.");
+            throw new CloudAdminException(errMessage);
          }
          propertyFile.delete();
          return newprops.getProperty("email"); 
       }
       catch (FileNotFoundException e){
-         throw new CloudAdminException("Your confirmation link is broken. Please, re-request it.");
+         throw new CloudAdminException(errMessage);
       }
       catch (IOException e)
       {
