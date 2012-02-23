@@ -399,6 +399,11 @@ Tenants.prototype.doSingupRequest = function() {
     _gel("messageString").innerHTML = "<div class=\"Ok\">Please, indicate your email.</div>";
     return;
     }
+    
+    if (_gel("email").value.indexOf('%') > -1){
+     _gel("messageString").innerHTML = "<div class=\"Ok\">Your email contains disallowed characters.</div>";
+    return;
+    }
   
   _gel("t_submit").value = "Wait...";
   _gel("t_submit").disabled = true;

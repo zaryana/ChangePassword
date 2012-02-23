@@ -1096,7 +1096,8 @@ public class CloudIntranetUtils
       return 
        tokens.length == 2 &&
        tokens[0].trim().length() > 0 && 
-       tokens[1].trim().length() > 0;
+       tokens[1].trim().length() > 0 &&
+       tokens[1].split("\\.").length > 1;
     }
     
     
