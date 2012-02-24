@@ -40,6 +40,7 @@ public class ReferencesManager
    
    private static final Logger LOG = LoggerFactory.getLogger(ReferencesManager.class);
    
+   private static Object obj = new Object();
    
   public ReferencesManager(CloudAdminConfiguration cloudAdminConfiguration){
     this.cloudAdminConfiguration = cloudAdminConfiguration;
@@ -112,12 +113,15 @@ public class ReferencesManager
          File file = new File(hashDir  + "/" + referenceFilename);
          if (!file.exists())
             file.createNewFile();
+         synchronized (obj)
+         {
          FileInputStream io = new FileInputStream(file);
          Properties properties = new Properties();
          properties.load(io);
          io.close();
          properties.setProperty(email, uuid);
          properties.store(new FileOutputStream(file), "");
+         }
          return uuid;
       }
       catch (IOException e)
@@ -138,12 +142,15 @@ public class ReferencesManager
          File file = new File(hashDir  + "/" + referenceFilename);
          if (!file.exists())
             return;
+         synchronized (obj)
+         {
          FileInputStream io = new FileInputStream(file);
          Properties properties = new Properties();
          properties.load(io);
          io.close();
          properties.remove(email);
          properties.store(new FileOutputStream(file), "");
+         }
       }
       catch (IOException e)
       {
