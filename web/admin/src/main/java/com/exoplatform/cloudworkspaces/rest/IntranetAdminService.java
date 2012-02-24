@@ -122,6 +122,7 @@ public class IntranetAdminService extends TenantCreator
    @Path("/signup")
    public Response signup(@FormParam("user-mail") String userMail) throws CloudAdminException
    {
+      userMail = userMail.toLowerCase();
       LOG.info("Received Signup request from " + userMail);
       String tName = null;
       String username = null;
