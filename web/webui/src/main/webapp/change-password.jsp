@@ -13,7 +13,7 @@
 		<!--begin FormPages-->	
 		<div class="UIPageBody UIChangePassword">
 			<form class="UIFormBox" action="javascript:void(0);"  method="POST" id="changeForm">
-				<h1 class="TitleForm">Change Password</h1>
+				<h1 class="TitleForm">Reset Password</h1>
 				<div class="TenantFormMsg" id="messageString"></div>
 				<table>
 					<tbody>
