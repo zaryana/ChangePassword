@@ -354,6 +354,7 @@ public class IntranetAdminService extends TenantCreator
       @FormParam("last-name") String lastName, @FormParam("password") String password,
       @FormParam("confirmation-id") String uuid, @FormParam("rfid") String hash) throws CloudAdminException
    {
+      userMail = userMail.toLowerCase();
       String tName = null;
       String username = null;
       try
@@ -483,6 +484,7 @@ public class IntranetAdminService extends TenantCreator
       @FormParam("phone") String phone, @FormParam("password") String password,
       @FormParam("confirmation-id") String uuid) throws CloudAdminException
    {
+      userMail = userMail.toLowerCase();
       if (!utils.validateEmail(userMail))
          return Response.status(Status.BAD_REQUEST).entity("Please enter a valid email address.").build();
 
@@ -543,6 +545,7 @@ public class IntranetAdminService extends TenantCreator
       @FormParam("phone") String phone, @FormParam("password") String password,
       @FormParam("confirmation-id") String uuid) throws CloudAdminException
    {
+      userMail = userMail.toLowerCase();
       if (!utils.validateEmail(userMail))
          return Response.status(Status.BAD_REQUEST).entity("Please enter a valid email address.").build();
 

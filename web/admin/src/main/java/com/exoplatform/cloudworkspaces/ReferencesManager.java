@@ -29,7 +29,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Properties;
-import java.util.UUID;
 
 public class ReferencesManager
 {
@@ -67,7 +66,7 @@ public class ReferencesManager
       }
       catch (IOException e)
       {
-         LOG.error("Email-hash I/O exception.", e);
+         LOG.error("I/O exception getting hash from email " + email, e);
          throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
       }
    }
@@ -96,7 +95,7 @@ public class ReferencesManager
       }
       catch (IOException e)
       {
-         LOG.error("Email-hash I/O exception.", e);
+         LOG.error("I/O exception getting email from hash " + hash , e);
          throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
       }
       return null;
@@ -126,7 +125,7 @@ public class ReferencesManager
       }
       catch (IOException e)
       {
-         LOG.error("Email-hash I/O exception.", e);
+         LOG.error("I/O exception writing email " + email + " , uuid: " + uuid, e);
          throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
       }
       
@@ -154,7 +153,7 @@ public class ReferencesManager
       }
       catch (IOException e)
       {
-         LOG.error("Email-hash I/O exception.", e);
+         LOG.error("I/O exception removing email " + email, e);
          throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
       }
    }
