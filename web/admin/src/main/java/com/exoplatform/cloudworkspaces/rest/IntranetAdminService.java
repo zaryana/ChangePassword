@@ -122,7 +122,6 @@ public class IntranetAdminService extends TenantCreator
    @Path("/signup")
    public Response signup(@FormParam("user-mail") String userMail) throws CloudAdminException
    {
-      userMail = userMail.toLowerCase();
       LOG.info("Received Signup request from " + userMail);
       String tName = null;
       String username = null;
@@ -136,7 +135,6 @@ public class IntranetAdminService extends TenantCreator
 
          username = userMail.substring(0, (userMail.indexOf("@")));
          tName = utils.getTenantNameFromWhitelist(userMail);
-
          if (tName == null)
          {
             String domain = userMail.substring(userMail.indexOf("@"));
@@ -257,8 +255,6 @@ public class IntranetAdminService extends TenantCreator
    @Path("/signup-link")
    public Response signupLink(@FormParam("user-mail") String userMail) throws CloudAdminException
    {
-      // 2012-02-20: copy of signup() method due to logic and need of other messages in responses
-      userMail = userMail.toLowerCase();
       LOG.info("Received Signup Link request for " + userMail);
       String tName = null;
       String username = null;
@@ -355,7 +351,6 @@ public class IntranetAdminService extends TenantCreator
       @FormParam("last-name") String lastName, @FormParam("password") String password,
       @FormParam("confirmation-id") String uuid, @FormParam("rfid") String hash) throws CloudAdminException
    {
-      userMail = userMail.toLowerCase();
       String tName = null;
       String username = null;
       try
@@ -371,7 +366,7 @@ public class IntranetAdminService extends TenantCreator
 
          username = userMail.substring(0, (userMail.indexOf("@")));
          String tail = userMail.substring(userMail.indexOf("@") + 1);
-         tName = tail.substring(0, tail.indexOf("."));
+         tName = tail.substring(0, tail.indexOf(".")).toLowerCase();
          // Prepare properties for mailing
          Map<String, String> props = new HashMap<String, String>();
          props.put("tenant.masterhost", adminConfiguration.getMasterHost());
@@ -485,7 +480,6 @@ public class IntranetAdminService extends TenantCreator
       @FormParam("phone") String phone, @FormParam("password") String password,
       @FormParam("confirmation-id") String uuid) throws CloudAdminException
    {
-      userMail = userMail.toLowerCase();
       if (!utils.validateEmail(userMail))
          return Response.status(Status.BAD_REQUEST).entity("Please enter a valid email address.").build();
 
@@ -546,7 +540,6 @@ public class IntranetAdminService extends TenantCreator
       @FormParam("phone") String phone, @FormParam("password") String password,
       @FormParam("confirmation-id") String uuid) throws CloudAdminException
    {
-      userMail = userMail.toLowerCase();
       if (!utils.validateEmail(userMail))
          return Response.status(Status.BAD_REQUEST).entity("Please enter a valid email address.").build();
 
@@ -760,7 +753,7 @@ public class IntranetAdminService extends TenantCreator
       ChangePasswordManager manager = new ChangePasswordManager(adminConfiguration);
       String username = email.substring(0, (email.indexOf("@")));
       String tail = email.substring(email.indexOf("@") + 1);
-      String tName = tail.substring(0, tail.indexOf("."));
+      String tName = tail.substring(0, tail.indexOf(".")).toLowerCase();
 
       TenantState tState;
       try
