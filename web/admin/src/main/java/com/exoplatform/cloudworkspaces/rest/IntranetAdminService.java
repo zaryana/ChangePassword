@@ -258,7 +258,7 @@ public class IntranetAdminService extends TenantCreator
    public Response signupLink(@FormParam("user-mail") String userMail) throws CloudAdminException
    {
       // 2012-02-20: copy of signup() method due to logic and need of other messages in responses
-     
+      userMail = userMail.toLowerCase();
       LOG.info("Received Signup Link request for " + userMail);
       String tName = null;
       String username = null;
