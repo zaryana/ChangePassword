@@ -27,9 +27,6 @@ import org.exoplatform.services.jcr.core.ManageableRepository;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.service.LinkProvider;
-import javax.jcr.NodeIterator;
-import javax.jcr.Session;
-import javax.jcr.Node;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import javax.ws.rs.core.MediaType;
@@ -67,6 +64,10 @@ import java.net.URL;
 import java.io.OutputStreamWriter;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.net.HttpURLConnection.HTTP_CREATED;
+
+import org.exoplatform.services.organization.OrganizationService;
+import org.exoplatform.services.organization.User;
+import org.exoplatform.commons.utils.ListAccess;
 
 @Path("invite-join-ws/")
 public class InviteJoinWsRESTService implements ResourceContainer {
@@ -150,7 +151,7 @@ public class InviteJoinWsRESTService implements ResourceContainer {
     public Response sendInvitation(@Context SecurityContext sc, @Context UriInfo uriInfo, @PathParam("mail") String mail, 
     		@PathParam("hostname") String hostname) throws Exception {
       
-      if (!isValidEmail(mail)) return Response.status(Status.BAD_REQUEST).entity("Invalid email!").build();
+      if (!isValidEmail(mail)) return Response.ok("Invalid email", MediaType.APPLICATION_JSON).cacheControl(cacheControl).build();
       
       String prefixUrl = "http://" + hostname;
       String masterhost = System.getProperty("tenant.masterhost");
@@ -162,7 +163,7 @@ public class InviteJoinWsRESTService implements ResourceContainer {
       String mailContent = "";
       
       String blacklist = checkBlacklist(masterhost, mail);
-      if (blacklist.contains("TRUE")) return Response.status(Status.BAD_REQUEST).entity("Blacklisted email!").build();
+      if (blacklist.contains("TRUE")) return Response.ok("Blacklisted email", MediaType.APPLICATION_JSON).cacheControl(cacheControl).build();
       
       String exist = checkExist(masterhost, domainName);
       
@@ -190,25 +191,25 @@ public class InviteJoinWsRESTService implements ResourceContainer {
          if (exist.contains("ONLINE")){
             
          if (currentTenant.equals(domainName)) {
-         
-                 Session session = repository.login();
-                 NodeIterator allUsers = session.getRootNode().getNode("Users").getNodes();
-                 long numMember = (allUsers.getSize() - 1);
-                 String param1 = "";
-                 StringBuilder sb = new StringBuilder();
-
-                 if (numMember > 2) {
-                	 param1 += numMember + " of your colleagues are already using the <a href='#' style='font-family:verdana,tahoma,serif;color:#464646;font-size:12px;text-decoration:none;' title='" + currentTenant + "'><strong>" + currentTenant + "</strong> </a>workspace.";
-                 }
+        	 
+             	 OrganizationService organizationService = (OrganizationService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(OrganizationService.class);
+             	 ListAccess<User> usersList = organizationService.getUserHandler().findAllUsers();
+             	 long numMember = usersList.getSize() - 1;
+             	 User[] allUsers = usersList.load(0, usersList.getSize());
                  
+                 String param1 = "";
+                 String param2 = "";
+                 StringBuilder sb = new StringBuilder();
+                 
+                 if (numMember > 2) {
+                	 param1 += "<strong>" + numMember + "</strong> of your colleagues are already using the <a href='#' style='font-family:verdana,tahoma,serif;color:#464646;font-size:12px;text-decoration:none;' title='" + currentTenant + "'><strong>" + currentTenant + "</strong> </a>workspace.";
+                 }
                  int count = 0;
   
-                 while (allUsers.hasNext()){
-                    Node userNode = allUsers.nextNode();
-                    String userID = userNode.getName();
+                 for (User anUser: allUsers){
+                    String userID = anUser.getUserName();
                     if (userID.contains("root")) continue;
                     Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, userID, true);
-                    //String userName = identity.getProfile().getFullName();
                     String avatar = identity.getProfile().getAvatarUrl();
                     if (avatar == null || avatar.isEmpty()) {
                             avatar = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
@@ -219,11 +220,11 @@ public class InviteJoinWsRESTService implements ResourceContainer {
                     	sb.append("</tr><tr height='60' valign='middle'>");
                             count = 0;
                     }
-                    sb.append("<td width='45' align='left'><img src='" + avatarUrl + "' alt='" + userID + "' /></td>");
+                    sb.append("<td width='45' align='left' style='margin:3px 5px'><img width='30' height='30' src='" + avatarUrl + "' alt='" + userID + "' /></td>");
             }
         
-            String param2 = sb.toString();
-                 
+            if (sb != null ) param2 = sb.toString();
+            
             Map<String, String> props = new HashMap<String, String>();
             props.put("user.name", sender);
             props.put("avatar", myAvatarUrl);
@@ -281,7 +282,7 @@ public class InviteJoinWsRESTService implements ResourceContainer {
             return Response.status(HTTPStatus.INTERNAL_ERROR).cacheControl(cacheControl).build();
       }
       } else {
-    	  return Response.status(Status.BAD_REQUEST).entity("Cannot invite this user").build();
+    	  return Response.status(Status.BAD_REQUEST).entity("<div class='Warning'>User already signed up or Workspace are not ready</div>").build();
       }
     }
     

@@ -33,7 +33,6 @@
                         hostname += ":" + location.port;
                     }
                     
-                    document.getElementById("send").disabled = true;
                     notifyMsg.innerHTML = '<div class="Message">Waiting...</div>';
                     gadgets.window.adjustHeight($("#content").get(0).offsetHeight);
                                   
@@ -45,8 +44,10 @@
                          success: function(status) {
                                  var notifyMsg = document.getElementById("notifyMsg");
                                  if (status.indexOf("Message sent") != -1) {
-                                           alert("Invitation sent.");
-                                           notifyMsg.innerHTML = "";
+                                           $('#notifyMsg').html('<div class="Message">Invitation sent</div>');
+                                           $('#notifyMsg').fadeOut(5000, function(){
+                                           gadgets.window.adjustHeight($("#content").get(0).offsetHeight);
+                                                });
                                  }
                                  else if (status.indexOf("Invalid email") != -1) notifyMsg.innerHTML = '<div class="Warning">Please enter a valid email address.</div>';
                                  
@@ -54,7 +55,6 @@
 
                                  else notifyMsg.innerHTML = '<div class="Warning">Error sending the invitation. Please try again later.</div>';
 
-                                 document.getElementById("send").disabled = false;
                                  gadgets.window.adjustHeight($("#content").get(0).offsetHeight);
 
                         },
