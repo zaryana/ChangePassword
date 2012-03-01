@@ -1,9 +1,29 @@
-.UIGadgetThemes input {
-        font-size: 12px;
+.invited-box .Row {
+ margin:5px 0;
+}
+.invited-box .Row input[type="text"] {
+ border:1px solid #eee;
+ width: 80%;
+ font-size: 12px;
+}
+
+.invited-box .Row input[type="button"] {
+ border: 1px solid #DDDDDD;
+ border-radius: 4px 4px 4px 4px;
+ cursor: pointer;
+}
+
+.invited-box .Row label {
+ display:inline-block;
+ width:20%;
+}
+
+.invited-box .AlignRight {
+ text-align:right;
 }
 
 .Message {
-        padding: 10px 15px;
+        padding: 10px 10px;
 }
 
 .Warning {

@@ -151,7 +151,7 @@ public class InviteJoinWsRESTService implements ResourceContainer {
     public Response sendInvitation(@Context SecurityContext sc, @Context UriInfo uriInfo, @PathParam("mail") String mail, 
     		@PathParam("hostname") String hostname) throws Exception {
       
-      if (!isValidEmail(mail)) return Response.ok("Invalid email", MediaType.APPLICATION_JSON).cacheControl(cacheControl).build();
+      if (!isValidEmail(mail)) return Response.status(Status.BAD_REQUEST).entity("Please enter a valid email address.").build();
       
       String prefixUrl = "http://" + hostname;
       String masterhost = System.getProperty("tenant.masterhost");
@@ -163,7 +163,7 @@ public class InviteJoinWsRESTService implements ResourceContainer {
       String mailContent = "";
       
       String blacklist = checkBlacklist(masterhost, mail);
-      if (blacklist.contains("TRUE")) return Response.ok("Blacklisted email", MediaType.APPLICATION_JSON).cacheControl(cacheControl).build();
+      if (blacklist.contains("TRUE")) Response.status(Status.BAD_REQUEST).entity("Please use a corporate email address.").build();
       
       String exist = checkExist(masterhost, domainName);
       
@@ -200,7 +200,7 @@ public class InviteJoinWsRESTService implements ResourceContainer {
                  String param1 = "";
                  String param2 = "";
                  StringBuilder sb = new StringBuilder();
-                 
+                 if (numMember <= 10) {
                  if (numMember > 2) {
                 	 param1 += "<strong>" + numMember + "</strong> of your colleagues are already using the <a href='#' style='font-family:verdana,tahoma,serif;color:#464646;font-size:12px;text-decoration:none;' title='" + currentTenant + "'><strong>" + currentTenant + "</strong> </a>workspace.";
                  }
@@ -220,7 +220,8 @@ public class InviteJoinWsRESTService implements ResourceContainer {
                     	sb.append("</tr><tr height='60' valign='middle'>");
                             count = 0;
                     }
-                    sb.append("<td width='45' align='left' style='margin:3px 5px'><img width='30' height='30' src='" + avatarUrl + "' alt='" + userID + "' /></td>");
+                    sb.append("<td width='45' align='left' style='margin:2px 5px'><img width='30' height='30' src='" + avatarUrl + "' alt='" + userID + "' /></td>");
+            }
             }
         
             if (sb != null ) param2 = sb.toString();
@@ -272,17 +273,17 @@ public class InviteJoinWsRESTService implements ResourceContainer {
 	          return Response.ok("Message sent", MediaType.APPLICATION_JSON).cacheControl(cacheControl).build();
 		    
 			  }catch (Exception e){
-				  e.printStackTrace();
-				  return Response.status(HTTPStatus.INTERNAL_ERROR).cacheControl(cacheControl).build();
+				  log.error(e.getMessage(), e);
+				  return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Unable to send invitation email. Please contact support.").build();
 			  }
          
 
       } catch (Exception e){
             log.error(e.getMessage(), e);
-            return Response.status(HTTPStatus.INTERNAL_ERROR).cacheControl(cacheControl).build();
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Unable to send invitation email. Please contact support.").build();
       }
       } else {
-    	  return Response.status(Status.BAD_REQUEST).entity("<div class='Warning'>User already signed up or Workspace are not ready</div>").build();
+    	  return Response.status(Status.BAD_REQUEST).entity("User already signed up or Workspace is not ready. Please try again later.").build();
       }
     }
     
