@@ -9,7 +9,7 @@
    <fileSets>
       <!-- Default files -->
       <fileSet>
-         <directory>target/tomcat-source</directory>
+         <directory>target/platform-cloud-tomcat</directory>
          <outputDirectory>app-server-tomcat</outputDirectory>
          <excludes>
            <exclude>**/*.sh</exclude>
@@ -29,7 +29,7 @@
       </fileSet>
       <!-- Executable files -->
       <fileSet>
-         <directory>target/tomcat-source</directory>
+         <directory>target/platform-cloud-tomcat</directory>
          <outputDirectory>app-server-tomcat</outputDirectory>
          <includes>
            <include>**/*.sh</include>
@@ -55,6 +55,7 @@
          <include>com.exoplatform.cloudworkspaces:cloud-workspaces-webui:war</include>
        </includes>
        <outputFileNameMapping>ROOT.war</outputFileNameMapping>
+       <scope>provided</scope>
        <fileMode>0644</fileMode>
      </dependencySet>
      <dependencySet>
@@ -63,6 +64,7 @@
          <include>com.exoplatform.cloudworkspaces:cloud-workspaces-gadgets:war</include>
        </includes>
        <outputFileNameMapping>cloud-workspaces-gadgets.war</outputFileNameMapping>
+       <scope>provided</scope>
        <fileMode>0644</fileMode>
      </dependencySet>
      <dependencySet>
@@ -74,6 +76,7 @@
          <include>com.exoplatform.cloudworkspaces:cloud-workspaces-gadget-services</include>
          <include>com.exoplatform.cloudworkspaces:cloud-workspaces-gadget-config</include>
        </includes>
+       <scope>provided</scope>
        <fileMode>0644</fileMode>
      </dependencySet>
    </dependencySets>
