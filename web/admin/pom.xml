@@ -14,50 +14,41 @@
   <name>eXo Cloud Workspaces :: Admin</name>
   <description>eXo Cloud Workspaces Admin web application</description>
 
-  <pluginRepositories>
-    <pluginRepository>
-      <id>truezip-maven-plugin</id>
-      <name>truezip-maven-plugin</name>
-      <url>http://snapshots.repository.codehaus.org/</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </pluginRepository>
-
-  </pluginRepositories>
+  <properties>
+    <archive>${project.build.directory}/${project.artifactId}-${project.version}.war/WEB-INF/lib/cloud-admin-${org.exoplatform.cloud-management.version}.jar</archive>
+  </properties>
 
   <dependencies>
-
     <dependency>
       <groupId>com.exoplatform.cloudworkspaces</groupId>
       <artifactId>cloud-management-patch</artifactId>
-      <version>${project.version}</version>
+      <scope>compile</scope>
+      <type>jar</type>
     </dependency>
-
     <dependency>
       <groupId>org.exoplatform.cloud-management</groupId>
       <artifactId>cloud-admin</artifactId>
-      <version>${org.exoplatform.cloud-management.version}</version>
+      <scope>compile</scope>
+      <type>jar</type>
     </dependency>
-
-
+    <dependency>
+      <groupId>org.exoplatform.cloud-management</groupId>
+      <artifactId>cloud-admin-valve</artifactId>
+      <scope>compile</scope>
+      <type>jar</type>
+    </dependency>
     <dependency>
       <groupId>javax.mail</groupId>
       <artifactId>mail</artifactId>
-      <version>1.4.2</version>
       <scope>compile</scope>
+      <type>jar</type>
     </dependency>
-    
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
-      <version>2.5</version>
       <scope>provided</scope>
+      <type>jar</type>
     </dependency>
-    
   </dependencies>
 
   <build>
@@ -65,7 +56,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>truezip-maven-plugin</artifactId>
-        <version>1.0-beta-4</version>
+        <version>${version.truezip.plugin}</version>
         <executions>
           <execution>
             <id>remove-a-validator</id>
@@ -101,8 +92,6 @@
           </execution>
         </executions>
       </plugin>
-
-
       <plugin>
         <artifactId>maven-war-plugin</artifactId>
         <configuration>
@@ -117,7 +106,4 @@
     </plugins>
   </build>
 
-  <properties>
-    <archive>${project.build.directory}/${project.artifactId}-${project.version}.war/WEB-INF/lib/cloud-admin-${org.exoplatform.cloud-management.version}.jar</archive>
-  </properties>
 </project>

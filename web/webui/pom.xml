@@ -4,28 +4,27 @@
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
   <parent>
     <groupId>com.exoplatform.cloudworkspaces</groupId>
     <artifactId>cloud-workspaces-web</artifactId>
     <version>1.0.0-Beta9-SNAPSHOT</version>
   </parent>
-
   <artifactId>cloud-workspaces-webui</artifactId>
   <packaging>war</packaging>
   <name>eXo Cloud Workspaces :: WebUI</name>
   <description>eXo Cloud Workspaces Web application</description>
-  
+
   <dependencies>
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
-      <version>2.5</version>
       <scope>provided</scope>
+      <type>jar</type>
     </dependency>
   </dependencies>
 
   <build>
+    <finalName>cloud</finalName>
     <plugins>
       <plugin>
         <artifactId>maven-war-plugin</artifactId>
@@ -39,6 +38,5 @@
         </configuration>
       </plugin>
     </plugins>
-    <finalName>cloud</finalName>
   </build>
 </project>

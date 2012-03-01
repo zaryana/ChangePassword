@@ -54,23 +54,23 @@ EXO_OPTS="-Dexo.product.developing=false -Dexo.conf.dir.name=gatein/conf"
 IDE_OPTS="-Djavasrc=$JAVA_HOME/src.zip -Djre.lib=$JAVA_HOME/jre/lib"
 
 EXO_CLOUD_OPTS="-javaagent:../lib/cloud-instrument-1.1-M2.jar=../gatein/conf/cloud/agent-configuration.xml \
-	-Dgroovy.script.method.iteration.time=60000 \
-	-Dtenant.masterhost=$TENANT_MASTERHOST \
-	-Dtenant.repository.name=$TENANT_REPOSITORY \
-	-Dtenant.data.dir=$EXO_TENANT_DATA_DIR \
-	-Dtenant.db.host=$EXO_DB_HOST \
-	-Dtenant.db.user=$EXO_DB_USER \
-	-Dtenant.db.password=$EXO_DB_PASSWORD \
-	-Dexo.backup.dir=$EXO_BACKUP_DIR"
+    -Dgroovy.script.method.iteration.time=60000 \
+    -Dtenant.masterhost=$TENANT_MASTERHOST \
+    -Dtenant.repository.name=$TENANT_REPOSITORY \
+    -Dtenant.data.dir=$EXO_TENANT_DATA_DIR \
+    -Dtenant.db.host=$EXO_DB_HOST \
+    -Dtenant.db.user=$EXO_DB_USER \
+    -Dtenant.db.password=$EXO_DB_PASSWORD \
+    -Dexo.backup.dir=$EXO_BACKUP_DIR"
 
 EXO_CLOUD_SECURITY_OPTS="-Djava.security.manager=org.exoplatform.cloudmanagement.security.TenantSecurityManager \
-	-Djava.security.policy==../conf/catalina.policy"
+    -Djava.security.policy==../conf/catalina.policy"
 
 JMX_OPTS="-Dcom.sun.management.jmxremote=true -Djava.rmi.server.hostname=$HOST_EXTERNAL_ADDR \
-	-Dcom.sun.management.jmxremote.password.file=$CATALINA_HOME/conf/jmxremote.password \
-	-Dcom.sun.management.jmxremote.access.file=$CATALINA_HOME/conf/jmxremote.access \
-	-Dcom.sun.management.jmxremote.authenticate=true \
-	-Dcom.sun.management.jmxremote.ssl=false"
+    -Dcom.sun.management.jmxremote.password.file=$CATALINA_HOME/conf/jmxremote.password \
+    -Dcom.sun.management.jmxremote.access.file=$CATALINA_HOME/conf/jmxremote.access \
+    -Dcom.sun.management.jmxremote.authenticate=true \
+    -Dcom.sun.management.jmxremote.ssl=false"
 
 # Remote debug configuration
 #REMOTE_DEBUG="-Xdebug -Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=n"

@@ -2,7 +2,8 @@
 <!--
     Copyright (C) 2011 eXo Platform SAS.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>com.exoplatform.cloudworkspaces</groupId>
@@ -19,52 +20,64 @@
       <id>distrib</id>
       <dependencies>
         <dependency>
-          <groupId>com.exoplatform.platform.cloud</groupId>
-          <artifactId>exo.platform.packaging.tomcat</artifactId>
-          <version>${org.exoplatform.platform.version}</version>
-          <type>zip</type>
-          <classifier>tomcat</classifier>
-        </dependency>
-        <dependency>
-          <groupId>mysql</groupId>
-          <artifactId>mysql-connector-java</artifactId>
+          <groupId>com.exoplatform.cloudworkspaces</groupId>
+          <artifactId>cloud-workspaces-webui</artifactId>
+          <scope>provided</scope>
+          <type>war</type>
         </dependency>
         <dependency>
           <groupId>com.exoplatform.cloudworkspaces</groupId>
-          <artifactId>cloud-workspaces-webui</artifactId>
-          <version>${project.version}</version>
+          <artifactId>cloud-workspaces-component-organization</artifactId>
+          <scope>provided</scope>
+          <type>jar</type>
+        </dependency>
+        <dependency>
+          <groupId>com.exoplatform.cloudworkspaces</groupId>
+          <artifactId>cloud-workspaces-component-multitenancy</artifactId>
+          <scope>provided</scope>
+          <type>jar</type>
+        </dependency> 
+
+        <!-- Cloud Workspaces gadgets -->
+        <dependency>
+          <groupId>com.exoplatform.cloudworkspaces</groupId>
+          <artifactId>cloud-workspaces-gadget-services</artifactId>
+          <scope>provided</scope>
+          <type>jar</type>
+        </dependency>
+        <dependency>
+          <groupId>com.exoplatform.cloudworkspaces</groupId>
+          <artifactId>cloud-workspaces-gadgets</artifactId>
+          <scope>provided</scope>
           <type>war</type>
         </dependency>
-       <dependency>
-         <groupId>com.exoplatform.cloudworkspaces</groupId>
-         <artifactId>cloud-workspaces-component-organization</artifactId>
-         <version>${project.version}</version>
-       </dependency>
-       <dependency>
-         <groupId>com.exoplatform.cloudworkspaces</groupId>
-         <artifactId>cloud-workspaces-component-multitenancy</artifactId>
-         <version>${project.version}</version>
-       </dependency> 
-       <!-- cloud-gadgets -->
-       <dependency>
-         <groupId>com.exoplatform.cloudworkspaces</groupId>
-         <artifactId>cloud-workspaces-gadget-services</artifactId>
-         <version>${project.version}</version>
-       </dependency>
-       <dependency>
-         <groupId>com.exoplatform.cloudworkspaces</groupId>
-         <artifactId>cloud-workspaces-gadgets</artifactId>
-         <version>${project.version}</version>
-         <type>war</type>
-       </dependency>
-       <dependency>
-         <groupId>com.exoplatform.cloudworkspaces</groupId>
-         <artifactId>cloud-workspaces-gadget-config</artifactId>
-         <version>${project.version}</version>
-       </dependency>
+        <dependency>
+          <groupId>com.exoplatform.cloudworkspaces</groupId>
+          <artifactId>cloud-workspaces-gadget-config</artifactId>
+          <scope>provided</scope>
+          <type>jar</type>
+        </dependency>
+
+        <!-- Cloud Platform -->
+        <dependency>
+          <groupId>com.exoplatform.platform.cloud</groupId>
+          <artifactId>exo-platform-cloud-packaging-tomcat</artifactId>
+          <scope>provided</scope>
+          <type>zip</type>
+          <classifier>tomcat</classifier>
+        </dependency>
+
+        <!-- Third parties -->
+        <dependency>
+          <groupId>mysql</groupId>
+          <artifactId>mysql-connector-java</artifactId>
+          <scope>provided</scope>
+          <type>jar</type>
+        </dependency>
       </dependencies>
+
       <build>
-        <finalName>Cloud-Workspaces-Platform-${project.version}</finalName>
+        <finalName>cloud-workspaces-platform</finalName>
         <plugins>
           <!-- Unpack Tomcat base -->
           <plugin>
@@ -82,11 +95,11 @@
                   <artifactItems>
                     <artifactItem>
                       <groupId>com.exoplatform.platform.cloud</groupId>
-                      <artifactId>exo.platform.packaging.tomcat</artifactId>
+                      <artifactId>exo-platform-cloud-packaging-tomcat</artifactId>
                       <version>${org.exoplatform.platform.version}</version>
                       <classifier>tomcat</classifier>
                       <type>zip</type>
-                      <outputDirectory>target/tomcat-source</outputDirectory>
+                      <outputDirectory>target</outputDirectory>
                     </artifactItem>
                   </artifactItems>
                 </configuration>
@@ -104,7 +117,7 @@
                 <configuration>
                   <target>
                     <!--Remove Cloud Admin -->
-                    <replace file="${project.build.directory}/tomcat-source/bin/setenv.sh">
+                    <!-- replace file="${project.build.directory}/platform-cloud-tomcat/bin/setenv.sh">
                       <replacetoken><![CDATA[# set Cloud Admin properties in command line (can be used in standalone admin server)
 EXO_CLOUD_ADMIN_OPTS="-Dcloud.admin.log.dir=../logs/cloud-admin \
 	-Dcloud.admin.data.dir=../gatein/data 
@@ -113,97 +126,159 @@ EXO_CLOUD_ADMIN_OPTS="-Dcloud.admin.log.dir=../logs/cloud-admin \
                       </replacetoken>
                       <replacevalue />
                     </replace>
-                    <replace file="${project.build.directory}/tomcat-source/bin/setenv.sh">
+                    <replace file="${project.build.directory}/platform-cloud-tomcat/bin/setenv.sh">
                       <replacetoken><![CDATA[JAVA_OPTS="$JAVA_OPTS $LOG_OPTS $SECURITY_OPTS $EXO_OPTS $IDE_OPTS $EXO_CLOUD_OPTS $EXO_CLOUD_SECURITY_OPTS $EXO_CLOUD_ADMIN_OPTS $JMX_OPTS $REMOTE_DEBUG"]]>
                       </replacetoken>
                       <replacevalue><![CDATA[JAVA_OPTS="$JAVA_OPTS $LOG_OPTS $SECURITY_OPTS $EXO_OPTS $IDE_OPTS $EXO_CLOUD_OPTS $EXO_CLOUD_SECURITY_OPTS $JMX_OPTS $REMOTE_DEBUG"]]></replacevalue>
-                    </replace>
-                    <delete file="${project.build.directory}/tomcat-source/conf/Catalina/localhost/cloud-admin.xml" />
-                    <delete dir="${project.build.directory}/tomcat-source/gatein/conf/cloud/cloud-admin" />
-                    <delete dir="${project.build.directory}/tomcat-source/webapps/ROOT" />
-                    <delete file="${project.build.directory}/tomcat-source/lib/cloud-admin-valve-${org.exoplatform.cloud-management.version}.jar" />
-                    <delete file="${project.build.directory}/tomcat-source/webapps/cloud-admin.war" />
+                    </replace -->
+                    <delete file="${project.build.directory}/platform-cloud-tomcat/conf/Catalina/localhost/cloud-admin.xml" />
+                    <delete dir="${project.build.directory}/platform-cloud-tomcat/gatein/conf/cloud/cloud-admin" />
+                    <delete dir="${project.build.directory}/platform-cloud-tomcat/webapps/ROOT" />
+                    <delete
+                      file="${project.build.directory}/platform-cloud-tomcat/lib/cloud-admin-valve-${org.exoplatform.cloud-management.version}.jar" />
+                    <delete file="${project.build.directory}/platform-cloud-tomcat/webapps/cloud-admin.war" />
 
                     <!-- Delete binaries -->
                     <delete>
                     <!-- acme website -->
-                      <fileset dir="${project.build.directory}/tomcat-source/webapps" includes="acme-website.war" />
-                      <fileset dir="${project.build.directory}/tomcat-source/lib" includes="exo.platform.sample.acme-website.*.jar" />
-                      <fileset dir="${project.build.directory}/tomcat-source/conf/Catalina/localhost" includes="acme-website.xml" />
+                      <fileset dir="${project.build.directory}/platform-cloud-tomcat/webapps" includes="acme-website.war" />
+                      <fileset dir="${project.build.directory}/platform-cloud-tomcat/lib" includes="exo.platform.sample.acme-website.*.jar" />
+                      <fileset dir="${project.build.directory}/platform-cloud-tomcat/conf/Catalina/localhost"
+                        includes="acme-website.xml" />
                       <!-- default website -->
-                      <fileset dir="${project.build.directory}/tomcat-source/webapps" includes="default-website.war" />
-                      <fileset dir="${project.build.directory}/tomcat-source/conf/Catalina/localhost" includes="default-website.xml" />
-                      <fileset dir="${project.build.directory}/tomcat-source/lib" includes="exo.platform.sample.default-website.*.jar" />
+                      <fileset dir="${project.build.directory}/platform-cloud-tomcat/webapps" includes="default-website.war" />
+                      <fileset dir="${project.build.directory}/platform-cloud-tomcat/conf/Catalina/localhost"
+                        includes="default-website.xml" />
+                      <fileset dir="${project.build.directory}/platform-cloud-tomcat/lib" includes="exo.platform.sample.default-website.*.jar" />
                     </delete>
                     <!-- Delete tenants management page -->
-                    <unzip src="${project.build.directory}/tomcat-source/webapps/cloud-extension.war" dest="${project.build.directory}/tomcat-source/webapps/cloud-ext" />
+                    <unzip src="${project.build.directory}/platform-cloud-tomcat/webapps/cloud-extension.war"
+                      dest="${project.build.directory}/platform-cloud-tomcat/webapps/cloud-ext" />
                     <!--
-					<copy file="${project.basedir}/src/main/resources/tomcat/webapps/cloud-extension/pages.xml" tofile="${project.build.directory}/tomcat-source/webapps/cloud-ext/WEB-INF/conf/portal/group/platform/administrators/pages.xml" overwrite="true" />
-                    <copy file="${project.basedir}/src/main/resources/tomcat/webapps/cloud-extension/navigation.xml" tofile="${project.build.directory}/tomcat-source/webapps/cloud-ext/WEB-INF/conf/portal/group/platform/administrators/navigation.xml" overwrite="true" />
+                    <copy file="${project.basedir}/src/main/resources/tomcat/webapps/cloud-extension/pages.xml" tofile="${project.build.directory}/platform-cloud-tomcat/webapps/cloud-ext/WEB-INF/conf/portal/group/platform/administrators/pages.xml" overwrite="true" />
+                    <copy file="${project.basedir}/src/main/resources/tomcat/webapps/cloud-extension/navigation.xml" tofile="${project.build.directory}/platform-cloud-tomcat/webapps/cloud-ext/WEB-INF/conf/portal/group/platform/administrators/navigation.xml" overwrite="true" />
                     -->
-					<delete dir="${project.build.directory}/tomcat-source/webapps/cloud-ext/WEB-INF/conf/portal" />
-					<copy file="${project.basedir}/src/main/resources/tomcat/webapps/cloud-extension/cloud-configuration.xml" tofile="${project.build.directory}/tomcat-source/webapps/cloud-ext/WEB-INF/conf/cloud/cloud-configuration.xml" overwrite="true" />
-					
-					<copy file="${project.basedir}/src/main/resources/tomcat/webapps/cloud-extension/configuration.xml" tofile="${project.build.directory}/tomcat-source/webapps/cloud-ext/WEB-INF/conf/configuration.xml" overwrite="true" />
-                    
-					<copy file="${project.basedir}/src/main/resources/tomcat/webapps/cloud-extension/portal/portal-configuration.xml" tofile="${project.build.directory}/tomcat-source/webapps/cloud-ext/WEB-INF/conf/cloud/portal/portal-configuration.xml" overwrite="true" />
-					<copy file="${project.basedir}/src/main/resources/tomcat/webapps/cloud-extension/portal/resource-bundle-configuration.xml" tofile="${project.build.directory}/tomcat-source/webapps/cloud-ext/WEB-INF/conf/cloud/portal/resource-bundle-configuration.xml" overwrite="true" />
-					
-					<!-- Add web-contributors navigation -->
-					<copy file="${project.basedir}/src/main/resources/tomcat/webapps/cloud-extension/portal/group/platform/web-contributors/navigation.xml" tofile="${project.build.directory}/tomcat-source/webapps/cloud-ext/WEB-INF/conf/cloud/portal/group/platform/web-contributors/navigation.xml" overwrite="true" />
-					<copy file="${project.basedir}/src/main/resources/tomcat/webapps/cloud-extension/portal/group/platform/web-contributors/pages.xml" tofile="${project.build.directory}/tomcat-source/webapps/cloud-ext/WEB-INF/conf/cloud/portal/group/platform/web-contributors/pages.xml" overwrite="true" />
-					<!-- Add I18N for web-contributors navigation group -->
-					<copy file="${project.basedir}/src/main/resources/tomcat/webapps/cloud-extension/portal/classes/locale/navigation/group/platform/web-contributors_vi.xml" tofile="${project.build.directory}/tomcat-source/webapps/cloud-ext/WEB-INF/classes/locale/navigation/group/platform/web-contributors_vi.xml" overwrite="true" />
-					<copy file="${project.basedir}/src/main/resources/tomcat/webapps/cloud-extension/portal/classes/locale/navigation/group/platform/web-contributors_fr.xml" tofile="${project.build.directory}/tomcat-source/webapps/cloud-ext/WEB-INF/classes/locale/navigation/group/platform/web-contributors_fr.xml" overwrite="true" />
-					<copy file="${project.basedir}/src/main/resources/tomcat/webapps/cloud-extension/portal/classes/locale/navigation/group/platform/web-contributors_en.xml" tofile="${project.build.directory}/tomcat-source/webapps/cloud-ext/WEB-INF/classes/locale/navigation/group/platform/web-contributors_en.xml" overwrite="true" />
-					<zip destfile="${project.build.directory}/tomcat-source/webapps/cloud-extension.war" basedir="${project.build.directory}/tomcat-source/webapps/cloud-ext" />
-                    <delete dir="${project.build.directory}/tomcat-source/webapps/cloud-ext" />
+                    <delete dir="${project.build.directory}/platform-cloud-tomcat/webapps/cloud-ext/WEB-INF/conf/portal" />
+                    <copy
+                      file="${project.basedir}/src/main/resources/tomcat/webapps/cloud-extension/cloud-configuration.xml"
+                      tofile="${project.build.directory}/platform-cloud-tomcat/webapps/cloud-ext/WEB-INF/conf/cloud/cloud-configuration.xml"
+                      overwrite="true" />
+                    <copy
+                      file="${project.basedir}/src/main/resources/tomcat/webapps/cloud-extension/configuration.xml"
+                      tofile="${project.build.directory}/platform-cloud-tomcat/webapps/cloud-ext/WEB-INF/conf/configuration.xml"
+                      overwrite="true" />
+                    <copy
+                      file="${project.basedir}/src/main/resources/tomcat/webapps/cloud-extension/portal/portal-configuration.xml"
+                      tofile="${project.build.directory}/platform-cloud-tomcat/webapps/cloud-ext/WEB-INF/conf/cloud/portal/portal-configuration.xml"
+                      overwrite="true" />
+                    <copy
+                      file="${project.basedir}/src/main/resources/tomcat/webapps/cloud-extension/portal/resource-bundle-configuration.xml"
+                      tofile="${project.build.directory}/platform-cloud-tomcat/webapps/cloud-ext/WEB-INF/conf/cloud/portal/resource-bundle-configuration.xml"
+                      overwrite="true" />
+                    <!-- Add web-contributors navigation -->
+                    <copy
+                      file="${project.basedir}/src/main/resources/tomcat/webapps/cloud-extension/portal/group/platform/web-contributors/navigation.xml"
+                      tofile="${project.build.directory}/platform-cloud-tomcat/webapps/cloud-ext/WEB-INF/conf/cloud/portal/group/platform/web-contributors/navigation.xml"
+                      overwrite="true" />
+                    <copy
+                      file="${project.basedir}/src/main/resources/tomcat/webapps/cloud-extension/portal/group/platform/web-contributors/pages.xml"
+                      tofile="${project.build.directory}/platform-cloud-tomcat/webapps/cloud-ext/WEB-INF/conf/cloud/portal/group/platform/web-contributors/pages.xml"
+                      overwrite="true" />
+                    <!-- Add I18N for web-contributors navigation group -->
+                    <copy
+                      file="${project.basedir}/src/main/resources/tomcat/webapps/cloud-extension/portal/classes/locale/navigation/group/platform/web-contributors_vi.xml"
+                      tofile="${project.build.directory}/platform-cloud-tomcat/webapps/cloud-ext/WEB-INF/classes/locale/navigation/group/platform/web-contributors_vi.xml"
+                      overwrite="true" />
+                    <copy
+                      file="${project.basedir}/src/main/resources/tomcat/webapps/cloud-extension/portal/classes/locale/navigation/group/platform/web-contributors_fr.xml"
+                      tofile="${project.build.directory}/platform-cloud-tomcat/webapps/cloud-ext/WEB-INF/classes/locale/navigation/group/platform/web-contributors_fr.xml"
+                      overwrite="true" />
+                    <copy
+                      file="${project.basedir}/src/main/resources/tomcat/webapps/cloud-extension/portal/classes/locale/navigation/group/platform/web-contributors_en.xml"
+                      tofile="${project.build.directory}/platform-cloud-tomcat/webapps/cloud-ext/WEB-INF/classes/locale/navigation/group/platform/web-contributors_en.xml"
+                      overwrite="true" />
+                    <zip destfile="${project.build.directory}/platform-cloud-tomcat/webapps/cloud-extension.war"
+                      basedir="${project.build.directory}/platform-cloud-tomcat/webapps/cloud-ext" />
+                    <delete dir="${project.build.directory}/platform-cloud-tomcat/webapps/cloud-ext" />
                     <!-- Delete acme-intranet welcome page -->
-                    <unzip src="${project.build.directory}/tomcat-source/webapps/acme-intranet.war" dest="${project.build.directory}/tomcat-source/webapps/acme-intranet" />
-                    <copy file="${project.basedir}/src/main/resources/tomcat/webapps/acme-intranet/pages.xml" tofile="${project.build.directory}/tomcat-source/webapps/acme-intranet/WEB-INF/conf/office-extension/portal/portal/intranet/pages.xml" overwrite="true" />
-                    <copy file="${project.basedir}/src/main/resources/tomcat/webapps/acme-intranet/navigation.xml" tofile="${project.build.directory}/tomcat-source/webapps/acme-intranet/WEB-INF/conf/office-extension/portal/portal/intranet/navigation.xml" overwrite="true" />
-                    <zip destfile="${project.build.directory}/tomcat-source/webapps/acme-intranet.war" basedir="${project.build.directory}/tomcat-source/webapps/acme-intranet" />
-                    <delete dir="${project.build.directory}/tomcat-source/webapps/acme-intranet" />
+                    <unzip src="${project.build.directory}/platform-cloud-tomcat/webapps/acme-intranet.war"
+                      dest="${project.build.directory}/platform-cloud-tomcat/webapps/acme-intranet" />
+                    <copy file="${project.basedir}/src/main/resources/tomcat/webapps/acme-intranet/pages.xml"
+                      tofile="${project.build.directory}/platform-cloud-tomcat/webapps/acme-intranet/WEB-INF/conf/office-extension/portal/portal/intranet/pages.xml"
+                      overwrite="true" />
+                    <copy file="${project.basedir}/src/main/resources/tomcat/webapps/acme-intranet/navigation.xml"
+                      tofile="${project.build.directory}/platform-cloud-tomcat/webapps/acme-intranet/WEB-INF/conf/office-extension/portal/portal/intranet/navigation.xml"
+                      overwrite="true" />
+                    <zip destfile="${project.build.directory}/platform-cloud-tomcat/webapps/acme-intranet.war"
+                      basedir="${project.build.directory}/platform-cloud-tomcat/webapps/acme-intranet" />
+                    <delete dir="${project.build.directory}/platform-cloud-tomcat/webapps/acme-intranet" />
                     <!-- Remove marry, demo, john, james and keep 'root' but with empty password-->
-                    <unzip src="${project.build.directory}/tomcat-source/webapps/acme-intranet.war" dest="${project.build.directory}/tomcat-source/webapps/acme-intranet" />
-                    <copy file="${project.basedir}/src/main/resources/tomcat/webapps/acme-intranet/organization-configuration.xml" tofile="${project.build.directory}/tomcat-source/webapps/acme-intranet/WEB-INF/conf/office-extension/organization/organization-configuration.xml" overwrite="true" />
-                    <copy file="${project.basedir}/src/main/resources/tomcat/webapps/acme-intranet/portal.xml" tofile="${project.build.directory}/tomcat-source/webapps/acme-intranet/WEB-INF/conf/office-extension/portal/portal/intranet/portal.xml" overwrite="true" />
-                    <zip destfile="${project.build.directory}/tomcat-source/webapps/acme-intranet.war" basedir="${project.build.directory}/tomcat-source/webapps/acme-intranet" />
-                    <delete dir="${project.build.directory}/tomcat-source/webapps/acme-intranet" />
-                    <unzip src="${project.build.directory}/tomcat-source/webapps/platform-extension.war" dest="${project.build.directory}/tomcat-source/webapps/platform-extension" />
-                    <copy file="${project.basedir}/src/main/resources/tomcat/webapps/platform-extension/organization-configuration.xml" tofile="${project.build.directory}/tomcat-source/webapps/platform-extension/WEB-INF/conf/organization/organization-configuration.xml" overwrite="true" />
-                    <zip destfile="${project.build.directory}/tomcat-source/webapps/platform-extension.war" basedir="${project.build.directory}/tomcat-source/webapps/platform-extension" />
-                    <delete dir="${project.build.directory}/tomcat-source/webapps/platform-extension" />
-                    <unzip src="${project.build.directory}/tomcat-source/webapps/portal.war" dest="${project.build.directory}/tomcat-source/webapps/portal" />
-                    <replace dir="${project.build.directory}/tomcat-source/webapps/portal/groovy/portal/webui/workspace">
-                    <include name="UIPortalApplicationChildren.gtmpl" />
-                    <replacetoken><![CDATA[</body>]]></replacetoken>
-                    <replacevalue><![CDATA[<!-- BEGIN: LOOPFUSE TRACKING -->
+                    <unzip src="${project.build.directory}/platform-cloud-tomcat/webapps/acme-intranet.war"
+                      dest="${project.build.directory}/platform-cloud-tomcat/webapps/acme-intranet" />
+                    <copy
+                      file="${project.basedir}/src/main/resources/tomcat/webapps/acme-intranet/organization-configuration.xml"
+                      tofile="${project.build.directory}/platform-cloud-tomcat/webapps/acme-intranet/WEB-INF/conf/office-extension/organization/organization-configuration.xml"
+                      overwrite="true" />
+                    <copy file="${project.basedir}/src/main/resources/tomcat/webapps/acme-intranet/portal.xml"
+                      tofile="${project.build.directory}/platform-cloud-tomcat/webapps/acme-intranet/WEB-INF/conf/office-extension/portal/portal/intranet/portal.xml"
+                      overwrite="true" />
+                    <zip destfile="${project.build.directory}/platform-cloud-tomcat/webapps/acme-intranet.war"
+                      basedir="${project.build.directory}/platform-cloud-tomcat/webapps/acme-intranet" />
+                    <delete dir="${project.build.directory}/platform-cloud-tomcat/webapps/acme-intranet" />
+                    <unzip src="${project.build.directory}/platform-cloud-tomcat/webapps/platform-extension.war"
+                      dest="${project.build.directory}/platform-cloud-tomcat/webapps/platform-extension" />
+                    <copy
+                      file="${project.basedir}/src/main/resources/tomcat/webapps/platform-extension/organization-configuration.xml"
+                      tofile="${project.build.directory}/platform-cloud-tomcat/webapps/platform-extension/WEB-INF/conf/organization/organization-configuration.xml"
+                      overwrite="true" />
+                    <zip destfile="${project.build.directory}/platform-cloud-tomcat/webapps/platform-extension.war"
+                      basedir="${project.build.directory}/platform-cloud-tomcat/webapps/platform-extension" />
+                    <delete dir="${project.build.directory}/platform-cloud-tomcat/webapps/platform-extension" />
+                    <unzip src="${project.build.directory}/platform-cloud-tomcat/webapps/portal.war" dest="${project.build.directory}/platform-cloud-tomcat/webapps/portal" />
+                    <replace
+                      dir="${project.build.directory}/platform-cloud-tomcat/webapps/portal/groovy/portal/webui/workspace">
+                      <include name="UIPortalApplicationChildren.gtmpl" />
+                      <replacetoken><![CDATA[</body>]]></replacetoken>
+                      <replacevalue><![CDATA[<!-- BEGIN: LOOPFUSE TRACKING -->
                     <script type="text/javascript" src="http://lfov.net/webrecorder/js/listen.js"></script>
                     <!-- END: LOOPFUSE TRACKING -->
                     <script type="text/javascript" src="http://cloud-workspaces.com/js/trackers.js"></script>
                     </body>]]></replacevalue>
                     </replace>
-                    <zip destfile="${project.build.directory}/tomcat-source/webapps/portal.war" basedir="${project.build.directory}/tomcat-source/webapps/portal" />
-                    <unzip src="${project.build.directory}/tomcat-source/webapps/ecm-wcm-extension.war" dest="${project.build.directory}/tomcat-source/webapps/ecm-wcm-extension" />
-                    <replace dir="${project.build.directory}/tomcat-source/webapps/ecm-wcm-extension/groovy/portal/webui/workspace">
-                    <include name="UIPortalApplication.gtmpl" />
-                    <replacetoken><![CDATA[</head>]]></replacetoken>
-                    <replacevalue><![CDATA[<script type="text/javascript">
+                    <zip destfile="${project.build.directory}/platform-cloud-tomcat/webapps/portal.war" basedir="${project.build.directory}/platform-cloud-tomcat/webapps/portal" />
+                    <unzip src="${project.build.directory}/platform-cloud-tomcat/webapps/ecm-wcm-extension.war"
+                      dest="${project.build.directory}/platform-cloud-tomcat/webapps/ecm-wcm-extension" />
+                    <replace
+                      dir="${project.build.directory}/platform-cloud-tomcat/webapps/ecm-wcm-extension/groovy/portal/webui/workspace">
+                      <include name="UIPortalApplication.gtmpl" />
+                      <replacetoken><![CDATA[</head>]]></replacetoken>
+                      <replacevalue><![CDATA[<script type="text/javascript">
                     var _gaq = _gaq || [];
                     _gaq.push(['_setAccount', 'UA-1292368-30']);
                     _gaq.push(['_setDomainName', '.cloud-workspaces.com']);
                     _gaq.push(['_trackPageview']);
                     </script>
                     </head>]]></replacevalue>
-                   </replace>
-                    <zip destfile="${project.build.directory}/tomcat-source/webapps/ecm-wcm-extension.war" basedir="${project.build.directory}/tomcat-source/webapps/ecm-wcm-extension" />
-                    <delete dir="${project.build.directory}/tomcat-source/webapps/ecm-wcm-extension" />
-                    <copy file="${project.basedir}/src/main/resources/tomcat/conf/tomcat-users.xml" tofile="${project.build.directory}/tomcat-source/conf/tomcat-users.xml" overwrite="true" />
-                    <copy file="${project.basedir}/src/main/resources/tomcat/gatein/conf/cloud.properties" tofile="${project.build.directory}/tomcat-source/gatein/conf/cloud.properties" overwrite="true" />
-                    <copy file="${project.basedir}/src/main/resources/tomcat/gatein/conf/cloud/users.properties" tofile="${project.build.directory}/tomcat-source/gatein/conf/cloud/users.properties" overwrite="true" />
-                    <copy file="${project.basedir}/src/main/resources/tomcat/gatein/conf/cloud/agent-configuration.xml" tofile="${project.build.directory}/tomcat-source/gatein/conf/cloud/agent-configuration.xml" overwrite="true" />
-                    <copy file="${project.basedir}/src/main/resources/tomcat/gatein/conf/portal/portal/configuration.xml" tofile="${project.build.directory}/tomcat-source/gatein/conf/portal/portal/configuration.xml" overwrite="true" />
+                    </replace>
+                    <zip destfile="${project.build.directory}/platform-cloud-tomcat/webapps/ecm-wcm-extension.war"
+                      basedir="${project.build.directory}/platform-cloud-tomcat/webapps/ecm-wcm-extension" />
+                    <delete dir="${project.build.directory}/platform-cloud-tomcat/webapps/ecm-wcm-extension" />
+                    <copy file="${project.basedir}/src/main/resources/tomcat/conf/tomcat-users.xml"
+                      tofile="${project.build.directory}/platform-cloud-tomcat/conf/tomcat-users.xml" overwrite="true" />
+                    <copy file="${project.basedir}/src/main/resources/tomcat/gatein/conf/cloud.properties"
+                      tofile="${project.build.directory}/platform-cloud-tomcat/gatein/conf/cloud.properties"
+                      overwrite="true" />
+                    <copy file="${project.basedir}/src/main/resources/tomcat/gatein/conf/cloud/users.properties"
+                      tofile="${project.build.directory}/platform-cloud-tomcat/gatein/conf/cloud/users.properties"
+                      overwrite="true" />
+                    <copy
+                      file="${project.basedir}/src/main/resources/tomcat/gatein/conf/cloud/agent-configuration.xml"
+                      tofile="${project.build.directory}/platform-cloud-tomcat/gatein/conf/cloud/agent-configuration.xml"
+                      overwrite="true" />
+                    <copy
+                      file="${project.basedir}/src/main/resources/tomcat/gatein/conf/portal/portal/configuration.xml"
+                      tofile="${project.build.directory}/platform-cloud-tomcat/gatein/conf/portal/portal/configuration.xml"
+                      overwrite="true" />
                   </target>
                 </configuration>
                 <goals>
