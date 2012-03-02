@@ -91,7 +91,7 @@ public class UserLimitListener extends UserEventListener
             while ((inputLine = in.readLine()) != null)
                resp_body = resp_body.concat(inputLine);
             in.close();
-            if (Integer.parseInt(resp_body) > list.getSize()-1) //minus root
+            if (Integer.parseInt(resp_body) == -1 || Integer.parseInt(resp_body) > list.getSize()-1) //minus root
                return;
             else
               throw new RepositoryException("Unable to add user " + user.getUserName() + " to workspace " + tName + " - limit reached");  
