@@ -1,15 +1,66 @@
-<p>
-<br/>
-<p>Hi, ${first.name} ${last.name},</p>
-<p>Thanks for joining Cloud Workspaces! You can access your ${tenant.repository.name} social intranet here: http://${tenant.repository.name}.${tenant.masterhost}</p>
-<br/>
-<p>Ready to get started?</p>
-<br/>
-<ul>
- <li><a href="http://${tenant.masterhost}/signin.jsp?email=${user.mail}">Login with your ${user.mail} username</a></li>
- <li><a href="http://vimeo.com/33936181?autoplay=1">Watch the Getting Started video</a></li>
- <li><a href="http://${tenant.masterhost}#">Invite your coworkers</a></li>
-</ul>
-<br/>
-<p>Thank you,</p>
-<p>The Cloud Workspaces Team</p>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<body>
+	<table border="0" cellpadding="0" cellspacing="0" width="600" bgcolor="#fff" align="center" style="font-size: 12px;color:#666666;line-height:20px;font-family:verdana,arial,tahoma;">
+		<tr>
+			<td align="center"  valign="middle"  style="border:1px solid #e1e1e1;border-bottom:none;">
+				<table border="0" cellpadding="0" cellspacing="0" width="92%" bgcolor="#fff" align="center" style="font-size: 12px;color:#666666;line-height:20px;font-family:verdana,arial,tahoma">
+					<tr>
+						<td>
+							<h1 style="margin:10px 0 0;"><span style="font-family:arial,tahoma,serif;color:#417cab;font-size:22px;text-decoration:none;">Welcome to Cloud Workspaces!</span></h1>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr><!--end header area-->
+		<tr>
+			<td align="center"  style="border:1px solid #e1e1e1;border-top:none;border-bottom:none;">
+				<table border="0" cellpadding="0" cellspacing="0" width="92%" bgcolor="#fff" align="center" style="font-size: 12px;color:#666666;line-height:20px;font-family:verdana,arial,tahoma">
+					<tr>
+
+						<td>
+							
+						
+
+<p style="font-family:verdana,arial,tahoma;font-size:12px; margin-top:20px;">Hi ${first.name},</p>
+<p style="font-family:verdana,arial,tahoma;font-size:12px;">Thanks for joining Cloud Workspaces! Your username is <strong>${user.name}</strong> and you can access the <strong>${tenant.repository.name}</strong> social intranet here:</p>
+ 
+
+<p style="font-family:verdana,arial,tahoma;font-size:12px;"><p><a href="http://${tenant.repository.name}.${tenant.masterhost}">http://${tenant.repository.name}.${tenant.masterhost}</a></p>
+
+							<p style="font-family:verdana,arial,tahoma;font-size:12px; margin: 15px 0px 20px 0;"><strong>The Cloud Workspaces Team</strong></p>
+
+						
+						
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr><!--end content area-->
+		<tr>
+			<td bgcolor="#0D86B1" height="160" align="center"  style="border:1px solid #0D86B1;">
+				<table border="0" cellpadding="0" cellspacing="0" width="92%"  style="font-size: 12px;color:#666666;line-height:20px;font-family:verdana,arial,tahoma">
+					<tr>
+						<td align="left" valign="top" style="font-family:Verdana,arial,tahoma,serif;color:#fff;font-size:12px;" >
+							<h3 style="margin:20px 0 5px"><a href="http://www.cloud-workspaces.com/" target="_blank" style="font-family:arial,tahoma,serif;color:#fff;font-size:14px;text-decoration:none;" title="What is eXo Cloud Workspaces?" >What is Cloud Workspaces?</a></h3>
+							<div style="font-family:verdana,arial,tahoma;font-size:12px;" >Cloud Workspaces is a social collaboration workspace that you can customize to suite your needs. <a href="http://vimeo.com/33936181?autoplay=1"  target="_blank" style="font-family:Verdana,arial,tahoma,serif;color:#fff;font-size:12px;text-decoration:underline;" title="Watch Video" >Watch Video</a></div>						
+						</td>
+						<td align="right" width="270">
+							<a href="http://vimeo.com/33936181?autoplay=1" target="_blank" title="Watch Video eXo Cloud Workspaces" ><img  src="http://exo-mktg.s3.amazonaws.com/cloud-workspaces/mail/eXo-Cloud-Workspaces.png" alt="eXo Cloud Workspaces" /></a>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr><!--end footer area-->		
+	</table>
+	<table align="center" border="0" cellpadding="0" cellspacing="0" width="600" >
+		<tr>
+			<td align="center" height="30">
+				<a href="http://www.cloud-workspaces.com/about.jsp" target="_blank" style="font-family:arial,tahoma,serif;color:#636363;font-size:11px;text-decoration:none;" title="About Cloud Workspaces" >About Cloud Workspaces </a><font color="#636363" size="1">|</font> </a>
+				<a href="http://www.exoplatform.com/company/en/home" target="_blank" style="font-family:arial,tahoma,serif;color:#636363;font-size:11px;text-decoration:none;" title="About eXo" >About eXo </a><font color="#636363" size="1">|</font>
+				<a href="http://twitter.com/#!/exoplatform" target="_blank" style="font-family:arial,tahoma,serif;color:#407baf;font-size:11px;text-decoration:none;" title="@exoplatform on Twitter" >@exoplatform on Twitter</a>
+			</td>
+		</tr>
+	</table>		<!--end bottom area-->
+</body>
+</html>
