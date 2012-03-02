@@ -1,4 +1,4 @@
-﻿		<div class="UIHeader">
+﻿		<div class="UIHeader" id="UIHeader">
 			<div class="MainContent">
 				<ul class="UIMenuTop FR">
 				  <li><a class="Tab BlueTab" href="<%=request.getContextPath()%>/about.jsp">About</a></li>
