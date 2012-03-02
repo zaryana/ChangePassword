@@ -35,7 +35,7 @@
                         hostname += ":" + location.port;
                     }
                     
-                    notifyMsg.innerHTML = '<div class="Message">Waiting...</div>';
+                    notifyMsg.innerHTML = '<div class="Message">Sending...</div>';
                     notifyMsg.style.display = "block";
                     gadgets.window.adjustHeight($("#content").get(0).offsetHeight);
                                   
@@ -90,11 +90,12 @@
                <div class="ContTit">__MSG_title__</div>
             </div>
             <div class="GadCont">
-               <div id="notifyMsg" style="display: none"></div>
+            <div id="notifyMsg" style="display: none"></div>              
                <div class="invited-box">
                   <div class="Row"><label for="email">__MSG_email__</label><input type="text" id="email" name="email-adress" /></div>
                   <div class="Row AlignRight"><input type="button" value="__MSG_send__" id="send" /></div>
                </div>
+               
            </div>
          </div>
       </div>
