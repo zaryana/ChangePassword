@@ -70,10 +70,19 @@
           
       $("#email").focus(function (){
         
+        $("#email").removeClass("light_message");
         document.getElementById("email").value = "";
         document.getElementById("notifyMsg").style.display = "none";
         gadgets.window.adjustHeight($("#content").get(0).offsetHeight);
         
+      });
+      
+      $("#email").blur(function() {
+        var inputTxt = document.getElementById("email").value;
+        if (inputTxt == "") {
+          document.getElementById("email").value = "__MSG_inputDefault__";
+          $("#email").addClass("light_message");
+        }
       });
       
       gadgets.window.adjustHeight($("#content").get(0).offsetHeight);
@@ -92,7 +101,7 @@
             <div class="GadCont">
             <div id="notifyMsg" style="display: none"></div>              
                <div class="invited-box">
-                  <div class="Row"><label for="email">__MSG_email__</label><input type="text" id="email" name="email-adress" /></div>
+                  <div class="Row"><label for="email">__MSG_email__</label><input type="text" id="email" name="email-adress" class="light_message" value="__MSG_inputDefault__" /></div>
                   <div class="Row AlignRight"><input type="button" value="__MSG_send__" id="send" /></div>
                </div>
                

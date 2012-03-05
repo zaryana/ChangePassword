@@ -29,4 +29,7 @@
   <msg name="send">
     Send
   </msg>
+  <msg name="inputDefault">
+    Enter coworker's email address
+  </msg>  
 </messagebundle>

@@ -24,9 +24,12 @@
     Inviter Collègues
   </msg>
   <msg name="email">
-    Mél:
+    E-mail:
   </msg>
   <msg name="send">
     Envoyer
   </msg>
+  <msg name="inputDefault">
+    Entrez e-mail de vos collègues
+  </msg>  
 </messagebundle>

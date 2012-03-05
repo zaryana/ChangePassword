@@ -231,8 +231,8 @@ public class InviteJoinWsRESTService implements ResourceContainer {
             props.put("avatar", myAvatarUrl);
             props.put("userId", viewerId);
             props.put("workspace.name", domainName);
-            props.put("users.number", param1);
-            props.put("users.list", param2);
+            //props.put("users.number", param1);
+            //props.put("users.list", param2);
             props.put("registration.link", registration.trim());
             mailContent = getBody("/html/invite-join-ws.html", props);
                  
