@@ -12,7 +12,20 @@
     
 				<!--AboutPages-->	
 		 <div class="UIPageBody AboutPages">
-			<h1>About Cloud Workspaces</h1>
+			 <div class="SocialBox ClearFix">
+				<h1 class="FL">About Cloud Workspaces</h1>
+				<script>(function(d, s, id) {
+					  var js, fjs = d.getElementsByTagName(s)[0];
+					  if (d.getElementById(id)) return;
+					  js = d.createElement(s); js.id = id;
+					  js.src = "https://connect.facebook.net/en_US/all.js#xfbml=1";
+					  fjs.parentNode.insertBefore(js, fjs);
+					}(document, 'script', 'facebook-jssdk'));
+				</script>
+				<div class="SocialInside FL">
+					<div class="fb-like" data-send="true" data-layout="button_count" data-width="100" data-show-faces="true"></div>
+				</div>			
+			</div>			
 			<h3>Cloud Workspaces: Your Company's Social Intranet in the Cloud</h3>
 			<p>Cloud Workspaces is a free cloud-based social intranet. It provides tools that let you capture, organize and act on your team's internal knowledge, from a full-featured enterprise wiki, powerful document management system, forums, calendars and more.
 			</p>

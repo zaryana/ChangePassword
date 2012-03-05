@@ -96,10 +96,23 @@
 								<div id="signin"><a class="SignIn" href="/signin.jsp">Already registered? Sign In</a></div>
 								<iframe id="loopfuseOutput" name="loopfuseOutput" style='display:none; visibility:hidden'></iframe>
 							</form>
-							<div class="Social FR">
-								<a href="http://twitter.com/exoplatform" class="twitterLink" target="_blank"><img src="background/icon-twiter.png" alt=""/></a>
-								<a href="#"><img src="background/icon-tweet.png" alt=""/></a>
-							</div>						
+							<div class="SocialBox">
+								<div class="Social FR">
+									<a href="http://twitter.com/exoplatform" class="twitterLink" target="_blank"><img src="background/icon-twiter.png" alt=""/></a>
+									<a href="#"><img src="background/icon-tweet.png" alt=""/></a>
+								</div>
+								<script>(function(d, s, id) {
+									  var js, fjs = d.getElementsByTagName(s)[0];
+									  if (d.getElementById(id)) return;
+									  js = d.createElement(s); js.id = id;
+									  js.src = "https://connect.facebook.net/en_US/all.js#xfbml=1";
+									  fjs.parentNode.insertBefore(js, fjs);
+									}(document, 'script', 'facebook-jssdk'));
+								</script>
+								<div  class="FL">
+									<div class="fb-like" data-send="true" data-layout="button_count" data-width="100" data-show-faces="true"></div>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
