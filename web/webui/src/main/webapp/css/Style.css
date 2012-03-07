@@ -942,7 +942,9 @@ input.Button {
 .col5 ul li {
 	padding: 5px 0;	
 	width: 90%;
-	list-style: disc inside none;	
+	list-style: disc outside none;	
+	line-height: 20px;
+	margin: 0 0 0 15px;	
 }
 
 hr {
