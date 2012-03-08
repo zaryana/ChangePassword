@@ -936,6 +936,10 @@ input.Button {
 	padding-right: 270px;
 }
 
+.HelpPage .MainContent h1 {
+    border-bottom: 1px solid #DBE7EC;   
+    padding: 0 0 10px;
+}
 .col5 {
 	width: 50%;
 }
