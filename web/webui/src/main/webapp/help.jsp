@@ -22,7 +22,7 @@
 					<li><a href="#mobile">Mobile</a></li>
 
 				</ul>
-				<a href="" title="Ask a Question" onclick="showContactUsForm('<%=request.getContextPath()%>/contact-us.jsp');"><img src="background/ask-a-question.png" alt="Ask a Question"/></a>
+				<a title="Ask a Question" href="http://community.exoplatform.org/portal/public/classic/forum/cloud-workspaces/ForumService" target="_blank"><img src="background/ask-a-question.png" alt="Ask a Question"/></a>
 			</div>
 			<div class="MainContent">
 			
