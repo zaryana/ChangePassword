@@ -30,6 +30,6 @@
     Send
   </msg>
   <msg name="inputDefault">
-    Enter coworker's email address
+    Enter email
   </msg>  
 </messagebundle>

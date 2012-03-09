@@ -100,10 +100,13 @@
             </div>
             <div class="GadCont">
             <div id="notifyMsg" style="display: none"></div>              
-               <div class="invited-box">
-                  <div class="Row"><label for="email">__MSG_email__</label><input type="text" id="email" name="email-adress" class="light_message" value="__MSG_inputDefault__" /></div>
-                  <div class="Row AlignRight"><input type="button" value="__MSG_send__" id="send" /></div>
-               </div>
+              <table width="100%" class="invited-box">
+                <tr>
+                  <td width="17%" class="Row"><label for="email">__MSG_email__</label></td>
+                  <td width="61%" class="Row"><input type="text" id="email" name="email-adress" class="light_message" value="__MSG_inputDefault__" /></td>
+                  <td width="20%" class="Row"><input type="button" value="__MSG_send__" id="send" /></td>
+                </tr>
+              </table>               
                
            </div>
          </div>
