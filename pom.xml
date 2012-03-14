@@ -304,6 +304,7 @@
     <module>web</module>
     <module>admin-bundle</module>
     <module>cloud-gadgets</module>
+    <module>extension</module>
     <module>platform-bundle</module>
   </modules>
 </project>

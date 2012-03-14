@@ -68,6 +68,15 @@
        <fileMode>0644</fileMode>
      </dependencySet>
      <dependencySet>
+       <outputDirectory>app-server-tomcat/webapps</outputDirectory>
+       <includes>
+         <include>com.exoplatform.cloudworkspaces:cloud-workspaces-extension-webapp:war</include>
+       </includes>
+       <outputFileNameMapping>cloud-workspaces-extension.war</outputFileNameMapping>
+       <scope>provided</scope>
+       <fileMode>0644</fileMode>
+     </dependencySet>
+     <dependencySet>
        <outputDirectory>app-server-tomcat/lib</outputDirectory>
        <includes>
          <include>mysql:mysql-connector-java</include>
@@ -75,6 +84,7 @@
          <include>com.exoplatform.cloudworkspaces:cloud-workspaces-component-multitenancy</include>
          <include>com.exoplatform.cloudworkspaces:cloud-workspaces-gadget-services</include>
          <include>com.exoplatform.cloudworkspaces:cloud-workspaces-gadget-config</include>
+         <include>com.exoplatform.cloudworkspaces:cloud-workspaces-extension-config</include>
        </includes>
        <scope>provided</scope>
        <fileMode>0644</fileMode>
