@@ -880,6 +880,9 @@ public class CloudIntranetUtils
    
    public void joinAll(String tName, RequestState state) throws CloudAdminException
    {
+      if (state.equals(RequestState.WAITING_CREATION))
+         throw new CloudAdminException("Given request state does not implies autojoining.");
+      
       List<UserRequest> list = requestDao.search(tName, state);
       for (UserRequest one : list)
       {
@@ -932,7 +935,7 @@ public class CloudIntranetUtils
                }
                else
                {
-                  //Changing type from WAILTING_JOIN to WAITING_LIMIT
+                  //Changing type from WAITING_JOIN to WAITING_LIMIT
                   UserRequest two =
                      new UserRequest("", one.getTenantName(), one.getUserEmail(), one.getFirstName(),
                         one.getLastName(), one.getCompanyName(), one.getPhone(), one.getPassword(),
@@ -979,6 +982,19 @@ public class CloudIntranetUtils
                props.put("user.name", username);
                props.put("first.name", fName);
                props.put("last.name", lName);
+               
+               try 
+               {
+                  isNewUserAllowed(tenant, username);
+               } 
+               catch (UserAlreadyExistsException ex)
+               {
+                  LOG.warn("Administrator " + userMail + " is already exists, deleting from waiting queue.");
+                  sendIntranetCreatedEmail(userMail, props);
+                  requestDao.delete(one);
+                  continue;
+               }
+               
                LOG.info("Joining administrator " + userMail + " to tenant " + tenant);
                storeUser(tenant, userMail, fName, lName, one.getPassword(), true);
                sendIntranetCreatedEmail(userMail, props);
@@ -1008,6 +1024,7 @@ public class CloudIntranetUtils
          String fName = one.getFirstName();
          String lName = one.getLastName();
          String username = userMail.substring(0, (userMail.indexOf("@")));
+         boolean isUserAllowed;
 
          try
          {
@@ -1033,7 +1050,18 @@ public class CloudIntranetUtils
             }
             else
             {
-               if (isNewUserAllowed(tenant, username))
+               try 
+               {
+                  isUserAllowed = isNewUserAllowed(tenant, username);
+               } 
+               catch (UserAlreadyExistsException e)
+               {
+                  LOG.warn("User " + userMail + " is already exists, deleting from waiting queue.");
+                  sendUserJoinedEmails(tenant, fName, userMail, props);
+                  requestDao.delete(one);
+                  continue;
+               }
+               if (isUserAllowed)
                {
                   // Storing user & sending appropriate mails
                   LOG.info("Joining user " + userMail + " to tenant " + tenant);

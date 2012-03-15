@@ -108,30 +108,26 @@ public class InviteJoinWsRESTService implements ResourceContainer {
 			        }
 			        in.close();
 			        } 
-			        else 
+			    else 
 			        {
 			        	BufferedReader in = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
-				        String err = "";
 				        String line;
 				        while ((line = in.readLine()) != null) {
-				            err += line;
+				            result += line;
 				        }
 				        in.close();
-			            String msg = "HTTP status" + connection.getResponseCode() + (err != null ? ". Server error: \r\n" + err + "\r\n" : "");
-			            log.error(msg);
-			            result += "Error";
 			        }
 			    }
 			
 		      catch (MalformedURLException e)
 		      {
 		         log.error(e.getMessage(), e);
-		         result += "Error";
+		         result += e.getMessage();
 		      }
 		      catch (IOException e)
 		      {
 		         log.error(e.getMessage(), e);
-		         result += "Error";
+		         result += e.getMessage();
 		      }
 
 		      finally
@@ -142,6 +138,7 @@ public class InviteJoinWsRESTService implements ResourceContainer {
 		         }
 		      }
 		log.info("Get registration link for email address " + email);
+		log.info(result);
 		return result;
 		}	
 	
@@ -150,8 +147,6 @@ public class InviteJoinWsRESTService implements ResourceContainer {
     @Path("send-mail/{mail}/{hostname}")
     public Response sendInvitation(@Context SecurityContext sc, @Context UriInfo uriInfo, @PathParam("mail") String mail, 
     		@PathParam("hostname") String hostname) throws Exception {
-      
-      if (!isValidEmail(mail)) return Response.ok("Invalid email", MediaType.APPLICATION_JSON).cacheControl(cacheControl).build();
       
       String prefixUrl = "http://" + hostname;
       String masterhost = System.getProperty("tenant.masterhost");
@@ -162,14 +157,12 @@ public class InviteJoinWsRESTService implements ResourceContainer {
       String subject = "";
       String mailContent = "";
       
-      String blacklist = checkBlacklist(masterhost, mail);
-      if (blacklist.contains("TRUE")) return Response.ok("Blacklisted email", MediaType.APPLICATION_JSON).cacheControl(cacheControl).build();
-      
-      String exist = checkExist(masterhost, domainName);
-      
       String registration = regisLink(masterhost, mail);
       
-      if (!registration.contains("Error")){
+      if (registration.contains("Invalid email")) return Response.status(Status.BAD_REQUEST).entity("Please enter a valid email address.").build();
+      if (registration.contains("Require work email")) return Response.status(Status.BAD_REQUEST).entity("Please use a corporate email address.").build();
+      
+      if (registration.contains("http")){
             
       try {
                 
@@ -188,11 +181,9 @@ public class InviteJoinWsRESTService implements ResourceContainer {
          ManageableRepository repository = repoService.getCurrentRepository();
          String currentTenant = repository.getConfiguration().getName();
          
-         if (exist.contains("ONLINE")){
-            
          if (currentTenant.equals(domainName)) {
         	 
-             	 OrganizationService organizationService = (OrganizationService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(OrganizationService.class);
+ /*            	 OrganizationService organizationService = (OrganizationService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(OrganizationService.class);
              	 ListAccess<User> usersList = organizationService.getUserHandler().findAllUsers();
              	 long numMember = usersList.getSize() - 1;
              	 User[] allUsers = usersList.load(0, usersList.getSize());
@@ -200,7 +191,7 @@ public class InviteJoinWsRESTService implements ResourceContainer {
                  String param1 = "";
                  String param2 = "";
                  StringBuilder sb = new StringBuilder();
-                 
+                 if (numMember <= 10) {
                  if (numMember > 2) {
                 	 param1 += "<strong>" + numMember + "</strong> of your colleagues are already using the <a href='#' style='font-family:verdana,tahoma,serif;color:#464646;font-size:12px;text-decoration:none;' title='" + currentTenant + "'><strong>" + currentTenant + "</strong> </a>workspace.";
                  }
@@ -220,18 +211,19 @@ public class InviteJoinWsRESTService implements ResourceContainer {
                     	sb.append("</tr><tr height='60' valign='middle'>");
                             count = 0;
                     }
-                    sb.append("<td width='45' align='left' style='margin:3px 5px'><img width='30' height='30' src='" + avatarUrl + "' alt='" + userID + "' /></td>");
+                    sb.append("<td width='45' align='left' style='margin:2px 5px'><img width='30' height='30' src='" + avatarUrl + "' alt='" + userID + "' /></td>");
+            }
             }
         
-            if (sb != null ) param2 = sb.toString();
+            if (sb != null ) param2 = sb.toString();*/
             
             Map<String, String> props = new HashMap<String, String>();
             props.put("user.name", sender);
             props.put("avatar", myAvatarUrl);
             props.put("userId", viewerId);
             props.put("workspace.name", domainName);
-            props.put("users.number", param1);
-            props.put("users.list", param2);
+            //props.put("users.number", param1);
+            //props.put("users.list", param2);
             props.put("registration.link", registration.trim());
             mailContent = getBody("/html/invite-join-ws.html", props);
                  
@@ -248,16 +240,6 @@ public class InviteJoinWsRESTService implements ResourceContainer {
             	
                 subject += sender + " has invited you to try eXo Cloud Workspace";
             } 
-         } else {
-             Map<String, String> props = new HashMap<String, String>();
-             props.put("user.name", sender);
-             props.put("avatar", myAvatarUrl);
-             props.put("userId", viewerId);
-             props.put("registration.link", masterhost);
-             mailContent = getBody("/html/invite-try-cw.html", props);
-        	 
-             subject += sender + " has invited you to try eXo Cloud Workspace";        	 
-         }
        
 		  try{
 			  String from = sender + " <noreply@exoplatform.com>";
@@ -272,126 +254,17 @@ public class InviteJoinWsRESTService implements ResourceContainer {
 	          return Response.ok("Message sent", MediaType.APPLICATION_JSON).cacheControl(cacheControl).build();
 		    
 			  }catch (Exception e){
-				  e.printStackTrace();
-				  return Response.status(HTTPStatus.INTERNAL_ERROR).cacheControl(cacheControl).build();
+				  log.error(e.getMessage(), e);
+				  return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Unable to send invitation email. Please contact support.").build();
 			  }
          
-
       } catch (Exception e){
             log.error(e.getMessage(), e);
-            return Response.status(HTTPStatus.INTERNAL_ERROR).cacheControl(cacheControl).build();
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Unable to send invitation email. Please contact support.").build();
       }
       } else {
-    	  return Response.status(Status.BAD_REQUEST).entity("<div class='Warning'>User already signed up or Workspace are not ready</div>").build();
+    	  return Response.status(Status.BAD_REQUEST).entity("User already signed up or Workspace is not ready. Please try again later.").build();
       }
-    }
-    
-    public String checkExist(String masterhost, String tenantName) throws Exception {
-		String strUrl = "http://" + masterhost + "/rest/cloud-admin/public-tenant-service/status/" + tenantName;
-		URL url;
-		HttpURLConnection connection = null;
-		String result="";
-		
-		try {
-		        url = new URL(strUrl);
-		        connection = (HttpURLConnection) url.openConnection();
-		        connection.setRequestMethod("GET");
-		        connection.setDoOutput(true);
-		        
-		        if (connection.getResponseCode() == HTTP_OK){
-		        BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-		        String decodedString;
-		        while ((decodedString = in.readLine()) != null) {
-		            result += decodedString;
-		        }
-		        in.close();
-		        } 
-		        else 
-		        {
-		        	BufferedReader in = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
-			        String err = "";
-			        String line;
-			        while ((line = in.readLine()) != null) {
-			            err += line;
-			        }
-			        in.close();
-		            String msg = "HTTP status" + connection.getResponseCode() + (err != null ? ". Server error: \r\n" + err + "\r\n" : "");
-		            log.error(msg);
-		        }
-		    }
-		
-	      catch (MalformedURLException e)
-	      {
-	         log.error(e.getMessage(), e);
-	      }
-	      catch (IOException e)
-	      {
-	         log.error(e.getMessage(), e);
-	      }
-
-	      finally
-	      {
-	         if (connection != null)
-	         {
-	            connection.disconnect();
-	         }
-	      }
-		log.info("Current status of tenant " + tenantName + " is: " + result);
-		return result;    	
-    }
-    
-    public String checkBlacklist(String masterhost, String email) throws Exception {
-		String strUrl = "http://" + masterhost + "/rest/cloud-admin/public-tenant-service/blacklisted/" + email;
-		URL url;
-		HttpURLConnection connection = null;
-		String result="";
-		
-		try {
-		        url = new URL(strUrl);
-		        connection = (HttpURLConnection) url.openConnection();
-		        connection.setRequestMethod("GET");
-		        connection.setDoOutput(true);
-		        
-		        if (connection.getResponseCode() == HTTP_OK){
-		        BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-		        String decodedString;
-		        while ((decodedString = in.readLine()) != null) {
-		            result += decodedString;
-		        }
-		        in.close();
-		        } 
-		        else 
-		        {
-		        	BufferedReader in = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
-			        String err = "";
-			        String line;
-			        while ((line = in.readLine()) != null) {
-			            err += line;
-			        }
-			        in.close();
-		            String msg = "HTTP status" + connection.getResponseCode() + (err != null ? ". Server error: \r\n" + err + "\r\n" : "");
-		            log.error(msg);
-		        }
-		    }
-		
-	      catch (MalformedURLException e)
-	      {
-	         log.error(e.getMessage(), e);
-	      }
-	      catch (IOException e)
-	      {
-	         log.error(e.getMessage(), e);
-	      }
-
-	      finally
-	      {
-	         if (connection != null)
-	         {
-	            connection.disconnect();
-	         }
-	      }
-		log.info("Email address " + email + " is blacklisted: " + result);
-		return result;    	
     }
     
     public String getBody(String fileTemplate, Map<String, String> templateProperties){
@@ -405,19 +278,7 @@ public class InviteJoinWsRESTService implements ResourceContainer {
     		body = "";
     	}
     	return body;
-    }
-  
-        public static boolean isValidEmail(String email){
-          boolean result = true;
-          try {
-             InternetAddress emailAddr = new InternetAddress(email);
-             emailAddr.validate();
-          }
-          catch (AddressException ex){
-                result = false;
-          }
-          return result;
-          }  
+    }  
   
      private String getUserId(SecurityContext sc, UriInfo uriInfo) {
         try {

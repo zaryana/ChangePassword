@@ -21,870 +21,968 @@
 
 
 /******** Common CSS ********/
+html {
+	height:100%;
+}
+
 body {
 	font-family: Verdana, Arial, Tahoma, Sans-serif;
-	margin: 0;
-	font-size: 12px;
-	color:#666666;
+  margin: 0;
+  font-size: 12px;
+  color:#666666;
+  height:100%;
 }
 
 div, table, tr, td, img, form, p,h1, h2, h3, h4, h5, h6,ul ,fieldset{
-	margin: 0;
-	padding: 0;
+  margin: 0;
+  padding: 0;
 }
 
 img,fieldset {
-	border: none;
+  border: none;
 }
 
 a {
-	text-decoration: none;
-	outline: none;
-	color:#0868b9;
+  text-decoration: none;
+  outline: none;
+  color:#0868b9;
 }
 
 li {
-	list-style-type:none;
+  list-style-type:none;
 }
 h1,h2,h3,h4,h5 {
-	font-weight:normal;
-	font-family:arial,tahoma,serif;
-	margin:10px 0;
+  font-weight:normal;
+  font-family:arial,tahoma,serif;
+  margin:10px 0;
 }
 
 label.error { 
-	float: none; 
-	color: red; 
-	padding-left: .5em;
-	font-size: 11px; 
-	vertical-align: top; 
+  float: none; 
+  color: red; 
+  padding-left: .5em;
+  font-size: 11px; 
+  vertical-align: top; 
 } 
 
 h1{
-	font-family:MyriadProSemibold,arial,tahoma;
-	font-size: 48px;
-	
+  font-family:MyriadProSemibold,arial,tahoma;
+  font-size: 48px;
+  
 }
 h2{
-	font-family:MyriadProSemibold,arial,tahoma;
-	font-size: 42px;
+  font-family:MyriadProSemibold,arial,tahoma;
+  font-size: 42px;
 
 }
 h3{
-	font-size: 18px;	
+  font-size: 18px;  
 }
 h4{
-	font-size: 14px;	
-	font-weight: bold;
+  font-size: 14px;  
+  font-weight: bold;
 }
 h5{
-	font-size: 12px;
+  font-size: 12px;
 }
 
 p {
-	margin:10px 0;
+  margin:10px 0;
 }
 .ClearFix:after {
-	content: ".";
-	display: block;
-	height: 0;
-	clear: both;
-	visibility: hidden;
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
 }
 
 .ClearFix {
-	!display: inline-block;
-	!zoom: 1;
-	!display: block; 
+  !display: inline-block;
+  !zoom: 1;
+  !display: block; 
 }
 
 .FL {
-	float: left;
+  float: left;
 }
 
 .FR {
-	float: right;
+  float: right;
 }
 
 .MainContent {
-	margin:0 auto;
-	width: 960px;
+  margin:0 auto;
+  width: 960px;
+}
+
+.UIPageContainer{
+  min-height: 100%;
+  position: relative;
+}
+
+.UIPageBodyContainer{
+  padding-bottom:41px; /* footer's height */
 }
 
 .UIPageBody {
-	margin: 30px auto;
-	width: 960px;
-	padding: 0px;
-	min-height: 430px;
+  margin: 30px auto;
+  width: 960px;
+  padding: 0px;
 }
 
 /*UIHeader */
 .UIHeader {
-	background: url("../background/bg_header.png") repeat-x left top;
-	height: 139px;
+  background: url("../background/bg_header.png") repeat-x left top;
+  height: 139px;
 }
 
 .UIMenuTop li {
-	float:left;
-	display:block;			
-	background: url("../background/sperator.png") no-repeat right center;
-	padding-right: 2px;	
+  float:left;
+  display:block;      
+  background: url("../background/sperator.png") no-repeat right center;
+  padding-right: 2px;  
 }
 .UIMenuTop {
-	background:#474848;
-	-moz-border-radius: 0 0 5px 5px;
-	-webkit-border-radius: 0 0 5px 5px;
-	border-radius: 0 0 5px 5px;
+  background:#474848;
+  -moz-border-radius: 0 0 5px 5px;
+  -webkit-border-radius: 0 0 5px 5px;
+  border-radius: 0 0 5px 5px;
 }
 
 .UIMenuTop li.last {
-	background: none;
-	padding: 0px;	
+  background: none;
+  padding: 0px;  
 }
 
 .UIMenuTop li a {
-	display:block;
-	color: #C8C8C8;
-	text-transform:uppercase;
-	font-size: 10px;
-	padding: 0 14px;
-	font-family: arial,tahoma,serif;	
-	height: 31px;
-	line-height: 35px;
+  display:block;
+  color: #C8C8C8;
+  text-transform:uppercase;
+  font-size: 10px;
+  padding: 0 14px;
+  font-family: arial,tahoma,serif;  
+  height: 31px;
+  line-height: 35px;
 
 }
 .UIMenuTop li.last  a {
-	background:none;
+  background:none;
 } 
 .UIMenuTop li  a:hover ,.UIMenuTop li.selected  a{
-	border-top:4px solid #ffcb08;
-	height: 27px;
-	line-height: 27px;
+  border-top:4px solid #ffcb08;
+  height: 27px;
+  line-height: 27px;
 }
 .UIMenuTop li  a.BlueTab:hover,.UIMenuTop li.selected a.BlueTab {
-	border-top:4px solid #b1e4fc;
+  border-top:4px solid #b1e4fc;
 }
 
 .UIMenuTop li  a.GreenTab:hover,.UIMenuTop li.selected a.GreenTab  {
-	border-top:4px solid #3fa2d5;
+  border-top:4px solid #3fa2d5;
 }
 
 .UIMenuTop li  a.GrayTab:hover,.UIMenuTop li.selected a.GrayTab  {
-	border-top:4px solid #c2c2c2;
+  border-top:4px solid #c2c2c2;
 }
 
 .UIMenuTop li  a.OrangeTab:hover,.UIMenuTop li.selected a.OrangeTab  {
-	border-top:4px solid #ffcb08;
+  border-top:4px solid #ffcb08;
 }
 
 /*logo*/
 .Logo{
-	margin-top: 43px;
+  margin-top: 43px;
 }
 
 .ClouIntranet {
-	text-align:right;
-	color: #fff;
-	font-size: 18px;
-	width: 80%;
+  text-align:right;
+  color: #fff;
+  font-size: 18px;
+  width: 80%;
 }
 
-.ClouIntranet h1 {	
-	margin: 15px 0 0 0;
-	font-family: 'Myriad Pro', arial, tahoma;
-	font-size: 36px;
-	font-weight: bold;
-	color: white;
-	text-align: right;
+.ClouIntranet h1 {  
+  margin: 15px 0 0 0;
+  font-family: 'Myriad Pro', arial, tahoma;
+  font-size: 36px;
+  font-weight: bold;
+  color: white;
+  text-align: right;
 }
 
 .ClouIntranet span {
-	font-size: 16px;
-	font-family: MyriadProSemibold, arial, tahoma;
-	display: block;
-	margin-top: 4px;
+  font-size: 16px;
+  font-family: MyriadProSemibold, arial, tahoma;
+  display: block;
+  margin-top: 4px;
 }
 
 /*UIBanner*/
 .UIBanner {
-	background: url("../background/bg_banner.png") repeat-x left top;
-	min-height: 460px;
+  background: url("../background/bg_banner.png") repeat-x left top;
+  min-height: 460px;
 }
 
 .UIBanner h2 {
-	color:#fff;
-	margin: 0 0 25px 0;
-	padding: 15px 0 0 0;
-	font-size: 42px;
+  color:#fff;
+  margin: 0 0 25px 0;
+  padding: 15px 0 0 0;
+  font-size: 42px;
 }
 
 /*Form box*/
 .UIBanner .FormBox .BoxContent {
-	width: 665px;
-	min-height: 315px;
-	background:#fff ;
+  width: 665px;
+  min-height: 315px;
+  background:#fff ;
 }
 
 .UIBanner .FormBox .BoxContent form {
-	margin: 0 auto;
-	padding: 20px 35px;
-	text-align: center;
+  margin: 0 auto;
+  padding: 20px 35px;
+  text-align: center;
 }
 
 .UIBanner .FormBox input.InputText {
-	width: 470px;
-	height: 28px;
-	line-height: 28px;
-	padding: 10px;
-	color: #636363;
-	text-align: center;
-	font-size:18px;
-	border: 1px solid #dedede;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
-	border-radius: 3px;
-	-moz-box-shadow: 0 5px 8px #F4F4F4 inset;
-	-webkit-box-shadow: 0 5px 8px #F4F4F4 inset;
-	box-shadow: 0 5px 8px #F4F4F4 inset;
+  width: 470px;
+  height: 28px;
+  line-height: 28px;
+  padding: 10px;
+  color: #636363;
+  text-align: center;
+  font-size:18px;
+  border: 1px solid #dedede;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  -moz-box-shadow: 0 5px 8px #F4F4F4 inset;
+  -webkit-box-shadow: 0 5px 8px #F4F4F4 inset;
+  box-shadow: 0 5px 8px #F4F4F4 inset;
 }
 
 .UIBanner .FormBox input.Button {
-	margin: 25px auto 20px;
-	width: 170px;
-	height: 40px;
-	font-family: MyriadProSemibold, arial, tahoma;
-	font-size: 24px;
+  margin: 25px auto 20px;
+  width: 170px;
+  height: 40px;
+  font-family: MyriadProSemibold, arial, tahoma;
+  font-size: 24px;
 }
 
 .UIBanner .FormBox a.Singup {
-	display:inline-block;
-	text-align:center;
-	border: 1px solid #3495b9;
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
-	border-radius: 5px;
-	height: 41px;
-	line-height: 41px;
-	color:#fff;
-	font-size: 24px; 
-	margin: 0 auto;
-	padding: 0 30px;
-	background: url("../background/Bg-Singup.png") repeat-x center bottom;
-	text-decoration:none;
+  display:inline-block;
+  text-align:center;
+  border: 1px solid #3495b9;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  height: 41px;
+  line-height: 41px;
+  color:#fff;
+  font-size: 24px; 
+  margin: 0 auto;
+  padding: 0 30px;
+  background: url("../background/Bg-Singup.png") repeat-x center bottom;
+  text-decoration:none;
 }
 
 .UIBanner .FormBox .SignUpInfo {
-	background: url("../background/CheckIcon.gif") no-repeat left top;
-	padding-left: 28px;
-	line-height: 20px;
-	color: #4C4C4C;
-	text-align: left;
-	color: #7DAE19;
+  background: url("../background/CheckIcon.gif") no-repeat left top;
+  padding-left: 28px;
+  line-height: 20px;
+  color: #4C4C4C;
+  text-align: left;
+  color: #7DAE19;
 }
 
-.UIBanner .FormBox .Social {
-	margin-right: 88px;
-}
 
 .UIBanner .FormBox .Social .twitterLink {
-	display: block;
-	float: left;
-	margin-right: 10px;
-	margin-top: -5px;
+  display: block;
+  float: left;
+  margin-right: 10px;
+  margin-top: -5px;
 }
 
 .FormContainer .FormBox {
-	padding-bottom: 35px;
-	background: url("../background/dropShadown.png") no-repeat center bottom;
-	margin-right: 295px;
+  padding-bottom: 35px;
+  background: url("../background/dropShadown.png") no-repeat center bottom;
+  margin-right: 295px;
 }
 
 .FormContainer .BoxText {
-	width: 265px;
-	color:#def6ff;	
-	line-height: 18px;
+  width: 265px;
+  color:#def6ff;  
+  line-height: 18px;
 }
 
 .FormContainer .BoxText h3 {
-	margin: 0;
-	color:#fff;
+  margin: 0;
+  color:#fff;
 }
 
 .FormContainer .BoxText ul {
-	margin: 0 0 25px 0;
+  margin: 0 0 25px 0;
 }
 
 .FormContainer .BoxText ul li {
-	list-style: disc inside none;
-	margin: 5px 0 10px;
+  list-style: disc inside none;
+  margin: 5px 0 10px;
 }
 
 .FormContainer .BoxText ul  li:hover {
-	color:#7edcff;
+  color:#7edcff;
 }
 
 .FormContainer .BoxText p {
-	margin: 5px 0 25px 0;
+  margin: 5px 0 25px 0;
 }
 
 .FormContainer .BoxText  a {
-	color:#def6ff;
+  color:#def6ff;
 }
 
 .FormContainer .BoxText  a:hover {
-	text-decoration:underline;
-	color:#7edcff;
+  text-decoration:underline;
+  color:#7edcff;
 }
 
 
 /*UIFooter*/
 .UIFooterPortlet {
-	background: url("../background/bg-footer.png") repeat-x left bottom;
-	height: 41px;
-	color:#a3a4a4;
-	line-height: 20px;
-	padding-top: 10px;
-	width: 100%;
-	overflow: hidden;
+  background: url("../background/bg-footer.png") repeat-x left bottom;
+  height: 41px;
+  color:#a3a4a4;
+  line-height: 20px;
+  padding-top: 10px;
+  width: 100%;
+  overflow: hidden;
+  position:absolute;
+  bottom:0;
 }
 
 .UIFooterPortlet span a {
-	color:#ffcb08;
+  color:#ffcb08;
 }
 
 .UIFooterPortlet p.Copyright {
-	font-size: 11px;
+  font-size: 11px;
 }
 
 /* Back icon */
 .BackIcon {
-	background: url("../background/BackIcon.gif") no-repeat left center;
-	padding-left: 10px;
-	color: #4283c7;
-	display: inline-block;
-	font-family: arial, tahoma, serif;
+  background: url("../background/BackIcon.gif") no-repeat left center;
+  padding-left: 10px;
+  color: #4283c7;
+  display: inline-block;
+  font-family: arial, tahoma, serif;
 }
 
 .BackIcon:hover {
-	text-decoration: underline;
+  text-decoration: underline;
 }
 
 .TenantFormMsg {
-	font-size: 18px;
-	color: #ff0000;
-	text-align: center;
-	padding-bottom: 10px;
+  font-size: 18px;
+  color: #ff0000;
+  text-align: center;
+  padding-bottom: 10px;
 }
 
 /*IntroBox*/
 .UI-Intro {
-	background: #f8f8f8;
-	border-bottom: 1px solid #f1f1f1;
-	min-height: 360px;
-	color: #464646;
+  background: #f8f8f8;
+  border-bottom: 1px solid #f1f1f1;
+  min-height: 360px;
+  color: #464646;
 }
 
 .UI-Intro .Cols {
-	font-size: 12px;
-	line-height: 20px;
+  font-size: 12px;
+  line-height: 20px;
 }
 
 .UI-Intro .Cols h3 {
-	margin: 24px 0;
-	color: #303030;
+  margin: 24px 0;
+  color: #303030;
 }
 
 .UI-Intro .LCol {
-	width: 300px;
+  width: 300px;
 }
 
 .UI-Intro .MCol {
-	width: 310px;
-	margin: 0 10px 0 20px;
+  width: 310px;
+  margin: 0 10px 0 20px;
 }
 
 .UI-Intro .RCol {
-	width: 290px;
-	text-align: right;
+  width: 290px;
+  text-align: right;
 }
 
 .UI-Intro  ul {
-	margin: 68px 0 0 0;
+  margin: 68px 0 0 0;
 }
 
 .UI-Intro .RCol li {
-	display:block;	
-	margin: 15px 0;
+  display:block;  
+  margin: 15px 0;
 }
 
 .UI-Intro .Readmore {
-	padding-right: 10px;
-	font-size: 13px;
-	background: url("../background/readmore.png") no-repeat right 6px;
+  padding-right: 10px;
+  font-size: 13px;
+  background: url("../background/readmore.png") no-repeat right 6px;
 }
 
 /* Button */
 input.Button {
-	background: url("../background/Bg-Button.png") repeat-x left top;
-	border: 1px solid #3495b9;
-	line-height: 33px;
-	height: 38px;
-	margin: 0;
-	padding: 0;
-	color: #fff;
-	font-family: Myriad Pro;
-	font-size: 18px;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
-	border-radius: 3px;
-	text-shadow: 0px 1px 0px #1d7aae;
-	cursor: pointer;
-	display: block;
-	width: 100px;
-	text-align: center;
+  background: url("../background/Bg-Button.png") repeat-x left top;
+  border: 1px solid #3495b9;
+  line-height: 33px;
+  height: 38px;
+  margin: 0;
+  padding: 0;
+  color: #fff;
+  font-family: Myriad Pro;
+  font-size: 18px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  text-shadow: 0px 1px 0px #1d7aae;
+  cursor: pointer;
+  display: block;
+  width: 100px;
+  text-align: center;
 }
 
 /*FormPages*/
 .UIPageBody .UIForm {
-	margin: 0px;
-	font-family: arial, tahoma, serif;
+  margin: 0px;
+  font-family: arial, tahoma, serif;
 }
 
 .UIPageBody h1 {
-	font-family: arial, tahoma, serif;
-	text-align: center;
-	font-size: 30px;
-	font-weight: bold;
-	color: #2882a3;
-	margin: 0px 0px 20px 0px;
+  font-family: arial, tahoma, serif;
+  text-align: center;
+  font-size: 30px;
+  font-weight: bold;
+  color: #2882a3;
+  margin: 0px 0px 20px 0px;
 }
 
 .UIPageBody table td {
-	padding: 0px 0px 20px 0px;
-	border: none;
+  padding: 0px 0px 20px 0px;
+  border: none;
 }
 
 .UIPageBody .Field {
-	width: 340px;
-	text-align: right;
-	padding-right: 25px;
-	line-height: 40px;
-	font-size: 18px;
-	color: #414141;
+  width: 340px;
+  text-align: right;
+  padding-right: 25px;
+  line-height: 40px;
+  font-size: 18px;
+  color: #414141;
 }
 
 .UIPageBody .MyField {
-	width: 340px;
-	text-align: center;
-	padding-right: 25px;
-	line-height: 40px;
-	font-size: 18px;
-	color: #414141;
+  width: 340px;
+  text-align: center;
+  padding-right: 25px;
+  line-height: 40px;
+  font-size: 18px;
+  color: #414141;
 }
 
 .UIPageBody .MyFieldLeft {
-	text-align: left;
-	padding-right: 15px;
-	padding-left:15px;
-	line-height: 40px;
-	font-size: 14px;
-	color: #414141;
+  text-align: left;
+  padding-right: 15px;
+  padding-left:15px;
+  line-height: 40px;
+  font-size: 14px;
+  color: #414141;
 }
 
 .UIPageBody .MyFieldCenter {
-	text-align: center;
-	padding-right: 15px;
-	padding-left:15px;
-	line-height: 40px;
-	font-size: 14px;
-	font-weight: bold;
-	color: #414141;
+  text-align: center;
+  padding-right: 15px;
+  padding-left:15px;
+  line-height: 40px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #414141;
 }
 
 .UIPageBody input.InputText {
-	-moz-box-shadow: 0 5px 8px #F4F4F4 inset;
-	-webkit-box-shadow: 0 5px 8px #F4F4F4 inset;
-	box-shadow: 0 5px 8px #F4F4F4 inset;
-	width: 300px;
-	height: 38px;
-	line-height: 36px;
-	padding: 0px 10px;
-	border: 1px solid #dddddd;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
-	border-radius: 3px;
-	font-size: 14px;
-	color: #4c4c4c;
+  -moz-box-shadow: 0 5px 8px #F4F4F4 inset;
+  -webkit-box-shadow: 0 5px 8px #F4F4F4 inset;
+  box-shadow: 0 5px 8px #F4F4F4 inset;
+  width: 300px;
+  height: 38px;
+  line-height: 36px;
+  padding: 0px 10px;
+  border: 1px solid #dddddd;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  font-size: 14px;
+  color: #4c4c4c;
 }
 
 .UIPageBody input.DisabledArea {
-	background: #f4f4f4;
-	color: #bfbfbf;
-	font-size: 18px;
+  background: #f4f4f4;
+  color: #bfbfbf;
+  font-size: 18px;
 }
 
 .UIPageBody .Star {
-	font-size: 20px;
-	color: #ff6666;
-	display: inline-block;
-	margin-left: 20px;
+  font-size: 20px;
+  color: #ff6666;
+  display: inline-block;
+  margin-left: 20px;
 }
 
 .UIPageBody .RowEven , .UIPageBody .RowOdd {
-	margin: 30px 0;
+  margin: 30px 0;
 }
 
 .UIPageBody p{
-	line-height: 16px;
-	text-align: justify;
+  line-height: 16px;
+  text-align: justify;
 }
 
 .UIPageBody .RowEven .BoxText {
-	padding-right: 320px;
+  padding-right: 320px;
 }
 
 .UIPageBody .RowOdd .BoxText {
-	padding-left: 320px;
+  padding-left: 320px;
 }
 
 .UIPageBody .SpecialTit {
-	color: #0868B9;
+  color: #0868B9;
 }
 
 .UIPageBody .info {
-	background: url("../background/InfoIcon.gif") no-repeat left top;
-	padding-left: 28px;
-	width: 300px;
-	line-height: 20px;
-	color: #4C4C4C;
+  background: url("../background/InfoIcon.gif") no-repeat left top;
+  padding-left: 28px;
+  width: 300px;
+  line-height: 20px;
+  color: #4C4C4C;
 }
 
 .UIPageBody p.FillProfileInfo {
-	font-size: 16px;
-	text-align: center;
-	margin: -15px 0 25px;
-	font-family: arial;
+  font-size: 16px;
+  text-align: center;
+  margin: -15px 0 25px;
+  font-family: arial;
 }
 
 .UIPageBody p.AlignLeftTxt {
-	text-align: justify;
-	
+  text-align: justify;
+  
 }
 
 /*ThanksPages*/
 .ThanksPages {
-	width: 770px;
+  width: 770px;
 }
  
 .ThanksPages p {
-	color: #666; 
-	font-size: 14px; 
-	line-height: 26px;
+  color: #666; 
+  font-size: 14px; 
+  line-height: 26px;
 }
 
 
 .ThanksPages li {
-	font-size: 16px;
-	list-style-type: disc !important;
-	margin: 0px 0px 10px 0px;
+  font-size: 16px;
+  list-style-type: disc !important;
+  margin: 0px 0px 10px 0px;
 }
 
  
 .ThanksPages h3 {
-	color: #303030; 
-	font-size: 18px;
-	margin: 0px 0px 20px 0px;
-	font-weight: normal;
-	font-family: arial,tahoma,serif;
+  color: #303030; 
+  font-size: 18px;
+  margin: 0px 0px 20px 0px;
+  font-weight: normal;
+  font-family: arial,tahoma,serif;
 }
 
 .ThanksPages .LeftContent {
-	width: 350px;
-	padding: 10px 0px;
+  width: 350px;
+  padding: 10px 0px;
 }
 
 .ThanksPages .RightContent {
-	width: 415px;
-	padding: 10px 0px;
+  width: 415px;
+  padding: 10px 0px;
 }
 
 .ThanksPages .RightContent a {
-	background: url("../background/ArrowIcon.gif") no-repeat left 7px;
-	padding-left: 25px;
-	color: #006cc0;
-	line-height: 22px;
-	font-size: 14px;
-	display: block;
-	margin-bottom: 20px;
+  background: url("../background/ArrowIcon.gif") no-repeat left 7px;
+  padding-left: 25px;
+  color: #006cc0;
+  line-height: 22px;
+  font-size: 14px;
+  display: block;
+  margin-bottom: 20px;
 }
 
 .ThanksPages .RightContent a:hover {
-	text-decoration: underline;
+  text-decoration: underline;
 }
 
 /*AboutPages*/
-.AboutPages h1 {
-	text-align: left;
+.AboutPages h1,.HelpPage h1 {
+  text-align: left;
 }
 
 .AboutPages h3 {
-	font-family: arial,tahoma,serif;
-	color: #636363;
-	line-height: 30px;
-	font-size: 18px;
-	margin: 0px 0px 15px 0px;
-	font-weight: normal;
-	border-bottom: 1px solid #dce7ec;
+  font-family: arial,tahoma,serif;
+  color: #636363;
+  line-height: 30px;
+  font-size: 18px;
+  margin: 0px 0px 15px 0px;
+  font-weight: normal;
+  border-bottom: 1px solid #dce7ec;
 }
 
 .AboutPages p {
-	color: #6b6b6b; 
-	font-size: 13px;
-	line-height: 22px;
-	margin: 0px 0px 30px 0px;
-	font-family: verdana, arial, tahoma, serif;
+  color: #6b6b6b; 
+  font-size: 13px;
+  line-height: 22px;
+  margin: 0px 0px 30px 0px;
+  font-family: verdana, arial, tahoma, serif;
 }
 
 .AboutPages ul {
-	width: 435px;
-	padding-bottom: 15px;
+  width: 435px;
+  padding-bottom: 15px;
 }
 
 
 .AboutPages ul.LeftContent {
-	float: left;
+  float: left;
 }
 
 .AboutPages ul.RightContent {
-	float: right;
+  float: right;
 }
 
 .AboutPages ul li {
-	background: url("../background/DotIcon.gif") no-repeat 8px 7px;
-	padding-left: 30px;
-	line-height: 20px;
-	color: #6b6b6b;
-	margin-bottom: 15px;
-	font-family: verdana;
+  background: url("../background/DotIcon.gif") no-repeat 8px 7px;
+  padding-left: 30px;
+  line-height: 20px;
+  color: #6b6b6b;
+  margin-bottom: 15px;
+  font-family: verdana;
 }
 
 .AboutPages ul li span {
-	font-weight: bold;
+  font-weight: bold;
 }
 
 .AboutPages dt {
-	font-weight: bold;
-	margin: 0 0 5px 40px;
+  font-weight: bold;
+  margin: 0 0 5px 40px;
 }
 
 /*ErrorPages*/
 .ErrorPages {
-	text-align: center;
+  text-align: center;
 }
 
 .ErrorPages p {
-	text-align: center;
+  text-align: center;
 }
 
 .ErrorPages .ErrorIcon {
-	background: url("../background/ErrorIcon.gif") no-repeat left top;
-	padding-left: 30px;
-	display: inline-block;
-	color: #666666;
-	font-size: 14px;
-	margin-bottom: 10px;
-	line-height: 18px;
+  background: url("../background/ErrorIcon.gif") no-repeat left top;
+  padding-left: 30px;
+  display: inline-block;
+  color: #666666;
+  font-size: 14px;
+  margin-bottom: 10px;
+  line-height: 18px;
 }
 
 /* Contact us page */
 .MarkLayer{
-	background: black;
-	opacity: 0.4;
-	filter: alpha(opacity=40);
-	-moz-opacity:0.5;
-	-khtml-opacity: 0.5;
-	-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
-	position: absolute;
+  background: black;
+  opacity: 0.4;
+  filter: alpha(opacity=40);
+  -moz-opacity:0.5;
+  -khtml-opacity: 0.5;
+  -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+  position: absolute;
 }
 
 .ContactPages .UIFormBox {
-	position: absolute;
-	z-index: 10;
-	top: 100px;
-	left: 290px;
-	background: white;
-	border: none;
+  position: absolute;
+  z-index: 10;
+  top: 100px;
+  left: 290px;
+  background: white;
+  border: none;
 }
 
 /*Form*/
 .UIFormBox {
-	border: 1px solid #e0e0e0;
-	-moz-box-shadow: 0px 2px 2px #f3f3f3;
-	-webkit-box-shadow: 0px 2px 2px #f3f3f3;
-	box-shadow: 0px 2px 2px #f3f3f3;
-	width: 710px;
-	margin: 0px auto;
-	font-family: arial;
+  border: 1px solid #e0e0e0;
+  -moz-box-shadow: 0px 2px 2px #f3f3f3;
+  -webkit-box-shadow: 0px 2px 2px #f3f3f3;
+  box-shadow: 0px 2px 2px #f3f3f3;
+  width: 710px;
+  margin: 0px auto;
+  font-family: arial;
 }
 
 .UIFormBox .TitleForm {
-	color: #404040;
-	text-align: center;
-	line-height: 55px;
-	border-bottom: 1px solid #e8e8e8;
-	background: #f5f5f5;
-	margin: 0px 0px 25px 0px;
-	font-size: 24px;
-	font-family: arial;
-	font-weight: normal;
-	text-shadow: 0 1px 0 #FFFFFF;
+  color: #404040;
+  text-align: center;
+  line-height: 55px;
+  border-bottom: 1px solid #e8e8e8;
+  background: #f5f5f5;
+  margin: 0px 0px 25px 0px;
+  font-size: 24px;
+  font-family: arial;
+  font-weight: normal;
+  text-shadow: 0 1px 0 #FFFFFF;
 }
 
 .UIFormBox .Field {
-	float: left;
-	width: 220px;
-	text-align: right;
+  float: left;
+  width: 220px;
+  text-align: right;
 }
 
 .UIFormBox textarea{
-	-moz-box-shadow: 0 5px 8px #F4F4F4 inset;
-	-webkit-box-shadow: 0 5px 8px #F4F4F4 inset;
-	box-shadow: 0 5px 8px #F4F4F4 inset;
-	width: 300px;
-	height: 100px;
-	padding: 5px 10px;
-	border: 1px solid #dddddd;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
-	border-radius: 3px;
-	font-size: 18px;
-	color: #c0c0c0;
-	margin-right: 10px;
+  -moz-box-shadow: 0 5px 8px #F4F4F4 inset;
+  -webkit-box-shadow: 0 5px 8px #F4F4F4 inset;
+  box-shadow: 0 5px 8px #F4F4F4 inset;
+  width: 300px;
+  height: 100px;
+  padding: 5px 10px;
+  border: 1px solid #dddddd;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  font-size: 18px;
+  color: #c0c0c0;
+  margin-right: 10px;
 }
 
 .UIFormBox .Button {
-	float: left;
+  float: left;
 }
 
 .UIFormBox input.ButtonGray {
-	background: url("../background/GrayButton.png") repeat-x left top;
-	border: 1px solid #9c9c9c;
-	margin-left: 20px;
-	text-shadow: 0px 1px 0px #1d7aae;
+  background: url("../background/GrayButton.png") repeat-x left top;
+  border: 1px solid #9c9c9c;
+  margin-left: 20px;
+  text-shadow: 0px 1px 0px #1d7aae;
 }
 
 /* Invite page */
 
 .InviPages .UIFormBox {
-	width: 960px;
-	padding: 0 0 30px;
+  width: 960px;
+  padding: 0 0 30px;
 }
 
 .InviPages .PermissionsBox {
-	-moz-box-shadow: 0 5px 8px #F4F4F4 inset;
-	-webkit-box-shadow: 0 5px 8px #F4F4F4 inset;
-	box-shadow: 0 5px 8px #F4F4F4 inset;
-	padding: 5px 10px;
-	border: 1px solid #dddddd;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
-	border-radius: 3px;
-	font-size: 18px;
-	color: #c0c0c0;
-	margin-right: 10px;
-	min-height: 270px;
-	*height: 270px;
+  -moz-box-shadow: 0 5px 8px #F4F4F4 inset;
+  -webkit-box-shadow: 0 5px 8px #F4F4F4 inset;
+  box-shadow: 0 5px 8px #F4F4F4 inset;
+  padding: 5px 10px;
+  border: 1px solid #dddddd;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  font-size: 18px;
+  color: #c0c0c0;
+  margin-right: 10px;
+  min-height: 270px;
+  *height: 270px;
 }
 
 .InviPages .Message{
-	margin-left: 550px;
-	overflow: hidden;
-	width: 410px;
+  margin-left: 550px;
+  overflow: hidden;
+  width: 410px;
 }
 
 .InviPages .LeftInvi{
-	padding: 0 0 0 72px;
+  padding: 0 0 0 72px;
     width: 400px;
 }
 
 .InviPages .LeftInvi p.Title {
-	line-height: 25px;
-	font-size: 18px;
-	color: #414141;
+  line-height: 25px;
+  font-size: 18px;
+  color: #414141;
 }
 
 .InviPages .Message td.Field {
-	text-align: left;
-	margin: 0;
-	padding: 0;
+  text-align: left;
+  margin: 0;
+  padding: 0;
 }
 
 .InviPages .LeftForm {
-	text-align: left;
+  text-align: left;
 }
 
 .InviPages .RightForm {
-	width: 409px;
-	margin-bottom: 12px;
+  width: 409px;
+  margin-bottom: 12px;
 }
 
 .InviPages .LeftInvi .Normal{
-	padding:8px 4px 8px 32px;
-	border-bottom: 1px solid #dddddd;
+  padding:8px 4px 8px 32px;
+  border-bottom: 1px solid #dddddd;
 }
 
 .InviPages .LeftInvi a {
-	color: #848484;
+  color: #848484;
 }
 
 .InviPages .SelectIcon {
-	font-size: 18px;
-	background: url("../background/SelectIcon.png") no-repeat left center;
-	padding:8px 4px 8px 32px;
-	border-bottom: 1px solid #dddddd;
+  font-size: 18px;
+  background: url("../background/SelectIcon.png") no-repeat left center;
+  padding:8px 4px 8px 32px;
+  border-bottom: 1px solid #dddddd;
 }
 
 /*Thank You for Contacting Us*/
 .ThankyouPage {
-	padding: 20px 0;
+  padding: 20px 0;
 }
 .ThankyouPage ul {
-	width: 35%;
-	margin: 0 auto;
+  width: 35%;
+  margin: 0 auto;
 }
 
 .ThankyouPage ul  li  a {
-	padding: 10px 0 10px 42px; 
-	font-size: 14px;
-	color: #2878bc;
-	display: block;
+  padding: 10px 0 10px 42px; 
+  font-size: 14px;
+  color: #2878bc;
+  display: block;
 }
 
 .ThankyouPage ul  li  a:hover {
-	text-decoration: underline;
+  text-decoration: underline;
 }
 
 .ThankyouPage ul  li  a.Forward {
-	padding: 10px 0 10px 42px; 
-	font-size: 14px;
-	color: #2878bc;
-	display: block;
-	background: url("../background/forward-icon.png") no-repeat left 10px;
+  padding: 10px 0 10px 42px; 
+  font-size: 14px;
+  color: #2878bc;
+  display: block;
+  background: url("../background/forward-icon.png") no-repeat left 10px;
 }
 
 .ThankyouPage ul  li a.Back  {
-	background: url("../background/back-icon.png") no-repeat left 5px;
+  background: url("../background/back-icon.png") no-repeat left 5px;
 }
 
 /** Reset Password page **/
 .UIResetPassword .Button {
-	width: 210px;
+  width: 210px;
 }
 
 .UIPageBody table td.ForgotPass {
-	padding-bottom: 5px;
+  padding-bottom: 5px;
 }
 
 .UIPageBody table td.ForgotPass a {
-	padding-left: 28px;
+  padding-left: 28px;
+}
+
+
+/*help Page*/
+
+.SiderBarLeft {
+  position: fixed;
+  top:159px;
+  width:200px;
+}
+
+.SiderBarLeft .MenuBar {
+  border: 1px solid #e9e9e9;
+  border-radius:6px;
+  background:#fafafa;
+  margin:10px 0 20px 0;
+  padding: 0 0 10px;
+}
+
+.SiderBarLeft .MenuBar  li {
+  padding: 10px 10px 10px 24px;
+  text-transform: capitalize;
+}
+
+.SiderBarLeft .MenuBar  li.Title {
+  border-bottom: 1px solid #e9e9e9;
+  border-radius:6px 6px 0 0;
+  padding-left: 20px;
+  background:#f6f6f6;
+  font-weight:bold;
+}
+
+.SiderBarLeft .MenuBar  li  a {
+  color:#555555;
+}
+.SiderBarLeft .MenuBar  li  a:hover {
+  color:#0868B9;
+  text-decoration:underline;
+}
+
+.HelpPage .MainContent {
+  margin: 0 0 0 240px;
+  width: 720px;
+}
+.HelpPage .RowOdd  .BoxText {
+  padding-left: 270px;
+}
+
+.HelpPage .RowEven .BoxText {
+  padding-right: 270px;
+}
+
+.HelpPage .MainContent h1 {
+    border-bottom: 1px solid #DBE7EC;   
+    padding: 0 0 10px;
+}
+.col5 {
+  width: 50%;
+}
+.col5 ul li {
+  padding: 5px 0;  
+  width: 90%;
+  list-style: disc outside none;  
+  line-height: 20px;
+  margin: 0 0 0 15px;  
+}
+
+hr {
+  height:0;
+  border:none;
+  border-bottom: 1px solid #dbe7ec;
+}
+
+/*like facebook*/
+
+.SocialBox  {
+  margin: 0px 0 20px ;
+}
+
+.UIBanner .SocialBox {
+  padding: 10px 62px 0;
+  margin: 0;
+}
+
+.SocialInside {
+  padding: 10px 0 0 15px;
 }

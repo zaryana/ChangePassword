@@ -1,9 +1,9 @@
-﻿		<div class="UIHeader">
+		<div class="UIHeader" id="UIHeader">
 			<div class="MainContent">
 				<ul class="UIMenuTop FR">
 				  <li><a class="Tab BlueTab" href="<%=request.getContextPath()%>/about.jsp">About</a></li>
-				  <li><a class="Tab GreenTab" href="http://community.exoplatform.com" target="_blank">Community</a></li>
-				  <li><a class="Tab GrayTab" href="http://blog.exoplatform.com" target="_blank">Blog</a></li>
+				  <li><a class="Tab GreenTab" href="http://community.exoplatform.org/portal/public/classic/forum/cloud-workspaces/ForumService" target="_blank">Forum</a></li>
+				  <li><a class="Tab GrayTab" href="<%=request.getContextPath()%>/help.jsp" target="_blank">Help</a></li>
 				  <li><a class="Tab OrangeTab" href="http://www.exoplatform.com" target="_blank">eXoplatform.com</a></li>
 				  <li class="last"><a class="Tab OrangeTab" onclick="showContactUsForm('<%=request.getContextPath()%>/contact-us.jsp');">Contact us</a></li>
 				</ul>

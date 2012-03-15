@@ -1,9 +1,23 @@
-.UIGadgetThemes input {
-        font-size: 12px;
+.invited-box .Row input[type="text"] {
+ border:1px solid #eee;
+ width: 100%;
+ font-size: 12px;
+}
+
+.invited-box .Row input[type="button"] {
+ border: 1px solid #DDDDDD;
+ border-radius: 4px 4px 4px 4px;
+ cursor: pointer;
+ width: 100%;
+}
+
+.invited-box .Row label {
+ display:inline-block;
+ /*width:20%;*/
 }
 
 .Message {
-        padding: 10px 15px;
+        padding: 10px 10px;
 }
 
 .Warning {

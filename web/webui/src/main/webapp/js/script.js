@@ -201,7 +201,9 @@ Tenants.prototype.initDonePage = function() {
               var date = new Date (parseFloat(account.substring(account.indexOf("_")+1)));
               //toUTCString is too long for table
               var month = date.getUTCMonth()+1;
-              cell2.innerHTML=date.getUTCDate() + "/" + month + "/" + date.getFullYear() + " " + date.getUTCHours() + ":" + date.getUTCMinutes() + " UTC";
+              var mins = date.getUTCMinutes(); if (mins.length == 1) mins = "0"+ mins;
+              var hours = date.getUTCHours(); if (hours.length == 1) hours = "0" + hours;
+              cell2.innerHTML=date.getUTCDate() + "/" + month + "/" + date.getFullYear() + " " + hours  + ":" + mins + " UTC";
               //Company
               var cell3 = row.insertCell(3);
               cell3.className="MyFieldLeft";
