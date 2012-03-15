@@ -19,17 +19,4 @@
 
 -->
 
-<messagebundle>
-  <msg name="title">
-    Invite Coworkers
-  </msg>
-  <msg name="email">
-    Email:
-  </msg>
-  <msg name="send">
-    Send
-  </msg>
-  <msg name="inputDefault">
-    Enter email
-  </msg>  
-</messagebundle>
+<Context path="/cloud-workspaces-extension" docBase="cloud-workspaces-extension" debug="0" reloadable="true" crossContext="true"/>

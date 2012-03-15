@@ -15,16 +15,18 @@
       <link type="text/css" rel="stylesheet" href="skin/InviteJoinWs.css" />
       <script language="javascript" type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
       <script type="text/javascript">
-        
-        function handleRequest() {
-                               
-              var inputTxt = document.getElementById("email");
+                          
+    $(function(){
+
+      $("#send").click(function (){
+        var inputTxt = document.getElementById("email");
               var email = inputTxt.value;
               var notifyMsg = document.getElementById("notifyMsg");
               var regex = /^[\w\.-_\+]+@[\w-]+(\.\w{2,4})+$/;  //regular expression for email validation
               if (email.length == 0 || !regex.test(email)) {
               
                     notifyMsg.innerHTML = '<div class="Warning">Please enter a valid email address.</div>';
+                    notifyMsg.style.display = "block";
                     gadgets.window.adjustHeight($("#content").get(0).offsetHeight);
               } else {
                   
@@ -33,7 +35,8 @@
                         hostname += ":" + location.port;
                     }
                     
-                    notifyMsg.innerHTML = '<div class="Message">Waiting...</div>';
+                    notifyMsg.innerHTML = '<div class="Message">Sending...</div>';
+                    notifyMsg.style.display = "block";
                     gadgets.window.adjustHeight($("#content").get(0).offsetHeight);
                                   
 
@@ -45,46 +48,46 @@
                                  var notifyMsg = document.getElementById("notifyMsg");
                                  if (status.indexOf("Message sent") != -1) {
                                            $('#notifyMsg').html('<div class="Message">Invitation sent</div>');
+                                           notifyMsg.style.display = "block";
                                            $('#notifyMsg').fadeOut(5000, function(){
-                                           gadgets.window.adjustHeight($("#content").get(0).offsetHeight);
-                                                });
+                                                gadgets.window.adjustHeight($("#content").get(0).offsetHeight);
+                                           });
                                  }
-                                 else if (status.indexOf("Invalid email") != -1) notifyMsg.innerHTML = '<div class="Warning">Please enter a valid email address.</div>';
-                                 
-                                 else if (status.indexOf("Blacklisted email") != -1) notifyMsg.innerHTML = '<div class="Warning">Please use a corporate email address.</div>';
-
-                                 else notifyMsg.innerHTML = '<div class="Warning">Error sending the invitation. Please try again later.</div>';
 
                                  gadgets.window.adjustHeight($("#content").get(0).offsetHeight);
 
                         },
                         error: function(request, status, error){
-                                notifyMsg.innerHTML = request.responseText;
+                                notifyMsg.innerHTML = '<div class="Warning">' + request.responseText + '</div>';
+                                notifyMsg.style.display = "block";
+                                gadgets.window.adjustHeight($("#content").get(0).offsetHeight);
                         },
                         dataType: 'text'
                         });
-                }                                  
-        }
-                          
-    function init() {
-
-      $("#send").click(function (){
-        handleRequest();
+                        gadgets.window.adjustHeight($("#content").get(0).offsetHeight);
+                }
       });
           
       $("#email").focus(function (){
         
+        $("#email").removeClass("light_message");
         document.getElementById("email").value = "";
-        document.getElementById("notifyMsg").innerHTML = "";
+        document.getElementById("notifyMsg").style.display = "none";
         gadgets.window.adjustHeight($("#content").get(0).offsetHeight);
         
       });
       
+      $("#email").blur(function() {
+        var inputTxt = document.getElementById("email").value;
+        if (inputTxt == "") {
+          document.getElementById("email").value = "__MSG_inputDefault__";
+          $("#email").addClass("light_message");
+        }
+      });
+      
       gadgets.window.adjustHeight($("#content").get(0).offsetHeight);
-    }
 
-    gadgets.util.registerOnLoadHandler(init);
-                                  
+    });
 
       </script>
             
@@ -96,17 +99,15 @@
                <div class="ContTit">__MSG_title__</div>
             </div>
             <div class="GadCont">
-               <div id="notifyMsg"></div>
-               <table>
-                  <tr>
-                  <td>__MSG_email__ </td>
-                  <td><input type="text" id="email" name="email-adresse"></td>
-                  </tr>
-                  <tr>
-                  <td></td>
-                  <td><input style="float: right" type="button" id="send" value="__MSG_send__"></td>
-                  </tr>
-               </table>
+            <div id="notifyMsg" style="display: none"></div>              
+              <table width="100%" class="invited-box">
+                <tr>
+                  <td width="17%" class="Row"><label for="email">__MSG_email__</label></td>
+                  <td width="61%" class="Row"><input type="text" id="email" name="email-adress" class="light_message" value="__MSG_inputDefault__" /></td>
+                  <td width="20%" class="Row"><input type="button" value="__MSG_send__" id="send" /></td>
+                </tr>
+              </table>               
+               
            </div>
          </div>
       </div>
