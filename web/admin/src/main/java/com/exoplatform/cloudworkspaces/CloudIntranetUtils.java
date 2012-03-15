@@ -1057,7 +1057,7 @@ public class CloudIntranetUtils
                catch (UserAlreadyExistsException e)
                {
                   LOG.warn("User " + userMail + " is already exists, deleting from waiting queue.");
-                  sendUserJoinedEmails(tenant, firstName, userMail, props);
+                  sendUserJoinedEmails(tenant, fName, userMail, props);
                   requestDao.delete(one);
                   continue;
                }
