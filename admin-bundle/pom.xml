@@ -18,7 +18,6 @@
     <dependency>
       <groupId>com.exoplatform.cloudworkspaces</groupId>
       <artifactId>cloud-workspaces-web-admin</artifactId>
-      <version>${project.version}</version>
       <scope>provided</scope>
       <type>war</type>
     </dependency>
@@ -26,14 +25,12 @@
     <dependency>
       <groupId>org.exoplatform.cloud-management</groupId>
       <artifactId>cloud-admin-valve</artifactId>
-      <version>${org.exoplatform.cloud-management.version}</version>
       <scope>provided</scope>
       <type>jar</type>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.cloud-management</groupId>
       <artifactId>cloud-services-common</artifactId>
-      <version>${org.exoplatform.cloud-management.version}</version>
       <scope>provided</scope>
       <type>jar</type>
     </dependency>
@@ -41,7 +38,6 @@
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-catalina-jmx-remote</artifactId>
-      <version>${tomcat.version}</version>
       <scope>provided</scope>
       <type>jar</type>
     </dependency>

@@ -544,7 +544,7 @@ public class IntranetAdminService extends TenantCreator
          return Response.status(Status.BAD_REQUEST).entity("Please enter a valid email address.").build();
 
       if (!utils.validateUUID(userMail, uuid))
-       return Response.status(Status.BAD_REQUEST).entity("Email address provided does not match with hash.").build();
+        return Response.status(Status.BAD_REQUEST).entity("Sorry, your registration link has expired. Please sign up again.").build();
       else
         new ReferencesManager(adminConfiguration).removeEmail(userMail);
 

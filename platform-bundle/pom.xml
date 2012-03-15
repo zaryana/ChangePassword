@@ -36,6 +36,18 @@
           <artifactId>cloud-workspaces-component-multitenancy</artifactId>
           <scope>provided</scope>
           <type>jar</type>
+        </dependency>
+        <dependency>
+          <groupId>com.exoplatform.cloudworkspaces</groupId>
+          <artifactId>cloud-workspaces-extension-webapp</artifactId>
+          <scope>provided</scope>
+          <type>war</type>
+        </dependency>
+        <dependency>
+          <groupId>com.exoplatform.cloudworkspaces</groupId>
+          <artifactId>cloud-workspaces-extension-config</artifactId>
+          <scope>provided</scope>
+          <type>jar</type>
         </dependency> 
 
         <!-- Cloud Workspaces gadgets -->
@@ -73,21 +85,6 @@
           <artifactId>mysql-connector-java</artifactId>
           <scope>provided</scope>
           <type>jar</type>
-        </dependency>
-
-        <!-- cloud-workspaces-extension -->
-        <dependency>
-          <groupId>com.exoplatform.cloudworkspaces</groupId>
-          <artifactId>cloud-workspaces-extension-webapp</artifactId>
-          <scope>provided</scope>
-          <version>${project.version}</version>
-          <type>war</type>
-        </dependency>
-        <dependency>
-          <groupId>com.exoplatform.cloudworkspaces</groupId>
-          <artifactId>cloud-workspaces-extension-config</artifactId>
-          <scope>provided</scope>
-          <version>${project.version}</version>
         </dependency>
       </dependencies>
 
