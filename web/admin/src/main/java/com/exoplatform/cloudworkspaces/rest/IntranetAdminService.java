@@ -543,11 +543,10 @@ public class IntranetAdminService extends TenantCreator
       if (!utils.validateEmail(userMail))
          return Response.status(Status.BAD_REQUEST).entity("Please enter a valid email address.").build();
 
-      if (utils.validateUUID(userMail, uuid))
-         new ReferencesManager(adminConfiguration).removeEmail(userMail);
-      //return Response.status(Status.BAD_REQUEST).entity("Email address provided does not match with hash.").build();
-      //else
-      //new ReferencesManager(adminConfiguration).removeEmail(userMail);
+      if (!utils.validateUUID(userMail, uuid))
+       return Response.status(Status.BAD_REQUEST).entity("Email address provided does not match with hash.").build();
+      else
+        new ReferencesManager(adminConfiguration).removeEmail(userMail);
 
       String tName = utils.getTenantNameFromWhitelist(userMail);
       if (tName == null)
