@@ -104,18 +104,6 @@
     <key>org.exoplatform.services.security.PasswordEncrypter</key>
     <type>org.exoplatform.platform.security.MD5HexPasswordEncrypter</type>
   </component>
-  
-  <component>
-      <key>org.exoplatform.cloudmanagement.multitenancy.TenantCreationPlugin</key>
-      <type>com.exoplatform.cloudworkspaces.multitenancy.plugin.WorkspacesTenantCreationPlugin</type>
-      <description>Creation time update</description>
-       <init-params>
-        <value-param>
-         <name>priority</name>
-         <value>10</value>
-        </value-param>
-       </init-params>
-  </component>
 
   <!-- org-service listener for password encryption, mandatory for eXo Intranet migration -->
   <external-component-plugins>
