@@ -198,6 +198,4 @@
   </external-component-plugins>
 
   <remove-configuration>org.exoplatform.platform.gadget.services.GroovyScript2RestLoader.GroovyScript2RestLoaderExt</remove-configuration>
-  <!-- Removing IDE code-assist temporarily -->
-  <remove-configuration>org.exoplatform.ide.groovy.GroovyScriptServiceApplication</remove-configuration>
 </configuration>
