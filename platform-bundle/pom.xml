@@ -128,7 +128,6 @@
                 <phase>prepare-package</phase>
                 <configuration>
                   <target>
-            
                     <delete file="${project.build.directory}/platform-cloud-tomcat/conf/Catalina/localhost/cloud-admin.xml" />
                     <delete dir="${project.build.directory}/platform-cloud-tomcat/gatein/conf/cloud/cloud-admin" />
                     <delete dir="${project.build.directory}/platform-cloud-tomcat/webapps/ROOT" />
