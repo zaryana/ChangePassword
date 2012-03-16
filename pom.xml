@@ -117,11 +117,21 @@
         <groupId>com.exoplatform.cloudworkspaces</groupId>
         <artifactId>cloud-management-patch</artifactId>
         <version>${project.version}</version>
-        <scope>compile</scope>
         <type>jar</type>
       </dependency>
+      <dependency>
+        <groupId>com.exoplatform.cloudworkspaces</groupId>
+        <artifactId>cloud-workspaces-extension-webapp</artifactId>
+        <version>${project.version}</version>
+        <type>war</type>
+      </dependency>
+      <dependency>
+        <groupId>com.exoplatform.cloudworkspaces</groupId>
+        <artifactId>cloud-workspaces-extension-config</artifactId>
+        <version>${project.version}</version>
+      </dependency>
 
-       <!-- Cloud Workspaces gadgets -->
+      <!-- Cloud Workspaces gadgets -->
       <dependency>
         <groupId>com.exoplatform.cloudworkspaces</groupId>
         <artifactId>cloud-workspaces-gadget-services</artifactId>
