@@ -7,7 +7,7 @@
   <parent>
     <groupId>com.exoplatform.cloudworkspaces</groupId>
     <artifactId>cloud-workspaces-parent</artifactId>
-    <version>1.0.0-Beta10-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
   </parent>
   <artifactId>cloud-management-patch</artifactId>
   <packaging>jar</packaging>
