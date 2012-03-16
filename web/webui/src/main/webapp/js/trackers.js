@@ -34,6 +34,7 @@ if (testDomainPrefix(targetDomainNameForTracking))
 {
    sendDataToLoopfuseTracker();
    sendDataToGoogleAnalyticsTracker();
+   sendDataToMarketo();
 }
 
 /**
@@ -56,6 +57,23 @@ function sendDataToGoogleAnalyticsTracker()
      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
    })();
 }
+
+
+/**
+ * Send data to Marketo
+ */
+ 
+function sendDataToMarketo(){ 
+	$.ajax({
+  		url: document.location.protocol + '//munchkin.marketo.net/munchkin.js',
+  		dataType: 'script',
+  		cache: true,
+  		success: function() {
+    	Munchkin.init('577-PCT-880');
+  		}
+	});
+}	
+
 
 /**
  * Return true if document has href with certain domain prefix, for example "cloud-ide.com" prefix in href "http://tenant1.cloud-ide.com:8080/cloud/profile.jsp"
