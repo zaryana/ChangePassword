@@ -25,8 +25,8 @@ import static org.exoplatform.cloudmanagement.status.TenantInfoBuilder.tenant;
 
 import org.apache.commons.configuration.Configuration;
 import org.exoplatform.cloudmanagement.admin.CloudAdminException;
+import org.exoplatform.cloudmanagement.admin.TenantAlreadyExistException;
 import org.exoplatform.cloudmanagement.admin.TenantRegistrationException;
-import org.exoplatform.cloudmanagement.admin.TenantValidationException;
 import org.exoplatform.cloudmanagement.admin.WorkspacesMailSender;
 import org.exoplatform.cloudmanagement.admin.configuration.TenantInfoFieldName;
 import org.exoplatform.cloudmanagement.admin.dao.EmailValidationStorage;
@@ -151,7 +151,7 @@ public class TenantCreator
       userMailValidator.validateUserMail(userMail);
       if (tenantInfoDataManager.isExists(tenantName))
       {
-         throw new TenantValidationException(" This domain is already in use. If you are the owner,"
+         throw new TenantAlreadyExistException(" This domain is already in use. If you are the owner,"
             + " check your email for further instructions; otherwise, please select a different domain name.");
       }
 
@@ -221,7 +221,7 @@ public class TenantCreator
       userMailValidator.validateUserMail(userMail);
       if (tenantInfoDataManager.isExists(tenantName))
       {
-         throw new TenantValidationException(" This domain is already in use. If you are the owner,"
+         throw new TenantAlreadyExistException(" This domain is already in use. If you are the owner,"
             + " check your email for further instructions; otherwise, please select a different domain name.");
       }
       String validationId = emailValidationStorage.setValidationData(validationData);
@@ -258,7 +258,7 @@ public class TenantCreator
       userMailValidator.validateUserMail(userMail);
       if (tenantInfoDataManager.isExists(tenantName))
       {
-         throw new TenantValidationException(" This domain is already in use. If you are the owner,"
+         throw new TenantAlreadyExistException(" This domain is already in use. If you are the owner,"
             + " check your email for further instructions; otherwise, please select a different domain name.");
       }
       String validationId = emailValidationStorage.setValidationData(validationData);
