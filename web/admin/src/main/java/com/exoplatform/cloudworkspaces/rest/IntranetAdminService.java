@@ -135,8 +135,8 @@ public class IntranetAdminService extends TenantCreator
          }
 
          username = userMail.substring(0, (userMail.indexOf("@")));
-         tName = utils.getTenantNameFromWhitelist(userMail);
-         if (tName == null)
+         
+         if (utils.isInBlackList(userMail))
          {
             String domain = userMail.substring(userMail.indexOf("@"));
             LOG.info("User " + userMail + " rejected. Need work email address.");
@@ -144,6 +144,9 @@ public class IntranetAdminService extends TenantCreator
                .entity("Sorry, we can't sign you up with an email address " + domain + ". Try with your work email.")
                .build();
          }
+         
+         tName = utils.email2tenantName(userMail);
+         
          if (requestDao.searchByEmail(userMail) == null)
          {
             Response resp = super.createTenantWithEmailConfirmation(tName, userMail);
@@ -286,14 +289,16 @@ public class IntranetAdminService extends TenantCreator
          }
 
          username = userMail.substring(0, (userMail.indexOf("@")));
-         tName = utils.getTenantNameFromWhitelist(userMail);
+         
 
-         if (tName == null)
+         if (utils.isInBlackList(userMail))
          {
             String domain = userMail.substring(userMail.indexOf("@"));
             return Response.status(Status.BAD_REQUEST)
                .entity("Cannot sign up with an email address " + domain + ". Require work email.").build();
          }
+         tName = utils.email2tenantName(userMail);
+         
          if (requestDao.searchByEmail(userMail) == null)
          {
             String uuid = super.createTenant(tName, userMail);
@@ -521,14 +526,16 @@ public class IntranetAdminService extends TenantCreator
       if (!utils.validateEmail(userMail))
          return Response.status(Status.BAD_REQUEST).entity("Please enter a valid email address.").build();
 
-      String tName = utils.getTenantNameFromWhitelist(userMail);
-      if (tName == null)
+      
+      if (utils.isInBlackList(userMail))
       {
          String domain = userMail.substring(userMail.indexOf("@"));
          return Response.status(Status.BAD_REQUEST)
             .entity("Sorry, we can't create workspace with an email address " + domain + ". Try with your work email.")
             .build();
       }
+      
+      String tName = utils.email2tenantName(userMail);
       Response resp = super.createTenantWithConfirmedEmail(uuid);
       if (resp.getStatus() != 200)
          return Response.serverError().entity((String)resp.getEntity()).build();
@@ -585,14 +592,16 @@ public class IntranetAdminService extends TenantCreator
       else
          new ReferencesManager(adminConfiguration).removeEmail(userMail);
 
-      String tName = utils.getTenantNameFromWhitelist(userMail);
-      if (tName == null)
+      if (utils.isInBlackList(userMail))
       {
          String domain = userMail.substring(userMail.indexOf("@"));
          return Response.status(Status.BAD_REQUEST)
             .entity("Sorry, we can't create workspace with an email address " + domain + ". Try with your work email.")
             .build();
       }
+      String tName = utils.email2tenantName(userMail);
+
+      
       UserRequest req =
          new UserRequest("", tName, userMail, firstName, lastName, companyName, phone, password, uuid, true,
             RequestState.WAITING_CREATION);
