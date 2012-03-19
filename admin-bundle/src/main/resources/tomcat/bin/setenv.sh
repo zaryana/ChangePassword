@@ -25,6 +25,9 @@
 # admin config
 [ -z "$EXO_ADMIN_CONF_DIR" ]  && EXO_ADMIN_CONF_DIR="$CATALINA_HOME/exo-admin-conf"
 
+# logback smtp appender configuration file
+[ -z "${EXO_LOGBACK_SMTP_CONF}" ] && EXO_LOGBACK_SMTP_CONF="${CATALINA_HOME}/conf/logback-smtp-appender.xml"
+
 # admin email
 [ -z "$CLOUD_MAIL_HOST" ]  && CLOUD_MAIL_HOST="smtp.gmail.com"
 [ -z "$CLOUD_MAIL_PORT" ]  && CLOUD_MAIL_PORT="465"
@@ -69,7 +72,8 @@ EXO_CLOUD_ADMIN_OPTS="-Dadmin.agent.auth.username=$CLOUD_AGENT_USERNAME \
                       -Dcloud.admin.configuration.dir=$EXO_ADMIN_CONF_DIR \
                       -Dcloud.admin.userlimit=$EXO_ADMIN_CONF_DIR/user-limits.properties \
                       -Dcloud.admin.configuration.file=$EXO_ADMIN_CONF_DIR/admin.properties \
-                      -Dlogback.configurationFile=$CATALINA_HOME/conf/logback.xml"
+                      -Dlogback.configurationFile=$CATALINA_HOME/conf/logback.xml \
+                      -Dlogback.smtp.appender.conf.file=${EXO_LOGBACK_SMTP_CONF}"
 
 JMX_OPTS="-Dcom.sun.management.jmxremote=true -Djava.rmi.server.hostname=$HOST_EXTERNAL_ADDR \
 	-Dcom.sun.management.jmxremote.authenticate=true \
@@ -82,6 +86,9 @@ JMX_OPTS="-Dcom.sun.management.jmxremote=true -Djava.rmi.server.hostname=$HOST_E
 REMOTE_DEBUG=""
 
 export JAVA_OPTS="$EXO_JAVA_OPTS $JAVA_OPTS $EXO_CLOUD_ADMIN_OPTS $REMOTE_DEBUG $JMX_OPTS"
+export CLASSPATH="${CATALINA_HOME}/conf/:${CATALINA_HOME}/lib/jul-to-slf4j.jar:\
+${CATALINA_HOME}/lib/slf4j-api.jar:${CATALINA_HOME}/lib/logback-classic.jar:${CATALINA_HOME}/lib/logback-core.jar:\
+${CATALINA_HOME}/lib/mail.jar"
 
 # Catalina pid file
 [ -z "$CATALINA_PID" ]  && CATALINA_PID="$CATALINA_HOME/temp/catalina.tmp"

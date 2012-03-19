@@ -72,6 +72,11 @@
     <version.war.plugin>2.1.1</version.war.plugin>
     <version.assembly.plugin>2.2.2</version.assembly.plugin>
 
+    <!-- Logger libs -->
+    <org.slf4j.version>1.6.1</org.slf4j.version>
+    <ch.qos.logback.version>1.0.0</ch.qos.logback.version>
+    <log4j.version>1.2.16</log4j.version>
+
     <!-- maven-release-plugin -->
     <arguments>-Prelease,distrib,exo-private,exo-staging -Dgatein.working.dir=target -Dmaven.wagon.provider.http=httpclient</arguments>
   </properties>
@@ -198,6 +203,13 @@
         <type>jar</type>
       </dependency>
 
+      <dependency>
+        <groupId>org.exoplatform.cloud-management</groupId>
+        <artifactId>cloud-admin-packaging-war</artifactId>
+        <version>${org.exoplatform.cloud-management.version}</version>
+        <type>war</type>
+      </dependency>
+
       <!-- eXo dependencies -->
       <dependency>
         <groupId>org.exoplatform.kernel</groupId>
@@ -290,6 +302,37 @@
         <artifactId>jsr250-api</artifactId>
         <version>1.0</version>
         <type>jar</type>
+      </dependency>
+
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${org.slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>jcl-over-slf4j</artifactId>
+        <version>${org.slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>jul-to-slf4j</artifactId>
+        <version>${org.slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>log4j-over-slf4j</artifactId>
+        <version>${org.slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-classic</artifactId>
+        <version>${ch.qos.logback.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-core</artifactId>
+        <version>${ch.qos.logback.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
