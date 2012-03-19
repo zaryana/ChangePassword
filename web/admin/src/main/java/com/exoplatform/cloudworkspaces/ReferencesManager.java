@@ -18,8 +18,8 @@
  */
 package com.exoplatform.cloudworkspaces;
 
+import org.apache.commons.configuration.Configuration;
 import org.exoplatform.cloudmanagement.admin.CloudAdminException;
-import org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,26 +33,27 @@ import java.util.Properties;
 public class ReferencesManager
 {
 
-   private CloudAdminConfiguration cloudAdminConfiguration;
-   
-   private String referenceFilename; 
-   
+   private Configuration cloudAdminConfiguration;
+
+   private String referenceFilename;
+
    private static final Logger LOG = LoggerFactory.getLogger(ReferencesManager.class);
-   
+
    private static Object obj = new Object();
-   
-  public ReferencesManager(CloudAdminConfiguration cloudAdminConfiguration){
-    this.cloudAdminConfiguration = cloudAdminConfiguration;
-    this.referenceFilename = cloudAdminConfiguration.getProperty("cloud.admin.references.file", null);
-  }
-   
-   
-   public  String getHash(String email) throws CloudAdminException{
-      
+
+   public ReferencesManager(Configuration cloudAdminConfiguration)
+   {
+      this.cloudAdminConfiguration = cloudAdminConfiguration;
+      this.referenceFilename = cloudAdminConfiguration.getString("cloud.admin.references.file", null);
+   }
+
+   public String getHash(String email) throws CloudAdminException
+   {
+
       String hashFileName = getReferencesFolder();
       File hashDir = new File(hashFileName);
       if (!hashDir.exists())
-        hashDir.mkdir();
+         hashDir.mkdir();
       try
       {
          File file = new File(hashDir + "/" + referenceFilename);
@@ -67,19 +68,20 @@ public class ReferencesManager
       catch (IOException e)
       {
          LOG.error("I/O exception getting hash from email " + email, e);
-         throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
+         throw new CloudAdminException(
+            "An problem happened during processsing this request. It was reported to developers. Please, try again later.");
       }
    }
-   
-   
-   public  String getEmail(String hash) throws CloudAdminException{
+
+   public String getEmail(String hash) throws CloudAdminException
+   {
       String hashFileName = getReferencesFolder();
       File hashDir = new File(hashFileName);
       if (!hashDir.exists())
          hashDir.mkdir();
       try
       {
-         File file = new File(hashDir  + "/" + referenceFilename);
+         File file = new File(hashDir + "/" + referenceFilename);
          if (!file.exists())
             return null;
          FileInputStream io = new FileInputStream(file);
@@ -87,7 +89,8 @@ public class ReferencesManager
          properties.load(io);
          io.close();
          Enumeration<String> propKeys = (Enumeration<String>)properties.propertyNames();
-         while (propKeys.hasMoreElements()){
+         while (propKeys.hasMoreElements())
+         {
             String one = propKeys.nextElement();
             if (properties.getProperty(one).equals(hash))
                return one;
@@ -95,75 +98,81 @@ public class ReferencesManager
       }
       catch (IOException e)
       {
-         LOG.error("I/O exception getting email from hash " + hash , e);
-         throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
+         LOG.error("I/O exception getting email from hash " + hash, e);
+         throw new CloudAdminException(
+            "An problem happened during processsing this request. It was reported to developers. Please, try again later.");
       }
       return null;
    }
-  
-   
-   public  String putEmail(String email, String uuid) throws CloudAdminException{
+
+   public String putEmail(String email, String uuid) throws CloudAdminException
+   {
       String hashFileName = getReferencesFolder();
       File hashDir = new File(hashFileName);
       if (!hashDir.exists())
          hashDir.mkdir();
       try
       {
-         File file = new File(hashDir  + "/" + referenceFilename);
+         File file = new File(hashDir + "/" + referenceFilename);
          if (!file.exists())
             file.createNewFile();
          synchronized (obj)
          {
-         FileInputStream io = new FileInputStream(file);
-         Properties properties = new Properties();
-         properties.load(io);
-         io.close();
-         properties.setProperty(email, uuid);
-         properties.store(new FileOutputStream(file), "");
+            FileInputStream io = new FileInputStream(file);
+            Properties properties = new Properties();
+            properties.load(io);
+            io.close();
+            properties.setProperty(email, uuid);
+            properties.store(new FileOutputStream(file), "");
          }
          return uuid;
       }
       catch (IOException e)
       {
          LOG.error("I/O exception writing email " + email + " , uuid: " + uuid, e);
-         throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
+         throw new CloudAdminException(
+            "An problem happened during processsing this request. It was reported to developers. Please, try again later.");
       }
-      
+
    }
-   
-   public  void removeEmail(String email) throws CloudAdminException{
+
+   public void removeEmail(String email) throws CloudAdminException
+   {
       String hashFileName = getReferencesFolder();
       File hashDir = new File(hashFileName);
       if (!hashDir.exists())
          hashDir.mkdir();
       try
       {
-         File file = new File(hashDir  + "/" + referenceFilename);
+         File file = new File(hashDir + "/" + referenceFilename);
          if (!file.exists())
             return;
          synchronized (obj)
          {
-         FileInputStream io = new FileInputStream(file);
-         Properties properties = new Properties();
-         properties.load(io);
-         io.close();
-         properties.remove(email);
-         properties.store(new FileOutputStream(file), "");
+            FileInputStream io = new FileInputStream(file);
+            Properties properties = new Properties();
+            properties.load(io);
+            io.close();
+            properties.remove(email);
+            properties.store(new FileOutputStream(file), "");
          }
       }
       catch (IOException e)
       {
          LOG.error("I/O exception removing email " + email, e);
-         throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
+         throw new CloudAdminException(
+            "An problem happened during processsing this request. It was reported to developers. Please, try again later.");
       }
    }
-    
-   
-   private String getReferencesFolder() throws CloudAdminException{
-      String folder = cloudAdminConfiguration.getProperty("cloud.admin.references.dir", null);
-      if (folder == null || referenceFilename == null){
+
+   private String getReferencesFolder() throws CloudAdminException
+   {
+      String folder = cloudAdminConfiguration.getString("cloud.admin.references.dir", null);
+      if (folder == null || referenceFilename == null)
+      {
          LOG.error("References dir is not defined in the admin configuration");
-         throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
+         throw new CloudAdminException(
+            "An problem happened during processsing this request. It was reported to developers. Please, try again later.");
       }
       return folder;
    }

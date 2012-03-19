@@ -18,21 +18,24 @@
  */
 package org.exoplatform.cloudmanagement.admin.rest;
 
-import static org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration.CLOUD_ADMIN_MAIL_CONFIRMATION_SUBJECT;
-import static org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration.CLOUD_ADMIN_MAIL_CONFIRMATION_TEMPLATE;
-import static org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration.CLOUD_ADMIN_TENANT_BACKUP_ID;
-import static org.exoplatform.cloudmanagement.rest.admin.CloudAdminRestServicePaths.CLOUD_ADMIN_PUBLIC_TENANT_CREATION_SERVICE;
+import static org.exoplatform.cloudmanagement.admin.configuration.AdminConfiguration.CLOUD_ADMIN_TENANT_BACKUP_ID;
+import static org.exoplatform.cloudmanagement.admin.configuration.MailConfiguration.CLOUD_ADMIN_MAIL_CONFIRMATION_SUBJECT;
+import static org.exoplatform.cloudmanagement.admin.configuration.MailConfiguration.CLOUD_ADMIN_MAIL_CONFIRMATION_TEMPLATE;
+import static org.exoplatform.cloudmanagement.status.TenantInfoBuilder.tenant;
 
+import org.apache.commons.configuration.Configuration;
 import org.exoplatform.cloudmanagement.admin.CloudAdminException;
-import org.exoplatform.cloudmanagement.admin.TenantMetadataValidator;
 import org.exoplatform.cloudmanagement.admin.TenantRegistrationException;
+import org.exoplatform.cloudmanagement.admin.TenantValidationException;
 import org.exoplatform.cloudmanagement.admin.WorkspacesMailSender;
-import org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration;
-import org.exoplatform.cloudmanagement.admin.creation.TenantCreationSupervisor;
-import org.exoplatform.cloudmanagement.admin.status.CloudInfoHolder;
+import org.exoplatform.cloudmanagement.admin.configuration.TenantInfoFieldName;
+import org.exoplatform.cloudmanagement.admin.dao.EmailValidationStorage;
+import org.exoplatform.cloudmanagement.admin.dao.TenantInfoDataManager;
+import org.exoplatform.cloudmanagement.admin.tenant.TenantNameValidator;
+import org.exoplatform.cloudmanagement.admin.tenant.TenantStateDataManager;
+import org.exoplatform.cloudmanagement.admin.tenant.UserMailValidator;
+import org.exoplatform.cloudmanagement.admin.util.AdminConfigurationUtil;
 import org.exoplatform.cloudmanagement.status.TenantState;
-import org.exoplatform.cloudmanagement.status.TenantStatus;
-import org.exoplatform.cloudmanagement.status.TransientTenantStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,113 +51,218 @@ import javax.ws.rs.core.Response.Status;
 
 /**
  * Tenant creation service for public use with email authorization.
- * This is a full copy of TenantCreatorWithEmailAuthorization from CM, but with shared adminConfiguration field for extensioning.
+ * 
+ * Algorithm of new tenant creation with email confirmation: <li>send a message
+ * for specified email with URL including the "secret" token to activate your
+ * tenant; <li>if e-mail is good user receive the message and enter the page
+ * where you activate tenant and only after that it is created.
  */
 
-@Path(CLOUD_ADMIN_PUBLIC_TENANT_CREATION_SERVICE)
+@Path("/cloud-admin/public-tenant-service")
 public class TenantCreator
 {
-   private static final Logger LOG = LoggerFactory.getLogger(TenantCreatorWithEmailAuthorization.class);
+   private static final Logger LOG = LoggerFactory.getLogger(TenantCreator.class);
 
-   protected final CloudAdminConfiguration adminConfiguration;
+   protected final Configuration adminConfiguration;
 
-   protected final CloudInfoHolder cloudInfoHolder;
+   protected final TenantNameValidator tenantNameValidator;
 
-   private final TenantMetadataValidator tenantMetadataValidator;
+   protected final UserMailValidator userMailValidator;
 
-   private final TenantCreationSupervisor creationSupervisor;
+   protected final TenantInfoDataManager tenantInfoDataManager;
 
-   public TenantCreator(CloudInfoHolder cloudInfoHolder,
-      TenantMetadataValidator tenantMetadataValidator, CloudAdminConfiguration cloudAdminConfiguration,
-      TenantCreationSupervisor creationSupervisor)
+   protected final EmailValidationStorage emailValidationStorage;
+
+   protected final TenantStateDataManager tenantStateDataManager;
+
+   protected final WorkspacesMailSender mailSender;
+
+   public TenantCreator(EmailValidationStorage emailValidationStorage, TenantStateDataManager tenantStateDataManager,
+      TenantNameValidator tenantNameValidator, UserMailValidator userMailValidator,
+      TenantInfoDataManager tenantInfoDataManager, Configuration cloudAdminConfiguration,
+      WorkspacesMailSender mailSender)
    {
       super();
-      this.cloudInfoHolder = cloudInfoHolder;
-      this.tenantMetadataValidator = tenantMetadataValidator;
+      this.emailValidationStorage = emailValidationStorage;
+      this.tenantStateDataManager = tenantStateDataManager;
+      this.tenantNameValidator = tenantNameValidator;
+      this.userMailValidator = userMailValidator;
+      this.tenantInfoDataManager = tenantInfoDataManager;
       this.adminConfiguration = cloudAdminConfiguration;
-      this.creationSupervisor = creationSupervisor;
+      this.mailSender = mailSender;
    }
 
-   @POST
-   @Path("/create-with-confirm/{tenantname}/{user-mail}")
-   public Response createTenantWithEmailConfirmation(@PathParam("tenantname") String tenantName,
-      @PathParam("user-mail") String userMail) throws CloudAdminException
-   {
-      LOG.info("Received tenant creation request for {} from {}", tenantName, userMail);
-      TransientTenantStatus tenantStatus = new TransientTenantStatus(tenantName);
-      tenantStatus.setProperty(TenantStatus.PROPERTY_USER_MAIL, userMail);
-      tenantStatus.setProperty(TenantStatus.PROPERTY_TEMPLATE_ID,
-         adminConfiguration.getProperty(CLOUD_ADMIN_TENANT_BACKUP_ID));
-
-      tenantMetadataValidator.validate(tenantStatus);
-      cloudInfoHolder.updateTenantState(tenantStatus, TenantState.UNKNOWN, TenantState.VALIDATING_EMAIL);
-
-      //send email
-      String mailTemplate = adminConfiguration.getProperty(CLOUD_ADMIN_MAIL_CONFIRMATION_TEMPLATE, null);
-      if (mailTemplate == null)
-      {
-         throw new TenantRegistrationException(500, "Mail template configuration not found. Please contact support.");
-      }
-
-      Map<String, String> props = new HashMap<String, String>();
-      props.put("tenant.masterhost", adminConfiguration.getMasterHost());
-      props.put("tenant.name", tenantStatus.getTenantName());
-      props.put("user.mail", userMail);
-      props.put("id", tenantStatus.getUuid());
-
-      WorkspacesMailSender mailSender = new WorkspacesMailSender(adminConfiguration);
-
-      mailSender.sendMail(userMail, adminConfiguration.getProperty(CLOUD_ADMIN_MAIL_CONFIRMATION_SUBJECT),
-         mailTemplate, props, false);
-
-      return Response.ok(tenantStatus.getUuid()).build();
-   }
-   
    /**
-    * Create tenant request record in Cloud Admin and return Id of this request.
-    * This method doesn't send any email messages to an user.
+    * This service is the second step for creation new tenant. It checks if
+    * received uuid registered in validation queue, if yes then gives for tenant
+    * status WAITING_CREATION. In some time this tenant will be created.
     * 
-    * @param tenantName String, requested tenant name
-    * @param userMail String, user email address
-    * @return String with tenant request Id 
-    * @throws CloudAdminException if error occurs
+    * <table>
+    * <tr>
+    * <th>Status</th>
+    * <th>Error description</th>
+    * </tr>
+    * <tr>
+    * <td>400</td>
+    * <td>specified uuid is not registered in validation queue or war activated
+    * earlier</td>
+    * </tr>
+    * <tr>
+    * <td>400</td>
+    * <td>tenant with specified name already exists</td>
+    * </tr>
+    * <tr>
+    * <td>500</td>
+    * <td>error on update tenant status</td>
+    * </tr>
+    * </table>
+    * 
+    * @param uuid
+    *           - tenant identifier in validation queue
+    * @return corresponded status 200
+    * @throws CloudAdminException
     */
-   public String createTenant(String tenantName, String userMail) throws CloudAdminException {
-     TransientTenantStatus tenantStatus = new TransientTenantStatus(tenantName);
-     tenantStatus.setProperty(TenantStatus.PROPERTY_USER_MAIL, userMail);
-     tenantStatus.setProperty(TenantStatus.PROPERTY_TEMPLATE_ID,
-                             adminConfiguration.getProperty(CLOUD_ADMIN_TENANT_BACKUP_ID));
-
-     tenantMetadataValidator.validate(tenantStatus);
-     cloudInfoHolder.updateTenantState(tenantStatus,
-                                      TenantState.UNKNOWN,
-                                      TenantState.VALIDATING_EMAIL);
-
-     return tenantStatus.getUuid();
-   }
-
    @POST
    @Path("/create-confirmed")
    public Response createTenantWithConfirmedEmail(@QueryParam("id") String uuid) throws CloudAdminException
    {
       LOG.info("Received  tenant creation request  with id {}", uuid);
 
-      if (!cloudInfoHolder.isTenantValidationQueueExists(uuid))
+      if (!emailValidationStorage.isValid(uuid))
       {
          LOG.warn("Id {} unknown", uuid);
          return Response.status(Status.BAD_REQUEST)
-            .entity("Your confirmation key is wrong or has already been activated").build();
+            .entity("Your confirmation key is wrong or has already been activated.").build();
       }
 
-      TenantStatus tenantStatus = cloudInfoHolder.getTenantFromValidationQueue(uuid);
-      tenantMetadataValidator.validate(tenantStatus);
-      cloudInfoHolder.updateValidationTenantState(uuid, TenantState.EMAIL_CONFIRMED);
+      Map<String, String> validationData = emailValidationStorage.getValidationData(uuid);
 
-      cloudInfoHolder.updateTenantState(tenantStatus.asTransient(), TenantState.EMAIL_CONFIRMED,
-         TenantState.WAITING_CREATION);
+      String tenantName = validationData.get(TenantInfoFieldName.PROPERTY_TENANT_NAME);
+      String templateId = validationData.get(TenantInfoFieldName.PROPERTY_TEMPLATE_ID);
+      if (templateId == null)
+      {
+         LOG.warn("TemplateId not found in validation data of tenant {}. Current TemplateId will be used", tenantName);
+         templateId = adminConfiguration.getString(CLOUD_ADMIN_TENANT_BACKUP_ID);
+      }
 
-      //creationSupervisor.createTenant(tenantStatus);
+      String userMail = validationData.get(TenantInfoFieldName.PROPERTY_USER_MAIL);
 
+      tenantNameValidator.validateTenantName(tenantName);
+      userMailValidator.validateUserMail(userMail);
+      if (tenantInfoDataManager.isExists(tenantName))
+      {
+         throw new TenantValidationException(" This domain is already in use. If you are the owner,"
+            + " check your email for further instructions; otherwise, please select a different domain name.");
+      }
+
+      //save tenant state
+      tenantStateDataManager.waitCreation(tenant(tenantName).templateId(templateId).adminMail(userMail).info());
+      //remove validation information
+      emailValidationStorage.remove(uuid);
       return Response.ok().build();
    }
+
+   /**
+    * This service is the first step for creation new tenant for user with
+    * confirmed email address. It validates received data for tenant creation,
+    * puts tenant metadata in validation queue and sends confirmation mail to
+    * specified address.
+    * 
+    * <table>
+    * <tr>
+    * <th>Status</th>
+    * <th>Error description</th>
+    * </tr>
+    * <tr>
+    * <td>400</td>
+    * <td>tenant with specified name already exists</td>
+    * </tr>
+    * <tr>
+    * <td>400</td>
+    * <td>tenant name is not correctly. It can't be null or ''; should contain
+    * 20 or less characters; should contain lower cased Latin characters (a-z)
+    * and digits (0-9); cannot be solely of digits; can't be in black list</td>
+    * </tr>
+    * <tr>
+    * <td>400</td>
+    * <td>user mail is not valid or in black list</td>
+    * </tr>
+    * <tr>
+    * <td>500</td>
+    * <td>template for confirmation mail not found</td>
+    * </tr>
+    * <tr>
+    * <td>500</td>
+    * <td>error during sending confirmation mail</td>
+    * </tr>
+    * </table>
+    * 
+    * @param tenantName
+    *           - name for new tenant
+    * @param userMail
+    *           - email of tenant owner
+    * @return correspondent status 200
+    * @throws CloudAdminException
+    */
+   @POST
+   @Path("/create-with-confirm/{tenantname}/{user-mail}")
+   public Response createTenantWithEmailConfirmation(@PathParam("tenantname") String tenantName,
+      @PathParam("user-mail") String userMail) throws CloudAdminException
+   {
+      LOG.info("Received tenant creation request for {} from {}", tenantName, userMail);
+      Map<String, String> validationData = new HashMap<String, String>();
+      validationData.put(TenantInfoFieldName.PROPERTY_TENANT_NAME, tenantName);
+      validationData.put(TenantInfoFieldName.PROPERTY_USER_MAIL, userMail);
+      validationData.put(TenantInfoFieldName.PROPERTY_STATE, TenantState.VALIDATING_EMAIL.toString());
+      validationData.put(TenantInfoFieldName.PROPERTY_TEMPLATE_ID,
+         adminConfiguration.getString(CLOUD_ADMIN_TENANT_BACKUP_ID));
+
+      tenantNameValidator.validateTenantName(tenantName);
+      userMailValidator.validateUserMail(userMail);
+      if (tenantInfoDataManager.isExists(tenantName))
+      {
+         throw new TenantValidationException(" This domain is already in use. If you are the owner,"
+            + " check your email for further instructions; otherwise, please select a different domain name.");
+      }
+      String validationId = emailValidationStorage.setValidationData(validationData);
+
+      //send email
+      String mailTemplate = adminConfiguration.getString(CLOUD_ADMIN_MAIL_CONFIRMATION_TEMPLATE);
+      if (mailTemplate == null)
+      {
+         throw new TenantRegistrationException(500, "Mail template configuration not found. Please contact support.");
+      }
+
+      Map<String, String> props = new HashMap<String, String>();
+      props.put("tenant.masterhost", AdminConfigurationUtil.getMasterHost(adminConfiguration));
+      props.put("tenant.name", tenantName);
+      props.put("user.mail", userMail);
+      props.put("id", validationId);
+
+      mailSender.sendMail(userMail, adminConfiguration.getString(CLOUD_ADMIN_MAIL_CONFIRMATION_SUBJECT), mailTemplate,
+         props, false);
+
+      return Response.ok(validationId).build();
+   }
+
+   public String createTenant(String tenantName, String userMail) throws CloudAdminException
+   {
+      Map<String, String> validationData = new HashMap<String, String>();
+      validationData.put(TenantInfoFieldName.PROPERTY_TENANT_NAME, tenantName);
+      validationData.put(TenantInfoFieldName.PROPERTY_USER_MAIL, userMail);
+      validationData.put(TenantInfoFieldName.PROPERTY_STATE, TenantState.VALIDATING_EMAIL.toString());
+      validationData.put(TenantInfoFieldName.PROPERTY_TEMPLATE_ID,
+         adminConfiguration.getString(CLOUD_ADMIN_TENANT_BACKUP_ID));
+
+      tenantNameValidator.validateTenantName(tenantName);
+      userMailValidator.validateUserMail(userMail);
+      if (tenantInfoDataManager.isExists(tenantName))
+      {
+         throw new TenantValidationException(" This domain is already in use. If you are the owner,"
+            + " check your email for further instructions; otherwise, please select a different domain name.");
+      }
+      String validationId = emailValidationStorage.setValidationData(validationData);
+      return validationId;
+   }
+
 }

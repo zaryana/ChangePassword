@@ -35,7 +35,7 @@
     <org.exoplatform.core.version>2.4.6-GA</org.exoplatform.core.version>
     <org.exoplatform.ws.version>2.2.6-GA</org.exoplatform.ws.version>
     <org.exoplatform.jcr.version>1.14.6-GA</org.exoplatform.jcr.version>
-    <org.exoplatform.cloud-management.version>1.1-M6-SNAPSHOT</org.exoplatform.cloud-management.version>
+    <org.exoplatform.cloud-management.version>1.1-M6</org.exoplatform.cloud-management.version>
 
     <!-- Cloud gadget services -->
     <org.exoplatform.portal.version>3.2.3-PLF-SNAPSHOT</org.exoplatform.portal.version>
@@ -169,7 +169,7 @@
       </dependency>
       <dependency>
         <groupId>org.exoplatform.cloud-management</groupId>
-        <artifactId>cloud-admin-valve</artifactId>
+        <artifactId>cloud-admin-valve-tomcat</artifactId>
         <version>${org.exoplatform.cloud-management.version}</version>
         <type>jar</type>
       </dependency>
@@ -181,7 +181,7 @@
       </dependency>
       <dependency>
         <groupId>org.exoplatform.cloud-management</groupId>
-        <artifactId>cloud-services-common</artifactId>
+        <artifactId>cloud-commons</artifactId>
         <version>${org.exoplatform.cloud-management.version}</version>
         <type>jar</type>
       </dependency>

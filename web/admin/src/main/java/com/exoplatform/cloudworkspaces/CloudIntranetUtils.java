@@ -20,10 +20,23 @@ package com.exoplatform.cloudworkspaces;
 
 import static java.net.HttpURLConnection.HTTP_CREATED;
 import static java.net.HttpURLConnection.HTTP_OK;
-import static org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration.CLOUD_ADMIN_FRONT_END_SERVER_HOST;
-import static org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration.CLOUD_ADMIN_MAIL_ADMIN_EMAIL;
-import static org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration.CLOUD_ADMIN_MAIL_ADMIN_ERROR_SUBJECT;
-import static org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration.CLOUD_ADMIN_MAIL_ADMIN_ERROR_TEMPLATE;
+
+import com.exoplatform.cloudworkspaces.listener.TenantResumeThread;
+
+import org.apache.commons.configuration.Configuration;
+import org.everrest.core.impl.provider.json.JsonException;
+import org.everrest.core.impl.provider.json.JsonParser;
+import org.everrest.core.impl.provider.json.ObjectValue;
+import org.exoplatform.cloudmanagement.admin.CloudAdminException;
+import org.exoplatform.cloudmanagement.admin.WorkspacesMailSender;
+import org.exoplatform.cloudmanagement.admin.configuration.AdminConfiguration;
+import org.exoplatform.cloudmanagement.admin.configuration.MailConfiguration;
+import org.exoplatform.cloudmanagement.admin.configuration.TenantInfoFieldName;
+import org.exoplatform.cloudmanagement.admin.dao.TenantInfoDataManager;
+import org.exoplatform.cloudmanagement.admin.util.AdminConfigurationUtil;
+import org.exoplatform.cloudmanagement.status.TenantState;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -34,7 +47,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
-import java.net.Authenticator;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -56,58 +68,46 @@ import java.util.concurrent.Executors;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
-import org.everrest.core.impl.provider.json.JsonException;
-import org.everrest.core.impl.provider.json.JsonParser;
-import org.everrest.core.impl.provider.json.ObjectValue;
-import org.exoplatform.cloudmanagement.admin.AgentAuthenticator;
-import org.exoplatform.cloudmanagement.admin.CloudAdminException;
-import org.exoplatform.cloudmanagement.admin.WorkspacesMailSender;
-import org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration;
-import org.exoplatform.cloudmanagement.admin.configuration.ConfigurationParameterNotFound;
-import org.exoplatform.cloudmanagement.admin.status.CloudInfoHolder;
-import org.exoplatform.cloudmanagement.status.TenantState;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.exoplatform.cloudworkspaces.listener.TenantResumeThread;
-
 public class CloudIntranetUtils
 {
-  
+
    private static final String CLOUD_ADMIN_TENANT_MAXUSERS = "cloud.admin.tenant.maxusers";
 
-   private CloudAdminConfiguration cloudAdminConfiguration;
-   
-   private CloudInfoHolder holder;
+   private Configuration cloudAdminConfiguration;
+
+   private TenantInfoDataManager tenantInfoDataManager;
 
    private WorkspacesMailSender mailSender;
-   
+
    UserRequestDAO requestDao;
-   
+
    private String whiteListConfigurationFile;
-   
+
    private String blackListConfigurationFolder;
-   
+
    private String maxUsersConfigurationFile;
 
    private static final Logger LOG = LoggerFactory.getLogger(CloudIntranetUtils.class);
 
-   public CloudIntranetUtils(CloudAdminConfiguration cloudAdminConfiguration, CloudInfoHolder holder, UserRequestDAO requestDao)
+   public CloudIntranetUtils(Configuration cloudAdminConfiguration, TenantInfoDataManager tenantInfoDataManager,
+      UserRequestDAO requestDao)
    {
       this.cloudAdminConfiguration = cloudAdminConfiguration;
-      this.holder = holder;
+      this.tenantInfoDataManager = tenantInfoDataManager;
       this.mailSender = new WorkspacesMailSender(cloudAdminConfiguration);
       this.whiteListConfigurationFile = System.getProperty("cloud.admin.whitelist");
-      this.blackListConfigurationFolder = cloudAdminConfiguration.getProperty("cloud.admin.blacklist.dir", null);
+      this.blackListConfigurationFolder = cloudAdminConfiguration.getString("cloud.admin.blacklist.dir", null);
       this.maxUsersConfigurationFile = System.getProperty("cloud.admin.userlimit");
       this.requestDao = requestDao;
 
-      Authenticator.setDefault(new AgentAuthenticator(cloudAdminConfiguration.getProperty("admin.agent.auth.username",
-         null), cloudAdminConfiguration.getProperty("admin.agent.auth.password", null)));
+      /* TODO check this line
+      Authenticator.setDefault(new AgentAuthenticator(cloudAdminConfiguration.getString("admin.agent.auth.username",
+         null), cloudAdminConfiguration.getString("admin.agent.auth.password", null)));
+         */
    }
 
-   public void storeUser(String tName, String userMail, String firstName, String lastName, String password, boolean isAdministrator)
-      throws CloudAdminException
+   public void storeUser(String tName, String userMail, String firstName, String lastName, String password,
+      boolean isAdministrator) throws CloudAdminException
    {
       String username = userMail.substring(0, (userMail.indexOf("@")));
 
@@ -117,7 +117,7 @@ public class CloudIntranetUtils
       StringBuilder hostName = new StringBuilder();
       hostName.append(tName);
       hostName.append(".");
-      hostName.append(cloudAdminConfiguration.getProperty(CLOUD_ADMIN_FRONT_END_SERVER_HOST));
+      hostName.append(cloudAdminConfiguration.getString(AdminConfiguration.CLOUD_ADMIN_FRONT_END_SERVER_HOST));
 
       StringBuilder strUrl = new StringBuilder();
       strUrl.append("http://");
@@ -169,25 +169,28 @@ public class CloudIntranetUtils
          else
          {
             String err = readText(connection.getErrorStream());
-            String msg = ("Unable to add user to workspace " + tName + " (" + hostName
-               + ") - HTTP status:" + connection.getResponseCode()
-               + (err != null ? ". Server error: \r\n" + err + "\r\n" : ""));
+            String msg =
+               ("Unable to add user to workspace " + tName + " (" + hostName + ") - HTTP status:"
+                  + connection.getResponseCode() + (err != null ? ". Server error: \r\n" + err + "\r\n" : ""));
             LOG.error(msg);
             sendAdminErrorEmail(msg, null);
-            throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
+            throw new CloudAdminException(
+               "An problem happened during processsing this request. It was reported to developers. Please, try again later.");
          }
       }
       catch (MalformedURLException e)
       {
          LOG.error(e.getMessage(), e);
          sendAdminErrorEmail(e.getMessage(), e);
-         throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
+         throw new CloudAdminException(
+            "An problem happened during processsing this request. It was reported to developers. Please, try again later.");
       }
       catch (IOException e)
       {
          LOG.error(e.getMessage(), e);
          sendAdminErrorEmail(e.getMessage(), e);
-         throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
+         throw new CloudAdminException(
+            "An problem happened during processsing this request. It was reported to developers. Please, try again later.");
 
       }
       finally
@@ -203,7 +206,7 @@ public class CloudIntranetUtils
    {
       if (tName == null || username == null)
          throw new CloudAdminException("Cannot validate user with such input data. Please, review it.");
-      
+
       int maxUsers = getMaxUsersForTenant(tName);
       URL url;
       HttpURLConnection connection = null;
@@ -211,11 +214,11 @@ public class CloudIntranetUtils
       strUrl.append("http://");
       strUrl.append(tName);
       strUrl.append(".");
-      strUrl.append(cloudAdminConfiguration.getProperty(CLOUD_ADMIN_FRONT_END_SERVER_HOST));
-      strUrl.append("/cloud-agent/rest/organization/users/"+ tName);
+      strUrl.append(cloudAdminConfiguration.getString(AdminConfiguration.CLOUD_ADMIN_FRONT_END_SERVER_HOST));
+      strUrl.append("/cloud-agent/rest/organization/users/" + tName);
       strUrl.append("?");
       strUrl.append("administratorsonly=false");
-      
+
       try
       {
          url = new URL(strUrl.toString());
@@ -245,14 +248,14 @@ public class CloudIntranetUtils
                String userName = users.next();
                String email = responseObj.getElement(userName).getStringValue();
                if (!userName.equalsIgnoreCase(username))
-                {
-                   if (!userName.equals("root"))
+               {
+                  if (!userName.equals("root"))
                      counter++;
-                }
-                else
-                {
-                   throw new UserAlreadyExistsException("This user has already registered on workspace " + tName);
-                }
+               }
+               else
+               {
+                  throw new UserAlreadyExistsException("This user has already registered on workspace " + tName);
+               }
             }
             if (maxUsers == -1 || counter < maxUsers)
             {
@@ -265,35 +268,41 @@ public class CloudIntranetUtils
          }
          else if (connection.getResponseCode() == 502)
          {
-            throw new CloudAdminException("Workspace "+ tName + " is not created yet or it was suspended. Please try again later.");
+            throw new CloudAdminException("Workspace " + tName
+               + " is not created yet or it was suspended. Please try again later.");
          }
          else
          {
             String err = readText(connection.getErrorStream());
-            String msg = ("Unable to get user list from workspace " + tName + " - HTTP status:"
-               + connection.getResponseCode() + (err != null ? ". Server error: \r\n" + err + "\r\n" : ""));
+            String msg =
+               ("Unable to get user list from workspace " + tName + " - HTTP status:" + connection.getResponseCode() + (err != null
+                  ? ". Server error: \r\n" + err + "\r\n" : ""));
             LOG.error(msg);
             sendAdminErrorEmail(msg, null);
-            throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
+            throw new CloudAdminException(
+               "An problem happened during processsing this request. It was reported to developers. Please, try again later.");
          }
       }
       catch (MalformedURLException e)
       {
          LOG.error(e.getMessage(), e);
          sendAdminErrorEmail(e.getMessage(), e);
-         throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
+         throw new CloudAdminException(
+            "An problem happened during processsing this request. It was reported to developers. Please, try again later.");
       }
       catch (IOException e)
       {
          LOG.error(e.getMessage(), e);
          sendAdminErrorEmail(e.getMessage(), e);
-         throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
+         throw new CloudAdminException(
+            "An problem happened during processsing this request. It was reported to developers. Please, try again later.");
       }
       catch (JsonException e)
       {
          LOG.error(e.getMessage(), e);
          sendAdminErrorEmail(e.getMessage(), e);
-         throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
+         throw new CloudAdminException(
+            "An problem happened during processsing this request. It was reported to developers. Please, try again later.");
       }
       finally
       {
@@ -303,7 +312,7 @@ public class CloudIntranetUtils
          }
       }
    }
-   
+
    public void updatePassword(String email, String password) throws CloudAdminException
    {
       if (email == null || password == null)
@@ -318,7 +327,7 @@ public class CloudIntranetUtils
       strUrl.append("http://");
       strUrl.append(tName);
       strUrl.append(".");
-      strUrl.append(cloudAdminConfiguration.getProperty(CLOUD_ADMIN_FRONT_END_SERVER_HOST));
+      strUrl.append(cloudAdminConfiguration.getString(AdminConfiguration.CLOUD_ADMIN_FRONT_END_SERVER_HOST));
       strUrl.append("/cloud-agent/rest/organization/newpassword/");
       StringBuilder params;
       try
@@ -326,9 +335,9 @@ public class CloudIntranetUtils
          params = new StringBuilder();
          params.append("tname=" + tName);
          params.append("&");
-         params.append("username="+ java.net.URLEncoder.encode(username, "utf-8"));
+         params.append("username=" + java.net.URLEncoder.encode(username, "utf-8"));
          params.append("&");
-         params.append("password="+ java.net.URLEncoder.encode(password, "utf-8"));
+         params.append("password=" + java.net.URLEncoder.encode(password, "utf-8"));
       }
       catch (UnsupportedEncodingException e)
       {
@@ -355,7 +364,7 @@ public class CloudIntranetUtils
          {
             String err = readText(connection.getErrorStream());
             String msg =
-               ("Unable to change password user "+ email +" to workspace " + tName +  " - HTTP status:"
+               ("Unable to change password user " + email + " to workspace " + tName + " - HTTP status:"
                   + connection.getResponseCode() + (err != null ? ". Server error: \r\n" + err + "\r\n" : ""));
             LOG.error(msg);
             sendAdminErrorEmail(msg, null);
@@ -385,11 +394,11 @@ public class CloudIntranetUtils
          }
       }
    }
-   
-   public Map<String,String> getTenantAdministrators(String tName) throws CloudAdminException
+
+   public Map<String, String> getTenantAdministrators(String tName) throws CloudAdminException
    {
-   
-      Map<String,String> result = new HashMap<String,String>();
+
+      Map<String, String> result = new HashMap<String, String>();
       URL url;
       HttpURLConnection connection = null;
 
@@ -397,11 +406,11 @@ public class CloudIntranetUtils
       strUrl.append("http://");
       strUrl.append(tName);
       strUrl.append(".");
-      strUrl.append(cloudAdminConfiguration.getProperty(CLOUD_ADMIN_FRONT_END_SERVER_HOST));
-      strUrl.append("/cloud-agent/rest/organization/users/"+ tName);
+      strUrl.append(cloudAdminConfiguration.getString(AdminConfiguration.CLOUD_ADMIN_FRONT_END_SERVER_HOST));
+      strUrl.append("/cloud-agent/rest/organization/users/" + tName);
       strUrl.append("?");
       strUrl.append("administratorsonly=true");
-      
+
       InputStream io;
       try
       {
@@ -419,41 +428,44 @@ public class CloudIntranetUtils
             {
                String userName = users.next();
                String email = responseObj.getElement(userName).getStringValue();
-               result.put(userName,email);
+               result.put(userName, email);
             }
-          return result;  
+            return result;
          }
          else
          {
             String err = readText(connection.getErrorStream());
-            String msg = 
-            ("Unable to get administrators list from workspace " + tName 
-               + " - HTTP status:" + connection.getResponseCode()
-               + (err != null ? ". Server error: \r\n" + err + "\r\n" : ""));
+            String msg =
+               ("Unable to get administrators list from workspace " + tName + " - HTTP status:"
+                  + connection.getResponseCode() + (err != null ? ". Server error: \r\n" + err + "\r\n" : ""));
             LOG.error(msg);
             sendAdminErrorEmail(msg, null);
-            throw new CloudAdminException("A problem happened during processsing this request. It was reported to developers. Please, try again later.");
+            throw new CloudAdminException(
+               "A problem happened during processsing this request. It was reported to developers. Please, try again later.");
          }
       }
       catch (MalformedURLException e)
       {
          LOG.error(e.getMessage(), e);
          sendAdminErrorEmail(e.getMessage(), e);
-         throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
+         throw new CloudAdminException(
+            "An problem happened during processsing this request. It was reported to developers. Please, try again later.");
 
       }
       catch (IOException e)
       {
          LOG.error(e.getMessage(), e);
          sendAdminErrorEmail(e.getMessage(), e);
-         throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
+         throw new CloudAdminException(
+            "An problem happened during processsing this request. It was reported to developers. Please, try again later.");
 
       }
       catch (JsonException e)
       {
          LOG.error(e.getMessage(), e);
          sendAdminErrorEmail(e.getMessage(), e);
-         throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
+         throw new CloudAdminException(
+            "An problem happened during processsing this request. It was reported to developers. Please, try again later.");
 
       }
       finally
@@ -464,56 +476,61 @@ public class CloudIntranetUtils
          }
       }
    }
-   
 
    public void sendOkToJoinEmail(String userMail, Map<String, String> props) throws CloudAdminException
    {
-      String mailTemplate = cloudAdminConfiguration.getProperty(MailingProperties.CLOUD_ADMIN_MAIL_JOIN_TEMPLATE, null);
+      String mailTemplate = cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_JOIN_TEMPLATE, null);
       try
       {
-         mailSender.sendMail(userMail, cloudAdminConfiguration.getProperty(MailingProperties.CLOUD_ADMIN_MAIL_JOIN_SUBJECT),
-            mailTemplate, props, false);
+         mailSender.sendMail(userMail,
+            cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_JOIN_SUBJECT), mailTemplate, props,
+            false);
       }
-      catch (ConfigurationParameterNotFound e)
+      catch (CloudAdminException e)
       {
          sendAdminErrorEmail("Configuration error - join email not send.", e);
          LOG.error("Configuration error - join email not send.", e);
       }
    }
-   
+
    public void sendCreationQueuedEmails(String tName, String userMail, Map<String, String> props)
       throws CloudAdminException
    {
 
-      String userTemplate = cloudAdminConfiguration.getProperty(MailingProperties.CLOUD_ADMIN_MAIL_REQUEST_QUEUED_TEMPLATE, null);
-      String devTemplate = cloudAdminConfiguration.getProperty(MailingProperties.CLOUD_ADMIN_MAIL_REQUEST_QUEUED_DEVELOPERS_TEMPLATE, null);
+      String userTemplate =
+         cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_REQUEST_QUEUED_TEMPLATE, null);
+      String devTemplate =
+         cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_REQUEST_QUEUED_DEVELOPERS_TEMPLATE, null);
       try
       {
-         String email = cloudAdminConfiguration.getProperty(MailingProperties.CLOUD_ADMIN_MAIL_SUPPOR_EMAIL);
-         mailSender.sendMail(userMail, cloudAdminConfiguration.getProperty(MailingProperties.CLOUD_ADMIN_MAIL_REQUEST_QUEUED_SUBJECT),
-            userTemplate, props, false);
-         mailSender.sendMail(email, cloudAdminConfiguration.getProperty(MailingProperties.CLOUD_ADMIN_MAIL_REQUEST_QUEUED_DEVELOPERS_SUBJECT).replace("${workspace}", tName),
-            devTemplate, props, false);
+         String email = cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_SUPPOR_EMAIL);
+         mailSender.sendMail(userMail,
+            cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_REQUEST_QUEUED_SUBJECT), userTemplate,
+            props, false);
+         mailSender.sendMail(email,
+            cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_REQUEST_QUEUED_DEVELOPERS_SUBJECT)
+               .replace("${workspace}", tName), devTemplate, props, false);
       }
-      catch (ConfigurationParameterNotFound e)
+      catch (CloudAdminException e)
       {
          sendAdminErrorEmail("Configuration error - creation queued emails is not send", e);
          LOG.error("Configuration error - creation queued emails is not send", e);
       }
    }
-   
-   
+
    public void sendCreationRejectedEmail(String tName, String userMail, Map<String, String> props)
       throws CloudAdminException
    {
 
-      String userTemplate = cloudAdminConfiguration.getProperty(MailingProperties.CLOUD_ADMIN_MAIL_REQUEST_REJECTED_TEMPLATE, null);
+      String userTemplate =
+         cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_REQUEST_REJECTED_TEMPLATE, null);
       try
       {
-         mailSender.sendMail(userMail, cloudAdminConfiguration.getProperty(MailingProperties.CLOUD_ADMIN_MAIL_REQUEST_REJECTED_SUBJECT),
+         mailSender.sendMail(userMail,
+            cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_REQUEST_REJECTED_SUBJECT),
             userTemplate, props, false);
       }
-      catch (ConfigurationParameterNotFound e)
+      catch (CloudAdminException e)
       {
          sendAdminErrorEmail("Configuration error - creation rejected emails is not send", e);
          LOG.error("Configuration error - creation rejected emails is not send", e);
@@ -521,24 +538,29 @@ public class CloudIntranetUtils
 
    }
 
-   public void sendJoinRejectedEmails(String tName, String userMail, Map<String, String> props) throws CloudAdminException
+   public void sendJoinRejectedEmails(String tName, String userMail, Map<String, String> props)
+      throws CloudAdminException
    {
-      String userTemplate = cloudAdminConfiguration.getProperty(MailingProperties.CLOUD_ADMIN_MAIL_JOIN_CLOSED_USER_TEMPLATE, null);
-      String ownerTemplate = cloudAdminConfiguration.getProperty(MailingProperties.CLOUD_ADMIN_MAIL_JOIN_CLOSED_OWNER_TEMPLATE, null);
-      String salesEmail = cloudAdminConfiguration.getProperty(MailingProperties.CLOUD_ADMIN_MAIL_SALES_EMAIL, null);
-      String salesTemplate = cloudAdminConfiguration.getProperty(MailingProperties.CLOUD_ADMIN_MAIL_JOIN_CLOSED_SALES_TEMPLATE, null);
+      String userTemplate =
+         cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_JOIN_CLOSED_USER_TEMPLATE, null);
+      String ownerTemplate =
+         cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_JOIN_CLOSED_OWNER_TEMPLATE, null);
+      String salesEmail = cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_SALES_EMAIL, null);
+      String salesTemplate =
+         cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_JOIN_CLOSED_SALES_TEMPLATE, null);
 
       try
       {
-         mailSender.sendMail(userMail, cloudAdminConfiguration.getProperty(MailingProperties.CLOUD_ADMIN_MAIL_JOIN_CLOSED_USER_SUBJECT),
+         mailSender.sendMail(userMail,
+            cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_JOIN_CLOSED_USER_SUBJECT),
             userTemplate, props, false);
          mailSender.sendMail(
             salesEmail,
-            cloudAdminConfiguration.getProperty(MailingProperties.CLOUD_ADMIN_MAIL_JOIN_CLOSED_SALES_SUBJECT).replace("${company}",
-               props.get("tenant.repository.name")), salesTemplate, props, true);
+            cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_JOIN_CLOSED_SALES_SUBJECT).replace(
+               "${company}", props.get("tenant.repository.name")), salesTemplate, props, true);
 
-         Map<String,String> adminEmails = getTenantAdministrators(tName);
-         Iterator<String> it = adminEmails.keySet().iterator(); 
+         Map<String, String> adminEmails = getTenantAdministrators(tName);
+         Iterator<String> it = adminEmails.keySet().iterator();
          while (it.hasNext())
          {
             String username = it.next();
@@ -548,11 +570,11 @@ public class CloudIntranetUtils
             props.put("admin.firstname", username);
             if (adminEmail != null)
                mailSender.sendMail(adminEmail,
-                  cloudAdminConfiguration.getProperty(MailingProperties.CLOUD_ADMIN_MAIL_JOIN_CLOSED_OWNER_SUBJECT).replace("${company}",
-                     props.get("tenant.repository.name")), ownerTemplate, props, false);
+                  cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_JOIN_CLOSED_OWNER_SUBJECT)
+                     .replace("${company}", props.get("tenant.repository.name")), ownerTemplate, props, false);
          }
       }
-      catch (ConfigurationParameterNotFound e)
+      catch (CloudAdminException e)
       {
          sendAdminErrorEmail("Configuration error - join rejected emails is not send", e);
          LOG.error("Configuration error - join rejected emails is not send", e);
@@ -562,17 +584,22 @@ public class CloudIntranetUtils
    public void sendUserJoinedEmails(String tName, String firstName, String userMail, Map<String, String> props)
       throws CloudAdminException
    {
-      String userTemplate = cloudAdminConfiguration.getProperty(MailingProperties.CLOUD_ADMIN_MAIL_USER_JOINED_TEMPLATE, null);
-      String ownerTemplate = cloudAdminConfiguration.getProperty(MailingProperties.CLOUD_ADMIN_MAIL_USER_JOINED_OWNER_TEMPLATE, null);
+      String userTemplate =
+         cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_USER_JOINED_TEMPLATE, null);
+      String ownerTemplate =
+         cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_USER_JOINED_OWNER_TEMPLATE, null);
       String ownerSubject =
-         cloudAdminConfiguration.getProperty(MailingProperties.CLOUD_ADMIN_MAIL_USER_JOINED_OWNER_SUBJECT).replace("${company}", tName);
+         cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_USER_JOINED_OWNER_SUBJECT).replace(
+            "${company}", tName);
       ownerSubject = ownerSubject.replace("${firstname}", firstName);
       try
       {
-         Map<String,String> adminEmails = getTenantAdministrators(tName);
-         mailSender.sendMail(userMail, cloudAdminConfiguration.getProperty(MailingProperties.CLOUD_ADMIN_MAIL_USER_JOINED_SUBJECT)
-            .replace("${company}", tName), userTemplate, props, false);
-         Iterator<String> it =adminEmails.keySet().iterator(); 
+         Map<String, String> adminEmails = getTenantAdministrators(tName);
+         mailSender.sendMail(
+            userMail,
+            cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_USER_JOINED_SUBJECT).replace(
+               "${company}", tName), userTemplate, props, false);
+         Iterator<String> it = adminEmails.keySet().iterator();
          while (it.hasNext())
          {
             String username = it.next();
@@ -584,7 +611,7 @@ public class CloudIntranetUtils
                mailSender.sendMail(adminEmail, ownerSubject, ownerTemplate, props, false);
          }
       }
-      catch (ConfigurationParameterNotFound e)
+      catch (CloudAdminException e)
       {
          sendAdminErrorEmail("Configuration error - user joined but notification emails is not send.", e);
          LOG.error("Configuration error - user joined but notification emails is not send.", e);
@@ -593,15 +620,15 @@ public class CloudIntranetUtils
 
    public void sendIntranetCreatedEmail(String userMail, Map<String, String> props) throws CloudAdminException
    {
-      String userTemplate = cloudAdminConfiguration.getProperty(MailingProperties.CLOUD_ADMIN_MAIL_USER_INTRANET_CREATED_TEMPLATE, null);
+      String userTemplate =
+         cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_USER_INTRANET_CREATED_TEMPLATE, null);
       try
       {
-         mailSender.sendMail(
-            userMail,
-            cloudAdminConfiguration.getProperty(MailingProperties.CLOUD_ADMIN_MAIL_USER_INTRANET_CREATED_SUBJECT).replace("${company}",
-               props.get("tenant.repository.name")), userTemplate, props, false);
+         mailSender.sendMail(userMail,
+            cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_USER_INTRANET_CREATED_SUBJECT)
+               .replace("${company}", props.get("tenant.repository.name")), userTemplate, props, false);
       }
-      catch (ConfigurationParameterNotFound e)
+      catch (CloudAdminException e)
       {
          sendAdminErrorEmail("Configuration error - workspace created but owner email in not send", e);
          LOG.error("Configuration error - workspace created but owner email in not send", e);
@@ -610,9 +637,10 @@ public class CloudIntranetUtils
 
    public void sendAdminErrorEmail(String msg, Exception error)
    {
-      String mailTemplate = cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_ADMIN_ERROR_TEMPLATE, null);
+      String mailTemplate =
+         cloudAdminConfiguration.getString(MailConfiguration.CLOUD_ADMIN_MAIL_ADMIN_ERROR_TEMPLATE, null);
       String mailSubject =
-         cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_ADMIN_ERROR_SUBJECT, "Cloud admin error");
+         cloudAdminConfiguration.getString(MailConfiguration.CLOUD_ADMIN_MAIL_ADMIN_ERROR_SUBJECT, "Cloud admin error");
       msg = msg.replaceAll("(\r\n|\n\r|\r|\n)", "<br>");
 
       Map<String, String> props = new HashMap<String, String>();
@@ -644,7 +672,8 @@ public class CloudIntranetUtils
       }
       try
       {
-         for (String email : cloudAdminConfiguration.getProperty(CLOUD_ADMIN_MAIL_ADMIN_EMAIL).split(","))
+         for (String email : cloudAdminConfiguration.getString(MailConfiguration.CLOUD_ADMIN_MAIL_ADMIN_EMAIL).split(
+            ","))
          {
             mailSender.sendMail(email.trim(), mailSubject, mailTemplate, props, true);
          }
@@ -655,51 +684,55 @@ public class CloudIntranetUtils
             + (error != null ? error.getMessage() : "[ no error message provided]") + "'.", ex);
       }
    }
-   
-   public void sendContactUsEmail(String userMail, String firstName, String subject, String text){
-      
-      String mailTemplate = cloudAdminConfiguration.getProperty(MailingProperties.CLOUD_ADMIN_MAIL_CONTACT_TEMPLATE, "");
-      String email = cloudAdminConfiguration.getProperty(MailingProperties.CLOUD_ADMIN_MAIL_SUPPOR_EMAIL, "support@cloud-workspaces.com");
-      
+
+   public void sendContactUsEmail(String userMail, String firstName, String subject, String text)
+   {
+
+      String mailTemplate = cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_CONTACT_TEMPLATE, "");
+      String email =
+         cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_SUPPOR_EMAIL,
+            "support@cloud-workspaces.com");
+
       Map<String, String> props = new HashMap<String, String>();
       props.put("user.mail", userMail);
       props.put("user.name", firstName);
       props.put("message", text);
       try
       {
-            mailSender.sendMail(email, 
-                                 "Contact-Us message submitted: " + subject, 
-                                 mailTemplate, props, false, userMail);
+         mailSender.sendMail(email, "Contact-Us message submitted: " + subject, mailTemplate, props, false, userMail);
       }
       catch (CloudAdminException ex)
       {
-       String msg = ("Cannot send mail contactUs message. Message was : <<" + text + ">>. Sender email is: " + userMail);
-       LOG.error(msg);
-       sendAdminErrorEmail(msg, ex);
+         String msg =
+            ("Cannot send mail contactUs message. Message was : <<" + text + ">>. Sender email is: " + userMail);
+         LOG.error(msg);
+         sendAdminErrorEmail(msg, ex);
       }
    }
-   
-   public void sendPasswordRestoreEmail(String email, String tName, String uuid) throws CloudAdminException{
-      
-      String mailTemplate = cloudAdminConfiguration.getProperty(MailingProperties.CLOUD_ADMIN_MAIL_PASSWORD_RESTORE_TEMPLATE, "");
+
+   public void sendPasswordRestoreEmail(String email, String tName, String uuid) throws CloudAdminException
+   {
+
+      String mailTemplate =
+         cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_PASSWORD_RESTORE_TEMPLATE, "");
       Map<String, String> props = new HashMap<String, String>();
       props.put("user.mail", email);
       props.put("uid", uuid);
-      props.put("tenant.masterhost", cloudAdminConfiguration.getMasterHost());
+      props.put("tenant.masterhost", AdminConfigurationUtil.getMasterHost(cloudAdminConfiguration));
       props.put("tenant.repository.name", tName);
       try
       {
-            mailSender.sendMail(email, 
-               cloudAdminConfiguration.getProperty(MailingProperties.CLOUD_ADMIN_MAIL_PASSWORD_RESTORE_SUBJECT), 
-                                 mailTemplate, props, false, "noreply@cloud-workspaces.com");
+         mailSender.sendMail(email,
+            cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_PASSWORD_RESTORE_SUBJECT),
+            mailTemplate, props, false, "noreply@cloud-workspaces.com");
       }
       catch (CloudAdminException ex)
       {
-       String msg = ("Cannot send mail password restore message. Requestor email is: " + email);
-       LOG.error(msg);
-       sendAdminErrorEmail(msg, ex);
+         String msg = ("Cannot send mail password restore message. Requestor email is: " + email);
+         LOG.error(msg);
+         sendAdminErrorEmail(msg, ex);
       }
-      
+
    }
 
    public String getTenantNameFromWhitelist(String email) throws CloudAdminException
@@ -707,7 +740,7 @@ public class CloudIntranetUtils
       String tail = email.substring(email.indexOf("@") + 1);
       if (whiteListConfigurationFile == null)
       {
-         String tName = tail.substring(0,tail.indexOf("."));
+         String tName = tail.substring(0, tail.indexOf("."));
          if (!isInBlackList(email))
          {
             return tName;
@@ -740,7 +773,7 @@ public class CloudIntranetUtils
       }
       catch (FileNotFoundException e)
       {
-         tName = tail.substring(0,tail.indexOf("."));
+         tName = tail.substring(0, tail.indexOf("."));
          LOG.info("White list file not found, allowing tenant " + tName + "from email:" + email);
          return tName;
       }
@@ -748,25 +781,29 @@ public class CloudIntranetUtils
       {
          LOG.error(e.getMessage(), e);
          sendAdminErrorEmail(e.getMessage(), e);
-         throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
+         throw new CloudAdminException(
+            "An problem happened during processsing this request. It was reported to developers. Please, try again later.");
       }
       return tName;
    }
-   
-   public boolean isInBlackList(String email){
+
+   public boolean isInBlackList(String email)
+   {
       String tail = email.substring(email.indexOf("@") + 1);
-      if (blackListConfigurationFolder == null || (cloudAdminConfiguration.getProperty("cloud.admin.blacklist.file", null)) == null)
+      if (blackListConfigurationFolder == null
+         || (cloudAdminConfiguration.getString("cloud.admin.blacklist.file", null)) == null)
       {
-         String tName = tail.substring(0,tail.indexOf("."));
+         String tName = tail.substring(0, tail.indexOf("."));
          LOG.info("Black list not configured, allowing tenant " + tName + " from email:" + email);
          return false;
       }
       File blacklistFolder = new File(blackListConfigurationFolder);
       if (!blacklistFolder.exists())
-        return false;
+         return false;
       try
       {
-         File propertyFile = new File(blacklistFolder + "/" + cloudAdminConfiguration.getProperty("cloud.admin.blacklist.file"));
+         File propertyFile =
+            new File(blacklistFolder + "/" + cloudAdminConfiguration.getString("cloud.admin.blacklist.file"));
          FileInputStream io = new FileInputStream(propertyFile);
          Properties properties = new Properties();
          properties.load(io);
@@ -775,7 +812,7 @@ public class CloudIntranetUtils
       }
       catch (FileNotFoundException e)
       {
-         String tName = tail.substring(0,tail.indexOf("."));
+         String tName = tail.substring(0, tail.indexOf("."));
          LOG.info("Black list file not found, allowing tenant " + tName + " from email:" + email);
       }
       catch (IOException e)
@@ -783,19 +820,17 @@ public class CloudIntranetUtils
          LOG.error(e.getMessage(), e);
          sendAdminErrorEmail(e.getMessage(), e);
       }
-      catch (ConfigurationParameterNotFound e)
-      {
-         LOG.error(e.getMessage(), e);
-         sendAdminErrorEmail(e.getMessage(), e);      
-      }
       return false;
    }
-   
-   public void putInBlackList(String email){
+
+   public void putInBlackList(String email)
+   {
       String tail = email.substring(email.indexOf("@") + 1);
-      if (blackListConfigurationFolder == null || (cloudAdminConfiguration.getProperty("cloud.admin.blacklist.file", null)) == null)
+      if (blackListConfigurationFolder == null
+         || (cloudAdminConfiguration.getString("cloud.admin.blacklist.file", null)) == null)
       {
-         String msg = "Blacklist action failed - blacklist folder/file not configured, cannot add new record for " + tail;
+         String msg =
+            "Blacklist action failed - blacklist folder/file not configured, cannot add new record for " + tail;
          LOG.warn(msg);
          sendAdminErrorEmail(msg, null);
          return;
@@ -805,18 +840,19 @@ public class CloudIntranetUtils
          blacklistFolder.mkdir();
       try
       {
-         File propertyFile = new File(blacklistFolder + "/" + cloudAdminConfiguration.getProperty("cloud.admin.blacklist.file"));
+         File propertyFile =
+            new File(blacklistFolder + "/" + cloudAdminConfiguration.getString("cloud.admin.blacklist.file"));
          if (!propertyFile.exists())
             propertyFile.createNewFile();
          FileInputStream io = new FileInputStream(propertyFile);
          Properties properties = new Properties();
          properties.load(io);
          io.close();
-         if(properties.containsKey(tail))
+         if (properties.containsKey(tail))
          {
             return;
          }
-         else 
+         else
          {
             properties.setProperty(tail, new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
             properties.store(new FileOutputStream(propertyFile), "");
@@ -833,18 +869,13 @@ public class CloudIntranetUtils
          LOG.error(e.getMessage(), e);
          sendAdminErrorEmail(e.getMessage(), e);
       }
-      catch (ConfigurationParameterNotFound e)
-      {
-         LOG.error(e.getMessage(), e);
-         sendAdminErrorEmail(e.getMessage(), e);      
-      }
    }
 
    public int getMaxUsersForTenant(String tName) throws CloudAdminException
    {
       if (maxUsersConfigurationFile == null)
       {
-         return Integer.parseInt(cloudAdminConfiguration.getProperty(CLOUD_ADMIN_TENANT_MAXUSERS, "20"));
+         return Integer.parseInt(cloudAdminConfiguration.getString(CLOUD_ADMIN_TENANT_MAXUSERS, "20"));
       }
       String value = null;
       int count;
@@ -857,7 +888,7 @@ public class CloudIntranetUtils
          value = properties.getProperty(tName);
          if (value == null || value.equals(""))
          {
-            return Integer.parseInt(cloudAdminConfiguration.getProperty(CLOUD_ADMIN_TENANT_MAXUSERS, "20"));
+            return Integer.parseInt(cloudAdminConfiguration.getString(CLOUD_ADMIN_TENANT_MAXUSERS, "20"));
          }
          else
          {
@@ -867,22 +898,23 @@ public class CloudIntranetUtils
       }
       catch (FileNotFoundException e)
       {
-         return Integer.parseInt(cloudAdminConfiguration.getProperty(CLOUD_ADMIN_TENANT_MAXUSERS, "20"));
+         return Integer.parseInt(cloudAdminConfiguration.getString(CLOUD_ADMIN_TENANT_MAXUSERS, "20"));
       }
       catch (IOException e)
       {
          LOG.error(e.getMessage(), e);
          sendAdminErrorEmail(e.getMessage(), e);
-         throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
+         throw new CloudAdminException(
+            "An problem happened during processsing this request. It was reported to developers. Please, try again later.");
       }
       return count;
    }
-   
+
    public void joinAll(String tName, RequestState state) throws CloudAdminException
    {
       if (state.equals(RequestState.WAITING_CREATION))
          throw new CloudAdminException("Given request state does not implies autojoining.");
-      
+
       List<UserRequest> list = requestDao.search(tName, state);
       for (UserRequest one : list)
       {
@@ -896,7 +928,7 @@ public class CloudIntranetUtils
          if (one.getState().equals(RequestState.WAITING_LIMIT) && one.getPassword().equals(""))
          {
             Map<String, String> props = new HashMap<String, String>();
-            props.put("tenant.masterhost", cloudAdminConfiguration.getMasterHost());
+            props.put("tenant.masterhost", AdminConfigurationUtil.getMasterHost(cloudAdminConfiguration));
             props.put("tenant.repository.name", tenant);
             props.put("user.mail", userMail);
             props.put("rfid",
@@ -919,7 +951,7 @@ public class CloudIntranetUtils
          if (one.getState().equals(RequestState.WAITING_JOIN) && one.getPassword().equals(""))
          {
             Map<String, String> props = new HashMap<String, String>();
-            props.put("tenant.masterhost", cloudAdminConfiguration.getMasterHost());
+            props.put("tenant.masterhost", AdminConfigurationUtil.getMasterHost(cloudAdminConfiguration));
             props.put("tenant.repository.name", tenant);
             props.put("user.mail", userMail);
             props.put("rfid",
@@ -965,7 +997,7 @@ public class CloudIntranetUtils
          try
          {
             // Checking status
-            if (!holder.getTenantStatus(tenant).getState().equals(TenantState.ONLINE))
+            if (!tenantInfoDataManager.getValue(tenant, TenantInfoFieldName.PROPERTY_STATE).equals(TenantState.ONLINE.toString()))
             {
                String msg = "Tenant " + tenant + " is not online, auto join skipped for user " + userMail;
                LOG.warn(msg);
@@ -976,17 +1008,17 @@ public class CloudIntranetUtils
             {
                // Prepare properties for mailing
                Map<String, String> props = new HashMap<String, String>();
-               props.put("tenant.masterhost", cloudAdminConfiguration.getMasterHost());
+               props.put("tenant.masterhost", AdminConfigurationUtil.getMasterHost(cloudAdminConfiguration));
                props.put("tenant.repository.name", tenant);
                props.put("user.mail", userMail);
                props.put("user.name", username);
                props.put("first.name", fName);
                props.put("last.name", lName);
-               
-               try 
+
+               try
                {
                   isNewUserAllowed(tenant, username);
-               } 
+               }
                catch (UserAlreadyExistsException ex)
                {
                   LOG.warn("Administrator " + userMail + " is already exists, deleting from waiting queue.");
@@ -994,7 +1026,7 @@ public class CloudIntranetUtils
                   requestDao.delete(one);
                   continue;
                }
-               
+
                LOG.info("Joining administrator " + userMail + " to tenant " + tenant);
                storeUser(tenant, userMail, fName, lName, one.getPassword(), true);
                sendIntranetCreatedEmail(userMail, props);
@@ -1029,7 +1061,7 @@ public class CloudIntranetUtils
          try
          {
             // Checking status
-            if (!holder.getTenantStatus(tenant).getState().equals(TenantState.ONLINE))
+            if (!tenantInfoDataManager.getValue(tenant, TenantInfoFieldName.PROPERTY_STATE).equals(TenantState.ONLINE.toString()))
             {
                String msg = "Tenant " + tenant + " is not online, auto join skipped for user " + userMail;
                LOG.warn(msg);
@@ -1037,7 +1069,7 @@ public class CloudIntranetUtils
             }
             // Prepare properties for mailing
             Map<String, String> props = new HashMap<String, String>();
-            props.put("tenant.masterhost", cloudAdminConfiguration.getMasterHost());
+            props.put("tenant.masterhost", AdminConfigurationUtil.getMasterHost(cloudAdminConfiguration));
             props.put("tenant.repository.name", tenant);
             props.put("user.mail", userMail);
             props.put("user.name", username);
@@ -1050,10 +1082,10 @@ public class CloudIntranetUtils
             }
             else
             {
-               try 
+               try
                {
                   isUserAllowed = isNewUserAllowed(tenant, username);
-               } 
+               }
                catch (UserAlreadyExistsException e)
                {
                   LOG.warn("User " + userMail + " is already exists, deleting from waiting queue.");
@@ -1102,56 +1134,58 @@ public class CloudIntranetUtils
          }
       }
    }
-   
 
-   public boolean validateEmail(String aEmailAddress){
-      if (aEmailAddress == null) return false;
+   public boolean validateEmail(String aEmailAddress)
+   {
+      if (aEmailAddress == null)
+         return false;
       boolean result = true;
-      try {
-        InternetAddress emailAddr = new InternetAddress(aEmailAddress);
-        if (!hasNameAndDomain(aEmailAddress)) {
-          result = false;
-        }
+      try
+      {
+         InternetAddress emailAddr = new InternetAddress(aEmailAddress);
+         if (!hasNameAndDomain(aEmailAddress))
+         {
+            result = false;
+         }
       }
-      catch (AddressException ex){
-        result = false;
+      catch (AddressException ex)
+      {
+         result = false;
       }
       return result;
-    }
+   }
 
-    private static boolean hasNameAndDomain(String aEmailAddress){
+   private static boolean hasNameAndDomain(String aEmailAddress)
+   {
       String[] tokens = aEmailAddress.split("@");
-      return 
-       tokens.length == 2 &&
-       tokens[0].trim().length() > 0 && 
-       tokens[1].trim().length() > 0 &&
-       tokens[1].split("\\.").length > 1;
-    }
-    
-    
-    public boolean validateUUID(String aEmailAddress, String UUID) throws CloudAdminException{
-       String hash = new ReferencesManager(cloudAdminConfiguration).getHash(aEmailAddress);
-       if (hash == null)
-          return false;
-       else
-        return hash.equals(UUID);
-    }
-    
-    
+      return tokens.length == 2 && tokens[0].trim().length() > 0 && tokens[1].trim().length() > 0
+         && tokens[1].split("\\.").length > 1;
+   }
+
+   public boolean validateUUID(String aEmailAddress, String UUID) throws CloudAdminException
+   {
+      String hash = new ReferencesManager(cloudAdminConfiguration).getHash(aEmailAddress);
+      if (hash == null)
+         return false;
+      else
+         return hash.equals(UUID);
+   }
+
    public void resumeTenant(String tName) throws CloudAdminException
    {
-      TenantResumeThread thread =
-               new TenantResumeThread(cloudAdminConfiguration, tName);
-            ExecutorService executor = Executors.newSingleThreadExecutor();
-            executor.execute(thread);
-      
+      TenantResumeThread thread = new TenantResumeThread(cloudAdminConfiguration, tName);
+      ExecutorService executor = Executors.newSingleThreadExecutor();
+      executor.execute(thread);
+
    }
 
    /**
-    * Read text message from InputStream. 
-    * @param errStream InputStream
+    * Read text message from InputStream.
+    * 
+    * @param errStream
+    *           InputStream
     * @return String
-    * @throws IOException 
+    * @throws IOException
     */
    protected String readText(InputStream errStream) throws IOException
    {
@@ -1179,7 +1213,7 @@ public class CloudIntranetUtils
          return null;
       }
    }
-   
+
    public Map<String, String[]> sortByComparator(Map<String, String[]> unsortMap)
    {
 
@@ -1189,8 +1223,8 @@ public class CloudIntranetUtils
       {
          public int compare(String o1, String o2)
          {
-            Long f1 = Long.valueOf(o1.substring(o1.indexOf("_")+1));
-            Long f2 = Long.valueOf(o2.substring(o2.indexOf("_")+1));
+            Long f1 = Long.valueOf(o1.substring(o1.indexOf("_") + 1));
+            Long f2 = Long.valueOf(o2.substring(o2.indexOf("_") + 1));
             return f1.compareTo(f2);
          }
       }));

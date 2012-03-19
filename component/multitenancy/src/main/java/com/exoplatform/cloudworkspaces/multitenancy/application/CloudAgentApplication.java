@@ -18,10 +18,10 @@
  */
 package com.exoplatform.cloudworkspaces.multitenancy.application;
 
-import org.exoplatform.cloudmanagement.mail.CloudMailService;
+import com.exoplatform.cloudworkspaces.organization.rest.IntranetRESTOrganizationServiceImpl;
+
 import org.exoplatform.cloudmanagement.rest.CloudAgentInfoService;
 import org.exoplatform.cloudmanagement.rest.TenantService;
-import com.exoplatform.cloudworkspaces.organization.rest.IntranetRESTOrganizationServiceImpl;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -35,7 +35,7 @@ public class CloudAgentApplication extends Application
    public Set<Class<?>> getClasses()
    {
       Set<Class<?>> cls = new HashSet<Class<?>>(3);
-      cls.add(CloudMailService.class);
+      //cls.add(CloudMailService.class);
       cls.add(CloudAgentInfoService.class);
       cls.add(TenantService.class);
       cls.add(IntranetRESTOrganizationServiceImpl.class);

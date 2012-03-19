@@ -19,9 +19,9 @@
 package com.exoplatform.cloudworkspaces.listener;
 
 import static java.net.HttpURLConnection.HTTP_OK;
-import static org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration.CLOUD_ADMIN_FRONT_END_SERVER_HOST;
+import static org.exoplatform.cloudmanagement.admin.configuration.AdminConfiguration.CLOUD_ADMIN_FRONT_END_SERVER_HOST;
 
-import org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration;
+import org.apache.commons.configuration.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,29 +32,32 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+/**
+ * TODO use TenantResumer
+ */
 public class TenantResumeThread implements Runnable
 {
 
    private static final Logger LOG = LoggerFactory.getLogger(TenantResumeThread.class);
-   
-   private CloudAdminConfiguration cloudAdminConfiguration;
-   
+
+   private Configuration cloudAdminConfiguration;
+
    private String tName;
-   
-   
-   public TenantResumeThread(CloudAdminConfiguration cloudAdminConfiguration, String tName){
+
+   public TenantResumeThread(Configuration cloudAdminConfiguration, String tName)
+   {
       this.cloudAdminConfiguration = cloudAdminConfiguration;
       this.tName = tName;
    }
-   
+
    @Override
    public void run()
    {
       HttpURLConnection connection = null;
       StringBuilder strUrl = new StringBuilder();
       strUrl.append("http://");
-      strUrl.append(cloudAdminConfiguration.getProperty(CLOUD_ADMIN_FRONT_END_SERVER_HOST, "localhost"));
-      strUrl.append("/rest/cloud-admin/resume/" + tName);
+      strUrl.append(cloudAdminConfiguration.getString(CLOUD_ADMIN_FRONT_END_SERVER_HOST, "localhost"));
+      strUrl.append("/rest/cloud-admin/tenant-service/resume?tenant=" + tName);
       try
       {
          URL url = new URL(strUrl.toString());
@@ -101,7 +104,7 @@ public class TenantResumeThread implements Runnable
          }
       }
    }
-   
+
    protected String readText(InputStream errStream) throws IOException
    {
       if (errStream != null)

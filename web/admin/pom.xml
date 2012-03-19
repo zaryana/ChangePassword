@@ -33,7 +33,7 @@
     </dependency>
     <dependency>
       <groupId>org.exoplatform.cloud-management</groupId>
-      <artifactId>cloud-admin-valve</artifactId>
+      <artifactId>cloud-admin-valve-tomcat</artifactId>
       <scope>compile</scope>
       <type>jar</type>
     </dependency>
@@ -83,9 +83,9 @@
             <configuration>
               <fileset>
                 <!-- note how the archive is treated a normal file directory -->
-                <directory>${archive}/org/exoplatform/cloudmanagement/admin/status/listener</directory>
+                <directory>${archive}/org/exoplatform/cloudmanagement/admin/mail</directory>
                 <includes>
-                  <include>**/MailSenderListener.class</include>
+                  <include>**/TenantOperationMailSenderInitiator.class</include>
                 </includes>
               </fileset>
             </configuration>

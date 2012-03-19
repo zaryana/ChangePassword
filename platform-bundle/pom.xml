@@ -132,7 +132,7 @@
                     <delete dir="${project.build.directory}/platform-cloud-tomcat/gatein/conf/cloud/cloud-admin" />
                     <delete dir="${project.build.directory}/platform-cloud-tomcat/webapps/ROOT" />
                     <delete
-                      file="${project.build.directory}/platform-cloud-tomcat/lib/cloud-admin-valve-${org.exoplatform.cloud-management.version}.jar" />
+                      file="${project.build.directory}/platform-cloud-tomcat/lib/cloud-admin-valve-tomcat-${org.exoplatform.cloud-management.version}.jar" />
                     <delete file="${project.build.directory}/platform-cloud-tomcat/webapps/cloud-admin.war" />
 
                     <!-- Delete binaries -->
@@ -188,10 +188,10 @@
                     <copy file="${project.basedir}/src/main/resources/tomcat/gatein/conf/cloud/users.properties"
                       tofile="${project.build.directory}/platform-cloud-tomcat/gatein/conf/cloud/users.properties"
                       overwrite="true" />
-                    <copy
+                    <!--copy
                       file="${project.basedir}/src/main/resources/tomcat/gatein/conf/cloud/agent-configuration.xml"
                       tofile="${project.build.directory}/platform-cloud-tomcat/gatein/conf/cloud/agent-configuration.xml"
-                      overwrite="true" />
+                      overwrite="true" /-->
                     <copy
                       file="${project.basedir}/src/main/resources/tomcat/gatein/conf/portal/portal/configuration.xml"
                       tofile="${project.build.directory}/platform-cloud-tomcat/gatein/conf/portal/portal/configuration.xml"

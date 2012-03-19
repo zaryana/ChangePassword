@@ -24,13 +24,13 @@
 
     <dependency>
       <groupId>org.exoplatform.cloud-management</groupId>
-      <artifactId>cloud-admin-valve</artifactId>
+      <artifactId>cloud-admin-valve-tomcat</artifactId>
       <scope>provided</scope>
       <type>jar</type>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.cloud-management</groupId>
-      <artifactId>cloud-services-common</artifactId>
+      <artifactId>cloud-commons</artifactId>
       <scope>provided</scope>
       <type>jar</type>
     </dependency>

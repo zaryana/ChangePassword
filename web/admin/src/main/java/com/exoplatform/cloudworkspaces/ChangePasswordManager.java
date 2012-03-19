@@ -1,7 +1,7 @@
 package com.exoplatform.cloudworkspaces;
 
+import org.apache.commons.configuration.Configuration;
 import org.exoplatform.cloudmanagement.admin.CloudAdminException;
-import org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,25 +15,26 @@ import java.util.UUID;
 
 public class ChangePasswordManager
 {
-   
-   private CloudAdminConfiguration cloudAdminConfiguration;
-   
+
+   private Configuration cloudAdminConfiguration;
+
    private static final Logger LOG = LoggerFactory.getLogger(ChangePasswordManager.class);
-   
-   public ChangePasswordManager(CloudAdminConfiguration cloudAdminConfiguration){
+
+   public ChangePasswordManager(Configuration cloudAdminConfiguration)
+   {
       this.cloudAdminConfiguration = cloudAdminConfiguration;
-      
+
    }
-   
-   
-   public String addReference(String email) throws CloudAdminException {
+
+   public String addReference(String email) throws CloudAdminException
+   {
       String folderName = getPasswordReferencesFolder();
       File folder = new File(folderName);
       if (!folder.exists())
          folder.mkdir();
       String uuid = UUID.randomUUID().toString();
       File propertyFile = new File(folderName + uuid + ".properties");
-      
+
       Properties properties = new Properties();
       properties.setProperty("email", email);
       properties.setProperty("uuid", uuid);
@@ -46,16 +47,18 @@ public class ChangePasswordManager
       catch (Exception e)
       {
          LOG.error(e.getMessage(), e);
-         throw new CloudAdminException("A problem happened during processsing this request. It was reported to developers. Please, try again later.");
+         throw new CloudAdminException(
+            "A problem happened during processsing this request. It was reported to developers. Please, try again later.");
       }
       return uuid;
    }
-   
-   
-   public String validateReference(String uuid) throws CloudAdminException{
+
+   public String validateReference(String uuid) throws CloudAdminException
+   {
       String folderName = getPasswordReferencesFolder();
       File folder = new File(folderName);
-      final String errMessage = "Your confirmation link has expired. Please <a href='/reset-password.jsp'>try again</a>.";
+      final String errMessage =
+         "Your confirmation link has expired. Please <a href='/reset-password.jsp'>try again</a>.";
       if (!folder.exists())
          throw new CloudAdminException(errMessage);
       File propertyFile = new File(folderName + uuid + ".properties");
@@ -66,18 +69,21 @@ public class ChangePasswordManager
          newprops.load(io);
          io.close();
          String timestamp = newprops.getProperty("created");
-         if ((System.currentTimeMillis() - Long.valueOf(timestamp)) > (360*60*1000)){
+         if ((System.currentTimeMillis() - Long.valueOf(timestamp)) > (360 * 60 * 1000))
+         {
             propertyFile.delete();
             throw new CloudAdminException(errMessage);
          }
-         if (!newprops.getProperty("uuid").equals(uuid)){
+         if (!newprops.getProperty("uuid").equals(uuid))
+         {
             propertyFile.delete();
             throw new CloudAdminException(errMessage);
          }
          propertyFile.delete();
-         return newprops.getProperty("email"); 
+         return newprops.getProperty("email");
       }
-      catch (FileNotFoundException e){
+      catch (FileNotFoundException e)
+      {
          throw new CloudAdminException(errMessage);
       }
       catch (IOException e)
@@ -88,14 +94,15 @@ public class ChangePasswordManager
             "A problem happened during processing request . It was reported to developers. Please, try again later.");
       }
    }
-  
-   
-   
-   private String getPasswordReferencesFolder() throws CloudAdminException{
-      String folder = cloudAdminConfiguration.getProperty("cloud.admin.password.references.dir", null);
-      if (folder == null){
+
+   private String getPasswordReferencesFolder() throws CloudAdminException
+   {
+      String folder = cloudAdminConfiguration.getString("cloud.admin.password.references.dir", null);
+      if (folder == null)
+      {
          LOG.error("Registration waitind dir is not defined in the admin configuration");
-         throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
+         throw new CloudAdminException(
+            "An problem happened during processsing this request. It was reported to developers. Please, try again later.");
       }
       return folder;
    }

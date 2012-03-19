@@ -18,21 +18,31 @@
  */
 package com.exoplatform.cloudworkspaces.rest;
 
-import static org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration.CLOUD_ADMIN_MAIL_CONFIRMATION_SUBJECT;
-import static org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration.CLOUD_ADMIN_MAIL_CONFIRMATION_TEMPLATE;
-import static org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration.CLOUD_ADMIN_TENANT_BACKUP_ID;
-import static org.exoplatform.cloudmanagement.rest.admin.CloudAdminRestServicePaths.CLOUD_ADMIN_PUBLIC_TENANT_CREATION_SERVICE;
-
 import com.exoplatform.cloudworkspaces.ChangePasswordManager;
-
+import com.exoplatform.cloudworkspaces.CloudIntranetUtils;
 import com.exoplatform.cloudworkspaces.ReferencesManager;
-
-import com.exoplatform.cloudworkspaces.listener.TenantCreatedListenerThread;
-import com.exoplatform.cloudworkspaces.UserRequest;
-import com.exoplatform.cloudworkspaces.UserRequestDAO;
 import com.exoplatform.cloudworkspaces.RequestState;
 import com.exoplatform.cloudworkspaces.UserAlreadyExistsException;
-import com.exoplatform.cloudworkspaces.CloudIntranetUtils;
+import com.exoplatform.cloudworkspaces.UserRequest;
+import com.exoplatform.cloudworkspaces.UserRequestDAO;
+import com.exoplatform.cloudworkspaces.listener.TenantCreatedListenerThread;
+
+import org.apache.commons.configuration.Configuration;
+import org.exoplatform.cloudmanagement.admin.CloudAdminException;
+import org.exoplatform.cloudmanagement.admin.TenantAlreadyExistException;
+import org.exoplatform.cloudmanagement.admin.WorkspacesMailSender;
+import org.exoplatform.cloudmanagement.admin.configuration.TenantInfoFieldName;
+import org.exoplatform.cloudmanagement.admin.dao.EmailValidationStorage;
+import org.exoplatform.cloudmanagement.admin.dao.TenantDataManagerException;
+import org.exoplatform.cloudmanagement.admin.dao.TenantInfoDataManager;
+import org.exoplatform.cloudmanagement.admin.rest.TenantCreator;
+import org.exoplatform.cloudmanagement.admin.tenant.TenantNameValidator;
+import org.exoplatform.cloudmanagement.admin.tenant.TenantStateDataManager;
+import org.exoplatform.cloudmanagement.admin.tenant.UserMailValidator;
+import org.exoplatform.cloudmanagement.admin.util.AdminConfigurationUtil;
+import org.exoplatform.cloudmanagement.status.TenantState;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.URI;
 import java.util.HashMap;
@@ -41,8 +51,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.FormParam;
@@ -56,20 +64,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.exoplatform.cloudmanagement.admin.queue.TenantQueueException;
-import org.exoplatform.cloudmanagement.admin.rest.TenantCreator;
-import org.exoplatform.cloudmanagement.admin.CloudAdminException;
-import org.exoplatform.cloudmanagement.admin.TenantMetadataValidator;
-import org.exoplatform.cloudmanagement.admin.TenantAlreadyExistException;
-import org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration;
-import org.exoplatform.cloudmanagement.admin.creation.TenantCreationSupervisor;
-import org.exoplatform.cloudmanagement.admin.status.CloudInfoHolder;
-import org.exoplatform.cloudmanagement.status.TenantState;
-import org.exoplatform.cloudmanagement.status.TenantStatus;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-@Path(CLOUD_ADMIN_PUBLIC_TENANT_CREATION_SERVICE)
+@Path("/cloud-admin/public-tenant-service")
 public class IntranetAdminService extends TenantCreator
 {
 
@@ -79,12 +74,15 @@ public class IntranetAdminService extends TenantCreator
 
    private static final Logger LOG = LoggerFactory.getLogger(IntranetAdminService.class);
 
-   public IntranetAdminService(CloudInfoHolder cloudInfoHolder, TenantMetadataValidator tenantMetadataValidator,
-      CloudAdminConfiguration cloudAdminConfiguration, TenantCreationSupervisor creationSupervisor)
+   public IntranetAdminService(EmailValidationStorage emailValidationStorage,
+      TenantStateDataManager tenantStateDataManager, TenantNameValidator tenantNameValidator,
+      UserMailValidator userMailValidator, TenantInfoDataManager tenantInfoDataManager,
+      Configuration cloudAdminConfiguration, WorkspacesMailSender mailSender)
    {
-      super(cloudInfoHolder, tenantMetadataValidator, cloudAdminConfiguration, creationSupervisor);
+      super(emailValidationStorage, tenantStateDataManager, tenantNameValidator, userMailValidator,
+         tenantInfoDataManager, cloudAdminConfiguration, mailSender);
       this.requestDao = new UserRequestDAO(cloudAdminConfiguration);
-      this.utils = new CloudIntranetUtils(cloudAdminConfiguration, cloudInfoHolder, requestDao);
+      this.utils = new CloudIntranetUtils(cloudAdminConfiguration, tenantInfoDataManager, requestDao);
 
    }
 
@@ -112,11 +110,14 @@ public class IntranetAdminService extends TenantCreator
    }
 
    /**
-    * Sign-up the Cloud. Result is an email with instructions on creation or joining a tenant.
+    * Sign-up the Cloud. Result is an email with instructions on creation or
+    * joining a tenant.
     * 
-    * @param String userMail email address of user to signup
-    * @return Response OK with details message or an error. 
-    * @throws CloudAdminException if error occurs
+    * @param String
+    *           userMail email address of user to signup
+    * @return Response OK with details message or an error.
+    * @throws CloudAdminException
+    *            if error occurs
     */
    @POST
    @Path("/signup")
@@ -127,7 +128,7 @@ public class IntranetAdminService extends TenantCreator
       String username = null;
       try
       {
-         if (!utils.validateEmail(userMail)) 
+         if (!utils.validateEmail(userMail))
          {
             LOG.info("User " + userMail + " rejected. Need valid email address.");
             return Response.status(Status.BAD_REQUEST).entity("Please enter a valid email address.").build();
@@ -150,7 +151,8 @@ public class IntranetAdminService extends TenantCreator
          }
          else
          {
-            LOG.info("User " + userMail + " already signed up to " + tName + ". Wait until a workspace will be created.");
+            LOG.info("User " + userMail + " already signed up to " + tName
+               + ". Wait until a workspace will be created.");
             return Response
                .ok(
                   "You already signed up. Wait until your workspace will be created. We will inform you when it will be ready.")
@@ -160,96 +162,114 @@ public class IntranetAdminService extends TenantCreator
       catch (TenantAlreadyExistException ex)
       {
          Map<String, String> props = new HashMap<String, String>();
-         props.put("tenant.masterhost", adminConfiguration.getMasterHost());
+         props.put("tenant.masterhost", AdminConfigurationUtil.getMasterHost(adminConfiguration));
          props.put("tenant.repository.name", tName);
          props.put("user.mail", userMail);
 
          try
          {
-            TenantState tState = cloudInfoHolder.getTenantStatus(tName).getState();
-            switch (tState) {
-            case CREATION: case WAITING_CREATION:
+            TenantState tState =
+               TenantState.valueOf(tenantInfoDataManager.getValue(tName, TenantInfoFieldName.PROPERTY_STATE));
+            switch (tState)
             {
-               props.put("rfid",
-                  new ReferencesManager(adminConfiguration).putEmail(userMail, UUID.randomUUID().toString()));
-               utils.sendOkToJoinEmail(userMail, props);
-               return Response.ok().build();
-            }
-            case ONLINE:
-            {
-               if (utils.isNewUserAllowed(tName, username))
-               {
-                  // send OK email
+               case CREATION :
+               case WAITING_CREATION : {
                   props.put("rfid",
                      new ReferencesManager(adminConfiguration).putEmail(userMail, UUID.randomUUID().toString()));
                   utils.sendOkToJoinEmail(userMail, props);
                   return Response.ok().build();
                }
-               else
-               {
-                  LOG.info("User " + userMail + " was put in waiting state - users limit reached.");
+               case ONLINE : {
+                  if (utils.isNewUserAllowed(tName, username))
+                  {
+                     // send OK email
+                     props.put("rfid",
+                        new ReferencesManager(adminConfiguration).putEmail(userMail, UUID.randomUUID().toString()));
+                     utils.sendOkToJoinEmail(userMail, props);
+                     return Response.ok().build();
+                  }
+                  else
+                  {
+                     LOG.info("User " + userMail + " was put in waiting state - users limit reached.");
+                     UserRequest req =
+                        new UserRequest("", tName, userMail, "", "", "", "", "", "", false, RequestState.WAITING_LIMIT);
+                     requestDao.put(req);
+                     // send not allowed mails
+                     props.put("users.maxallowed", Integer.toString(utils.getMaxUsersForTenant(tName)));
+                     utils.sendJoinRejectedEmails(tName, userMail, props);
+                     return Response.ok().build();
+                  }
+               }
+               case SUSPENDED : {
+                  LOG.info("User " + userMail + " was put in waiting state after singup - tenant suspended.");
+                  utils.resumeTenant(tName);
                   UserRequest req =
-                     new UserRequest("", tName, userMail, "", "", "", "", "", "", false, RequestState.WAITING_LIMIT);
+                     new UserRequest("", tName, userMail, "", "", "", "", "", "", false, RequestState.WAITING_JOIN);
                   requestDao.put(req);
-                  // send not allowed mails
-                  props.put("users.maxallowed", Integer.toString(utils.getMaxUsersForTenant(tName)));
-                  utils.sendJoinRejectedEmails(tName, userMail, props);
-                  return Response.ok().build();
+                  TenantCreatedListenerThread thread =
+                     new TenantCreatedListenerThread(tName, tenantInfoDataManager, adminConfiguration, requestDao);
+                  ExecutorService executor = Executors.newSingleThreadExecutor();
+                  executor.execute(thread);
+                  return Response
+                     .status(309)
+                     .header(
+                        "Location",
+                        "http://" + AdminConfigurationUtil.getMasterHost(adminConfiguration) + "/resuming.jsp?email="
+                           + userMail).build();
+               }
+               default : {
+                  String msg =
+                     "Sorry, we cannot process your join request right now, workspace seems not ready. Please, try again later.";
+                  LOG.warn("Signup failed for user " + userMail + ", tenant " + tName + " state is "
+                     + tenantInfoDataManager.getValue(tName, TenantInfoFieldName.PROPERTY_STATE));
+                  return Response.status(Status.BAD_REQUEST).entity(msg).build();
                }
             }
-            case SUSPENDED:
-            {
-               LOG.info("User " + userMail + " was put in waiting state after singup - tenant suspended.");
-               utils.resumeTenant(tName);
-               UserRequest req =
-                  new UserRequest("", tName, userMail, "", "", "", "", "", "", false, RequestState.WAITING_JOIN);
-               requestDao.put(req);
-               TenantCreatedListenerThread thread =
-                        new TenantCreatedListenerThread(tName, cloudInfoHolder, adminConfiguration, requestDao);
-                     ExecutorService executor = Executors.newSingleThreadExecutor();
-                     executor.execute(thread);
-               return Response.status(309)
-                        .header("Location", "http://" + adminConfiguration.getMasterHost() + "/resuming.jsp?email=" + userMail)
-                        .build();
-            }
-            default:
-            {
-               String msg =
-                  "Sorry, we cannot process your join request right now, workspace seems not ready. Please, try again later.";
-               LOG.warn("Signup failed for user " + userMail + ", tenant " + tName + " state is "
-                  + cloudInfoHolder.getTenantStatus(tName).getState().toString());
-               return Response.status(Status.BAD_REQUEST).entity(msg).build();
-            }
-           }
          }
          catch (UserAlreadyExistsException e)
          {
             // Custom status for disable ajax auto redirection;
             LOG.info("User " + userMail + " already signed up to " + tName + ". Redirect to signin page.");
-            return Response.status(309)
-               .header("Location", "http://" + adminConfiguration.getMasterHost() + "/signin.jsp?email=" + userMail)
-               .build();
+            return Response
+               .status(309)
+               .header(
+                  "Location",
+                  "http://" + AdminConfigurationUtil.getMasterHost(adminConfiguration) + "/signin.jsp?email="
+                     + userMail).build();
          }
       }
       return Response.ok().build();
    }
-   
+
    /**
-    * Sign-up the Cloud. Result is a registration URL for a registeration or to join to an existing tenant.<br/> 
-    * This URL can be used to proceed the user registration on to the Cloud.<br/> 
+    * Sign-up the Cloud. Result is a registration URL for a registeration or to
+    * join to an existing tenant.<br/>
+    * This URL can be used to proceed the user registration on to the Cloud.<br/>
     * 
-    * <p>Specification</p>
-    * <ul> 
-    * <li>Service return status 201 Created if such tenant can be created in the cloud, the response entity will contain an URL for a registration of a new tenant. This registration URL will be actual during some fixed period in time (6h currently).</li>
-    * <li>If requested tenant already exists and this user can be joined, the service will return status 200 OK and a link to join to the tenant.</li>
-    * <li>If such tenant already exists and an user already signed up to the tenant (or it is in progress), the service will return client error 409 Conflict and a message "User EMAIL already signed up to TENANT_NAME.".</li>
-    * <li>In case if a tenant creation isn't possible a related message will be returned with status 400 Bad Request.</li> 
-    * <li>For an error, teh error message will be returned with status 500 Internal Server Error.</li>
+    * <p>
+    * Specification
+    * </p>
+    * <ul>
+    * <li>Service return status 201 Created if such tenant can be created in the
+    * cloud, the response entity will contain an URL for a registration of a new
+    * tenant. This registration URL will be actual during some fixed period in
+    * time (6h currently).</li>
+    * <li>If requested tenant already exists and this user can be joined, the
+    * service will return status 200 OK and a link to join to the tenant.</li>
+    * <li>If such tenant already exists and an user already signed up to the
+    * tenant (or it is in progress), the service will return client error 409
+    * Conflict and a message "User EMAIL already signed up to TENANT_NAME.".</li>
+    * <li>In case if a tenant creation isn't possible a related message will be
+    * returned with status 400 Bad Request.</li>
+    * <li>For an error, teh error message will be returned with status 500
+    * Internal Server Error.</li>
     * </ul>
     * 
-    * @param String userMail email address of user to signup/join.
+    * @param String
+    *           userMail email address of user to signup/join.
     * @return Response with URL for a registration/join or with a client error.
-    * @throws CloudAdminException if error occurs
+    * @throws CloudAdminException
+    *            if error occurs
     */
    @POST
    @Path("/signup-link")
@@ -260,7 +280,7 @@ public class IntranetAdminService extends TenantCreator
       String username = null;
       try
       {
-         if (!utils.validateEmail(userMail)) 
+         if (!utils.validateEmail(userMail))
          {
             return Response.status(Status.BAD_REQUEST).entity("Invalid email address.").build();
          }
@@ -278,62 +298,81 @@ public class IntranetAdminService extends TenantCreator
          {
             String uuid = super.createTenant(tName, userMail);
             new ReferencesManager(adminConfiguration).putEmail(userMail, uuid);
-            URI location = URI.create("http://" + adminConfiguration.getMasterHost() + "/registration.jsp?id=" + uuid); 
+            URI location =
+               URI.create("http://" + AdminConfigurationUtil.getMasterHost(adminConfiguration)
+                  + "/registration.jsp?id=" + uuid);
             return Response.created(location).entity(location.toString()).build();
          }
          else
          {
-            LOG.info("Client error: user " + userMail + " already signed up to " + tName + ". Wait until a workspace will be created.");
-            return Response.status(Status.CONFLICT).entity("User " + userMail + " already signed up to " + tName + 
-                   ". Wait until a workspace will be created. The user will be informed when it will be ready.").build();
+            LOG.info("Client error: user " + userMail + " already signed up to " + tName
+               + ". Wait until a workspace will be created.");
+            return Response
+               .status(Status.CONFLICT)
+               .entity(
+                  "User " + userMail + " already signed up to " + tName
+                     + ". Wait until a workspace will be created. The user will be informed when it will be ready.")
+               .build();
          }
       }
       catch (TenantAlreadyExistException ex)
       {
          try
          {
-            TenantState tState = cloudInfoHolder.getTenantStatus(tName).getState();
-            switch (tState) {
-              case CREATION: case WAITING_CREATION: case SUSPENDED:
-              {
-                 final String uuid = UUID.randomUUID().toString();
-                 new ReferencesManager(adminConfiguration).putEmail(userMail, uuid);
-                 return Response.ok().entity("http://" + adminConfiguration.getMasterHost() + "/join.jsp?rfid=" + uuid).build();
-              }
-              case ONLINE:
-              {
-                 if (utils.isNewUserAllowed(tName, username))
-                 {
-                    // send OK email
-                    final String uuid = UUID.randomUUID().toString();
-                    new ReferencesManager(adminConfiguration).putEmail(userMail, uuid);
-                    return Response.ok().entity("http://" + adminConfiguration.getMasterHost() + "/join.jsp?rfid=" + uuid).build();
-                 }
-                 else
-                 {
-                    LOG.info("Link request for join of user " + userMail +	" to " + tName + " rejected - users limit reached.");
-                    return Response.status(Status.BAD_REQUEST)
-                        .entity("Cannot invite " + userMail + " to " + tName + ". Maximum number of users reached.").build();
-                 }
-              }
-              default:
-              {
-                 String msg =
-                    "Sorry, we cannot process your join request right now, workspace seems not ready. Please, try again later.";
-                 LOG.warn("Link request for signup of user " + userMail + " failed, tenant " + tName + " state is "
-                    + cloudInfoHolder.getTenantStatus(tName).getState().toString());
-                 return Response.status(Status.BAD_REQUEST).entity(msg).build();
-              }
+            TenantState tState =
+               TenantState.valueOf(tenantInfoDataManager.getValue(tName, TenantInfoFieldName.PROPERTY_STATE));
+            switch (tState)
+            {
+               case CREATION :
+               case WAITING_CREATION :
+               case SUSPENDED : {
+                  final String uuid = UUID.randomUUID().toString();
+                  new ReferencesManager(adminConfiguration).putEmail(userMail, uuid);
+                  return Response
+                     .ok()
+                     .entity(
+                        "http://" + AdminConfigurationUtil.getMasterHost(adminConfiguration) + "/join.jsp?rfid=" + uuid)
+                     .build();
+               }
+               case ONLINE : {
+                  if (utils.isNewUserAllowed(tName, username))
+                  {
+                     // send OK email
+                     final String uuid = UUID.randomUUID().toString();
+                     new ReferencesManager(adminConfiguration).putEmail(userMail, uuid);
+                     return Response
+                        .ok()
+                        .entity(
+                           "http://" + AdminConfigurationUtil.getMasterHost(adminConfiguration) + "/join.jsp?rfid="
+                              + uuid).build();
+                  }
+                  else
+                  {
+                     LOG.info("Link request for join of user " + userMail + " to " + tName
+                        + " rejected - users limit reached.");
+                     return Response.status(Status.BAD_REQUEST)
+                        .entity("Cannot invite " + userMail + " to " + tName + ". Maximum number of users reached.")
+                        .build();
+                  }
+               }
+               default : {
+                  String msg =
+                     "Sorry, we cannot process your join request right now, workspace seems not ready. Please, try again later.";
+                  LOG.warn("Link request for signup of user " + userMail + " failed, tenant " + tName + " state is "
+                     + tenantInfoDataManager.getValue(tName, TenantInfoFieldName.PROPERTY_STATE));
+                  return Response.status(Status.BAD_REQUEST).entity(msg).build();
+               }
             }
          }
          catch (UserAlreadyExistsException e)
          {
             LOG.info("Client error: user " + userMail + " already signed up to " + tName + ".");
-            return Response.status(Status.CONFLICT).entity("User " + userMail + " already signed up to " + tName + ".").build();
+            return Response.status(Status.CONFLICT).entity("User " + userMail + " already signed up to " + tName + ".")
+               .build();
          }
       }
    }
-   
+
    /**
     * Join to workspace service.
     * 
@@ -369,7 +408,7 @@ public class IntranetAdminService extends TenantCreator
          tName = tail.substring(0, tail.indexOf(".")).toLowerCase();
          // Prepare properties for mailing
          Map<String, String> props = new HashMap<String, String>();
-         props.put("tenant.masterhost", adminConfiguration.getMasterHost());
+         props.put("tenant.masterhost", AdminConfigurationUtil.getMasterHost(adminConfiguration));
          props.put("tenant.repository.name", tName);
          props.put("user.mail", userMail);
          props.put("user.name", username);
@@ -377,11 +416,11 @@ public class IntranetAdminService extends TenantCreator
          props.put("last.name", lastName);
 
          // Storing user & sending appropriate mails
-         TenantState tState = cloudInfoHolder.getTenantStatus(tName).getState();
+         TenantState tState =
+            TenantState.valueOf(tenantInfoDataManager.getValue(tName, TenantInfoFieldName.PROPERTY_STATE));
          switch (tState)
          {
-            case ONLINE : 
-            {
+            case ONLINE : {
 
                try
                {
@@ -412,17 +451,15 @@ public class IntranetAdminService extends TenantCreator
                }
 
             }
-            case CREATION : 
-            case WAITING_CREATION : 
-            {
+            case CREATION :
+            case WAITING_CREATION : {
                UserRequest req =
                   new UserRequest("", tName, userMail, firstName, lastName, "", "", password, "", false,
                      RequestState.WAITING_JOIN);
                requestDao.put(req);
                return Response.ok().build();
             }
-            case SUSPENDED : 
-            {
+            case SUSPENDED : {
                utils.resumeTenant(tName);
                LOG.info("User " + userMail + " was put in waiting state after join - tenant suspended.");
                UserRequest req =
@@ -430,20 +467,21 @@ public class IntranetAdminService extends TenantCreator
                      RequestState.WAITING_JOIN);
                requestDao.put(req);
                TenantCreatedListenerThread thread =
-                  new TenantCreatedListenerThread(tName, cloudInfoHolder, adminConfiguration, requestDao);
+                  new TenantCreatedListenerThread(tName, tenantInfoDataManager, adminConfiguration, requestDao);
                ExecutorService executor = Executors.newSingleThreadExecutor();
                executor.execute(thread);
                return Response
                   .status(309)
-                  .header("Location",
-                     "http://" + adminConfiguration.getMasterHost() + "/resuming.jsp?email=" + userMail).build();
+                  .header(
+                     "Location",
+                     "http://" + AdminConfigurationUtil.getMasterHost(adminConfiguration) + "/resuming.jsp?email="
+                        + userMail).build();
             }
-            default : 
-            {
+            default : {
                String msg =
                   "Sorry, we cannot process your join request right now, workspace seems not ready. Please, try again later.";
                LOG.warn("Joining user " + userMail + " failed, tenant " + tName + " state is "
-                  + cloudInfoHolder.getTenantStatus(tName).getState().toString());
+                  + tenantInfoDataManager.getValue(tName, TenantInfoFieldName.PROPERTY_STATE));
                return Response.status(Status.BAD_REQUEST).entity(msg).build();
             }
          }
@@ -475,10 +513,10 @@ public class IntranetAdminService extends TenantCreator
     * @POST
     * @Path("/create")
     */
-   protected Response createIntranet(@FormParam("user-mail") String userMail, @FormParam("first-name") String firstName,
-      @FormParam("last-name") String lastName, @FormParam("company-name") String companyName,
-      @FormParam("phone") String phone, @FormParam("password") String password,
-      @FormParam("confirmation-id") String uuid) throws CloudAdminException
+   protected Response createIntranet(@FormParam("user-mail") String userMail,
+      @FormParam("first-name") String firstName, @FormParam("last-name") String lastName,
+      @FormParam("company-name") String companyName, @FormParam("phone") String phone,
+      @FormParam("password") String password, @FormParam("confirmation-id") String uuid) throws CloudAdminException
    {
       if (!utils.validateEmail(userMail))
          return Response.status(Status.BAD_REQUEST).entity("Please enter a valid email address.").build();
@@ -495,33 +533,31 @@ public class IntranetAdminService extends TenantCreator
       if (resp.getStatus() != 200)
          return Response.serverError().entity((String)resp.getEntity()).build();
       TenantCreatedListenerThread thread =
-         new TenantCreatedListenerThread(tName, cloudInfoHolder, adminConfiguration, requestDao);
+         new TenantCreatedListenerThread(tName, tenantInfoDataManager, adminConfiguration, requestDao);
       ExecutorService executor = Executors.newSingleThreadExecutor();
       executor.execute(thread);
       return Response.ok().build();
    }
 
    /**
-    * Retrieves status string of the given tenant. 
+    * Retrieves status string of the given tenant.
     * 
     * @param tenantName
     * @return Response
+    * @throws TenantDataManagerException 
     * @throws CloudAdminException
     */
    @GET
    @Path("/status/{tenantname}")
    @Produces(MediaType.TEXT_PLAIN)
-   public Response tenantStatus(@PathParam("tenantname") String tenantName)
+   public Response tenantStatus(@PathParam("tenantname") String tenantName) throws TenantDataManagerException
    {
-      try
+      if (tenantInfoDataManager.isExists(tenantName))
       {
-         TenantStatus status = cloudInfoHolder.getTenantStatus(tenantName);
-         return Response.ok(status.getState().toString()).build();
+         String state = tenantInfoDataManager.getValue(tenantName, TenantInfoFieldName.PROPERTY_STATE);
+         return Response.ok(state).build();
       }
-      catch (TenantQueueException e)
-      {
-         return Response.ok("NOT_FOUND").build();
-      }
+      return Response.ok("NOT_FOUND").build();
    }
 
    @POST
@@ -544,9 +580,10 @@ public class IntranetAdminService extends TenantCreator
          return Response.status(Status.BAD_REQUEST).entity("Please enter a valid email address.").build();
 
       if (!utils.validateUUID(userMail, uuid))
-        return Response.status(Status.BAD_REQUEST).entity("Sorry, your registration link has expired. Please sign up again.").build();
+         return Response.status(Status.BAD_REQUEST)
+            .entity("Sorry, your registration link has expired. Please sign up again.").build();
       else
-        new ReferencesManager(adminConfiguration).removeEmail(userMail);
+         new ReferencesManager(adminConfiguration).removeEmail(userMail);
 
       String tName = utils.getTenantNameFromWhitelist(userMail);
       if (tName == null)
@@ -562,7 +599,7 @@ public class IntranetAdminService extends TenantCreator
       requestDao.put(req);
       Map<String, String> props = new HashMap<String, String>();
       String username = userMail.substring(0, (userMail.indexOf("@")));
-      props.put("tenant.masterhost", adminConfiguration.getMasterHost());
+      props.put("tenant.masterhost", AdminConfigurationUtil.getMasterHost(adminConfiguration));
       props.put("tenant.repository.name", tName);
       props.put("user.mail", userMail);
       props.put("user.name", username);
@@ -668,7 +705,7 @@ public class IntranetAdminService extends TenantCreator
       else if (decision.equalsIgnoreCase("blacklist"))
       {
          Map<String, String> props = new HashMap<String, String>();
-         props.put("tenant.masterhost", adminConfiguration.getMasterHost());
+         props.put("tenant.masterhost", AdminConfigurationUtil.getMasterHost(adminConfiguration));
          props.put("user.name", req.getFirstName());
          utils.sendCreationRejectedEmail(req.getTenantName(), req.getUserEmail(), props);
          utils.putInBlackList(req.getUserEmail());
@@ -700,24 +737,23 @@ public class IntranetAdminService extends TenantCreator
    //         return Response.ok("FALSE").build();
    //      
    //   }
-   
-   
-      @GET
-      @Path("/isuserexist/{tenantname}/{username}")
-      @Produces(MediaType.TEXT_PLAIN)
-      public Response isuserexist(@PathParam("tenantname") String tName, @PathParam("username") String username)
-         throws CloudAdminException{
-          try 
-          {
-             utils.isNewUserAllowed(tName, username);
-             return Response.ok("FALSE").build();
-          }
-          catch (UserAlreadyExistsException e){
-             return Response.ok("TRUE").build();
-          }
-      }
 
-   
+   @GET
+   @Path("/isuserexist/{tenantname}/{username}")
+   @Produces(MediaType.TEXT_PLAIN)
+   public Response isuserexist(@PathParam("tenantname") String tName, @PathParam("username") String username)
+      throws CloudAdminException
+   {
+      try
+      {
+         utils.isNewUserAllowed(tName, username);
+         return Response.ok("FALSE").build();
+      }
+      catch (UserAlreadyExistsException e)
+      {
+         return Response.ok("TRUE").build();
+      }
+   }
 
    @GET
    @Path("/maxallowed/{tenantname}")
@@ -739,8 +775,7 @@ public class IntranetAdminService extends TenantCreator
          return Response.status(Status.BAD_REQUEST)
             .entity("Warning! You are using broken link to the Registration Page. Please sign up again.").build();
    }
-   
-   
+
    @GET
    @Path("passrestore/{email}")
    @Produces(MediaType.TEXT_PLAIN)
@@ -754,16 +789,12 @@ public class IntranetAdminService extends TenantCreator
       String tail = email.substring(email.indexOf("@") + 1);
       String tName = tail.substring(0, tail.indexOf(".")).toLowerCase();
 
-      TenantState tState;
-      try
-      {
-         tState = cloudInfoHolder.getTenantStatus(tName).getState();
-      }
-      catch (TenantQueueException e)
+      if (!tenantInfoDataManager.isExists(tName))
       {
          return Response.status(Status.BAD_REQUEST)
             .entity("This email " + email + " is not registered on Cloud Workspaces.").build();
       }
+      TenantState tState = TenantState.valueOf(tenantInfoDataManager.getValue(tName, TenantInfoFieldName.PROPERTY_STATE));
       switch (tState)
       {
          case ONLINE : {
@@ -782,14 +813,16 @@ public class IntranetAdminService extends TenantCreator
          }
 
          case SUSPENDED : {
-            return Response.status(309)
-               .header("Location", "http://" + adminConfiguration.getMasterHost() + "/resuming.jsp?email=" + email)
+            return Response
+               .status(309)
+               .header("Location",
+                  "http://" + AdminConfigurationUtil.getMasterHost(adminConfiguration) + "/resuming.jsp?email=" + email)
                .build();
          }
-         
-         default: {
+
+         default : {
             return Response.status(Status.BAD_REQUEST)
-                     .entity("Workspace " + tName + " seems not ready. Please, try again later.").build();
+               .entity("Workspace " + tName + " seems not ready. Please, try again later.").build();
          }
       }
    }
@@ -797,26 +830,31 @@ public class IntranetAdminService extends TenantCreator
    @POST
    @Path("passconfirm")
    @Produces(MediaType.TEXT_PLAIN)
-   public Response passconfirm(@FormParam("uuid") String uuid, @FormParam("password") String password) throws CloudAdminException
+   public Response passconfirm(@FormParam("uuid") String uuid, @FormParam("password") String password)
+      throws CloudAdminException
    {
       ChangePasswordManager manager = new ChangePasswordManager(adminConfiguration);
-      try 
+      try
       {
-         String email =  manager.validateReference(uuid);
+         String email = manager.validateReference(uuid);
          utils.updatePassword(email, password);
          return Response.ok().build();
-      } catch (CloudAdminException e)
+      }
+      catch (CloudAdminException e)
       {
          return Response.serverError().entity(e.getMessage()).build();
       }
    }
-   
+
    /**
-    * Answers on question "Does the given email's domain address is blackisted?". 
-    * Used in Invitation gadget.
+    * Answers on question
+    * "Does the given email's domain address is blackisted?". Used in Invitation
+    * gadget.
     * 
-    * @param String email
-    * @return String, TRUE or FALSE - the answer on the question "Does the given email's domain address is blackisted?"
+    * @param String
+    *           email
+    * @return String, TRUE or FALSE - the answer on the question
+    *         "Does the given email's domain address is blackisted?"
     */
    @GET
    @Path("blacklisted/{email}")
@@ -828,5 +866,5 @@ public class IntranetAdminService extends TenantCreator
       else
          return Response.ok("FALSE").build();
    }
-   
+
 }

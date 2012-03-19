@@ -18,19 +18,19 @@
  */
 package com.exoplatform.cloudworkspaces.rest;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.exoplatform.cloudmanagement.admin.rest.CloudAdminExceptionMapper;
 import org.exoplatform.cloudmanagement.admin.rest.CloudAdminInfoService;
 import org.exoplatform.cloudmanagement.admin.rest.TenantCreatorWithCloudAdminRole;
-import org.exoplatform.cloudmanagement.admin.rest.TenantResumingService;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.ws.rs.core.Application;
 
 /**
  * Cloud-admin REST application initializer.
  */
+@Deprecated // replaced by CloudAdminApplicationComposer
 public class CloudIntranetRestApplication extends Application
 {
    /**
@@ -43,7 +43,7 @@ public class CloudIntranetRestApplication extends Application
       cls.add(IntranetAdminService.class);
       cls.add(TenantCreatorWithCloudAdminRole.class);
       cls.add(CloudAdminInfoService.class);
-      cls.add(TenantResumingService.class);
+      // TODO cls.add(TenantResumingService.class);
       return cls;
    }
 
