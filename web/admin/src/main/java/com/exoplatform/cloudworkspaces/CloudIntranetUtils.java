@@ -84,8 +84,6 @@ public class CloudIntranetUtils
    
    UserRequestDAO requestDao;
    
-   private String whiteListConfigurationFile;
-   
    private String blackListConfigurationFolder;
    
    private String maxUsersConfigurationFile;
@@ -97,7 +95,6 @@ public class CloudIntranetUtils
       this.cloudAdminConfiguration = cloudAdminConfiguration;
       this.holder = holder;
       this.mailSender = new WorkspacesMailSender(cloudAdminConfiguration);
-      this.whiteListConfigurationFile = System.getProperty("cloud.admin.whitelist");
       this.blackListConfigurationFolder = cloudAdminConfiguration.getProperty("cloud.admin.blacklist.dir", null);
       this.maxUsersConfigurationFile = System.getProperty("cloud.admin.userlimit");
       this.requestDao = requestDao;
@@ -702,56 +699,6 @@ public class CloudIntranetUtils
       
    }
 
-   public String getTenantNameFromWhitelist(String email) throws CloudAdminException
-   {
-      String tail = email.substring(email.indexOf("@") + 1);
-      if (whiteListConfigurationFile == null)
-      {
-         String tName = tail.substring(0,tail.indexOf("."));
-         if (!isInBlackList(email))
-         {
-            return tName;
-         }
-         else
-         {
-            return null;
-         }
-      }
-      String value = null;
-      String tName = null;
-      File propertyFile = new File(whiteListConfigurationFile);
-      try
-      {
-         FileInputStream io = new FileInputStream(propertyFile);
-         Properties properties = new Properties();
-         properties.load(io);
-         value = properties.getProperty(tail);
-         if (value == null)
-            return null;
-         if (value.indexOf(":") > -1)
-         {
-            tName = value.substring(0, value.indexOf(":"));
-         }
-         else
-         {
-            tName = value;
-         }
-         io.close();
-      }
-      catch (FileNotFoundException e)
-      {
-         tName = tail.substring(0,tail.indexOf("."));
-         LOG.info("White list file not found, allowing tenant " + tName + "from email:" + email);
-         return tName;
-      }
-      catch (IOException e)
-      {
-         LOG.error(e.getMessage(), e);
-         sendAdminErrorEmail(e.getMessage(), e);
-         throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
-      }
-      return tName;
-   }
    
    public boolean isInBlackList(String email){
       String tail = email.substring(email.indexOf("@") + 1);
@@ -1178,6 +1125,12 @@ public class CloudIntranetUtils
       {
          return null;
       }
+   }
+   
+   public String email2tenantName (String email){
+      String tail = email.substring(email.indexOf("@") + 1);
+      String tName = tail.substring(0, tail.indexOf("."));
+      return tName;
    }
    
    public Map<String, String[]> sortByComparator(Map<String, String[]> unsortMap)
