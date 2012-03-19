@@ -361,8 +361,6 @@ public class IntranetAdminService extends TenantCreator
          if (!utils.validateUUID(userMail, hash))
             return Response.status(Status.BAD_REQUEST).entity("Email address provided does not match with hash.")
                .build();
-         else
-            new ReferencesManager(adminConfiguration).removeEmail(userMail);
 
          username = userMail.substring(0, (userMail.indexOf("@")));
          String tail = userMail.substring(userMail.indexOf("@") + 1);
@@ -400,7 +398,6 @@ public class IntranetAdminService extends TenantCreator
                      requestDao.put(req);
                      props.put("users.maxallowed", Integer.toString(utils.getMaxUsersForTenant(tName)));
                      utils.sendJoinRejectedEmails(tName, userMail, props);
-                     return Response.ok().build();
                   }
 
                }
@@ -408,6 +405,7 @@ public class IntranetAdminService extends TenantCreator
                {
                   LOG.warn("User " + username + " already registered on workspace " + tName
                      + ". Join request rejected. User warned on the Sign Up form.");
+                  new ReferencesManager(adminConfiguration).removeEmail(userMail);
                   return Response.ok(e.getMessage()).build();
                }
 
@@ -419,7 +417,6 @@ public class IntranetAdminService extends TenantCreator
                   new UserRequest("", tName, userMail, firstName, lastName, "", "", password, "", false,
                      RequestState.WAITING_JOIN);
                requestDao.put(req);
-               return Response.ok().build();
             }
             case SUSPENDED : 
             {
@@ -433,6 +430,7 @@ public class IntranetAdminService extends TenantCreator
                   new TenantCreatedListenerThread(tName, cloudInfoHolder, adminConfiguration, requestDao);
                ExecutorService executor = Executors.newSingleThreadExecutor();
                executor.execute(thread);
+               new ReferencesManager(adminConfiguration).removeEmail(userMail);
                return Response
                   .status(309)
                   .header("Location",
@@ -457,6 +455,7 @@ public class IntranetAdminService extends TenantCreator
                RequestState.WAITING_JOIN);
          requestDao.put(req);
       }
+      new ReferencesManager(adminConfiguration).removeEmail(userMail);
       return Response.ok().build();
    }
 
@@ -545,8 +544,7 @@ public class IntranetAdminService extends TenantCreator
 
       if (!utils.validateUUID(userMail, uuid))
         return Response.status(Status.BAD_REQUEST).entity("Sorry, your registration link has expired. Please sign up again.").build();
-      else
-        new ReferencesManager(adminConfiguration).removeEmail(userMail);
+        
 
       String tName = utils.getTenantNameFromWhitelist(userMail);
       if (tName == null)
@@ -569,6 +567,7 @@ public class IntranetAdminService extends TenantCreator
       props.put("first.name", firstName);
       props.put("last.name", lastName);
       utils.sendCreationQueuedEmails(tName, userMail, props);
+      new ReferencesManager(adminConfiguration).removeEmail(userMail);
       return Response.ok().build();
    }
 
