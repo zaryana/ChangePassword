@@ -52,7 +52,7 @@
               <string>group</string>
             </field>
             <field name="templateLocation">
-              <string>war:/conf/cloud/portal</string>
+              <string>war:/conf/cloud-workspaces-extension/portal</string>
             </field>
           </object>
         </object-param>
