@@ -77,6 +77,8 @@
     <ch.qos.logback.version>1.0.0</ch.qos.logback.version>
     <log4j.version>1.2.16</log4j.version>
 
+    <everrest.version>1.0.2</everrest.version>
+
     <!-- maven-release-plugin -->
     <arguments>-Prelease,distrib,exo-private,exo-staging -Dgatein.working.dir=target -Dmaven.wagon.provider.http=httpclient</arguments>
   </properties>
@@ -201,6 +203,18 @@
         <artifactId>cloud-admin-packaging-war</artifactId>
         <version>${org.exoplatform.cloud-management.version}</version>
         <type>war</type>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.cloud-management</groupId>
+        <artifactId>cloud-rest-everrest</artifactId>
+        <version>${org.exoplatform.cloud-management.version}</version>
+        <type>jar</type>
+      </dependency>
+
+      <dependency>
+        <groupId>org.everrest</groupId>
+        <artifactId>everrest-groovy</artifactId>
+        <version>${everrest.version}</version>
       </dependency>
 
       <!-- eXo dependencies -->
