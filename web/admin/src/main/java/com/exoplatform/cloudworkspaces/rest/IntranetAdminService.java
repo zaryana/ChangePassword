@@ -597,11 +597,6 @@ public class IntranetAdminService extends TenantCreator
       }
       String tName = utils.email2tenantName(userMail);
 
-      
-      UserRequest req =
-         new UserRequest("", tName, userMail, firstName, lastName, companyName, phone, password, uuid, true,
-            RequestState.WAITING_CREATION);
-      requestDao.put(req);
       Map<String, String> props = new HashMap<String, String>();
       String username = userMail.substring(0, (userMail.indexOf("@")));
       props.put("tenant.masterhost", AdminConfigurationUtil.getMasterHost(adminConfiguration));
@@ -611,6 +606,10 @@ public class IntranetAdminService extends TenantCreator
       props.put("first.name", firstName);
       props.put("last.name", lastName);
       utils.sendCreationQueuedEmails(tName, userMail, props);
+      UserRequest req =
+               new UserRequest("", tName, userMail, firstName, lastName, companyName, phone, password, uuid, true,
+                  RequestState.WAITING_CREATION);
+      requestDao.put(req);
       new ReferencesManager(adminConfiguration).removeEmail(userMail);
       return Response.ok().build();
    }
