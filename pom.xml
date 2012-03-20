@@ -130,6 +130,12 @@
         <artifactId>cloud-workspaces-extension-config</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <dependency>
+        <groupId>com.exoplatform.cloudworkspaces</groupId>
+        <artifactId>cloud-workspaces-platform-navigation</artifactId>
+        <version>${project.version}</version>
+        <type>war</type>
+      </dependency>
 
       <!-- Cloud Workspaces gadgets -->
       <dependency>
@@ -306,7 +312,7 @@
         <enabled>true</enabled>
       </snapshots>
     </pluginRepository>
-  </pluginRepositories>
+  </pluginRepositories>      
 
   <modules>
     <module>cloud-management-patch</module>
@@ -315,6 +321,7 @@
     <module>admin-bundle</module>
     <module>cloud-gadgets</module>
     <module>extension</module>
+    <module>war-overrides/platformNavigation.war</module>
     <module>platform-bundle</module>
   </modules>
 </project>

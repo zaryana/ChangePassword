@@ -14,6 +14,7 @@
          <excludes>
            <exclude>**/*.sh</exclude>
            <exclude>webapps/ROOT/**/*</exclude>
+           <exclude>webapps/platformNavigation.war</exclude>
          </excludes>
          <fileMode>0644</fileMode>
       </fileSet>
@@ -64,6 +65,15 @@
          <include>com.exoplatform.cloudworkspaces:cloud-workspaces-gadgets:war</include>
        </includes>
        <outputFileNameMapping>cloud-workspaces-gadgets.war</outputFileNameMapping>
+       <scope>provided</scope>
+       <fileMode>0644</fileMode>
+     </dependencySet>
+     <dependencySet>
+       <outputDirectory>app-server-tomcat/webapps</outputDirectory>
+       <includes>
+         <include>com.exoplatform.cloudworkspaces:cloud-workspaces-platform-navigation:war</include>
+       </includes>
+       <outputFileNameMapping>platformNavigation.war</outputFileNameMapping>
        <scope>provided</scope>
        <fileMode>0644</fileMode>
      </dependencySet>

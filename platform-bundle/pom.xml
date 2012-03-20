@@ -48,7 +48,13 @@
           <artifactId>cloud-workspaces-extension-config</artifactId>
           <scope>provided</scope>
           <type>jar</type>
-        </dependency> 
+        </dependency>
+        <dependency>
+          <groupId>com.exoplatform.cloudworkspaces</groupId>
+          <artifactId>cloud-workspaces-platform-navigation</artifactId>
+          <scope>provided</scope>
+          <type>war</type>
+        </dependency>
 
         <!-- Cloud Workspaces gadgets -->
         <dependency>
