@@ -71,7 +71,7 @@ String clazz = "";
 						<a href="#" class="LogoutIcon" style="margin: 8px 0 5px;" >$labellogout</a> 						
 					</li>
      
-					<li class="MenuItem $clazz" onclick="$changeLanguageAction">
+					<li class="MenuItem $clazz">
 						<a href="$helpLink" target="_blank" class="ChangeLanguageIcon">$labelhelp</a>
 					</li>
 				</ul>
