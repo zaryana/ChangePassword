@@ -109,12 +109,6 @@
       </dependency>
       <dependency>
         <groupId>com.exoplatform.cloudworkspaces</groupId>
-        <artifactId>cloud-workspaces-component-organization</artifactId>
-        <version>${project.version}</version>
-        <type>jar</type>
-      </dependency>
-      <dependency>
-        <groupId>com.exoplatform.cloudworkspaces</groupId>
         <artifactId>cloud-management-patch</artifactId>
         <version>${project.version}</version>
         <type>jar</type>
@@ -182,12 +176,6 @@
       <dependency>
         <groupId>org.exoplatform.cloud-management</groupId>
         <artifactId>cloud-tomcat-valve</artifactId>
-        <version>${org.exoplatform.cloud-management.version}</version>
-        <type>jar</type>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.cloud-management</groupId>
-        <artifactId>cloud-services-common</artifactId>
         <version>${org.exoplatform.cloud-management.version}</version>
         <type>jar</type>
       </dependency>
