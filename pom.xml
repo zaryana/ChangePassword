@@ -114,12 +114,6 @@
       </dependency>
       <dependency>
         <groupId>com.exoplatform.cloudworkspaces</groupId>
-        <artifactId>cloud-workspaces-component-organization</artifactId>
-        <version>${project.version}</version>
-        <type>jar</type>
-      </dependency>
-      <dependency>
-        <groupId>com.exoplatform.cloudworkspaces</groupId>
         <artifactId>cloud-management-patch</artifactId>
         <version>${project.version}</version>
         <type>jar</type>
@@ -202,7 +196,6 @@
         <version>${org.exoplatform.cloud-management.version}</version>
         <type>jar</type>
       </dependency>
-
       <dependency>
         <groupId>org.exoplatform.cloud-management</groupId>
         <artifactId>cloud-admin-packaging-war</artifactId>
