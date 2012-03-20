@@ -47,7 +47,7 @@
     <profile>
       <id>distrib</id>
       <build>
-        <finalName>cloud-workspaces-admin</finalName>
+        <finalName>cloud-workspaces-admin-${project.version}</finalName>
         <plugins>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>

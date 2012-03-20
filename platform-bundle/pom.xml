@@ -95,7 +95,7 @@
       </dependencies>
 
       <build>
-        <finalName>cloud-workspaces-platform</finalName>
+        <finalName>cloud-workspaces-platform-${project.version}</finalName>
         <plugins>
           <!-- Unpack Tomcat base -->
           <plugin>
