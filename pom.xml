@@ -309,7 +309,7 @@
     <module>admin-bundle</module>
     <module>cloud-gadgets</module>
     <module>extension</module>
-    <module>war-overrides/platformNavigation.war</module>
+    <module>navigation</module>
     <module>platform-bundle</module>
   </modules>
 </project>
