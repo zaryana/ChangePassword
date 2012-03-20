@@ -21,6 +21,7 @@ package com.exoplatform.cloudworkspaces;
 import com.exoplatform.cloudworkspaces.rest.IntranetAdminService;
 
 import org.everrest.core.ResourceBinder;
+import org.exoplatform.cloudmanagement.admin.WorkspacesMailSender;
 import org.exoplatform.cloudmanagement.admin.rest.CloudAdminApplicationComposer;
 import org.picocontainer.MutablePicoContainer;
 
@@ -38,6 +39,7 @@ public class CloudWorkspacesAdminApplicationComposer extends CloudAdminApplicati
       super.doComposeApplication(container, servletContext);
       //container.addComponent(CLIResourceFactory.class);
       container.addComponent(ResourceBinder.class, servletContext.getAttribute(ResourceBinder.class.getName()));
+      container.addComponent(WorkspacesMailSender.class);
 
    }
 
