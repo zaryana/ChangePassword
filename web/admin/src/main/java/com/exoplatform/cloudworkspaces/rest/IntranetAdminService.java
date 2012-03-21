@@ -18,6 +18,8 @@
  */
 package com.exoplatform.cloudworkspaces.rest;
 
+import com.exoplatform.cloudworkspaces.UserAlreadyExistsException;
+
 import com.exoplatform.cloudworkspaces.ChangePasswordManager;
 import com.exoplatform.cloudworkspaces.CloudIntranetUtils;
 import com.exoplatform.cloudworkspaces.ReferencesManager;

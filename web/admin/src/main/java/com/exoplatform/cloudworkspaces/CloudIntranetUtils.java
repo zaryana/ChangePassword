@@ -97,10 +97,10 @@ public class CloudIntranetUtils
       this.maxUsersConfigurationFile = System.getProperty("cloud.admin.userlimit");
       this.requestDao = requestDao;
 
-      /* TODO check this line */
+      /* TODO check this line 
       Authenticator.setDefault(new AgentAuthenticator(cloudAdminConfiguration.getString("admin.agent.auth.username",
          null), cloudAdminConfiguration.getString("admin.agent.auth.password", null)));
-         
+         */
    }
 
    public void storeUser(String tName, String userMail, String firstName, String lastName, String password,
