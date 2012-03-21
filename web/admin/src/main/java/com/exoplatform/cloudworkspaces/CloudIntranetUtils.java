@@ -326,7 +326,6 @@ public class CloudIntranetUtils
       HttpClient httpClient = httpClientManager.getHttpClient(alias);
       StringBuilder strUrl = new StringBuilder();
       strUrl.append(baseUri);
-      strUrl.append("administratorsonly=false");
       strUrl.append("cloud-agent/rest/organization/newpassword/");
       HttpParams params = new BasicHttpParams();
       try
