@@ -35,7 +35,6 @@ import org.everrest.core.impl.provider.json.JsonParser;
 import org.everrest.core.impl.provider.json.ObjectValue;
 import org.exoplatform.cloudmanagement.admin.CloudAdminException;
 import org.exoplatform.cloudmanagement.admin.WorkspacesMailSender;
-import org.exoplatform.cloudmanagement.admin.configuration.AdminConfiguration;
 import org.exoplatform.cloudmanagement.admin.configuration.ApplicationServerConfigurationManager;
 import org.exoplatform.cloudmanagement.admin.configuration.MailConfiguration;
 import org.exoplatform.cloudmanagement.admin.configuration.TenantInfoFieldName;
@@ -93,6 +92,8 @@ public class CloudIntranetUtils
    private String blackListConfigurationFolder;
 
    private String maxUsersConfigurationFile;
+   
+   private String organizationServicePath = "cloud-agent/rest/organization";
 
    private static final Logger LOG = LoggerFactory.getLogger(CloudIntranetUtils.class);
 
@@ -126,7 +127,7 @@ public class CloudIntranetUtils
 
       StringBuilder strUrl = new StringBuilder();
       strUrl.append(baseUri);
-      strUrl.append("cloud-agent/rest/organization/adduser");
+      strUrl.append(organizationServicePath + "/adduser");
 
       HttpParams params = new BasicHttpParams();
       try
@@ -210,7 +211,7 @@ public class CloudIntranetUtils
       HttpClient httpClient = httpClientManager.getHttpClient(alias);
       StringBuilder strUrl = new StringBuilder();
       strUrl.append(baseUri);
-      strUrl.append("cloud-agent/rest/organization/users/" + tName);
+      strUrl.append(organizationServicePath + "/users/" + tName);
       HttpParams params = new BasicHttpParams();
       params.setParameter("administratorsonly", "false");
 
@@ -326,7 +327,7 @@ public class CloudIntranetUtils
       HttpClient httpClient = httpClientManager.getHttpClient(alias);
       StringBuilder strUrl = new StringBuilder();
       strUrl.append(baseUri);
-      strUrl.append("cloud-agent/rest/organization/newpassword/");
+      strUrl.append(organizationServicePath + "/newpassword/");
       HttpParams params = new BasicHttpParams();
       try
       {
@@ -403,7 +404,7 @@ public class CloudIntranetUtils
       HttpClient httpClient = httpClientManager.getHttpClient(alias);
 
       strUrl.append(baseUri);
-      strUrl.append("/cloud-agent/rest/organization/users/" + tName);
+      strUrl.append(organizationServicePath + "/users/" + tName);
 
       HttpParams params = new BasicHttpParams();
       params.setParameter("administratorsonly", "true");
