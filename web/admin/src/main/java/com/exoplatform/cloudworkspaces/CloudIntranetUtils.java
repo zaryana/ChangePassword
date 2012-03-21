@@ -400,27 +400,28 @@ public class CloudIntranetUtils
    {
 
       Map<String, String> result = new HashMap<String, String>();
-      URL url;
-      HttpURLConnection connection = null;
-
       StringBuilder strUrl = new StringBuilder();
-      strUrl.append("http://");
-      strUrl.append(tName);
-      strUrl.append(".");
-      strUrl.append(cloudAdminConfiguration.getString(AdminConfiguration.CLOUD_ADMIN_FRONT_END_SERVER_HOST));
+
+      String alias = tenantInfoDataManager.getValue(tName, TenantInfoFieldName.PROPERTY_APSERVER_ALIAS);
+      String baseUri = applicationServerConfigurationManager.getHttpUriToServer(alias);
+      HttpClient httpClient = httpClientManager.getHttpClient(alias);
+
+      strUrl.append(baseUri);
       strUrl.append("/cloud-agent/rest/organization/users/" + tName);
-      strUrl.append("?");
-      strUrl.append("administratorsonly=true");
+
+      HttpParams params = new BasicHttpParams();
+      params.setParameter("administratorsonly", "true");
 
       InputStream io;
+      HttpPost request = new HttpPost(strUrl.toString());
+      request.setParams(params);
+      HttpResponse response = null;
       try
       {
-         url = new URL(strUrl.toString());
-         connection = (HttpURLConnection)url.openConnection();
-         connection.setRequestMethod("GET");
-         if (connection.getResponseCode() == HTTP_OK)
+         response = httpClient.execute(request);
+         if (response.getStatusLine().getStatusCode() == HTTP_OK)
          {
-            io = connection.getInputStream();
+            io = response.getEntity().getContent();
             JsonParser jsonParser = new JsonParser();
             jsonParser.parse(io);
             ObjectValue responseObj = (ObjectValue)jsonParser.getJsonObject();
@@ -435,23 +436,15 @@ public class CloudIntranetUtils
          }
          else
          {
-            String err = readText(connection.getErrorStream());
+            String err = readText(response.getEntity().getContent());
             String msg =
                ("Unable to get administrators list from workspace " + tName + " - HTTP status:"
-                  + connection.getResponseCode() + (err != null ? ". Server error: \r\n" + err + "\r\n" : ""));
+                  + response.getStatusLine().getStatusCode() + (err != null ? ". Server error: \r\n" + err + "\r\n" : ""));
             LOG.error(msg);
             sendAdminErrorEmail(msg, null);
             throw new CloudAdminException(
                "A problem happened during processsing this request. It was reported to developers. Please, try again later.");
          }
-      }
-      catch (MalformedURLException e)
-      {
-         LOG.error(e.getMessage(), e);
-         sendAdminErrorEmail(e.getMessage(), e);
-         throw new CloudAdminException(
-            "An problem happened during processsing this request. It was reported to developers. Please, try again later.");
-
       }
       catch (IOException e)
       {
@@ -471,9 +464,20 @@ public class CloudIntranetUtils
       }
       finally
       {
-         if (connection != null)
+         try
          {
-            connection.disconnect();
+            if (response != null)
+            {
+               response.getEntity().getContent().close();
+            }
+         }
+         catch (IllegalStateException e)
+         {
+            throw new CloudAdminException("An problem happened during closing http connection.");
+         }
+         catch (IOException e)
+         {
+            throw new CloudAdminException("An problem happened during closing http connection.");
          }
       }
    }
