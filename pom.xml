@@ -39,8 +39,8 @@
     <org.exoplatform.ide.version>1.2.0-M4</org.exoplatform.ide.version>
 
     <!-- Cloud gadget services -->
-    <org.exoplatform.portal.version>3.2.3-PLF-SNAPSHOT</org.exoplatform.portal.version>
-    <org.exoplatform.social.version>1.2.8-SNAPSHOT</org.exoplatform.social.version>
+    <org.exoplatform.portal.version>3.2.3-PLF</org.exoplatform.portal.version>
+    <org.exoplatform.social.version>1.2.8</org.exoplatform.social.version>
 
     <!-- Db libs -->
     <mysql.connector.java.version>5.1.13</mysql.connector.java.version>
