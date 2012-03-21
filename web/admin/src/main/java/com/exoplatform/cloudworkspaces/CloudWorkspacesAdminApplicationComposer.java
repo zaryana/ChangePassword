@@ -19,10 +19,13 @@
 package com.exoplatform.cloudworkspaces;
 
 import com.exoplatform.cloudworkspaces.rest.IntranetAdminService;
+import com.exoplatform.cloudworkspaces.shell.ShellConfigurationService;
 
 import org.everrest.core.ResourceBinder;
 import org.exoplatform.cloudmanagement.admin.WorkspacesMailSender;
 import org.exoplatform.cloudmanagement.admin.rest.CloudAdminApplicationComposer;
+import org.exoplatform.ide.shell.server.CLIResourceFactory;
+import org.exoplatform.ide.shell.server.rest.CLIResourcesService;
 import org.picocontainer.MutablePicoContainer;
 
 import javax.servlet.ServletContext;
@@ -37,7 +40,7 @@ public class CloudWorkspacesAdminApplicationComposer extends CloudAdminApplicati
    protected void doComposeApplication(MutablePicoContainer container, ServletContext servletContext)
    {
       super.doComposeApplication(container, servletContext);
-      //container.addComponent(CLIResourceFactory.class);
+      container.addComponent(CLIResourceFactory.class);
       container.addComponent(ResourceBinder.class, servletContext.getAttribute(ResourceBinder.class.getName()));
       container.addComponent(WorkspacesMailSender.class);
 
@@ -48,10 +51,10 @@ public class CloudWorkspacesAdminApplicationComposer extends CloudAdminApplicati
    {
       super.doComposeRequest(container);
       container.addComponent(IntranetAdminService.class);
-      /*
-      container.addComponent(TenantCreatorWithEmailAuthorization.class);
       container.addComponent(ShellConfigurationService.class);
       container.addComponent(CLIResourcesService.class);
+      /*
+      container.addComponent(TenantCreatorWithEmailAuthorization.class);
       */
    }
 

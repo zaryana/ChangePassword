@@ -1,0 +1,1042 @@
+@font-face {
+    font-family: 'MyriadProSemibold';
+    src: url('../fonts/myriadpro-semibold-webfont.eot');
+    src: url('../fonts/myriadpro-semibold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/myriadpro-semibold-webfont.woff') format('woff'),
+         url('../fonts/myriadpro-semibold-webfont.ttf') format('truetype'),
+         url('../fonts/myriadpro-semibold-webfont.svg#MyriadProSemibold') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+@font-face {
+    font-family: 'MyriadPro';
+    src: url('../fonts/MyriadPro-Regular.otf');
+    src: url('../fonts/MyriadPro-Regular.ttf') format('truetype'),
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+
+/******** Common CSS ********/
+body {
+	font-family: Verdana, Arial, Tahoma, Sans-serif;
+	margin: 0;
+	font-size: 12px;
+	color:#666666;
+}
+
+div, table, tr, td, img, form, p,h1, h2, h3, h4, h5, h6,ul ,fieldset{
+	margin: 0;
+	padding: 0;
+}
+
+img,fieldset {
+	border: none;
+}
+
+a {
+	text-decoration: none;
+	outline: none;
+	color:#0868b9;
+}
+
+li {
+	list-style-type:none;
+}
+h1,h2,h3,h4,h5 {
+	font-weight:normal;
+	font-family:arial,tahoma,serif;
+	margin:10px 0;
+}
+h1{
+	font-family:MyriadProSemibold,arial,tahoma;
+	font-size: 48px;
+	
+}
+h2{
+	font-family:MyriadProSemibold,arial,tahoma;
+	font-size: 42px;
+
+}
+h3{
+	font-size: 18px;	
+}
+h4{
+	font-size: 14px;	
+	font-weight: bold;
+}
+h5{
+	font-size: 12px;
+}
+
+p {
+	margin:10px 0;
+}
+.ClearFix:after {
+	content: ".";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
+}
+
+.ClearFix {
+	!display: inline-block;
+	!zoom: 1;
+	!display: block; 
+}
+
+.FL {
+	float: left;
+}
+
+.FR {
+	float: right;
+}
+
+.MainContent {
+	margin:0 auto;
+	width: 960px;
+}
+
+/*UIHeader */
+.UIHeader {
+	background: url("../images/background/bg_header.png") repeat-x left top;
+	height: 139px;
+}
+
+.UIMenuTop li {
+	float:left;
+	display:block;			
+	background: url("../images/background/sperator.png") no-repeat right center;
+	padding-right: 2px;	
+}
+.UIMenuTop {
+	background:#474848;
+	-moz-border-radius: 0 0 5px 5px;
+	-webkit-border-radius: 0 0 5px 5px;
+	border-radius: 0 0 5px 5px;
+}
+
+.UIMenuTop li.last {
+	background: none;
+	padding: 0px;	
+}
+
+.UIMenuTop li  a {
+	display:block;
+	color:#fff;
+	text-transform:uppercase;
+	font-size: 10px;
+	padding: 0 14px;
+	font-family: arial,tahoma,serif;	
+	height: 31px;
+	line-height: 35px;
+
+}
+.UIMenuTop li.last  a {
+	background:none;
+} 
+
+.UIMenuTop li  a:hover ,.UIMenuTop li.selected  a{
+	border-top:4px solid #ffcb08;
+	height: 27px;
+	line-height: 27px;
+}
+.UIMenuTop li  a.BlueTab:hover,.UIMenuTop li.selected a.BlueTab {
+	border-top:4px solid #b1e4fc;
+}
+
+.UIMenuTop li  a.GreenTab:hover,.UIMenuTop li.selected a.GreenTab  {
+	border-top:4px solid #3fa2d5;
+}
+
+.UIMenuTop li  a.GrayTab:hover,.UIMenuTop li.selected a.GrayTab  {
+	border-top:4px solid #c2c2c2;
+}
+
+.UIMenuTop li  a.OrangeTab:hover,.UIMenuTop li.selected a.OrangeTab  {
+	border-top:4px solid #ffcb08;
+}
+/*logo*/
+.Logo{
+	margin-top: 43px;
+}
+
+.CloudIDE {
+	text-align:right;
+	color:#fff;
+	width: 80%;/*Hack IE7*/	
+	font-family:MyriadProSemibold,arial,tahoma;
+}
+
+.CloudIDE h1 {	
+	margin: 10px 0 0 0;
+}
+
+.CloudIDE span {
+	font-size: 17px;
+	font-weight: normal;
+	font-family: MyriadPro,airal,tahoma;
+	display: block;
+	margin-top: -10px;
+}
+
+/*UIbanner*/
+.UIbanner {
+	background: url("../images/background/bg_banner.png") repeat left top;
+	min-height: 430px;
+}
+
+.UIbanner h2 {
+	color:#fff;
+	margin: 0 0 25px 0;
+	padding: 15px 0 0 0;
+	font-size: 40px;
+}
+/*Form box*/
+.FormBox .BoxContent {
+	width: 670px;
+/*	height: 305px; */
+   min-height: 295px;
+	background:#fff ;
+}
+
+.FormBox .BoxContent form {
+	width: 495px;
+	margin: 0 auto;
+	padding: 20px 0;
+	text-align:center;
+}
+
+.FormBox  .Validated {	
+	color:#7dae19;
+	background: url("../images/icon/validator.png") no-repeat left top;
+}
+
+.FormBox  .Warning {	
+	color:#f0b10d;
+	background: url("../images/icon/warning.png") no-repeat left top;
+}
+
+.FormBox input {
+	width: 493px;
+	padding: 15px 10px;
+	margin: 24px 0 ;
+	font-size:18px;
+	color:#636363;
+	text-align:left;
+	border: 1px solid #dedede;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+	-moz-box-shadow: 0 7px 8px #F4F4F4 inset;
+	-webkit-box-shadow: 0 7px 8px #F4F4F4 inset;
+	box-shadow: 0 7px 8px #F4F4F4 inset;
+}
+
+.FormBox a.Singup {
+	display:inline-block;
+	text-align:center;
+	border: 1px solid #3495b9;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+	height: 41px;
+	line-height: 41px;
+	color:#fff;
+	font-size: 24px; 
+	margin: 0 auto;
+	padding: 0 30px;
+	background: url("../images/background/Bg-Singup.png") repeat-x center bottom;
+	text-decoration:none;
+}
+
+.FormBox .social {
+	text-align:right;
+}
+
+.FormBox .social img {
+	vertical-align: middle;
+	margin: 0 0 0 5px;
+}
+.FormContainer .FormBox {
+	padding-bottom: 35px;
+	background: url("../images/background/dropShadown.png") no-repeat center bottom;
+	margin-right: 290px;
+	
+}
+
+.FormContainer .BoxText {
+	width: 250px;
+	color:#def6ff;	
+	line-height: 18px;
+}
+
+.FormContainer .BoxText h3 {
+	margin: 0 0 15px 0;
+	color:#fff;
+}
+
+.FormContainer .BoxText ul {
+	margin: 0 0 15px 0;
+}
+
+.FormContainer .BoxText ul  li  {
+	list-style: disc inside none;
+}
+
+.FormContainer .BoxText ul  li:hover {
+	color:#7edcff;
+}
+
+.FormContainer .BoxText  a {
+	color:#def6ff;
+}
+
+.FormContainer .BoxText  a:hover {
+	text-decoration:underline;
+	color:#7edcff;
+}
+
+
+/*Form Cloud-IDE*/
+.FormBox .Cloud-IDE form {
+	width: auto;
+	margin: 0 auto;
+	padding: 10px 25px;
+	text-align: left;
+}
+
+.FormBox .Cloud-IDE  input{
+	width: 280px;
+	margin: 10px 0;
+	color: black;
+	font-size: 16px;
+	float:left;
+}
+
+.FormBox .Cloud-IDE  div label {
+	width: 180px;
+	text-align: right;
+	float: left;
+	font-size: 18px;
+	font-family: arial,tahoma,serif;
+	margin: 24px 5px 0 0;
+}
+
+.FormBox .Cloud-IDE span {
+	font-size: 18px;
+	font-family: arial,tahoma,serif;
+	float:left;
+	margin: 24px 0px 0 4px;
+}
+
+.FormBox .Cloud-IDE .EmailError  {
+	margin-left: 157px;
+	margin-bottom: 12px;
+	width: 275px;	
+	color: #FF0013;
+	padding: 0 0 0 30px;
+}
+
+.BoxButton {
+	margin: 10px 0 0 185px;
+}
+
+.BoxContent   a {
+	text-decoration: underline;
+}
+
+.BoxContent   a:hover {
+	text-decoration: none;
+}
+
+.FormBox .BoxButton a.Singup{
+	margin: 0;
+}
+
+.FormBox  .Cloud-IDE .social  {
+   margin-right: 25px;
+   margin-top: -47px;
+}
+
+
+.FormBox .Cloud-IDE a.Singup {
+	margin: 0 0 5px 0;
+}
+
+input.default-value {
+   background-repeat: no-repeat;
+}
+
+input#email.default-value {
+   background-image: url('/images/background/you-at-yourcompany-com.png');
+   background-position: 11px 17px;
+}
+
+input#tenantName.default-value {
+   background-image: url('/images/background/yourcompany.png');
+   background-position: 11px 20px;
+}
+
+/*IntroBox*/
+.UI-Intro {
+	background: #f8f8f8;
+	border-bottom: 1px solid #f1f1f1;
+	min-height: 300px;
+}
+
+.UI-Intro .Cols {
+	width: 307px;
+	margin-right: 20px;
+	font-size: 13px;
+	line-height: 20px;
+	float:left;
+}
+
+.UI-Intro .Cols h3 ,.UI-Intro .Cols p{
+	margin: 24px 0;
+}
+
+.UI-Intro  .Last {
+	float:right;
+	width: 280px;
+	margin:0;
+}
+
+.UI-Intro  ul {
+	margin: 68px 0 0 0;
+}
+
+.UI-Intro  .Last li {
+	display:block;	
+	margin: 24px 0;
+}
+
+
+.readmore {
+	padding-right: 10px;
+	background: url("../images/icon/readmore.png") no-repeat right 6px;
+}
+
+/*UIPageBody*/
+.UIPageBody {
+	padding: 50px 0;
+	min-height: 430px;
+	background: #fff url("/images/background/BgWhite.gif") repeat-x left top;
+}
+
+.RowEven ,.RowOdd {
+	margin: 30px 0;
+}
+
+.UIPageBody p{
+	line-height: 20px;
+	text-align: justify;
+	margin: 0;
+}
+
+.UIPageBody li{
+	line-height: 20px;
+	margin: 0 0 0 15px;
+	list-style: circle;
+}
+
+.RowEven .BoxText {
+	padding-right: 320px;
+}
+
+.RowOdd .BoxText {
+	padding-left: 320px;
+}
+
+.SpecialTit {
+	color: #0868B9;
+}
+/*UIFooter*/
+.UIFooterPortlet {
+	background: url("../images/background/bg-footer.png") repeat-x left center;
+	height: 51px;
+	color:#a3a4a4;
+	line-height: 20px;
+}
+
+.UIFooterPortlet span {
+	color:#ffcb08;
+}
+
+/*-- Collapsible Panel Container -------------------------------------------------------------------------------------------------*/
+.collapsibleContainerTitle {
+    cursor: pointer;
+}
+
+.collapsibleContainerContent {   
+    display: none;
+    padding: 25px;
+}
+
+/*-- Go To Domain Form -------------------------------------------------------------------------------------------------*/
+.goToDomainForm-collapsibleContainer {
+   display: none;
+}
+
+form#goToDomainForm .collapsibleContainerTitle {
+   text-decoration: underline;
+   margin-left: 187px;
+   margin-bottom: 15px;
+   color:#0868b9;
+}
+
+form#goToDomainForm .collapsibleContainerContent {
+   padding: 0px;
+}
+
+/*-- Form validator --*/
+input.form-error-message, select.form-error-message {
+    border-color: red;
+}
+
+/*-- Like section --*/
+.twitterLink {
+    display: block;
+    float: left;
+    margin-right: 10px;
+    margin-top: -6px;
+}
+
+/*----------loader-----------*/
+div#loading-layer-id {
+   position: absolute;
+   overflow: hidden;
+   left: 0px;
+   top: 0px;
+   width: 100%;
+   height: 100%;
+   z-index: 2147483642;
+   display: none;
+}
+
+div#loading-container  {
+   position: absolute;
+   overflow: hidden;
+   width: 100%;
+   height: 100%;
+   left: 0px;
+   top: 0px;
+   background: #dbdbdb;
+   opacity: 0.5
+}
+
+div#loading-img {
+   margin: 300px 45%;
+   position: relative
+}
+
+/*-- Error Page --*/
+.ErrorPage .ReportBox{
+	border: 1px solid #e0e0e0;
+	padding: 20px;
+	-moz-box-shadow: 0px 2px 2px #f3f3f3;
+	-webkit-box-shadow: 0px 2px 2px #f3f3f3;
+	box-shadow: 0px 2px 2px #f3f3f3;
+}
+
+.ErrorPage p {
+	text-align: center;
+}
+
+.ErrorPage  .BackIcon {
+	background: url("/images/icon/back-icon.gif") no-repeat left center;
+	color: #808080;
+	font-size: 12px;
+	padding-left: 8px;
+}
+
+.ErrorPage .ErrorIcon{
+	background: url("/images/icon/errorpage-icon.png") no-repeat left top;
+	padding: 0px 0px 0px 30px;
+	margin: 0px;
+}
+
+
+/*-- Thank You Page --*/
+.ThanksPage {
+	padding: 0px 70px;
+	font-family: arial;
+}
+
+.ThanksPage a:hover {
+	text-decoration: underline;
+}
+
+.ThanksPage .TitleHeader {
+	font-size: 30px;
+	color: #2882a3;
+	font-weight: bold;
+	font-family: arial;
+	margin-bottom: 20px;
+}
+
+.ThanksPage .ReportBox{
+	border: 1px solid #e0e0e0;
+	padding: 20px;
+	-moz-box-shadow: 0px 2px 2px #f3f3f3;
+	-webkit-box-shadow: 0px 2px 2px #f3f3f3;
+	box-shadow: 0px 2px 2px #f3f3f3;
+}
+
+.ThanksPage h3 {
+	background: url("/images/icon/ReceivedIcon.png") no-repeat left center;
+	color: #666666;
+	margin: 0px 0px 10px 0px;
+	padding-left: 40px;
+}
+
+.ThanksPage .Continue {
+	background: url("/images/icon/ContinueIcon.png") no-repeat left center;
+	color: #666666;
+	font-size: 12px;
+	padding-left: 40px;
+}
+
+.ThanksPage p {
+	text-align: center;
+    margin: 10px 0;
+    line-height: 24px;
+}
+
+.ThanksPage  .BackIcon {
+	background: url("/images/icon/back-icon.gif") no-repeat left center;
+	color: #808080;
+	font-size: 12px;
+	padding-left: 8px;
+}
+
+/* Success page */
+.SuccessPage {
+	padding: 0px 70px;
+	font-family: arial;
+}
+
+.SuccessPage a:hover{
+	text-decoration: underline;
+}
+
+.SuccessPage .TitleHeader  {
+	font-size: 30px;
+	color: #2882a3;
+	font-weight: bold;
+	font-family: arial;
+	margin-bottom: 20px;
+}
+
+.SuccessPage .ReportBox {
+	border: 1px solid #e0e0e0;
+	padding: 20px;
+	-moz-box-shadow: 0px 2px 2px #f3f3f3;
+	-webkit-box-shadow: 0px 2px 2px #f3f3f3;
+	box-shadow: 0px 2px 2px #f3f3f3;
+}
+
+.SuccessPage .ReportBox h3 {
+	background: url("/images/icon/ReceivedIcon.png") no-repeat left center;
+	color: #666666;
+	margin: 0px 0px 10px 0px;
+	padding-left: 40px;
+}
+
+.SuccessPage .Continue{
+	background: url("../images/icon/ContinueIcon.png") no-repeat left center;
+	color: #666666;
+	font-size: 12px;
+	padding-left: 40px;
+}
+
+.SuccessPage .ReportBox p {
+	text-align: center;
+}
+
+.SuccessPage p {
+	font-size: 12px;
+	margin-left: 52px;
+}
+
+.SuccessPage .MeanTime {
+	width:809px;
+	margin: auto;
+	padding: 30px 0;
+}
+
+.SuccessPage .MeanTime h3 {
+	margin-bottom: 25px;
+}
+
+.SuccessPage .MeanTime a:hover {
+	text-decoration: underline;
+}
+
+.SuccessPage .ReportBox {
+	width:700px;
+}
+
+
+.SuccessPage .MeanTime .Left {
+	width:320px;
+}
+
+.SuccessPage .MeanTime .Right {
+	margin-left:387px;
+}
+
+.SuccessPage .MeanTime .Right .ArownIcon {
+	background: url("/images/icon/ArownIcon.png") no-repeat left 4px;
+	padding:0px 4px 30px 32px;
+	font-size: 14px;
+}
+
+.SuccessPage li {
+    list-style: none outside none;
+    line-height: normal;
+    margin: 0px;
+}
+
+/*Form*/
+.UIFormBox {
+	border: 1px solid #e0e0e0;
+	-moz-box-shadow: 0px 2px 2px #f3f3f3;
+	-webkit-box-shadow: 0px 2px 2px #f3f3f3;
+	box-shadow: 0px 2px 2px #f3f3f3;
+	width: 710px;
+	margin: 0px auto;
+	font-family: arial;
+}
+
+.UIFormBox .TitleForm {
+	color: #414141;
+	text-align: center;
+	line-height: 55px;
+	border-bottom: 1px solid #e8e8e8;
+	background: #f5f5f5;
+	margin: 0px 0px 25px 0px;
+	font-size: 24px;
+	font-family: arial;
+	text-shadow: 0 1px 0 #FFFFFF;
+}
+
+.UIFormBox p {
+	margin: 0px 0px 20px 0px;
+	line-height: 40px;
+	font-size: 18px;
+	color: #414141;
+}
+
+.UIFormBox label {
+	display: block;
+	margin: 0px 0px 20px 0px;
+}
+
+.UIFormBox .LeftForm {
+	float: left;
+	width: 220px;
+	text-align: right;
+}
+
+.UIFormBox .RightForm {
+	float: right;
+	width: 460px;
+	color: #808080;
+	margin: 0 0 7px;
+}
+
+.UIFormBox .RightForm input {
+	-moz-box-shadow: 0 5px 8px #F4F4F4 inset;
+	-webkit-box-shadow: 0 5px 8px #F4F4F4 inset;
+	box-shadow: 0 5px 8px #F4F4F4 inset;
+	width: 300px;
+	height: 28px;
+	padding: 5px 10px;
+	border: 1px solid #dddddd;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+	font-size: 18px;
+	color: black;
+	margin-right: 10px;
+}
+
+.UIFormBox .RightForm span {
+	font-size: 20px;
+	color: #ff6666;
+}
+
+.UIFormBox .Button {
+	background: url("/images/background/Bg-Singup.png") repeat-x left top;
+	border: 1px solid #3495b9;
+	line-height: 38px;
+	padding: 0px 25px;
+	color: #fff;
+	font-family: Myriad Pro;
+	font-size: 18px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+	text-shadow: 0px 1px 0px #1d7aae;
+	float: left;
+	display: block;
+	margin-bottom: 25px;
+}
+
+.UIFormBox .ButtonGray {
+	background: url("/images/background/Bg-Singup-Gray.png") repeat-x left top;
+	border: 1px solid #9c9c9c;
+	color: #fff;
+	text-shadow: 0px 1px 0px #8e8e8e;
+	margin-left: 20px;
+}
+
+.UIFormBox .SubmitFailue p {
+	margin-bottom: 0px;
+}
+
+.UIFormBox input.form-error-message, .UIFormBox select.form-error-message {
+	border:1px solid #ff7070;
+	-moz-box-shadow: 0 5px 8px #fff2f2 inset;
+	-webkit-box-shadow: 0 5px 8px #fff2f2 inset;
+	box-shadow: 0 5px 8px #fff2f2 inset;
+}
+
+.UIFormBox .TextFailue{
+	color: #ff7070;
+	font-size: 11px;
+}
+
+.UIFormBox .RightForm  select{
+   -moz-box-shadow: 0 5px 8px #F4F4F4 inset;
+   -webkit-box-shadow: 0 5px 8px #F4F4F4 inset;
+   box-shadow: 0 5px 8px #F4F4F4 inset;
+   width: 322px;
+   height: 40px;
+   padding: 5px 10px;
+   border: 1px solid #dddddd;
+   -moz-border-radius: 3px;
+   -webkit-border-radius: 3px;
+   border-radius: 3px;
+   font-size: 18px;
+   color: black;
+   margin-right: 10px;
+}
+
+#serverErrorMessage .Error {  
+   color:#ff0013;
+   background: url("/images/icon/error.png") no-repeat left top;
+   width: 460px;
+   margin: 10px auto;
+   font-size: 13px;
+   min-height: 20px;
+   padding: 0 0 0 30px;
+   text-align: left;
+   font-family: Verdana,Arial,Tahoma,Sans-serif;   
+}
+
+#serverErrorMessage .Validated {  
+   color:#7dae19;
+   background: url("/images/icon/validator.png") no-repeat left top;
+   width: 460px;
+   margin: 10px auto;
+   font-size: 13px;
+   min-height: 20px;
+   padding: 0 0 0 30px;
+   text-align: left;
+   font-family: Verdana,Arial,Tahoma,Sans-serif;
+}
+
+/*Login Page*/
+.LoginPage .Forgot{
+	font-size: 12px;
+	text-decoration: underline;
+	color:#0662a2;
+	float: right;
+	display: block;
+	margin-right: 20px;
+}
+
+/*UIAbout CloudIDE*/
+.UIAboutCloudIDE h1{
+   padding: 14px 0;
+   background: #f5f5f5;
+   border: 1px solid #e0e0e0;
+   font-size: 24px;
+   color: #404040;
+   text-align: center;
+   font-family: arial;
+}
+
+.UIAboutCloudIDE p{
+   line-height: 20px;
+   font-size: 13px;
+}
+
+.UIAboutCloudIDE li {
+    list-style: none outside none;
+    line-height: normal;
+    margin: 0px;
+}
+
+
+.UIAboutCloudIDE .TitleAbout{
+   margin: 25px 0;
+   padding: 0px 0px 11px 0px;
+   border-bottom: 1px solid #dce7ec;
+}
+
+.UIAboutCloudIDE .Availability{
+   width: 440px;
+}
+
+.UIAboutCloudIDE .Availability ul li{
+   margin-top: 26px;
+}
+
+.UIAboutCloudIDE .Availability ul li a{
+   padding-top: 5px;
+   display: block;
+}
+
+.UIAboutCloudIDE .Availability ul li .Margin{
+   margin:0px 0px 0px 118px;
+}
+
+.UIAboutCloudIDE .Features{
+   width: 440px;
+      margin-right: 80px;
+
+}
+
+.UIAboutCloudIDE .Features ul li{
+   margin-top: 18px;
+}
+
+.UIAboutCloudIDE .Features ul li a{
+   padding-top: 8px;
+   display: block;
+}
+
+.UIAboutCloudIDE .Features ul li .Margin{
+   margin:0px 0px 0px 58px;
+}
+
+/* Profile page */
+#changePasswordForm .collapsibleContainerTitle {
+   margin-top: 35px;
+   width: 710px;
+   background: none repeat scroll 0 0 #F5F5F5;
+   border: 1px solid #E8E8E8;
+   color: #414141;
+   font-family: arial;
+   font-size: 24px;
+   line-height: 55px;
+   margin: 35px auto 0;
+   text-align: center;
+   text-shadow: 0 1px 0 #FFFFFF;
+}
+
+#changePasswordForm .collapsibleContainerContent {
+   padding: 0px;
+}
+
+/* Invite page */
+.InvitePage{
+	width: 960px;
+}
+
+.InvitePage .PermissionsBox {
+	-moz-box-shadow: 0 5px 8px #F4F4F4 inset;
+	-webkit-box-shadow: 0 5px 8px #F4F4F4 inset;
+	box-shadow: 0 5px 8px #F4F4F4 inset;
+	padding: 5px 10px;
+	border: 1px solid #dddddd;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+	font-size: 18px;
+	color: #848484;
+	margin-right: 10px;
+   height: 227px;
+   overflow: auto;
+}
+
+.InvitePage .Message {
+	margin-left: 550px;
+	overflow: hidden;
+	width: 410px;
+}
+
+.InvitePage .LeftInvi{
+	padding: 0 0 0 72px;
+    width: 400px;
+}
+
+.InvitePage p{
+	margin-bottom: 0px;
+}
+
+.InvitePage .LeftForm{
+	text-align: left;
+}
+
+.InvitePage .RightForm{
+	width: 409px;
+	margin-bottom: 12px;
+}
+
+.InvitePage .Button{
+	margin-top: 10px;
+}
+
+.InvitePage .LeftInvi .Normal{
+	padding:8px 4px 8px 32px;
+	border-bottom: 1px solid #dddddd;
+}
+
+.InvitePage .LeftInvi a{
+	color: #848484;
+}
+
+.InvitePage .SelectIcon{
+	font-size: 18px;
+	background: url("/images/icon/SelectIcon.png") no-repeat left center;
+	padding:8px 4px 8px 32px;
+	border-bottom: 1px solid #dddddd;
+}
+
+.RightForm textarea {
+    -moz-border-radius: 3px 3px 3px 3px;
+    -moz-box-shadow: 0 5px 8px #F4F4F4 inset;
+    border: 1px solid #DDDDDD;
+    font-family: Verdana,Arial,Tahoma,Sans-serif;
+    color: black;
+    font-size: 18px;
+    height: 100px;
+    margin-right: 10px;
+    padding: 5px 10px;
+    width: 300px;
+}
+
+.InvitePage li {
+    list-style: none outside none;
+    line-height: normal;
+    margin: 0px;
+}
+
+/* Contact us page */
+.ContactPage {
+	background: white;
+}
+
+body#ide-page-body .UIFormBox .RightForm input {
+   height: 39px;
+}

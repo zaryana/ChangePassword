@@ -36,6 +36,7 @@
     <org.exoplatform.ws.version>2.2.6-GA</org.exoplatform.ws.version>
     <org.exoplatform.jcr.version>1.14.6-GA</org.exoplatform.jcr.version>
     <org.exoplatform.cloud-management.version>1.1-M6</org.exoplatform.cloud-management.version>
+    <org.exoplatform.ide.version>1.2.0-M4</org.exoplatform.ide.version>
 
     <!-- Cloud gadget services -->
     <org.exoplatform.portal.version>3.2.3-PLF-SNAPSHOT</org.exoplatform.portal.version>
@@ -209,6 +210,17 @@
         <artifactId>cloud-rest-everrest</artifactId>
         <version>${org.exoplatform.cloud-management.version}</version>
         <type>jar</type>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.ide</groupId>
+        <artifactId>exo-ide-shell</artifactId>
+        <version>${org.exoplatform.ide.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.ide</groupId>
+        <artifactId>exo-ide-packaging-shell-war</artifactId>
+        <version>${org.exoplatform.ide.version}</version>
+        <type>war</type>
       </dependency>
 
       <dependency>
