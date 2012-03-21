@@ -419,7 +419,7 @@ public class IntranetAdminService extends TenantCreator
                   new ReferencesManager(adminConfiguration).removeEmail(userMail);
                   return Response.ok(e.getMessage()).build();
                }
-              break;  
+               break;  
             }
             case CREATION :
             case WAITING_CREATION : {
@@ -427,7 +427,7 @@ public class IntranetAdminService extends TenantCreator
                   new UserRequest("", tName, userMail, firstName, lastName, "", "", password, "", false,
                      RequestState.WAITING_JOIN);
                requestDao.put(req);
-               LOG.info("User " + userMail + " join was put in waiting state after join - tenant state WAITING_CREATION.");
+               LOG.info("User " + userMail + " join was put in waiting state after join - tenant creation in progress.");
                break;
             }
             case SUSPENDED : {
