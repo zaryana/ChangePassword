@@ -942,7 +942,7 @@ public class CloudIntranetUtils
                   continue;
                }
                
-               LOG.info("Joining administrator " + userMail + " to tenant " + tenant);
+               LOG.info("Joining administrator " + userMail + " to tenant " + tenant + " from queue.");
                storeUser(tenant, userMail, fName, lName, one.getPassword(), true);
                sendIntranetCreatedEmail(userMail, props);
                requestDao.delete(one);
@@ -1011,7 +1011,7 @@ public class CloudIntranetUtils
                if (isUserAllowed)
                {
                   // Storing user & sending appropriate mails
-                  LOG.info("Joining user " + userMail + " to tenant " + tenant);
+                  LOG.info("Joining user " + userMail + " to tenant " + tenant + " from queue.");
                   storeUser(tenant, userMail, fName, lName, one.getPassword(), false);
                   sendUserJoinedEmails(tenant, fName, userMail, props);
                   requestDao.delete(one);
@@ -1021,7 +1021,7 @@ public class CloudIntranetUtils
                   // Limit reached
                   props.put("users.maxallowed", Integer.toString(getMaxUsersForTenant(tenant)));
                   sendJoinRejectedEmails(tenant, userMail, props);
-                  //Changing type from WAILTING_JOIN to WAITING_LIMIT
+                  //Changing type from WAITING_JOIN to WAITING_LIMIT
                   UserRequest two =
                      new UserRequest("", one.getTenantName(), one.getUserEmail(), one.getFirstName(),
                         one.getLastName(), one.getCompanyName(), one.getPhone(), one.getPassword(),

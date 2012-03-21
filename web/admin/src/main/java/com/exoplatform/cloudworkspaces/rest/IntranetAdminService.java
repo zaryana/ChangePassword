@@ -397,6 +397,7 @@ public class IntranetAdminService extends TenantCreator
                   {
                      utils.storeUser(tName, userMail, firstName, lastName, password, false);
                      utils.sendUserJoinedEmails(tName, firstName, userMail, props);
+                     LOG.info("User " + userMail + " joined directly from form.");
                   }
                   else
                   {
@@ -426,6 +427,7 @@ public class IntranetAdminService extends TenantCreator
                   new UserRequest("", tName, userMail, firstName, lastName, "", "", password, "", false,
                      RequestState.WAITING_JOIN);
                requestDao.put(req);
+               LOG.info("User " + userMail + " join was put in waiting state after join - tenant state WAITING_CREATION.");
             }
             case SUSPENDED : {
                utils.resumeTenant(tName);
@@ -575,7 +577,7 @@ public class IntranetAdminService extends TenantCreator
       UserRequest req =
                new UserRequest("", tName, userMail, firstName, lastName, companyName, phone, password, uuid, true,
                   RequestState.WAITING_CREATION);
-            requestDao.put(req);
+      requestDao.put(req);
 
       new ReferencesManager(adminConfiguration).removeEmail(userMail);
       return Response.ok().build();
@@ -697,18 +699,6 @@ public class IntranetAdminService extends TenantCreator
       utils.joinAll(null, RequestState.valueOf(state));
       return Response.ok().build();
    }
-
-   //   @GET
-   //   @Path("/isuserallowed/{tenantname}/{username}")
-   //   @Produces(MediaType.TEXT_PLAIN)
-   //   public Response isuserallowed(@PathParam("tenantname") String tName, @PathParam("username") String username)
-   //      throws CloudAdminException{
-   //      if (utils.isNewUserAllowed(tName, username))
-   //         return Response.ok("TRUE").build();
-   //      else
-   //         return Response.ok("FALSE").build();
-   //      
-   //   }
 
    @GET
    @Path("/isuserexist/{tenantname}/{username}")
