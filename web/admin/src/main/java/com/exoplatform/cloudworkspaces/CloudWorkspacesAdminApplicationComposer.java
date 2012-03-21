@@ -18,7 +18,7 @@
  */
 package com.exoplatform.cloudworkspaces;
 
-import com.exoplatform.cloudworkspaces.rest.IntranetAdminService;
+import com.exoplatform.cloudworkspaces.rest.CloudWorkspacesTenantService;
 import com.exoplatform.cloudworkspaces.shell.ShellConfigurationService;
 
 import org.everrest.core.ResourceBinder;
@@ -50,7 +50,7 @@ public class CloudWorkspacesAdminApplicationComposer extends CloudAdminApplicati
    protected void doComposeRequest(MutablePicoContainer container)
    {
       super.doComposeRequest(container);
-      container.addComponent(IntranetAdminService.class);
+      container.addComponent(CloudWorkspacesTenantService.class);
       container.addComponent(ShellConfigurationService.class);
       container.addComponent(CLIResourcesService.class);
       /*

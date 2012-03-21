@@ -55,7 +55,7 @@ public class AutoJoinThread implements Runnable
          StringBuilder strUrl = new StringBuilder();
          strUrl.append("http://");
          strUrl.append(System.getProperty("tenant.masterhost"));
-         strUrl.append("/rest/cloud-admin/public-tenant-service/autojoin/" + RequestState.WAITING_JOIN.toString());
+         strUrl.append("/rest/cloud-admin/cloudworkspaces/tenant-service/autojoin/" + RequestState.WAITING_JOIN.toString());
          URL url = new URL(strUrl.toString());
          HttpURLConnection connection = (HttpURLConnection)url.openConnection();
          connection.setRequestMethod("GET");

@@ -93,7 +93,7 @@ public class CloudIntranetUtils
 
    private String maxUsersConfigurationFile;
    
-   private String organizationServicePath = "cloud-agent/rest/organization";
+   private String organizationServicePath = "cloud-agent/rest/cloudworkspaces/organization";
 
    private static final Logger LOG = LoggerFactory.getLogger(CloudIntranetUtils.class);
 

@@ -25,7 +25,7 @@
 
   <component>
     <key>org.exoplatform.services.security.Authenticator</key>
-    <type>com.exoplatform.cloudworkspaces.organization.authenticator.IntranetAuthenticatorImpl</type>
+    <type>com.exoplatform.cloudworkspaces.organization.authenticator.CloudWorkspacesAuthenticatorImpl</type>
   </component>
 
   <component>

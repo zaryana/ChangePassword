@@ -66,21 +66,21 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-@Path("/cloud-admin/public-tenant-service")
-public class IntranetAdminService extends TenantCreator
+@Path("/cloud-admin/cloudworkspaces/tenant-service")
+public class CloudWorkspacesTenantService extends TenantCreator
 {
 
    CloudIntranetUtils utils;
 
    UserRequestDAO requestDao;
 
-   private static final Logger LOG = LoggerFactory.getLogger(IntranetAdminService.class);
+   private static final Logger LOG = LoggerFactory.getLogger(CloudWorkspacesTenantService.class);
 
    private ApplicationServerConfigurationManager applicationServerConfigurationManager;
 
    private HttpClientManager httpClientManager;
 
-   public IntranetAdminService(EmailValidationStorage emailValidationStorage,
+   public CloudWorkspacesTenantService(EmailValidationStorage emailValidationStorage,
       TenantStateDataManager tenantStateDataManager, TenantNameValidator tenantNameValidator,
       UserMailValidator userMailValidator, TenantInfoDataManager tenantInfoDataManager,
       ApplicationServerConfigurationManager applicationServerConfigurationManager, HttpClientManager httpClientManager,

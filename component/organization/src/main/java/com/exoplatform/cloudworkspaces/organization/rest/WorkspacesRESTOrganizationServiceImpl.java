@@ -58,10 +58,10 @@ import org.slf4j.LoggerFactory;
 /**
  * The Class IntranetRESTOrganizationServiceImpl.
  */
-@Path("/organization")
-public class IntranetRESTOrganizationServiceImpl
+@Path("/cloudworkspaces/organization")
+public class WorkspacesRESTOrganizationServiceImpl
 {
-   protected static final Logger LOG = LoggerFactory.getLogger(IntranetRESTOrganizationServiceImpl.class);
+   protected static final Logger LOG = LoggerFactory.getLogger(WorkspacesRESTOrganizationServiceImpl.class);
 
    protected static final String ROOT_USER = "root";
 
@@ -73,7 +73,7 @@ public class IntranetRESTOrganizationServiceImpl
 
    protected final String hostInfo;
 
-   public IntranetRESTOrganizationServiceImpl(RepositoryService repositoryService,
+   public WorkspacesRESTOrganizationServiceImpl(RepositoryService repositoryService,
       OrganizationService organizationService)
    {
       this.repositoryService = repositoryService;

@@ -18,7 +18,7 @@
  */
 package com.exoplatform.cloudworkspaces.multitenancy.application;
 
-import com.exoplatform.cloudworkspaces.organization.rest.IntranetRESTOrganizationServiceImpl;
+import com.exoplatform.cloudworkspaces.organization.rest.WorkspacesRESTOrganizationServiceImpl;
 
 import org.exoplatform.cloudmanagement.rest.CloudAgentInfoService;
 import org.exoplatform.cloudmanagement.rest.TenantService;
@@ -38,7 +38,7 @@ public class CloudAgentApplication extends Application
       //cls.add(CloudMailService.class);
       cls.add(CloudAgentInfoService.class);
       cls.add(TenantService.class);
-      cls.add(IntranetRESTOrganizationServiceImpl.class);
+      cls.add(WorkspacesRESTOrganizationServiceImpl.class);
       return cls;
    }
 

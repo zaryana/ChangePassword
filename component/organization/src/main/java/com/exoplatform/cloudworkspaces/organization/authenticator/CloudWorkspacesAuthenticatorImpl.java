@@ -35,24 +35,24 @@ import java.util.Properties;
 
 import javax.security.auth.login.LoginException;
 
-public class IntranetAuthenticatorImpl extends OrganizationAuthenticatorImpl
+public class CloudWorkspacesAuthenticatorImpl extends OrganizationAuthenticatorImpl
 {
    protected static Log log = ExoLogger
       .getLogger("org.exoplatform.platform.cloud.services.authentication.IntranetAuthenticatorImpl");
 
    private static final String ROOT_USER = "root";
 
-   public IntranetAuthenticatorImpl(OrganizationService orgService)
+   public CloudWorkspacesAuthenticatorImpl(OrganizationService orgService)
    {
       super(orgService);
    }
 
-   public IntranetAuthenticatorImpl(OrganizationService orgService, RolesExtractor rolesExtractor)
+   public CloudWorkspacesAuthenticatorImpl(OrganizationService orgService, RolesExtractor rolesExtractor)
    {
       super(orgService, rolesExtractor);
    }
 
-   public IntranetAuthenticatorImpl(OrganizationService orgService, RolesExtractor rolesExtractor,
+   public CloudWorkspacesAuthenticatorImpl(OrganizationService orgService, RolesExtractor rolesExtractor,
       PasswordEncrypter encrypter)
    {
       super(orgService, rolesExtractor, encrypter);
