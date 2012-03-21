@@ -26,6 +26,7 @@ import com.exoplatform.cloudworkspaces.listener.TenantResumeThread;
 import org.apache.commons.configuration.Configuration;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
@@ -52,7 +53,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -206,35 +206,25 @@ public class CloudIntranetUtils
          throw new CloudAdminException("Cannot validate user with such input data. Please, review it.");
 
       int maxUsers = getMaxUsersForTenant(tName);
-      URL url;
-      HttpURLConnection connection = null;
+
+      String alias = tenantInfoDataManager.getValue(tName, TenantInfoFieldName.PROPERTY_APSERVER_ALIAS);
+      String baseUri = applicationServerConfigurationManager.getHttpUriToServer(alias);
+      HttpClient httpClient = httpClientManager.getHttpClient(alias);
       StringBuilder strUrl = new StringBuilder();
-      strUrl.append("http://");
-      strUrl.append(tName);
-      strUrl.append(".");
-      strUrl.append(cloudAdminConfiguration.getString(AdminConfiguration.CLOUD_ADMIN_FRONT_END_SERVER_HOST));
-      strUrl.append("/cloud-agent/rest/organization/users/" + tName);
+      strUrl.append(baseUri);
+      strUrl.append("cloud-agent/rest/organization/users/" + tName);
       strUrl.append("?");
       strUrl.append("administratorsonly=false");
 
+      HttpGet request = new HttpGet(strUrl.toString());
+      HttpResponse response = null;
       try
       {
-         url = new URL(strUrl.toString());
-         connection = (HttpURLConnection)url.openConnection();
-         connection.setRequestMethod("GET");
+         response = httpClient.execute(request);
 
-         InputStream io;
-         //read Response
-         if (connection.getResponseCode() < 400)
-         {
-            io = connection.getInputStream();
-         }
-         else
-         {
-            io = connection.getErrorStream();
-         }
+         InputStream io = response.getEntity().getContent();
 
-         if (connection.getResponseCode() == HTTP_OK)
+         if (response.getStatusLine().getStatusCode() == HTTP_OK)
          {
             JsonParser jsonParser = new JsonParser();
             jsonParser.parse(io);
@@ -264,17 +254,18 @@ public class CloudIntranetUtils
                return false;
             }
          }
-         else if (connection.getResponseCode() == 502)
+         else if (response.getStatusLine().getStatusCode() == 502)
          {
             throw new CloudAdminException("Workspace " + tName
                + " is not created yet or it was suspended. Please try again later.");
          }
          else
          {
-            String err = readText(connection.getErrorStream());
+            String err = readText(io);
             String msg =
-               ("Unable to get user list from workspace " + tName + " - HTTP status:" + connection.getResponseCode() + (err != null
-                  ? ". Server error: \r\n" + err + "\r\n" : ""));
+               ("Unable to get user list from workspace " + tName + " - HTTP status:"
+                  + response.getStatusLine().getStatusCode() + (err != null ? ". Server error: \r\n" + err + "\r\n"
+                  : ""));
             LOG.error(msg);
             sendAdminErrorEmail(msg, null);
             throw new CloudAdminException(
@@ -304,9 +295,20 @@ public class CloudIntranetUtils
       }
       finally
       {
-         if (connection != null)
+         if (response != null)
          {
-            connection.disconnect();
+            try
+            {
+               response.getEntity().getContent().close();
+            }
+            catch (IllegalStateException e)
+            {
+               throw new CloudAdminException("An problem happened during closing http connection.");
+            }
+            catch (IOException e)
+            {
+               throw new CloudAdminException("An problem happened during closing http connection.");
+            }
          }
       }
    }
@@ -319,23 +321,22 @@ public class CloudIntranetUtils
       String username = email.substring(0, (email.indexOf("@")));
       String tail = email.substring(email.indexOf("@") + 1);
       String tName = tail.substring(0, tail.indexOf("."));
-      URL url;
-      HttpURLConnection connection = null;
+
+      String alias = tenantInfoDataManager.getValue(tName, TenantInfoFieldName.PROPERTY_APSERVER_ALIAS);
+      String baseUri = applicationServerConfigurationManager.getHttpUriToServer(alias);
+      HttpClient httpClient = httpClientManager.getHttpClient(alias);
       StringBuilder strUrl = new StringBuilder();
-      strUrl.append("http://");
-      strUrl.append(tName);
-      strUrl.append(".");
-      strUrl.append(cloudAdminConfiguration.getString(AdminConfiguration.CLOUD_ADMIN_FRONT_END_SERVER_HOST));
-      strUrl.append("/cloud-agent/rest/organization/newpassword/");
-      StringBuilder params;
+      strUrl.append(baseUri);
+      strUrl.append("cloud-agent/rest/organization/users/" + tName);
+      strUrl.append("?");
+      strUrl.append("administratorsonly=false");
+      strUrl.append("cloud-agent/rest/organization/newpassword/");
+      HttpParams params = new BasicHttpParams();
       try
       {
-         params = new StringBuilder();
-         params.append("tname=" + tName);
-         params.append("&");
-         params.append("username=" + java.net.URLEncoder.encode(username, "utf-8"));
-         params.append("&");
-         params.append("password=" + java.net.URLEncoder.encode(password, "utf-8"));
+         params.setParameter("tname", tName);
+         params.setParameter("username", java.net.URLEncoder.encode(username, "utf-8"));
+         params.setParameter("password", java.net.URLEncoder.encode(password, "utf-8"));
       }
       catch (UnsupportedEncodingException e)
       {
@@ -344,38 +345,29 @@ public class CloudIntranetUtils
          throw new CloudAdminException(
             "An problem happened during processsing this request. It was reported to developers. Please, try again later.");
       }
+
+      HttpPost request = new HttpPost(strUrl.toString());
+      request.setParams(params);
+      HttpResponse response = null;
       try
       {
-         url = new URL(strUrl.toString());
-         connection = (HttpURLConnection)url.openConnection();
-         connection.setRequestMethod("POST");
-         connection.setDoOutput(true);
-         OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
-         writer.write(params.toString());
-         writer.flush();
-         writer.close();
-         if (connection.getResponseCode() == HTTP_OK)
+         response = httpClient.execute(request);
+         if (response.getStatusLine().getStatusCode() == HTTP_OK)
          {
             return;
          }
          else
          {
-            String err = readText(connection.getErrorStream());
+            String err = readText(response.getEntity().getContent());
             String msg =
                ("Unable to change password user " + email + " to workspace " + tName + " - HTTP status:"
-                  + connection.getResponseCode() + (err != null ? ". Server error: \r\n" + err + "\r\n" : ""));
+                  + response.getStatusLine().getStatusCode() + (err != null ? ". Server error: \r\n" + err + "\r\n"
+                  : ""));
             LOG.error(msg);
             sendAdminErrorEmail(msg, null);
             throw new CloudAdminException(
                "An problem happened during processsing this request. It was reported to developers. Please, try again later.");
          }
-      }
-      catch (MalformedURLException e)
-      {
-         LOG.error(e.getMessage(), e);
-         sendAdminErrorEmail(e.getMessage(), e);
-         throw new CloudAdminException(
-            "An problem happened during processsing this request. It was reported to developers. Please, try again later.");
       }
       catch (IOException e)
       {
@@ -386,9 +378,20 @@ public class CloudIntranetUtils
       }
       finally
       {
-         if (connection != null)
+         if (response != null)
          {
-            connection.disconnect();
+            try
+            {
+               response.getEntity().getContent().close();
+            }
+            catch (IllegalStateException e)
+            {
+               throw new CloudAdminException("An problem happened during closing http connection.");
+            }
+            catch (IOException e)
+            {
+               throw new CloudAdminException("An problem happened during closing http connection.");
+            }
          }
       }
    }
