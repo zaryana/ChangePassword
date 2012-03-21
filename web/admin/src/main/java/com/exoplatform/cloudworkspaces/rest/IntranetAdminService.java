@@ -22,7 +22,6 @@ import com.exoplatform.cloudworkspaces.ChangePasswordManager;
 import com.exoplatform.cloudworkspaces.CloudIntranetUtils;
 import com.exoplatform.cloudworkspaces.ReferencesManager;
 import com.exoplatform.cloudworkspaces.RequestState;
-import com.exoplatform.cloudworkspaces.UserAlreadyExistsException;
 import com.exoplatform.cloudworkspaces.UserRequest;
 import com.exoplatform.cloudworkspaces.UserRequestDAO;
 import com.exoplatform.cloudworkspaces.listener.TenantCreatedListenerThread;
