@@ -914,10 +914,8 @@ public class CloudIntranetUtils
                else
                {
                   //Changing type from WAITING_JOIN to WAITING_LIMIT
-                  UserRequest two =
-                     new UserRequest("", one.getTenantName(), one.getUserEmail(), one.getFirstName(),
-                        one.getLastName(), one.getCompanyName(), one.getPhone(), one.getPassword(),
-                        one.getConfirmationId(), one.isAdministrator(), RequestState.WAITING_LIMIT);
+                  UserRequest two = one.clone();
+                  two.setState(RequestState.WAITING_LIMIT);
                   requestDao.delete(one);
                   try
                   {
@@ -1052,11 +1050,9 @@ public class CloudIntranetUtils
                   // Limit reached
                   props.put("users.maxallowed", Integer.toString(getMaxUsersForTenant(tenant)));
                   sendJoinRejectedEmails(tenant, userMail, props);
-                  //Changing type from WAILTING_JOIN to WAITING_LIMIT
-                  UserRequest two =
-                     new UserRequest("", one.getTenantName(), one.getUserEmail(), one.getFirstName(),
-                        one.getLastName(), one.getCompanyName(), one.getPhone(), one.getPassword(),
-                        one.getConfirmationId(), one.isAdministrator(), RequestState.WAITING_LIMIT);
+                  //Changing type from WAITING_JOIN to WAITING_LIMIT
+                  UserRequest two = one.clone();
+                  two.setState(RequestState.WAITING_LIMIT);
                   requestDao.delete(one);
                   try
                   {

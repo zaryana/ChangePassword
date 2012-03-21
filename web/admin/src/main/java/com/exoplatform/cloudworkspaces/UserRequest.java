@@ -18,7 +18,7 @@
  */
 package com.exoplatform.cloudworkspaces;
 
-public class UserRequest
+public class UserRequest implements Cloneable
 {
    private RequestState state;
    private String fileName;
@@ -103,5 +103,16 @@ public class UserRequest
    public String getPassword()
    {
       return password;
+   }
+   
+   public UserRequest clone() {
+      try
+      {
+         return (UserRequest)super.clone();
+      }
+      catch (CloneNotSupportedException e)
+      {
+         return this; 
+      }
    }
 }
