@@ -419,7 +419,7 @@ public class IntranetAdminService extends TenantCreator
                   new ReferencesManager(adminConfiguration).removeEmail(userMail);
                   return Response.ok(e.getMessage()).build();
                }
-
+              break;  
             }
             case CREATION :
             case WAITING_CREATION : {
@@ -428,6 +428,7 @@ public class IntranetAdminService extends TenantCreator
                      RequestState.WAITING_JOIN);
                requestDao.put(req);
                LOG.info("User " + userMail + " join was put in waiting state after join - tenant state WAITING_CREATION.");
+               break;
             }
             case SUSPENDED : {
                utils.resumeTenant(tName);
@@ -458,7 +459,7 @@ public class IntranetAdminService extends TenantCreator
       }
       catch (CloudAdminException e)
       {
-         LOG.warn("User " + username + " join failed, put him in join queue.");
+         LOG.error("User " + username + " join failed, put him in join queue.", e);
          UserRequest req =
             new UserRequest("", tName, userMail, firstName, lastName, "", "", password, "", false,
                RequestState.WAITING_JOIN);
