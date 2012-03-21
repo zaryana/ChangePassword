@@ -54,9 +54,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Comparator;
@@ -213,10 +211,11 @@ public class CloudIntranetUtils
       StringBuilder strUrl = new StringBuilder();
       strUrl.append(baseUri);
       strUrl.append("cloud-agent/rest/organization/users/" + tName);
-      strUrl.append("?");
-      strUrl.append("administratorsonly=false");
+      HttpParams params = new BasicHttpParams();
+      params.setParameter("administratorsonly", "true");
 
       HttpGet request = new HttpGet(strUrl.toString());
+      request.setParams(params);
       HttpResponse response = null;
       try
       {
@@ -327,8 +326,6 @@ public class CloudIntranetUtils
       HttpClient httpClient = httpClientManager.getHttpClient(alias);
       StringBuilder strUrl = new StringBuilder();
       strUrl.append(baseUri);
-      strUrl.append("cloud-agent/rest/organization/users/" + tName);
-      strUrl.append("?");
       strUrl.append("administratorsonly=false");
       strUrl.append("cloud-agent/rest/organization/newpassword/");
       HttpParams params = new BasicHttpParams();
