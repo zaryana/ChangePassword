@@ -212,7 +212,7 @@ public class CloudIntranetUtils
       strUrl.append(baseUri);
       strUrl.append("cloud-agent/rest/organization/users/" + tName);
       HttpParams params = new BasicHttpParams();
-      params.setParameter("administratorsonly", "true");
+      params.setParameter("administratorsonly", "false");
 
       HttpGet request = new HttpGet(strUrl.toString());
       request.setParams(params);
