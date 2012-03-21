@@ -97,10 +97,10 @@ public class CloudIntranetUtils
       this.maxUsersConfigurationFile = System.getProperty("cloud.admin.userlimit");
       this.requestDao = requestDao;
 
-      /* TODO check this line
+      /* TODO check this line */
       Authenticator.setDefault(new AgentAuthenticator(cloudAdminConfiguration.getString("admin.agent.auth.username",
          null), cloudAdminConfiguration.getString("admin.agent.auth.password", null)));
-         */
+         
    }
 
    public void storeUser(String tName, String userMail, String firstName, String lastName, String password,
@@ -973,7 +973,7 @@ public class CloudIntranetUtils
                   continue;
                }
 
-               LOG.info("Joining administrator " + userMail + " to tenant " + tenant);
+               LOG.info("Joining administrator " + userMail + " to tenant " + tenant + " from queue.");
                storeUser(tenant, userMail, fName, lName, one.getPassword(), true);
                sendIntranetCreatedEmail(userMail, props);
                requestDao.delete(one);
@@ -1042,7 +1042,7 @@ public class CloudIntranetUtils
                if (isUserAllowed)
                {
                   // Storing user & sending appropriate mails
-                  LOG.info("Joining user " + userMail + " to tenant " + tenant);
+                  LOG.info("Joining user " + userMail + " to tenant " + tenant + " from queue.");
                   storeUser(tenant, userMail, fName, lName, one.getPassword(), false);
                   sendUserJoinedEmails(tenant, fName, userMail, props);
                   requestDao.delete(one);
