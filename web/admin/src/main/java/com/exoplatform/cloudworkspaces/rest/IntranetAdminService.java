@@ -18,12 +18,11 @@
  */
 package com.exoplatform.cloudworkspaces.rest;
 
-import com.exoplatform.cloudworkspaces.UserAlreadyExistsException;
-
 import com.exoplatform.cloudworkspaces.ChangePasswordManager;
 import com.exoplatform.cloudworkspaces.CloudIntranetUtils;
 import com.exoplatform.cloudworkspaces.ReferencesManager;
 import com.exoplatform.cloudworkspaces.RequestState;
+import com.exoplatform.cloudworkspaces.UserAlreadyExistsException;
 import com.exoplatform.cloudworkspaces.UserRequest;
 import com.exoplatform.cloudworkspaces.UserRequestDAO;
 import com.exoplatform.cloudworkspaces.listener.TenantCreatedListenerThread;
@@ -32,10 +31,12 @@ import org.apache.commons.configuration.Configuration;
 import org.exoplatform.cloudmanagement.admin.CloudAdminException;
 import org.exoplatform.cloudmanagement.admin.TenantAlreadyExistException;
 import org.exoplatform.cloudmanagement.admin.WorkspacesMailSender;
+import org.exoplatform.cloudmanagement.admin.configuration.ApplicationServerConfigurationManager;
 import org.exoplatform.cloudmanagement.admin.configuration.TenantInfoFieldName;
 import org.exoplatform.cloudmanagement.admin.dao.EmailValidationStorage;
 import org.exoplatform.cloudmanagement.admin.dao.TenantDataManagerException;
 import org.exoplatform.cloudmanagement.admin.dao.TenantInfoDataManager;
+import org.exoplatform.cloudmanagement.admin.http.HttpClientManager;
 import org.exoplatform.cloudmanagement.admin.rest.TenantCreator;
 import org.exoplatform.cloudmanagement.admin.tenant.TenantNameValidator;
 import org.exoplatform.cloudmanagement.admin.tenant.TenantStateDataManager;
@@ -75,15 +76,24 @@ public class IntranetAdminService extends TenantCreator
 
    private static final Logger LOG = LoggerFactory.getLogger(IntranetAdminService.class);
 
+   private ApplicationServerConfigurationManager applicationServerConfigurationManager;
+
+   private HttpClientManager httpClientManager;
+
    public IntranetAdminService(EmailValidationStorage emailValidationStorage,
       TenantStateDataManager tenantStateDataManager, TenantNameValidator tenantNameValidator,
       UserMailValidator userMailValidator, TenantInfoDataManager tenantInfoDataManager,
+      ApplicationServerConfigurationManager applicationServerConfigurationManager, HttpClientManager httpClientManager,
       Configuration cloudAdminConfiguration, WorkspacesMailSender mailSender)
    {
       super(emailValidationStorage, tenantStateDataManager, tenantNameValidator, userMailValidator,
          tenantInfoDataManager, cloudAdminConfiguration, mailSender);
       this.requestDao = new UserRequestDAO(cloudAdminConfiguration);
-      this.utils = new CloudIntranetUtils(cloudAdminConfiguration, tenantInfoDataManager, requestDao);
+      this.applicationServerConfigurationManager = applicationServerConfigurationManager;
+      this.httpClientManager = httpClientManager;
+      this.utils =
+         new CloudIntranetUtils(cloudAdminConfiguration, tenantInfoDataManager, applicationServerConfigurationManager,
+            httpClientManager, requestDao);
 
    }
 
@@ -136,7 +146,7 @@ public class IntranetAdminService extends TenantCreator
          }
 
          username = userMail.substring(0, (userMail.indexOf("@")));
-         
+
          if (utils.isInBlackList(userMail))
          {
             String domain = userMail.substring(userMail.indexOf("@"));
@@ -145,9 +155,9 @@ public class IntranetAdminService extends TenantCreator
                .entity("Sorry, we can't sign you up with an email address " + domain + ". Try with your work email.")
                .build();
          }
-         
+
          tName = utils.email2tenantName(userMail);
-         
+
          if (requestDao.searchByEmail(userMail) == null)
          {
             Response resp = super.createTenantWithEmailConfirmation(tName, userMail);
@@ -211,7 +221,8 @@ public class IntranetAdminService extends TenantCreator
                      new UserRequest("", tName, userMail, "", "", "", "", "", "", false, RequestState.WAITING_JOIN);
                   requestDao.put(req);
                   TenantCreatedListenerThread thread =
-                     new TenantCreatedListenerThread(tName, tenantInfoDataManager, adminConfiguration, requestDao);
+                     new TenantCreatedListenerThread(tName, tenantInfoDataManager,
+                        applicationServerConfigurationManager, httpClientManager, adminConfiguration, requestDao);
                   ExecutorService executor = Executors.newSingleThreadExecutor();
                   executor.execute(thread);
                   return Response
@@ -290,7 +301,6 @@ public class IntranetAdminService extends TenantCreator
          }
 
          username = userMail.substring(0, (userMail.indexOf("@")));
-         
 
          if (utils.isInBlackList(userMail))
          {
@@ -299,7 +309,7 @@ public class IntranetAdminService extends TenantCreator
                .entity("Cannot sign up with an email address " + domain + ". Require work email.").build();
          }
          tName = utils.email2tenantName(userMail);
-         
+
          if (requestDao.searchByEmail(userMail) == null)
          {
             String uuid = super.createTenant(tName, userMail);
@@ -461,7 +471,8 @@ public class IntranetAdminService extends TenantCreator
                   new UserRequest("", tName, userMail, firstName, lastName, "", "", password, "", false,
                      RequestState.WAITING_JOIN);
                requestDao.put(req);
-               LOG.info("User " + userMail + " join was put in waiting state after join - tenant state WAITING_CREATION.");
+               LOG.info("User " + userMail
+                  + " join was put in waiting state after join - tenant state WAITING_CREATION.");
             }
             case SUSPENDED : {
                utils.resumeTenant(tName);
@@ -471,7 +482,8 @@ public class IntranetAdminService extends TenantCreator
                      RequestState.WAITING_JOIN);
                requestDao.put(req);
                TenantCreatedListenerThread thread =
-                  new TenantCreatedListenerThread(tName, tenantInfoDataManager, adminConfiguration, requestDao);
+                  new TenantCreatedListenerThread(tName, tenantInfoDataManager, applicationServerConfigurationManager,
+                     httpClientManager, adminConfiguration, requestDao);
                ExecutorService executor = Executors.newSingleThreadExecutor();
                executor.execute(thread);
                new ReferencesManager(adminConfiguration).removeEmail(userMail);
@@ -527,7 +539,6 @@ public class IntranetAdminService extends TenantCreator
       if (!utils.validateEmail(userMail))
          return Response.status(Status.BAD_REQUEST).entity("Please enter a valid email address.").build();
 
-      
       if (utils.isInBlackList(userMail))
       {
          String domain = userMail.substring(userMail.indexOf("@"));
@@ -535,13 +546,14 @@ public class IntranetAdminService extends TenantCreator
             .entity("Sorry, we can't create workspace with an email address " + domain + ". Try with your work email.")
             .build();
       }
-      
+
       String tName = utils.email2tenantName(userMail);
       Response resp = super.createTenantWithConfirmedEmail(uuid);
       if (resp.getStatus() != 200)
          return Response.serverError().entity((String)resp.getEntity()).build();
       TenantCreatedListenerThread thread =
-         new TenantCreatedListenerThread(tName, tenantInfoDataManager, adminConfiguration, requestDao);
+         new TenantCreatedListenerThread(tName, tenantInfoDataManager, applicationServerConfigurationManager,
+            httpClientManager, adminConfiguration, requestDao);
       ExecutorService executor = Executors.newSingleThreadExecutor();
       executor.execute(thread);
       return Response.ok().build();
@@ -552,7 +564,7 @@ public class IntranetAdminService extends TenantCreator
     * 
     * @param tenantName
     * @return Response
-    * @throws TenantDataManagerException 
+    * @throws TenantDataManagerException
     * @throws CloudAdminException
     */
    @GET
@@ -610,8 +622,8 @@ public class IntranetAdminService extends TenantCreator
       props.put("last.name", lastName);
       utils.sendCreationQueuedEmails(tName, userMail, props);
       UserRequest req =
-               new UserRequest("", tName, userMail, firstName, lastName, companyName, phone, password, uuid, true,
-                  RequestState.WAITING_CREATION);
+         new UserRequest("", tName, userMail, firstName, lastName, companyName, phone, password, uuid, true,
+            RequestState.WAITING_CREATION);
       requestDao.put(req);
       new ReferencesManager(adminConfiguration).removeEmail(userMail);
       return Response.ok().build();
@@ -790,7 +802,8 @@ public class IntranetAdminService extends TenantCreator
          return Response.status(Status.BAD_REQUEST)
             .entity("This email " + email + " is not registered on Cloud Workspaces.").build();
       }
-      TenantState tState = TenantState.valueOf(tenantInfoDataManager.getValue(tName, TenantInfoFieldName.PROPERTY_STATE));
+      TenantState tState =
+         TenantState.valueOf(tenantInfoDataManager.getValue(tName, TenantInfoFieldName.PROPERTY_STATE));
       switch (tState)
       {
          case ONLINE : {

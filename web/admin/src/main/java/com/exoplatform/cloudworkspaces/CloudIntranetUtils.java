@@ -24,15 +24,22 @@ import static java.net.HttpURLConnection.HTTP_OK;
 import com.exoplatform.cloudworkspaces.listener.TenantResumeThread;
 
 import org.apache.commons.configuration.Configuration;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpParams;
 import org.everrest.core.impl.provider.json.JsonException;
 import org.everrest.core.impl.provider.json.JsonParser;
 import org.everrest.core.impl.provider.json.ObjectValue;
 import org.exoplatform.cloudmanagement.admin.CloudAdminException;
 import org.exoplatform.cloudmanagement.admin.WorkspacesMailSender;
 import org.exoplatform.cloudmanagement.admin.configuration.AdminConfiguration;
+import org.exoplatform.cloudmanagement.admin.configuration.ApplicationServerConfigurationManager;
 import org.exoplatform.cloudmanagement.admin.configuration.MailConfiguration;
 import org.exoplatform.cloudmanagement.admin.configuration.TenantInfoFieldName;
 import org.exoplatform.cloudmanagement.admin.dao.TenantInfoDataManager;
+import org.exoplatform.cloudmanagement.admin.http.HttpClientManager;
 import org.exoplatform.cloudmanagement.admin.util.AdminConfigurationUtil;
 import org.exoplatform.cloudmanagement.status.TenantState;
 import org.slf4j.Logger;
@@ -77,6 +84,10 @@ public class CloudIntranetUtils
 
    private TenantInfoDataManager tenantInfoDataManager;
 
+   private ApplicationServerConfigurationManager applicationServerConfigurationManager;
+
+   private HttpClientManager httpClientManager;
+
    private WorkspacesMailSender mailSender;
 
    UserRequestDAO requestDao;
@@ -88,10 +99,13 @@ public class CloudIntranetUtils
    private static final Logger LOG = LoggerFactory.getLogger(CloudIntranetUtils.class);
 
    public CloudIntranetUtils(Configuration cloudAdminConfiguration, TenantInfoDataManager tenantInfoDataManager,
+      ApplicationServerConfigurationManager applicationServerConfigurationManager, HttpClientManager httpClientManager,
       UserRequestDAO requestDao)
    {
       this.cloudAdminConfiguration = cloudAdminConfiguration;
       this.tenantInfoDataManager = tenantInfoDataManager;
+      this.applicationServerConfigurationManager = applicationServerConfigurationManager;
+      this.httpClientManager = httpClientManager;
       this.mailSender = new WorkspacesMailSender(cloudAdminConfiguration);
       this.blackListConfigurationFolder = cloudAdminConfiguration.getString("cloud.admin.blacklist.dir", null);
       this.maxUsersConfigurationFile = System.getProperty("cloud.admin.userlimit");
@@ -108,38 +122,25 @@ public class CloudIntranetUtils
    {
       String username = userMail.substring(0, (userMail.indexOf("@")));
 
-      URL url;
-      HttpURLConnection connection = null;
-
-      StringBuilder hostName = new StringBuilder();
-      hostName.append(tName);
-      hostName.append(".");
-      hostName.append(cloudAdminConfiguration.getString(AdminConfiguration.CLOUD_ADMIN_FRONT_END_SERVER_HOST));
+      String alias = tenantInfoDataManager.getValue(tName, TenantInfoFieldName.PROPERTY_APSERVER_ALIAS);
+      String baseUri = applicationServerConfigurationManager.getHttpUriToServer(alias);
+      HttpClient httpClient = httpClientManager.getHttpClient(alias);
 
       StringBuilder strUrl = new StringBuilder();
-      strUrl.append("http://");
-      strUrl.append(hostName);
-      strUrl.append("/cloud-agent/rest/organization/adduser");
+      strUrl.append(baseUri);
+      strUrl.append("cloud-agent/rest/organization/adduser");
 
-      StringBuilder params;
+      HttpParams params = new BasicHttpParams();
       try
       {
-         params = new StringBuilder();
-         params.append("tname=" + tName);
-         params.append("&");
-         params.append("URI=" + "/" + java.net.URLEncoder.encode(username, "utf-8"));
-         params.append("&");
-         params.append("username=" + java.net.URLEncoder.encode(username, "utf-8"));
-         params.append("&");
-         params.append("password=" + java.net.URLEncoder.encode(password, "utf-8"));
-         params.append("&");
-         params.append("first-name=" + java.net.URLEncoder.encode(firstName, "utf-8"));
-         params.append("&");
-         params.append("last-name=" + java.net.URLEncoder.encode(lastName, "utf-8"));
-         params.append("&");
-         params.append("email=" + java.net.URLEncoder.encode(userMail, "utf-8"));
-         params.append("&");
-         params.append("isadministrator=" + Boolean.toString(isAdministrator));
+         params.setParameter("tname", tName);
+         params.setParameter("URI", java.net.URLEncoder.encode(username, "utf-8"));
+         params.setParameter("username", java.net.URLEncoder.encode(username, "utf-8"));
+         params.setParameter("password", java.net.URLEncoder.encode(password, "utf-8"));
+         params.setParameter("first-name", java.net.URLEncoder.encode(firstName, "utf-8"));
+         params.setParameter("last-name", java.net.URLEncoder.encode(lastName, "utf-8"));
+         params.setParameter("email", java.net.URLEncoder.encode(userMail, "utf-8"));
+         params.setParameter("isadministrator", Boolean.toString(isAdministrator));
       }
       catch (UnsupportedEncodingException e)
       {
@@ -149,38 +150,28 @@ public class CloudIntranetUtils
             "An problem happened during processsing this request. It was reported to developers. Please, try again later.");
       }
 
+      HttpPost request = new HttpPost(strUrl.toString());
+      request.setParams(params);
+      HttpResponse response = null;
       try
       {
-         url = new URL(strUrl.toString());
-         connection = (HttpURLConnection)url.openConnection();
-         connection.setRequestMethod("POST");
-         connection.setDoOutput(true);
-         OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
-         writer.write(params.toString());
-         writer.flush();
-         writer.close();
-         if (connection.getResponseCode() == HTTP_CREATED)
+         response = httpClient.execute(request);
+         if (response.getStatusLine().getStatusCode() == HTTP_CREATED)
          {
             return;
          }
          else
          {
-            String err = readText(connection.getErrorStream());
+            String err = readText(response.getEntity().getContent());
             String msg =
-               ("Unable to add user to workspace " + tName + " (" + hostName + ") - HTTP status:"
-                  + connection.getResponseCode() + (err != null ? ". Server error: \r\n" + err + "\r\n" : ""));
+               ("Unable to add user to workspace " + tName + " (" + alias + ") - HTTP status:"
+                  + response.getStatusLine().getStatusCode() + (err != null ? ". Server error: \r\n" + err + "\r\n"
+                  : ""));
             LOG.error(msg);
             sendAdminErrorEmail(msg, null);
             throw new CloudAdminException(
                "An problem happened during processsing this request. It was reported to developers. Please, try again later.");
          }
-      }
-      catch (MalformedURLException e)
-      {
-         LOG.error(e.getMessage(), e);
-         sendAdminErrorEmail(e.getMessage(), e);
-         throw new CloudAdminException(
-            "An problem happened during processsing this request. It was reported to developers. Please, try again later.");
       }
       catch (IOException e)
       {
@@ -188,13 +179,23 @@ public class CloudIntranetUtils
          sendAdminErrorEmail(e.getMessage(), e);
          throw new CloudAdminException(
             "An problem happened during processsing this request. It was reported to developers. Please, try again later.");
-
       }
       finally
       {
-         if (connection != null)
+         try
          {
-            connection.disconnect();
+            if (response != null)
+            {
+               response.getEntity().getContent().close();
+            }
+         }
+         catch (IllegalStateException e)
+         {
+            throw new CloudAdminException("An problem happened during closing http connection.");
+         }
+         catch (IOException e)
+         {
+            throw new CloudAdminException("An problem happened during closing http connection.");
          }
       }
    }
@@ -732,7 +733,6 @@ public class CloudIntranetUtils
 
    }
 
-
    public boolean isInBlackList(String email)
    {
       String tail = email.substring(email.indexOf("@") + 1);
@@ -941,7 +941,8 @@ public class CloudIntranetUtils
          try
          {
             // Checking status
-            if (!tenantInfoDataManager.getValue(tenant, TenantInfoFieldName.PROPERTY_STATE).equals(TenantState.ONLINE.toString()))
+            if (!tenantInfoDataManager.getValue(tenant, TenantInfoFieldName.PROPERTY_STATE).equals(
+               TenantState.ONLINE.toString()))
             {
                String msg = "Tenant " + tenant + " is not online, auto join skipped for user " + userMail;
                LOG.warn(msg);
@@ -1005,7 +1006,8 @@ public class CloudIntranetUtils
          try
          {
             // Checking status
-            if (!tenantInfoDataManager.getValue(tenant, TenantInfoFieldName.PROPERTY_STATE).equals(TenantState.ONLINE.toString()))
+            if (!tenantInfoDataManager.getValue(tenant, TenantInfoFieldName.PROPERTY_STATE).equals(
+               TenantState.ONLINE.toString()))
             {
                String msg = "Tenant " + tenant + " is not online, auto join skipped for user " + userMail;
                LOG.warn(msg);
@@ -1155,8 +1157,9 @@ public class CloudIntranetUtils
          return null;
       }
    }
-   
-   public String email2tenantName (String email){
+
+   public String email2tenantName(String email)
+   {
       String tail = email.substring(email.indexOf("@") + 1);
       String tName = tail.substring(0, tail.indexOf("."));
       return tName;

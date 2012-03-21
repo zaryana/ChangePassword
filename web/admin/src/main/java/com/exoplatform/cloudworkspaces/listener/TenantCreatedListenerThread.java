@@ -24,8 +24,10 @@ import com.exoplatform.cloudworkspaces.UserRequestDAO;
 
 import org.apache.commons.configuration.Configuration;
 import org.exoplatform.cloudmanagement.admin.CloudAdminException;
+import org.exoplatform.cloudmanagement.admin.configuration.ApplicationServerConfigurationManager;
 import org.exoplatform.cloudmanagement.admin.configuration.TenantInfoFieldName;
 import org.exoplatform.cloudmanagement.admin.dao.TenantInfoDataManager;
+import org.exoplatform.cloudmanagement.admin.http.HttpClientManager;
 import org.exoplatform.cloudmanagement.status.TenantState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +43,10 @@ public class TenantCreatedListenerThread implements Runnable
 
    private TenantInfoDataManager tenantInfoDataManager;
 
+   private ApplicationServerConfigurationManager applicationServerConfigurationManager;
+
+   private HttpClientManager httpClientManager;
+
    UserRequestDAO requestDao;
 
    private int interval = 15000;
@@ -48,10 +54,13 @@ public class TenantCreatedListenerThread implements Runnable
    private Configuration cloudAdminConfiguration;
 
    public TenantCreatedListenerThread(String tName, TenantInfoDataManager tenantInfoDataManager,
+      ApplicationServerConfigurationManager applicationServerConfigurationManager, HttpClientManager httpClientManager,
       Configuration cloudAdminConfiguration, UserRequestDAO requestDao)
    {
       this.tName = tName;
       this.tenantInfoDataManager = tenantInfoDataManager;
+      this.applicationServerConfigurationManager = applicationServerConfigurationManager;
+      this.httpClientManager = httpClientManager;
       this.cloudAdminConfiguration = cloudAdminConfiguration;
       this.requestDao = requestDao;
    }
@@ -59,7 +68,9 @@ public class TenantCreatedListenerThread implements Runnable
    @Override
    public void run()
    {
-      CloudIntranetUtils utils = new CloudIntranetUtils(cloudAdminConfiguration, tenantInfoDataManager, requestDao);
+      CloudIntranetUtils utils =
+         new CloudIntranetUtils(cloudAdminConfiguration, tenantInfoDataManager, applicationServerConfigurationManager,
+            httpClientManager, requestDao);
       long limit = Integer.parseInt(cloudAdminConfiguration.getString(CLOUD_ADMIN_CREATION_TIMEOUT, "86400")) * 1000; // in milliseconds
 
       try
@@ -67,8 +78,8 @@ public class TenantCreatedListenerThread implements Runnable
          if (tenantInfoDataManager.isExists(tName))
          {
             long count = 0;
-            while (!tenantInfoDataManager.getValue(tName, TenantInfoFieldName.PROPERTY_STATE)
-               .equals(TenantState.ONLINE.toString()))
+            while (!tenantInfoDataManager.getValue(tName, TenantInfoFieldName.PROPERTY_STATE).equals(
+               TenantState.ONLINE.toString()))
             {
                if (count > limit)
                {
