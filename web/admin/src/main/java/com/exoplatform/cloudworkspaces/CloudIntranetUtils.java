@@ -26,10 +26,10 @@ import com.exoplatform.cloudworkspaces.listener.TenantResumeThread;
 import org.apache.commons.configuration.Configuration;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpParams;
+import org.apache.http.message.BasicNameValuePair;
 import org.everrest.core.impl.provider.json.JsonException;
 import org.everrest.core.impl.provider.json.JsonParser;
 import org.everrest.core.impl.provider.json.ObjectValue;
@@ -55,6 +55,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -92,7 +93,7 @@ public class CloudIntranetUtils
    private String blackListConfigurationFolder;
 
    private String maxUsersConfigurationFile;
-   
+
    private String organizationServicePath = "cloud-agent/rest/cloudworkspaces/organization";
 
    private static final Logger LOG = LoggerFactory.getLogger(CloudIntranetUtils.class);
@@ -129,17 +130,17 @@ public class CloudIntranetUtils
       strUrl.append(baseUri);
       strUrl.append(organizationServicePath + "/adduser");
 
-      HttpParams params = new BasicHttpParams();
+      ArrayList<BasicNameValuePair> params = new ArrayList<BasicNameValuePair>();
       try
       {
-         params.setParameter("tname", tName);
-         params.setParameter("URI", java.net.URLEncoder.encode(username, "utf-8"));
-         params.setParameter("username", java.net.URLEncoder.encode(username, "utf-8"));
-         params.setParameter("password", java.net.URLEncoder.encode(password, "utf-8"));
-         params.setParameter("first-name", java.net.URLEncoder.encode(firstName, "utf-8"));
-         params.setParameter("last-name", java.net.URLEncoder.encode(lastName, "utf-8"));
-         params.setParameter("email", java.net.URLEncoder.encode(userMail, "utf-8"));
-         params.setParameter("isadministrator", Boolean.toString(isAdministrator));
+         params.add(new BasicNameValuePair("tname", tName));
+         params.add(new BasicNameValuePair("URI", java.net.URLEncoder.encode(username, "utf-8")));
+         params.add(new BasicNameValuePair("username", java.net.URLEncoder.encode(username, "utf-8")));
+         params.add(new BasicNameValuePair("password", java.net.URLEncoder.encode(password, "utf-8")));
+         params.add(new BasicNameValuePair("first-name", java.net.URLEncoder.encode(firstName, "utf-8")));
+         params.add(new BasicNameValuePair("last-name", java.net.URLEncoder.encode(lastName, "utf-8")));
+         params.add(new BasicNameValuePair("email", java.net.URLEncoder.encode(userMail, "utf-8")));
+         params.add(new BasicNameValuePair("isadministrator", Boolean.toString(isAdministrator)));
       }
       catch (UnsupportedEncodingException e)
       {
@@ -150,10 +151,10 @@ public class CloudIntranetUtils
       }
 
       HttpPost request = new HttpPost(strUrl.toString());
-      request.setParams(params);
       HttpResponse response = null;
       try
       {
+         request.setEntity(new UrlEncodedFormEntity(params));
          response = httpClient.execute(request);
          if (response.getStatusLine().getStatusCode() == HTTP_CREATED)
          {
@@ -212,11 +213,10 @@ public class CloudIntranetUtils
       StringBuilder strUrl = new StringBuilder();
       strUrl.append(baseUri);
       strUrl.append(organizationServicePath + "/users/" + tName);
-      HttpParams params = new BasicHttpParams();
-      params.setParameter("administratorsonly", "false");
+      strUrl.append('?');
+      strUrl.append("administratorsonly=false");
 
       HttpGet request = new HttpGet(strUrl.toString());
-      request.setParams(params);
       HttpResponse response = null;
       try
       {
@@ -328,12 +328,12 @@ public class CloudIntranetUtils
       StringBuilder strUrl = new StringBuilder();
       strUrl.append(baseUri);
       strUrl.append(organizationServicePath + "/newpassword/");
-      HttpParams params = new BasicHttpParams();
+      ArrayList<BasicNameValuePair> params = new ArrayList<BasicNameValuePair>();
       try
       {
-         params.setParameter("tname", tName);
-         params.setParameter("username", java.net.URLEncoder.encode(username, "utf-8"));
-         params.setParameter("password", java.net.URLEncoder.encode(password, "utf-8"));
+         params.add(new BasicNameValuePair("tname", tName));
+         params.add(new BasicNameValuePair("username", java.net.URLEncoder.encode(username, "utf-8")));
+         params.add(new BasicNameValuePair("password", java.net.URLEncoder.encode(password, "utf-8")));
       }
       catch (UnsupportedEncodingException e)
       {
@@ -344,10 +344,10 @@ public class CloudIntranetUtils
       }
 
       HttpPost request = new HttpPost(strUrl.toString());
-      request.setParams(params);
       HttpResponse response = null;
       try
       {
+         request.setEntity(new UrlEncodedFormEntity(params));
          response = httpClient.execute(request);
          if (response.getStatusLine().getStatusCode() == HTTP_OK)
          {
@@ -405,13 +405,11 @@ public class CloudIntranetUtils
 
       strUrl.append(baseUri);
       strUrl.append(organizationServicePath + "/users/" + tName);
-
-      HttpParams params = new BasicHttpParams();
-      params.setParameter("administratorsonly", "true");
+      strUrl.append('?');
+      strUrl.append("administratorsonly=true");
 
       InputStream io;
-      HttpPost request = new HttpPost(strUrl.toString());
-      request.setParams(params);
+      HttpGet request = new HttpGet(strUrl.toString());
       HttpResponse response = null;
       try
       {
@@ -436,7 +434,8 @@ public class CloudIntranetUtils
             String err = readText(response.getEntity().getContent());
             String msg =
                ("Unable to get administrators list from workspace " + tName + " - HTTP status:"
-                  + response.getStatusLine().getStatusCode() + (err != null ? ". Server error: \r\n" + err + "\r\n" : ""));
+                  + response.getStatusLine().getStatusCode() + (err != null ? ". Server error: \r\n" + err + "\r\n"
+                  : ""));
             LOG.error(msg);
             sendAdminErrorEmail(msg, null);
             throw new CloudAdminException(
