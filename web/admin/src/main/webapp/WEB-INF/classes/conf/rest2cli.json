@@ -60,21 +60,6 @@
     ]       
 },
 {
-    "command": ["tenant remove"],
-    "path": "/cloud-admin/tenant-service/remove",
-    "method": "POST",
-    "description" : "Remove tenant and all its resources from cloud. Options: -n, --name - name of tenant for remove.",
-    "params": [
-      {
-	  "name": "tenant",
-	  "type": "QUERY",
-	  "options":[-n, --name],
-	  "hasArg": true,
-	  "mandatory": true
-      }
-    ]       
-},
-{
     "command": ["tenant status"],
     "path": "/cloud-admin/tenant-service/tenant-status",
     "method": "GET",
