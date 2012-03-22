@@ -82,7 +82,7 @@ public class InviteJoinWsRESTService implements ResourceContainer {
 	}
 	
     public String regisLink(String masterhost, String email) {
-		String strUrl = "http://" + masterhost +"/rest/cloud-admin/public-tenant-service/signup-link";
+		String strUrl = "http://" + masterhost +"/rest/cloud-admin/cloudworkspaces/tenant-service/signup-link";
 		URL url;
 		HttpURLConnection connection = null;
 		String result = "";

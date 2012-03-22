@@ -20,26 +20,24 @@ package com.exoplatform.cloudworkspaces.organization.listener;
 
 import static java.net.HttpURLConnection.HTTP_OK;
 
+import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
-import org.exoplatform.services.organization.UserEventListener;
-import org.exoplatform.services.organization.User;
 import org.exoplatform.services.jcr.RepositoryService;
-import org.exoplatform.services.jcr.core.ManageableRepository;
 import org.exoplatform.services.organization.OrganizationService;
-import org.exoplatform.commons.utils.ListAccess;
+import org.exoplatform.services.organization.User;
+import org.exoplatform.services.organization.UserEventListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.jcr.RepositoryException;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.BufferedReader;
 import java.net.HttpURLConnection;
-import java.net.ProtocolException;
 import java.net.URL;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import javax.jcr.RepositoryException;
 
 public class UserLimitListener extends UserEventListener
 {
@@ -69,7 +67,7 @@ public class UserLimitListener extends UserEventListener
          StringBuilder strUrl = new StringBuilder();
          strUrl.append("http://");
          strUrl.append(masterhost);
-         strUrl.append("/rest/cloud-admin/public-tenant-service/maxallowed/");
+         strUrl.append("/rest/cloud-admin/cloudworkspaces/tenant-service/maxallowed/");
          strUrl.append(tName);
 
          url = new URL(strUrl.toString());
