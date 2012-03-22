@@ -57,7 +57,7 @@ public class TenantResumeThread implements Runnable
       StringBuilder strUrl = new StringBuilder();
       strUrl.append("http://");
       strUrl.append(cloudAdminConfiguration.getString(CLOUD_ADMIN_FRONT_END_SERVER_HOST, "localhost"));
-      strUrl.append("/rest/cloud-admin/cloudworkspaces/tenant-service/resume?tenant=" + tName);
+      strUrl.append("/rest/cloud-admin/tenant-service/resume?tenant=" + tName);
       try
       {
          URL url = new URL(strUrl.toString());

@@ -463,7 +463,7 @@ public class CloudWorkspacesTenantService extends TenantCreator
                      + ". Join request rejected. User warned on the Sign Up form.");
                   return Response.ok(e.getMessage()).build();
                }
-
+               break;
             }
             case CREATION :
             case WAITING_CREATION : {
@@ -473,6 +473,7 @@ public class CloudWorkspacesTenantService extends TenantCreator
                requestDao.put(req);
                LOG.info("User " + userMail
                   + " join was put in waiting state after join - tenant state WAITING_CREATION.");
+               break;
             }
             case SUSPENDED : {
                utils.resumeTenant(tName);
