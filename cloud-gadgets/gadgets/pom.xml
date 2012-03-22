@@ -5,7 +5,7 @@
   <parent>
     <groupId>com.exoplatform.cloudworkspaces</groupId>
     <artifactId>cloud-gadgets</artifactId>
-    <version>1.1.0-Alpha1</version>
+    <version>1.1.0-Alpha2</version>
   </parent>
 
   <artifactId>cloud-workspaces-gadgets</artifactId>
