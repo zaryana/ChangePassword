@@ -29,6 +29,23 @@
   <component>
     <type>com.exoplatform.cloudworkspaces.gadget.services.GettingStarted.GettingStartedRestService</type>
   </component>
+  <!-- MY DOCUMENTS -->
+  <component>
+    <type>com.exoplatform.cloudworkspaces.gadget.services.MyDocumentsGadget.MyDocumentsRestService</type>
+  </component>
+  <!-- SUGGESTED PEOPLE -->
+  <component>
+    <type>com.exoplatform.cloudworkspaces.gadget.services.SuggestPeopleGadget.PeopleRestServices</type>
+  </component>
+  <!-- SUGGEST SPACES -->
+  <component>
+    <type>com.exoplatform.cloudworkspaces.gadget.services.SuggestSpacesGadget.SpaceRestServices</type>
+  </component>
+  <!-- WHOS ONLINE -->
+  <component>
+    <type>com.exoplatform.cloudworkspaces.gadget.services.WhosOnlineGadget.WhosOnlineRestService</type>
+  </component>
+
   <!-- INVITE JOIN WORKSPACE -->
   <component>
     <type>com.exoplatform.cloudworkspaces.gadget.services.InviteJoinWs.InviteJoinWsRESTService</type>

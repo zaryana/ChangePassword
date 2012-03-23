@@ -1,21 +1,35 @@
-/************** BookMarks **********/
-
-.Button {
-  vertical-align: text-top;  
+#GettingStarted {
+ border: dashed 1px #E2DDC7;
+ margin-right: 15px;
+ -moz-border-radius: 3px;
+ -webkit-border-radius: 3px;
 }
 
-.ItemList {
-  padding: 0px;
+#GettingStarted .UIGadgetThemes {
+ 
+ padding: 10px 0px 0px 15px;
 }
 
-.ItemList ul {
+
+#progress-block {
+ height: 22px;
+}
+
+#list-block {
+  padding-left: 0px;
+  margin-top: 7px;
+  margin-bottom: 5px;
+}
+
+#gsList {
   padding-left: 0px;
   margin-top: 0px;
   margin-bottom: 0px;
-  float: left;
 }
 
-.ItemList ul li {
+
+
+#gsList li {
   list-style-type: none;
   font-family: verdana, arial,sans-serif;
   font-size: 12px;
@@ -23,33 +37,12 @@
   background:url('../img/ArrowRight.gif') no-repeat left;
 }
 
-.ItemList ul li a {
+#gsList li a {
   margin: 10px 0px 10px 0px;
   padding-left: 15px;
   cursor: pointer;
 }
 
-.UIGadgetThemes .FavoritesList .ReadPost {
- color:#cccccc;
-}
-
-.UIGadgetThemes .GadCont .Link {
-  text-decoration:underline;
-  color:#226ab4; 
-  cursor:pointer;
-  font-weight: normal;
-}
-
-.GadCont {
- padding-bottom: 0px; 
-}
-
-.UIGadgetThemes .GadCont .selectedLink {
-    color: #1A1A1A;
-    font-weight: bold;
-  text-decoration: none;
-  cursor: default;
-}
 
 .done {  
   text-decoration: line-through;
@@ -64,8 +57,9 @@
   text-decoration: none;
 }
 
-#gsTitles {
-  margin-bottom: 12px;
+.gadgetTitle {
+  font-weight: bold;
+  margin-bottom: 8px;
 }
 
 
@@ -73,7 +67,7 @@
 
 #progress-shell {
 height: 16px;
-width: 170px;
+width: 160px;
 border: 1px #C7C7C7 solid;
 border-color: #C7C7C7 #C7C7C7 silver silver;
 float: left;
@@ -100,3 +94,6 @@ top: 0;
  margin-top: 4px; 
  font-weight: bold;
 }
+
+
+
