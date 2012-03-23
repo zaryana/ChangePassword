@@ -1,5 +1,5 @@
 /*
- * o
+ * 
  * Copyright (C) 2011 eXo Platform SAS.
  *
  * This is free software; you can redistribute it and/or modify it
@@ -377,6 +377,7 @@ public class CloudIntranetUtils {
     return false;
   }
 
+  /*
   public void putInBlackList(String email) {
     String tail = email.substring(email.indexOf("@") + 1);
     if (blackListConfigurationFolder == null
@@ -414,6 +415,7 @@ public class CloudIntranetUtils {
       sendAdminErrorEmail(e.getMessage(), e);
     }
   }
+  */
 
   public int getMaxUsersForTenant(String tName) throws CloudAdminException {
     if (maxUsersConfigurationFile == null) {

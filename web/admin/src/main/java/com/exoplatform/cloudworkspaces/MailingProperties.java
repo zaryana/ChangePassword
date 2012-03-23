@@ -18,74 +18,61 @@
  */
 package com.exoplatform.cloudworkspaces;
 
-public class MailingProperties
-{
-   public final static String CLOUD_ADMIN_MAIL_JOIN_SUBJECT = "cloud.admin.mail.join.subject";
+public class MailingProperties {
+  public final static String CLOUD_ADMIN_MAIL_JOIN_SUBJECT                       = "cloud.admin.mail.join.subject";
 
-   public final static String CLOUD_ADMIN_MAIL_JOIN_TEMPLATE = "cloud.admin.mail.join.template";
+  public final static String CLOUD_ADMIN_MAIL_JOIN_TEMPLATE                      = "cloud.admin.mail.join.template";
 
-   public final static String CLOUD_ADMIN_MAIL_JOIN_CLOSED_USER_SUBJECT = "cloud.admin.mail.join.closed.user.subject";
+  public final static String CLOUD_ADMIN_MAIL_JOIN_CLOSED_USER_SUBJECT           = "cloud.admin.mail.join.closed.user.subject";
 
-   public final static String CLOUD_ADMIN_MAIL_JOIN_CLOSED_USER_TEMPLATE = "cloud.admin.mail.join.closed.user.template";
+  public final static String CLOUD_ADMIN_MAIL_JOIN_CLOSED_USER_TEMPLATE          = "cloud.admin.mail.join.closed.user.template";
 
-   public final static String CLOUD_ADMIN_MAIL_JOIN_CLOSED_OWNER_SUBJECT = "cloud.admin.mail.join.closed.owner.subject";
+  public final static String CLOUD_ADMIN_MAIL_JOIN_CLOSED_OWNER_SUBJECT          = "cloud.admin.mail.join.closed.owner.subject";
 
-   public final static String CLOUD_ADMIN_MAIL_JOIN_CLOSED_OWNER_TEMPLATE =
-      "cloud.admin.mail.join.closed.owner.template";
+  public final static String CLOUD_ADMIN_MAIL_JOIN_CLOSED_OWNER_TEMPLATE         = "cloud.admin.mail.join.closed.owner.template";
 
-   public final static String CLOUD_ADMIN_MAIL_SALES_EMAIL = "cloud.admin.mail.sales.email";
+  public final static String CLOUD_ADMIN_MAIL_SALES_EMAIL                        = "cloud.admin.mail.sales.email";
 
-   public final static String CLOUD_ADMIN_MAIL_JOIN_CLOSED_SALES_SUBJECT = "cloud.admin.mail.join.closed.sales.subject";
+  public final static String CLOUD_ADMIN_MAIL_JOIN_CLOSED_SALES_SUBJECT          = "cloud.admin.mail.join.closed.sales.subject";
 
-   public final static String CLOUD_ADMIN_MAIL_JOIN_CLOSED_SALES_TEMPLATE =
-      "cloud.admin.mail.join.closes.sales.template";
+  public final static String CLOUD_ADMIN_MAIL_JOIN_CLOSED_SALES_TEMPLATE         = "cloud.admin.mail.join.closes.sales.template";
 
-   public static final String CLOUD_ADMIN_MAIL_USER_JOINED_TEMPLATE = "cloud.admin.mail.joined.template";
+  public static final String CLOUD_ADMIN_MAIL_USER_JOINED_TEMPLATE               = "cloud.admin.mail.joined.template";
 
-   public static final String CLOUD_ADMIN_MAIL_USER_JOINED_SUBJECT = "cloud.admin.mail.joined.subject";
+  public static final String CLOUD_ADMIN_MAIL_USER_JOINED_SUBJECT                = "cloud.admin.mail.joined.subject";
 
-   public static final String CLOUD_ADMIN_MAIL_USER_JOINED_OWNER_TEMPLATE =
-      "cloud.admin.mail.user.joined.owner.template";
+  public static final String CLOUD_ADMIN_MAIL_USER_JOINED_OWNER_TEMPLATE         = "cloud.admin.mail.user.joined.owner.template";
 
-   public static final String CLOUD_ADMIN_MAIL_USER_JOINED_OWNER_SUBJECT =
-      "cloud.admin.mail.user.joined.owner.subject";
+  public static final String CLOUD_ADMIN_MAIL_USER_JOINED_OWNER_SUBJECT          = "cloud.admin.mail.user.joined.owner.subject";
 
-   public static final String CLOUD_ADMIN_MAIL_USER_INTRANET_CREATED_TEMPLATE =
-      "cloud.admin.mail.intranet.created.user.template";
+  public static final String CLOUD_ADMIN_MAIL_USER_INTRANET_CREATED_TEMPLATE     = "cloud.admin.mail.intranet.created.user.template";
 
-   public static final String CLOUD_ADMIN_MAIL_USER_INTRANET_CREATED_SUBJECT =
-      "cloud.admin.mail.intranet.created.user.subject";
+  public static final String CLOUD_ADMIN_MAIL_USER_INTRANET_CREATED_SUBJECT      = "cloud.admin.mail.intranet.created.user.subject";
 
-   public static final String CLOUD_ADMIN_MAIL_OWNER_INTRANET_CREATED_TEMPLATE =
-      "cloud.admin.mail.intranet.created.owner.template";
+  public static final String CLOUD_ADMIN_MAIL_OWNER_INTRANET_CREATED_TEMPLATE    = "cloud.admin.mail.intranet.created.owner.template";
 
-   public static final String CLOUD_ADMIN_MAIL_OWNER_INTRANET_CREATED_SUBJECT =
-      "cloud.admin.mail.intranet.created.owner.subject";
-   
-   public static final String CLOUD_ADMIN_MAIL_CONTACT_TEMPLATE = "cloud.admin.mail.contact.template";
-   
-   public static final String CLOUD_ADMIN_MAIL_PASSWORD_RESTORE_TEMPLATE = "cloud.admin.mail.password.reset.template";
+  public static final String CLOUD_ADMIN_MAIL_OWNER_INTRANET_CREATED_SUBJECT     = "cloud.admin.mail.intranet.created.owner.subject";
 
-   public static final String CLOUD_ADMIN_MAIL_PASSWORD_RESTORE_SUBJECT = "cloud.admin.mail.password.reset.subject";
-   
-   public static final String CLOUD_ADMIN_MAIL_REQUEST_QUEUED_TEMPLATE = "cloud.admin.mail.request.queued.template";
+  public static final String CLOUD_ADMIN_MAIL_CONTACT_TEMPLATE                   = "cloud.admin.mail.contact.template";
 
-   public static final String CLOUD_ADMIN_MAIL_REQUEST_QUEUED_SUBJECT = "cloud.admin.mail.request.queued.subject";
+  public static final String CLOUD_ADMIN_MAIL_PASSWORD_RESTORE_TEMPLATE          = "cloud.admin.mail.password.reset.template";
 
-   public static final String CLOUD_ADMIN_MAIL_REQUEST_QUEUED_DEVELOPERS_TEMPLATE =
-      "cloud.admin.mail.request.queued.developers.template";
+  public static final String CLOUD_ADMIN_MAIL_PASSWORD_RESTORE_SUBJECT           = "cloud.admin.mail.password.reset.subject";
 
-   public static final String CLOUD_ADMIN_MAIL_REQUEST_QUEUED_DEVELOPERS_SUBJECT =
-      "cloud.admin.mail.request.queued.developers.subject";
+  public static final String CLOUD_ADMIN_MAIL_REQUEST_QUEUED_TEMPLATE            = "cloud.admin.mail.request.queued.template";
 
-   public static final String CLOUD_ADMIN_MAIL_REQUEST_REJECTED_TEMPLATE =
-      "cloud.admin.mail.request.rejected.template";
-   
-   public static final String CLOUD_ADMIN_MAIL_SUPPOR_EMAIL = "cloud.admin.mail.support.email";
-   
-   public static final String CLOUD_ADMIN_MAIL_MARKETING_EMAIL = "cloud.admin.mail.marketing.email";
+  public static final String CLOUD_ADMIN_MAIL_REQUEST_QUEUED_SUBJECT             = "cloud.admin.mail.request.queued.subject";
 
-   public static final String CLOUD_ADMIN_MAIL_REQUEST_REJECTED_SUBJECT = "cloud.admin.mail.request.rejected.subject";
+  public static final String CLOUD_ADMIN_MAIL_REQUEST_QUEUED_DEVELOPERS_TEMPLATE = "cloud.admin.mail.request.queued.developers.template";
 
+  public static final String CLOUD_ADMIN_MAIL_REQUEST_QUEUED_DEVELOPERS_SUBJECT  = "cloud.admin.mail.request.queued.developers.subject";
+
+  public static final String CLOUD_ADMIN_MAIL_REQUEST_REJECTED_TEMPLATE          = "cloud.admin.mail.request.rejected.template";
+
+  public static final String CLOUD_ADMIN_MAIL_SUPPOR_EMAIL                       = "cloud.admin.mail.support.email";
+
+  public static final String CLOUD_ADMIN_MAIL_MARKETING_EMAIL                    = "cloud.admin.mail.marketing.email";
+
+  public static final String CLOUD_ADMIN_MAIL_REQUEST_REJECTED_SUBJECT           = "cloud.admin.mail.request.rejected.subject";
 
 }

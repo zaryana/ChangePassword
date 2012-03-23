@@ -557,10 +557,10 @@ public class CloudWorkspacesTenantService extends TenantCreator {
    * @param uuid
    * @return Response
    * @throws CloudAdminException
-   * @POST
-   * @Path("/create")
    */
-  protected Response createIntranet(@FormParam("user-mail") String userMail,
+  @POST
+  @Path("/create")
+  public Response createIntranet(@FormParam("user-mail") String userMail,
                                     @FormParam("first-name") String firstName,
                                     @FormParam("last-name") String lastName,
                                     @FormParam("company-name") String companyName,
@@ -570,6 +570,11 @@ public class CloudWorkspacesTenantService extends TenantCreator {
     if (!utils.validateEmail(userMail))
       return Response.status(Status.BAD_REQUEST)
                      .entity("Please enter a valid email address.")
+                     .build();
+    
+    if (!utils.validateUUID(userMail, uuid))
+      return Response.status(Status.BAD_REQUEST)
+                     .entity("Sorry, your registration link has expired. Please sign up again.")
                      .build();
 
     if (utils.isInBlackList(userMail)) {
@@ -591,6 +596,19 @@ public class CloudWorkspacesTenantService extends TenantCreator {
                                                                          requestDao);
     ExecutorService executor = Executors.newSingleThreadExecutor();
     executor.execute(thread);
+    UserRequest req = new UserRequest("",
+                                      tName,
+                                      userMail,
+                                      firstName,
+                                      lastName,
+                                      companyName,
+                                      phone,
+                                      password,
+                                      uuid,
+                                      true,
+                                      RequestState.WAITING_JOIN);
+    requestDao.put(req);
+    new ReferencesManager(adminConfiguration).removeEmail(userMail);
     return Response.ok().build();
   }
 
@@ -623,6 +641,7 @@ public class CloudWorkspacesTenantService extends TenantCreator {
     return Response.ok().build();
   }
 
+  /*
   @POST
   @Path("/create")
   public Response create(@FormParam("user-mail") String userMail,
@@ -675,6 +694,7 @@ public class CloudWorkspacesTenantService extends TenantCreator {
     new ReferencesManager(adminConfiguration).removeEmail(userMail);
     return Response.ok().build();
   }
+  
 
   @GET
   @RolesAllowed("cloud-manager")
@@ -777,6 +797,7 @@ public class CloudWorkspacesTenantService extends TenantCreator {
       throw new CloudAdminException("Unknown action.");
     }
   }
+  */
 
   @GET
   @Path("autojoin/{state}")
