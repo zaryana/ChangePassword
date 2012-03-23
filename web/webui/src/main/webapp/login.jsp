@@ -1,57 +1,15 @@
+<%@page contentType="text/html; charset=UTF-8" language="java" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
-	<head>
-   <link href="css/Style.css" rel="stylesheet" type="text/css" />
-	</head>
-	<body>
-	
-
-<div id="fb-root"></div>
-<script>(function(d, s, id) {
-  var js, fjs = d.getElementsByTagName(s)[0];
-  if (d.getElementById(id)) return;
-  js = d.createElement(s); js.id = id;
-  js.src = "https://connect.facebook.net/en_US/all.js#xfbml=1";
-  fjs.parentNode.insertBefore(js, fjs);
-}(document, 'script', 'facebook-jssdk'));</script>
-		<div class="UIHeader" id="UIHeader">
-			<div class="MainContent">
-				<ul class="UIMenuTop FR">
-				  <li><a class="Tab BlueTab" href="<%=request.getContextPath()%>/about.jsp">About</a></li>
-				  <li><a class="Tab GreenTab" href="http://community.exoplatform.com" target="_blank">Community</a></li>
-				  <li><a class="Tab GrayTab" href="http://blog.exoplatform.com" target="_blank">Blog</a></li>
-				  <li><a class="Tab OrangeTab" href="http://www.exoplatform.com" target="_blank">eXoplatform.com</a></li>
-				  <li class="last"><a class="Tab OrangeTab" onclick="showContactUsForm('<%=request.getContextPath()%>/contact-us.jsp');">Contact us</a></li>
-				</ul>
-				<div class="Logo FL"><a href="/<%=request.getContextPath()%>"><img src="background/logo.png"/></a></div>
-				<div class="ClouIntranet FR"><h1>Cloud Workspaces</h1><span>The Free Social Intranet for Your Company</span></div>
-			</div>
-		</div>
-		<div class="MarkLayer" id="MaskLayer" style="width: 100%; display: none;"></div>
-		<div id="ContactUsContainer" style="display: none;"></div> 
-		
-		<!--code body here-->
-		
-		<!--HelpPage-->	
-		<script type="text/javascript"><!--script calculate position menu left when scrollbar trigger -->
-		window.onscroll = scroll;    
-		function scroll()  {  
-		var DivHeight = document.getElementById("UIHeader").offsetHeight;/*get height UIHeader*/
-		
-		
-		if(typeof(window.pageYOffset)=='number') {
-			bodyscroll=window.pageYOffset;
-		}
-		else {
-			   bodyscroll=document.documentElement.scrollTop;
-		}
-		var temp=DivHeight-bodyscroll;	
-		 document.getElementById("SiderBarLeft").style.top=temp+20+"px";  /*add 20px (UIPageBody has style margin-top=20)*/
-		if(bodyscroll>DivHeight){
-			document.getElementById("SiderBarLeft").style.top="10px";  /*set defaul 10px if position scroll over UIHeader*/
-		}
-		}  
-		</script> 
+  <head>
+    <% String pageName = "Help eXo Cloud Workspace"; %>
+    <%@ include file="common/headStyle.jsp"%>
+    <%@ include file="common/headScript.jsp"%>
+  </head>
+  <body onLoad="tenants.init();">
+    <div class="UIPageContainer">
+      <!--begin header-->
+      <%@ include file="common/header.jsp"%>
 
 	<div class="UIPageBody FormPages">
 		<form class="UIForm UIFormBox SigninForm" name="cloud-workspaces-profile" id="signinForm" method="POST" action="javascript:void(0);" >
@@ -76,12 +34,13 @@
 	</div>
 	<!--end code body here-->
 		
-	<div class="UIFooterPortlet">
-			<div class="MainContent ClearFix">
-				<p class="FL">Cloud Workspaces is Brought to You by <span><a href="http://www.exoplatform.com">eXo</a></span></p>
-				<p class="Copyright FR">Copyright &copy; 2000-2012. All Rights Reserved, eXo Platform SAS.</p>
-			</div>
-		</div>
-
-	</body>
-	</html>
+	<!--begin Footer-->
+      <%@ include file="common/footer.jsp"%>  
+    </div>
+    
+    <!-- BEGIN: LOOPFUSE TRACKING -->
+    <script type="text/javascript" src="http://lfov.net/webrecorder/js/listen.js"></script>
+    <!-- END: LOOPFUSE TRACKING -->
+    <script type="text/javascript" src="/js/trackers.js"></script>    
+  </body>
+</html>
