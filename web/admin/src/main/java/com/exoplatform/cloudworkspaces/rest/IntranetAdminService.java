@@ -620,37 +620,57 @@ public class IntranetAdminService extends TenantCreator {
   }
 
   /*
-   * @POST
-   * @Path("/create") public Response create(@FormParam("user-mail") String
-   * userMail, @FormParam("first-name") String firstName,
-   * @FormParam("last-name") String lastName, @FormParam("company-name") String
-   * companyName,
-   * @FormParam("phone") String phone, @FormParam("password") String password,
-   * @FormParam("confirmation-id") String uuid) throws CloudAdminException { if
-   * (!utils.validateEmail(userMail)) return
-   * Response.status(Status.BAD_REQUEST).
-   * entity("Please enter a valid email address.").build(); if
-   * (!utils.validateUUID(userMail, uuid)) return
-   * Response.status(Status.BAD_REQUEST)
-   * .entity("Sorry, your registration link has expired. Please sign up again."
-   * ).build(); if (utils.isInBlackList(userMail)) { String domain =
-   * userMail.substring(userMail.indexOf("@")); return
-   * Response.status(Status.BAD_REQUEST)
-   * .entity("Sorry, we can't create workspace with an email address " + domain
-   * + ". Try with your work email.") .build(); } String tName =
-   * utils.email2tenantName(userMail); Map<String, String> props = new
-   * HashMap<String, String>(); String username = userMail.substring(0,
-   * (userMail.indexOf("@"))); props.put("tenant.masterhost",
-   * adminConfiguration.getMasterHost()); props.put("tenant.repository.name",
-   * tName); props.put("user.mail", userMail); props.put("user.name", username);
-   * props.put("first.name", firstName); props.put("last.name", lastName);
-   * utils.sendCreationQueuedEmails(tName, userMail, props); UserRequest req =
-   * new UserRequest("", tName, userMail, firstName, lastName, companyName,
-   * phone, password, uuid, true, RequestState.WAITING_CREATION);
-   * requestDao.put(req); new
-   * ReferencesManager(adminConfiguration).removeEmail(userMail); return
-   * Response.ok().build(); }
-   */
+  @POST
+  @Path("/create")
+  public Response create(@FormParam("user-mail")
+  String userMail, @FormParam("first-name")
+  String firstName, @FormParam("last-name")
+  String lastName, @FormParam("company-name")
+  String companyName, @FormParam("phone")
+  String phone, @FormParam("password")
+  String password, @FormParam("confirmation-id")
+  String uuid) throws CloudAdminException {
+    if (!utils.validateEmail(userMail))
+      return Response.status(Status.BAD_REQUEST)
+                     .entity("Please enter a valid email address.")
+                     .build();
+    if (!utils.validateUUID(userMail, uuid))
+      return Response.status(Status.BAD_REQUEST)
+                     .entity("Sorry, your registration link has expired. Please sign up again.")
+                     .build();
+    if (utils.isInBlackList(userMail)) {
+      String domain = userMail.substring(userMail.indexOf("@"));
+      return Response.status(Status.BAD_REQUEST)
+                     .entity("Sorry, we can't create workspace with an email address " + domain
+                         + ". Try with your work email.")
+                     .build();
+    }
+    String tName = utils.email2tenantName(userMail);
+    Map<String, String> props = new HashMap<String, String>();
+    String username = userMail.substring(0, (userMail.indexOf("@")));
+    props.put("tenant.masterhost", adminConfiguration.getMasterHost());
+    props.put("tenant.repository.name", tName);
+    props.put("user.mail", userMail);
+    props.put("user.name", username);
+    props.put("first.name", firstName);
+    props.put("last.name", lastName);
+    utils.sendCreationQueuedEmails(tName, userMail, props);
+    UserRequest req = new UserRequest("",
+                                      tName,
+                                      userMail,
+                                      firstName,
+                                      lastName,
+                                      companyName,
+                                      phone,
+                                      password,
+                                      uuid,
+                                      true,
+                                      RequestState.WAITING_CREATION);
+    requestDao.put(req);
+    new ReferencesManager(adminConfiguration).removeEmail(userMail);
+    return Response.ok().build();
+  }
+  */ 
 
   @GET
   @RolesAllowed("cloud-manager")
