@@ -121,9 +121,10 @@ public class TenantCreator
     *           - tenant identifier in validation queue
     * @return corresponded status 200
     * @throws CloudAdminException
+    * @POST
+    * @Path("/create-confirmed")  //Hide from direct access
+    *
     */
-   @POST
-   @Path("/create-confirmed")
    public Response createTenantWithConfirmedEmail(@QueryParam("id") String uuid) throws CloudAdminException
    {
       LOG.info("Received  tenant creation request  with id {}", uuid);
@@ -203,9 +204,9 @@ public class TenantCreator
     *           - email of tenant owner
     * @return correspondent status 200
     * @throws CloudAdminException
+    * @POST
+    * @Path("/create-with-confirm/{tenantname}/{user-mail}")  //Hide from direct access
     */
-   @POST
-   @Path("/create-with-confirm/{tenantname}/{user-mail}")
    public Response createTenantWithEmailConfirmation(@PathParam("tenantname") String tenantName,
       @PathParam("user-mail") String userMail) throws CloudAdminException
    {
