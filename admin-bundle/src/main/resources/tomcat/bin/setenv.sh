@@ -4,6 +4,8 @@
 
 # custom JAVA options
 [ -z "$EXO_JAVA_OPTS" ]  && EXO_JAVA_OPTS="-Xms1g -Xmx4g"
+[ -z "$JMXACC" ] && JMXACC="$CATALINA_HOME/conf/jmxremote.access"
+[ -z "$JMXPAS" ] && JMCPAS="$CATALINA_HOME/conf/jmxremote.password"
 
 # this host external address
 # HOST_EXTERNAL_ADDR=`ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}'`
@@ -72,10 +74,10 @@ EXO_CLOUD_ADMIN_OPTS="-Dadmin.agent.auth.username=$CLOUD_AGENT_USERNAME \
                       -Dlogback.configurationFile=$CATALINA_HOME/conf/logback.xml"
 
 JMX_OPTS="-Dcom.sun.management.jmxremote=true -Djava.rmi.server.hostname=$HOST_EXTERNAL_ADDR \
-	-Dcom.sun.management.jmxremote.authenticate=true \
-	-Dcom.sun.management.jmxremote.password.file=$CATALINA_HOME/conf/jmxremote.password \
-	-Dcom.sun.management.jmxremote.access.file=$CATALINA_HOME/conf/jmxremote.access \
-	-Dcom.sun.management.jmxremote.ssl=false"
+    -Dcom.sun.management.jmxremote.authenticate=true \
+    -Dcom.sun.management.jmxremote.password.file=$JMXPAS \
+    -Dcom.sun.management.jmxremote.access.file=$JMXACC \
+    -Dcom.sun.management.jmxremote.ssl=false"
 
 #uncomment if you want to debug app server
 #REMOTE_DEBUG="-Xdebug -Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=y"
