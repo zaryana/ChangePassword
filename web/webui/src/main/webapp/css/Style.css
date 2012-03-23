@@ -356,7 +356,6 @@ p {
   padding-top: 10px;
   width: 100%;
   overflow: hidden;
-  position:absolute;
   bottom:0;
 }
 
@@ -1008,8 +1007,8 @@ hr {
 }
 
 .MobileApplePages .Line_bt{
-	border-bottom: 1px solid #e5e5e5;
-	margin-bottom: 30px;
+	border-bottom: 1px solid #E5E5E5;
+    margin: 0 219px 30px 0;
     padding-bottom: 30px;
 }
 
@@ -1023,13 +1022,19 @@ hr {
 	line-height: 20px;
 }
 
- .MobileApplePages .PDTop{
+.MobileApplePages .PDTop{
 	padding-top: 5px;
- }
+}
  
-  .MobileApplePages .Iphone{
+.MobileApplePages .Iphone{
 	padding-top: 13px;
- }
+    text-align: right;
+    width: 219px;
+}
+ 
+.MobileApplePages .Content{
+	overflow: hidden;
+}
 
 
 /*================started=============*/
