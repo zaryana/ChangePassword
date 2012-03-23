@@ -825,15 +825,17 @@ public class CloudIntranetUtils {
       }
 
       try {
-        // Checking status
-        if (!holder.getTenantStatus(tenant).getState().equals(TenantState.ONLINE)) {
-          String msg = "Tenant " + tenant + " is not online, auto join skipped for user "
-              + userMail;
-          LOG.warn(msg);
-          continue;
-        }
         // Looking for administrators first
         if (one.isAdministrator()) {
+
+          // Checking status
+            if (!holder.getTenantStatus(tenant).getState().equals(TenantState.ONLINE)) {
+              String msg = "Tenant " + tenant + " is not online, auto join skipped for user "
+                  + userMail;
+              LOG.warn(msg);
+              continue;
+            }
+          
           // Prepare properties for mailing
           Map<String, String> props = new HashMap<String, String>();
           props.put("tenant.masterhost", cloudAdminConfiguration.getMasterHost());
@@ -857,7 +859,8 @@ public class CloudIntranetUtils {
           storeUser(tenant, userMail, fName, lName, one.getPassword(), true);
           sendIntranetCreatedEmail(userMail, props);
           requestDao.delete(one);
-        } else {
+        } else 
+        {
           continue;
         }
       } catch (CloudAdminException e) {
@@ -870,7 +873,8 @@ public class CloudIntranetUtils {
 
     // Now regular users
     List<UserRequest> list2 = requestDao.search(tName, state);
-    for (UserRequest one : list2) {
+    for (UserRequest one : list2) 
+    {
       String tenant = one.getTenantName();
       String userMail = one.getUserEmail();
       String fName = one.getFirstName();
@@ -879,25 +883,28 @@ public class CloudIntranetUtils {
       boolean isUserAllowed;
 
       try {
-        // Checking status
-        if (!holder.getTenantStatus(tenant).getState().equals(TenantState.ONLINE)) {
-          String msg = "Tenant " + tenant + " is not online, auto join skipped for user "
-              + userMail;
-          LOG.warn(msg);
-          continue;
-        }
-        // Prepare properties for mailing
-        Map<String, String> props = new HashMap<String, String>();
-        props.put("tenant.masterhost", cloudAdminConfiguration.getMasterHost());
-        props.put("tenant.repository.name", tenant);
-        props.put("user.mail", userMail);
-        props.put("user.name", username);
-        props.put("first.name", fName);
-        props.put("last.name", lName);
-
+  
         if (one.isAdministrator() || one.getPassword().equals("")) {
           continue;
         } else {
+          
+         // Checking status
+          if (!holder.getTenantStatus(tenant).getState().equals(TenantState.ONLINE)) {
+            String msg = "Tenant " + tenant + " is not online, auto join skipped for user "
+                + userMail;
+            LOG.warn(msg);
+            continue;
+          }
+          
+          // Prepare properties for mailing
+          Map<String, String> props = new HashMap<String, String>();
+          props.put("tenant.masterhost", cloudAdminConfiguration.getMasterHost());
+          props.put("tenant.repository.name", tenant);
+          props.put("user.mail", userMail);
+          props.put("user.name", username);
+          props.put("first.name", fName);
+          props.put("last.name", lName);
+          
           try {
             isUserAllowed = isNewUserAllowed(tenant, username);
           } catch (UserAlreadyExistsException e) {
