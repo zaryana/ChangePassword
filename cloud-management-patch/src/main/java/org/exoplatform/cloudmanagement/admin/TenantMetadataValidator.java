@@ -33,87 +33,73 @@ import javax.mail.internet.InternetAddress;
  * 
  *
  */
-public class TenantMetadataValidator
-{
-   public static final int MAX_TENANT_NAME_LENGTH = 20;
+public class TenantMetadataValidator {
+  public static final int       MAX_TENANT_NAME_LENGTH = 20;
 
-   public static final Pattern TENANT_NAME_PATTERN = Pattern.compile("[a-z\\d]*[a-z]+[a-z\\d]*");
+  public static final Pattern   TENANT_NAME_PATTERN    = Pattern.compile("[a-z\\d]*[a-z]+[a-z\\d]*");
 
-   private static final Logger LOG = LoggerFactory.getLogger(TenantMetadataValidator.class);
+  private static final Logger   LOG                    = LoggerFactory.getLogger(TenantMetadataValidator.class);
 
-   private final CloudInfoHolder cloudInfoHolder;
+  private final CloudInfoHolder cloudInfoHolder;
 
-   public TenantMetadataValidator(CloudInfoHolder cloudInfoHolder)
-   {
-      this.cloudInfoHolder = cloudInfoHolder;
-   }
+  public TenantMetadataValidator(CloudInfoHolder cloudInfoHolder) {
+    this.cloudInfoHolder = cloudInfoHolder;
+  }
 
-   public void validate(TenantStatus tenantStatus) throws TenantValidationException
-   {
-      validateTenantName(tenantStatus);
-      validateUserMail(tenantStatus);
-      validateTenantAlreadyExists(tenantStatus);
-   }
+  public void validate(TenantStatus tenantStatus) throws TenantValidationException {
+    validateTenantName(tenantStatus);
+    validateUserMail(tenantStatus);
+    validateTenantAlreadyExists(tenantStatus);
+  }
 
-   public void validateTenantAlreadyExists(TenantStatus tenantStatus) throws TenantValidationException
-   {
-      if (cloudInfoHolder.isTenantExists(tenantStatus.getTenantName()))
-      {
-         throw new TenantAlreadyExistException(" This domain is already in use. If you are the owner,"
-            + " check your email for further instructions; otherwise, please select a different domain name.");
-      }
-   }
+  public void validateTenantAlreadyExists(TenantStatus tenantStatus) throws TenantValidationException {
+    if (cloudInfoHolder.isTenantExists(tenantStatus.getTenantName())) {
+      throw new TenantAlreadyExistException(" This domain is already in use. If you are the owner,"
+          + " check your email for further instructions; otherwise, please select a different domain name.");
+    }
+  }
 
-   public void validateTenantName(TenantStatus tenantStatus) throws TenantValidationException
-   {
+  public void validateTenantName(TenantStatus tenantStatus) throws TenantValidationException {
 
-      String tenantName = tenantStatus.getTenantName();
-      if (tenantName == null || tenantName.length() == 0)
-      {
-         throw new TenantValidationException("Domain name can't be null or ''");
-      }
+    String tenantName = tenantStatus.getTenantName();
+    if (tenantName == null || tenantName.length() == 0) {
+      throw new TenantValidationException("Domain name can't be null or ''");
+    }
 
-      // 'www' should be forbidden tenant name 
-      if (tenantName.equals("www"))
-      {
-         throw new TenantValidationException("'www' is forbidden name for network.");
-      }
+    // 'www' should be forbidden tenant name
+    if (tenantName.equals("www")) {
+      throw new TenantValidationException("'www' is forbidden name for network.");
+    }
 
-      if (MAX_TENANT_NAME_LENGTH < tenantName.length())
-      {
-         throw new TenantValidationException("Domain name should contain " + MAX_TENANT_NAME_LENGTH
-            + " or less characters");
-      }
+    if (MAX_TENANT_NAME_LENGTH < tenantName.length()) {
+      throw new TenantValidationException("Domain name should contain " + MAX_TENANT_NAME_LENGTH
+          + " or less characters");
+    }
 
-      // Check tenant name for invalid characters.
-      Matcher matcher = TENANT_NAME_PATTERN.matcher(tenantName);
-      if (!matcher.matches())
-      {
-         if (LOG.isDebugEnabled())
-         {
-            LOG.debug("Domain name: " + tenantName
-               + " should contain only lower-case characters (a-z) and/or digits (0-9); at least one character is required.");
-         }
-         throw new TenantValidationException("Domain name: " + tenantName
+    // Check tenant name for invalid characters.
+    Matcher matcher = TENANT_NAME_PATTERN.matcher(tenantName);
+    if (!matcher.matches()) {
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("Domain name: "
+            + tenantName
             + " should contain only lower-case characters (a-z) and/or digits (0-9); at least one character is required.");
       }
+      throw new TenantValidationException("Domain name: "
+          + tenantName
+          + " should contain only lower-case characters (a-z) and/or digits (0-9); at least one character is required.");
+    }
 
-   }
+  }
 
-   public void validateUserMail(TenantStatus tenantStatus) throws TenantValidationException
-   {
-      String userMail = tenantStatus.getProperty(TenantStatus.PROPERTY_USER_MAIL);
-      if (userMail != null && userMail.length() > 0)
-      {
-         try
-         {
-            InternetAddress address = new InternetAddress(userMail);
-            address.validate();
-         }
-         catch (AddressException e)
-         {
-            throw new TenantValidationException("E-Mail validation failed. Please check the format of your e-mail address.");
-         }
+  public void validateUserMail(TenantStatus tenantStatus) throws TenantValidationException {
+    String userMail = tenantStatus.getProperty(TenantStatus.PROPERTY_USER_MAIL);
+    if (userMail != null && userMail.length() > 0) {
+      try {
+        InternetAddress address = new InternetAddress(userMail);
+        address.validate();
+      } catch (AddressException e) {
+        throw new TenantValidationException("E-Mail validation failed. Please check the format of your e-mail address.");
       }
-   }
+    }
+  }
 }

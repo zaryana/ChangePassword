@@ -18,7 +18,6 @@
  */
 package com.exoplatform.cloudworkspaces.multitenancy.valve;
 
-
 import org.apache.catalina.connector.Request;
 import org.apache.catalina.connector.Response;
 import org.exoplatform.cloudmanagement.multitenancy.TenantNameResolver;
@@ -30,41 +29,34 @@ import java.net.URI;
 
 import javax.servlet.ServletException;
 
-
 /**
  * Valve for initializing current repository name.
  * 
- * @author <a href="mailto:mshaposhnik@exoplatform.com>Max Shaposhnik</a>   
+ * @author <a href="mailto:mshaposhnik@exoplatform.com>Max Shaposhnik</a>
  * @version $Id: SetCurrentRepositoryValve
- *
  */
-public class SetCurrentRepositoryValve extends org.exoplatform.cloud.tomcat.SetCurrentRepositoryValve
-{
-   
-   private static final Logger LOG = LoggerFactory.getLogger(SetCurrentRepositoryValve.class);
+public class SetCurrentRepositoryValve extends
+                                      org.exoplatform.cloud.tomcat.SetCurrentRepositoryValve {
+
+  private static final Logger LOG = LoggerFactory.getLogger(SetCurrentRepositoryValve.class);
 
   @Override
-   public void invoke(Request request, Response response) throws IOException, ServletException {
-     
-     String masterHost = System.getProperty(TenantNameResolver.MASTER_HOST_VARIABLE_NAME);
-     URI requestUri;
-      try
-      {
-         requestUri  = new URI(request.getScheme() + "://" + request.getServerName());
-      }
-      catch (Exception ex)
-      {
-         LOG.warn("Cannot read request URI", ex);
-         requestUri = null;
-      }
-      if (masterHost != null && masterHost.length()>0 && requestUri != null && requestUri.getHost().contains(masterHost)) 
-      {
-         super.invoke(request, response);
-      }
-      else
-      {
-         getNext().invoke(request, response);
-      }
-   }
+  public void invoke(Request request, Response response) throws IOException, ServletException {
+
+    String masterHost = System.getProperty(TenantNameResolver.MASTER_HOST_VARIABLE_NAME);
+    URI requestUri;
+    try {
+      requestUri = new URI(request.getScheme() + "://" + request.getServerName());
+    } catch (Exception ex) {
+      LOG.warn("Cannot read request URI", ex);
+      requestUri = null;
+    }
+    if (masterHost != null && masterHost.length() > 0 && requestUri != null
+        && requestUri.getHost().contains(masterHost)) {
+      super.invoke(request, response);
+    } else {
+      getNext().invoke(request, response);
+    }
+  }
 
 }

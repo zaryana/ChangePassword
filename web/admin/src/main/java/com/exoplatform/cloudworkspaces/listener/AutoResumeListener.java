@@ -18,25 +18,22 @@
  */
 package com.exoplatform.cloudworkspaces.listener;
 
-
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-
-
 public class AutoResumeListener implements ServletContextListener {
 
-   public void contextInitialized(ServletContextEvent sce) {
-      
-            ExecutorService executor = Executors.newSingleThreadExecutor();
-            executor.execute(new AutoJoinThread());
-            executor.execute(new UserLimitListenerThread());
-   }
+  public void contextInitialized(ServletContextEvent sce) {
 
-   public void contextDestroyed(ServletContextEvent sce) {
-        // stop the thread
-   }
+    ExecutorService executor = Executors.newSingleThreadExecutor();
+    executor.execute(new AutoJoinThread());
+    executor.execute(new UserLimitListenerThread());
+  }
+
+  public void contextDestroyed(ServletContextEvent sce) {
+    // stop the thread
+  }
 }

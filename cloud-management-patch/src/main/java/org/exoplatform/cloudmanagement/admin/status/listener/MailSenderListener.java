@@ -35,37 +35,33 @@ import java.util.Map;
 /**
  * Send mails with tenant registration information
  */
-public class MailSenderListener implements TenantStateListener
-{
+public class MailSenderListener implements TenantStateListener {
 
-   private static final Logger LOG = LoggerFactory.getLogger(MailSenderListener.class);
+  private static final Logger           LOG = LoggerFactory.getLogger(MailSenderListener.class);
 
-   private final CloudAdminConfiguration adminConfiguration;
+  private final CloudAdminConfiguration adminConfiguration;
 
-   /**
-    * @param cloudAdminConfiguration
-    */
-   public MailSenderListener(CloudAdminConfiguration cloudAdminConfiguration)
-   {
-      super();
-      this.adminConfiguration = cloudAdminConfiguration;
-   }
+  /**
+   * @param cloudAdminConfiguration
+   */
+  public MailSenderListener(CloudAdminConfiguration cloudAdminConfiguration) {
+    super();
+    this.adminConfiguration = cloudAdminConfiguration;
+  }
 
-   /**
-    * @see org.exoplatform.cloudmanagement.admin.status.TenantStateListener#onEvent(org.exoplatform.cloudmanagement.status.TenantStatus)
-    */
-   @Override
-   public void onEvent(TenantStatus tenantStatus)
-   {
-      return; //does nothing
-   }
+  /**
+   * @see org.exoplatform.cloudmanagement.admin.status.TenantStateListener#onEvent(org.exoplatform.cloudmanagement.status.TenantStatus)
+   */
+  @Override
+  public void onEvent(TenantStatus tenantStatus) {
+    return; // does nothing
+  }
 
-   /**
-    * @see java.lang.Object#toString()
-    */
-   @Override
-   public String toString()
-   {
-      return "Send mail with tenant registration information";
-   }
+  /**
+   * @see java.lang.Object#toString()
+   */
+  @Override
+  public String toString() {
+    return "Send mail with tenant registration information";
+  }
 }

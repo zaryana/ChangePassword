@@ -32,101 +32,77 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class TenantResumeThread implements Runnable
-{
+public class TenantResumeThread implements Runnable {
 
-   private static final Logger LOG = LoggerFactory.getLogger(TenantResumeThread.class);
-   
-   private CloudAdminConfiguration cloudAdminConfiguration;
-   
-   private String tName;
-   
-   
-   public TenantResumeThread(CloudAdminConfiguration cloudAdminConfiguration, String tName){
-      this.cloudAdminConfiguration = cloudAdminConfiguration;
-      this.tName = tName;
-   }
-   
-   @Override
-   public void run()
-   {
-      HttpURLConnection connection = null;
-      StringBuilder strUrl = new StringBuilder();
-      strUrl.append("http://");
-      strUrl.append(cloudAdminConfiguration.getProperty(CLOUD_ADMIN_FRONT_END_SERVER_HOST, "localhost"));
-      strUrl.append("/rest/cloud-admin/resume/" + tName);
-      try
-      {
-         URL url = new URL(strUrl.toString());
-         connection = (HttpURLConnection)url.openConnection();
-         connection.setRequestMethod("GET");
+  private static final Logger     LOG = LoggerFactory.getLogger(TenantResumeThread.class);
 
-         InputStream io;
-         //read Response
-         if (connection.getResponseCode() == HTTP_OK)
-         {
-            return;
-         }
-         else
-         {
-            if (connection.getResponseCode() < 400)
-            {
-               io = connection.getInputStream();
-            }
-            else
-            {
-               io = connection.getErrorStream();
-            }
+  private CloudAdminConfiguration cloudAdminConfiguration;
 
-            String err = readText(connection.getErrorStream());
-            String msg =
-               ("Unable to resume workspace " + tName + " - HTTP status" + connection.getResponseCode() + (err != null
-                  ? ". Server error: \r\n" + err + "\r\n" : ""));
-            LOG.error(msg);
-         }
+  private String                  tName;
+
+  public TenantResumeThread(CloudAdminConfiguration cloudAdminConfiguration, String tName) {
+    this.cloudAdminConfiguration = cloudAdminConfiguration;
+    this.tName = tName;
+  }
+
+  @Override
+  public void run() {
+    HttpURLConnection connection = null;
+    StringBuilder strUrl = new StringBuilder();
+    strUrl.append("http://");
+    strUrl.append(cloudAdminConfiguration.getProperty(CLOUD_ADMIN_FRONT_END_SERVER_HOST,
+                                                      "localhost"));
+    strUrl.append("/rest/cloud-admin/resume/" + tName);
+    try {
+      URL url = new URL(strUrl.toString());
+      connection = (HttpURLConnection) url.openConnection();
+      connection.setRequestMethod("GET");
+
+      InputStream io;
+      // read Response
+      if (connection.getResponseCode() == HTTP_OK) {
+        return;
+      } else {
+        if (connection.getResponseCode() < 400) {
+          io = connection.getInputStream();
+        } else {
+          io = connection.getErrorStream();
+        }
+
+        String err = readText(connection.getErrorStream());
+        String msg = ("Unable to resume workspace " + tName + " - HTTP status"
+            + connection.getResponseCode() + (err != null ? ". Server error: \r\n" + err + "\r\n"
+                                                         : ""));
+        LOG.error(msg);
       }
-      catch (MalformedURLException e)
-      {
-         LOG.error(e.getMessage(), e);
+    } catch (MalformedURLException e) {
+      LOG.error(e.getMessage(), e);
+    } catch (IOException e) {
+      LOG.error(e.getMessage(), e);
+    } finally {
+      if (connection != null) {
+        connection.disconnect();
       }
-      catch (IOException e)
-      {
-         LOG.error(e.getMessage(), e);
+    }
+  }
+
+  protected String readText(InputStream errStream) throws IOException {
+    if (errStream != null) {
+      InputStreamReader errReader = new InputStreamReader(errStream);
+      try {
+        int r = -1;
+        StringBuilder errText = new StringBuilder();
+        char[] buff = new char[256];
+        while ((r = errReader.read(buff)) >= 0) {
+          errText.append(buff, 0, r);
+        }
+        return errText.toString();
+      } finally {
+        errReader.close();
       }
-      finally
-      {
-         if (connection != null)
-         {
-            connection.disconnect();
-         }
-      }
-   }
-   
-   protected String readText(InputStream errStream) throws IOException
-   {
-      if (errStream != null)
-      {
-         InputStreamReader errReader = new InputStreamReader(errStream);
-         try
-         {
-            int r = -1;
-            StringBuilder errText = new StringBuilder();
-            char[] buff = new char[256];
-            while ((r = errReader.read(buff)) >= 0)
-            {
-               errText.append(buff, 0, r);
-            }
-            return errText.toString();
-         }
-         finally
-         {
-            errReader.close();
-         }
-      }
-      else
-      {
-         return null;
-      }
-   }
+    } else {
+      return null;
+    }
+  }
 
 }

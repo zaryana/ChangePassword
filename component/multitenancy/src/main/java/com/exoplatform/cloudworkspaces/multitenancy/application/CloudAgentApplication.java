@@ -28,18 +28,16 @@ import java.util.Set;
 
 import javax.ws.rs.core.Application;
 
-public class CloudAgentApplication extends Application
-{
+public class CloudAgentApplication extends Application {
 
-   @Override
-   public Set<Class<?>> getClasses()
-   {
-      Set<Class<?>> cls = new HashSet<Class<?>>(3);
-      cls.add(CloudMailService.class);
-      cls.add(CloudAgentInfoService.class);
-      cls.add(TenantService.class);
-      cls.add(IntranetRESTOrganizationServiceImpl.class);
-      return cls;
-   }
+  @Override
+  public Set<Class<?>> getClasses() {
+    Set<Class<?>> cls = new HashSet<Class<?>>(3);
+    cls.add(CloudMailService.class);
+    cls.add(CloudAgentInfoService.class);
+    cls.add(TenantService.class);
+    cls.add(IntranetRESTOrganizationServiceImpl.class);
+    return cls;
+  }
 
 }

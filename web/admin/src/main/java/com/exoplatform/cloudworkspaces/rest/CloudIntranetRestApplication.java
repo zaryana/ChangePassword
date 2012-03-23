@@ -31,28 +31,25 @@ import javax.ws.rs.core.Application;
 /**
  * Cloud-admin REST application initializer.
  */
-public class CloudIntranetRestApplication extends Application
-{
-   /**
-    * @see javax.ws.rs.core.Application#getClasses()
-    */
-   @Override
-   public Set<Class<?>> getClasses()
-   {
-      Set<Class<?>> cls = new HashSet<Class<?>>(4);
-      cls.add(IntranetAdminService.class);
-      cls.add(TenantCreatorWithCloudAdminRole.class);
-      cls.add(CloudAdminInfoService.class);
-      cls.add(TenantResumingService.class);
-      return cls;
-   }
+public class CloudIntranetRestApplication extends Application {
+  /**
+   * @see javax.ws.rs.core.Application#getClasses()
+   */
+  @Override
+  public Set<Class<?>> getClasses() {
+    Set<Class<?>> cls = new HashSet<Class<?>>(4);
+    cls.add(IntranetAdminService.class);
+    cls.add(TenantCreatorWithCloudAdminRole.class);
+    cls.add(CloudAdminInfoService.class);
+    cls.add(TenantResumingService.class);
+    return cls;
+  }
 
-   @Override
-   public Set<Object> getSingletons()
-   {
-      Set<Object> objs = new HashSet<Object>(1);
-      objs.add(new CloudAdminExceptionMapper());
-      return objs;
-   }
+  @Override
+  public Set<Object> getSingletons() {
+    Set<Object> objs = new HashSet<Object>(1);
+    objs.add(new CloudAdminExceptionMapper());
+    return objs;
+  }
 
 }
