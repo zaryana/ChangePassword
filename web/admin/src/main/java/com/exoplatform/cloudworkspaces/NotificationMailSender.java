@@ -65,6 +65,7 @@ public class NotificationMailSender {
     }
   }
 
+  /*
   public void sendCreationQueuedEmails(String tName, String userMail, Map<String, String> props) throws CloudAdminException {
 
     String userTemplate = cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_REQUEST_QUEUED_TEMPLATE,
@@ -153,7 +154,7 @@ public class NotificationMailSender {
       LOG.error("Configuration error - join rejected emails is not send", e);
     }
   }
-
+  */
   public void sendUserJoinedEmails(String tName,
                                    String firstName,
                                    String userMail,
