@@ -31,8 +31,9 @@ public class UserLimitsStorage {
 
   private final PropertiesConfiguration userLimits;
 
-  public UserLimitsStorage(Configuration cloudAdminConfiguration, String filePath) throws ConfigurationException {
+  public UserLimitsStorage(Configuration cloudAdminConfiguration) throws ConfigurationException {
     this.cloudAdminConfiguration = cloudAdminConfiguration;
+    String filePath = System.getProperty("cloud.admin.userlimit", null);
     if (filePath != null) {
       this.userLimits = new PropertiesConfiguration(filePath);
       this.userLimits.setReloadingStrategy(new FileChangedReloadingStrategy());

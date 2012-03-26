@@ -20,6 +20,7 @@ package com.exoplatform.cloudworkspaces.rest;
 
 import com.exoplatform.cloudworkspaces.ChangePasswordManager;
 import com.exoplatform.cloudworkspaces.CloudIntranetUtils;
+import com.exoplatform.cloudworkspaces.NotificationMailSender;
 import com.exoplatform.cloudworkspaces.ReferencesManager;
 import com.exoplatform.cloudworkspaces.RequestState;
 import com.exoplatform.cloudworkspaces.UserAlreadyExistsException;
@@ -27,6 +28,7 @@ import com.exoplatform.cloudworkspaces.UserRequest;
 import com.exoplatform.cloudworkspaces.UserRequestDAO;
 import com.exoplatform.cloudworkspaces.http.WorkspacesOrganizationRequestPerformer;
 import com.exoplatform.cloudworkspaces.listener.TenantCreatedListenerThread;
+import com.exoplatform.cloudworkspaces.users.UserLimitsStorage;
 
 import org.apache.commons.configuration.Configuration;
 import org.exoplatform.cloudmanagement.admin.CloudAdminException;
@@ -47,13 +49,11 @@ import org.slf4j.LoggerFactory;
 
 import java.net.URI;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -76,12 +76,18 @@ public class CloudWorkspacesTenantService extends TenantCreator {
 
   private WorkspacesOrganizationRequestPerformer workspacesOrganizationRequestPerformer;
 
+  private NotificationMailSender                 notificationMailSender;
+
+  private UserLimitsStorage                      userLimitsStorage;
+
   public CloudWorkspacesTenantService(EmailValidationStorage emailValidationStorage,
                                       TenantStateDataManager tenantStateDataManager,
                                       TenantNameValidator tenantNameValidator,
                                       UserMailValidator userMailValidator,
                                       TenantInfoDataManager tenantInfoDataManager,
                                       WorkspacesOrganizationRequestPerformer workspacesOrganizationRequestPerformer,
+                                      NotificationMailSender notificationMailSender,
+                                      UserLimitsStorage userLimitsStorage,
                                       Configuration cloudAdminConfiguration,
                                       WorkspacesMailSender mailSender) {
     super(emailValidationStorage,
@@ -93,9 +99,13 @@ public class CloudWorkspacesTenantService extends TenantCreator {
           mailSender);
     this.requestDao = new UserRequestDAO(cloudAdminConfiguration);
     this.workspacesOrganizationRequestPerformer = workspacesOrganizationRequestPerformer;
+    this.notificationMailSender = notificationMailSender;
+    this.userLimitsStorage = userLimitsStorage;
     this.utils = new CloudIntranetUtils(cloudAdminConfiguration,
                                         tenantInfoDataManager,
                                         workspacesOrganizationRequestPerformer,
+                                        notificationMailSender,
+                                        userLimitsStorage,
                                         requestDao);
 
   }
@@ -184,7 +194,7 @@ public class CloudWorkspacesTenantService extends TenantCreator {
           props.put("rfid", new ReferencesManager(adminConfiguration).putEmail(userMail,
                                                                                UUID.randomUUID()
                                                                                    .toString()));
-          utils.sendOkToJoinEmail(userMail, props);
+          notificationMailSender.sendOkToJoinEmail(userMail, props);
           return Response.ok().build();
         }
         case ONLINE: {
@@ -193,7 +203,7 @@ public class CloudWorkspacesTenantService extends TenantCreator {
             props.put("rfid", new ReferencesManager(adminConfiguration).putEmail(userMail,
                                                                                  UUID.randomUUID()
                                                                                      .toString()));
-            utils.sendOkToJoinEmail(userMail, props);
+            notificationMailSender.sendOkToJoinEmail(userMail, props);
             return Response.ok().build();
           } else {
             LOG.info("User " + userMail + " was put in waiting state - users limit reached.");
@@ -210,8 +220,9 @@ public class CloudWorkspacesTenantService extends TenantCreator {
                                               RequestState.WAITING_LIMIT);
             requestDao.put(req);
             // send not allowed mails
-            props.put("users.maxallowed", Integer.toString(utils.getMaxUsersForTenant(tName)));
-            utils.sendJoinRejectedEmails(tName, userMail, props);
+            props.put("users.maxallowed",
+                      Integer.toString(userLimitsStorage.getMaxUsersForTenant(tName)));
+            notificationMailSender.sendJoinRejectedEmails(tName, userMail, props);
             return Response.ok().build();
           }
         }
@@ -234,6 +245,8 @@ public class CloudWorkspacesTenantService extends TenantCreator {
           TenantCreatedListenerThread thread = new TenantCreatedListenerThread(tName,
                                                                                tenantInfoDataManager,
                                                                                workspacesOrganizationRequestPerformer,
+                                                                               notificationMailSender,
+                                                                               userLimitsStorage,
                                                                                adminConfiguration,
                                                                                requestDao);
           ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -443,7 +456,7 @@ public class CloudWorkspacesTenantService extends TenantCreator {
                                                              lastName,
                                                              password,
                                                              false);
-            utils.sendUserJoinedEmails(tName, firstName, userMail, props);
+            notificationMailSender.sendUserJoinedEmails(tName, firstName, userMail, props);
             LOG.info("User " + userMail + " joined directly from form.");
           } else {
             // Limit reached
@@ -460,8 +473,9 @@ public class CloudWorkspacesTenantService extends TenantCreator {
                                               false,
                                               RequestState.WAITING_LIMIT);
             requestDao.put(req);
-            props.put("users.maxallowed", Integer.toString(utils.getMaxUsersForTenant(tName)));
-            utils.sendJoinRejectedEmails(tName, userMail, props);
+            props.put("users.maxallowed",
+                      Integer.toString(userLimitsStorage.getMaxUsersForTenant(tName)));
+            notificationMailSender.sendJoinRejectedEmails(tName, userMail, props);
           }
 
         } catch (UserAlreadyExistsException e) {
@@ -507,6 +521,8 @@ public class CloudWorkspacesTenantService extends TenantCreator {
         TenantCreatedListenerThread thread = new TenantCreatedListenerThread(tName,
                                                                              tenantInfoDataManager,
                                                                              workspacesOrganizationRequestPerformer,
+                                                                             notificationMailSender,
+                                                                             userLimitsStorage,
                                                                              adminConfiguration,
                                                                              requestDao);
         ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -561,17 +577,17 @@ public class CloudWorkspacesTenantService extends TenantCreator {
   @POST
   @Path("/create")
   public Response createIntranet(@FormParam("user-mail") String userMail,
-                                    @FormParam("first-name") String firstName,
-                                    @FormParam("last-name") String lastName,
-                                    @FormParam("company-name") String companyName,
-                                    @FormParam("phone") String phone,
-                                    @FormParam("password") String password,
-                                    @FormParam("confirmation-id") String uuid) throws CloudAdminException {
+                                 @FormParam("first-name") String firstName,
+                                 @FormParam("last-name") String lastName,
+                                 @FormParam("company-name") String companyName,
+                                 @FormParam("phone") String phone,
+                                 @FormParam("password") String password,
+                                 @FormParam("confirmation-id") String uuid) throws CloudAdminException {
     if (!utils.validateEmail(userMail))
       return Response.status(Status.BAD_REQUEST)
                      .entity("Please enter a valid email address.")
                      .build();
-    
+
     if (!utils.validateUUID(userMail, uuid))
       return Response.status(Status.BAD_REQUEST)
                      .entity("Sorry, your registration link has expired. Please sign up again.")
@@ -592,6 +608,8 @@ public class CloudWorkspacesTenantService extends TenantCreator {
     TenantCreatedListenerThread thread = new TenantCreatedListenerThread(tName,
                                                                          tenantInfoDataManager,
                                                                          workspacesOrganizationRequestPerformer,
+                                                                         notificationMailSender,
+                                                                         userLimitsStorage,
                                                                          adminConfiguration,
                                                                          requestDao);
     ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -637,167 +655,101 @@ public class CloudWorkspacesTenantService extends TenantCreator {
                             @FormParam("first-name") String firstName,
                             @FormParam("subject") String subject,
                             @FormParam("text") String text) {
-    utils.sendContactUsEmail(userMail, firstName, subject, text);
+    notificationMailSender.sendContactUsEmail(userMail, firstName, subject, text);
     return Response.ok().build();
   }
 
   /*
-  @POST
-  @Path("/create")
-  public Response create(@FormParam("user-mail") String userMail,
-                         @FormParam("first-name") String firstName,
-                         @FormParam("last-name") String lastName,
-                         @FormParam("company-name") String companyName,
-                         @FormParam("phone") String phone,
-                         @FormParam("password") String password,
-                         @FormParam("confirmation-id") String uuid) throws CloudAdminException {
-    if (!utils.validateEmail(userMail))
-      return Response.status(Status.BAD_REQUEST)
-                     .entity("Please enter a valid email address.")
-                     .build();
-
-    if (!utils.validateUUID(userMail, uuid))
-      return Response.status(Status.BAD_REQUEST)
-                     .entity("Sorry, your registration link has expired. Please sign up again.")
-                     .build();
-
-    if (utils.isInBlackList(userMail)) {
-      String domain = userMail.substring(userMail.indexOf("@"));
-      return Response.status(Status.BAD_REQUEST)
-                     .entity("Sorry, we can't create workspace with an email address " + domain
-                         + ". Try with your work email.")
-                     .build();
-    }
-    String tName = utils.email2tenantName(userMail);
-
-    Map<String, String> props = new HashMap<String, String>();
-    String username = userMail.substring(0, (userMail.indexOf("@")));
-    props.put("tenant.masterhost", AdminConfigurationUtil.getMasterHost(adminConfiguration));
-    props.put("tenant.repository.name", tName);
-    props.put("user.mail", userMail);
-    props.put("user.name", username);
-    props.put("first.name", firstName);
-    props.put("last.name", lastName);
-    utils.sendCreationQueuedEmails(tName, userMail, props);
-    UserRequest req = new UserRequest("",
-                                      tName,
-                                      userMail,
-                                      firstName,
-                                      lastName,
-                                      companyName,
-                                      phone,
-                                      password,
-                                      uuid,
-                                      true,
-                                      RequestState.WAITING_CREATION);
-    requestDao.put(req);
-    new ReferencesManager(adminConfiguration).removeEmail(userMail);
-    return Response.ok().build();
-  }
-  
-
-  @GET
-  @RolesAllowed("cloud-manager")
-  @Produces(MediaType.APPLICATION_JSON)
-  @Path("/requests")
-  public Map<String, String[]> getTenantRequests() throws CloudAdminException {
-    Map<String, String[]> result = new HashMap<String, String[]>();
-    List<UserRequest> list = requestDao.search(null, RequestState.WAITING_CREATION);
-    if (list.isEmpty())
-      return result;
-
-    for (UserRequest one : list) {
-      try {
-        String tName = one.getTenantName();
-        String[] data = new String[5];
-        data[0] = tName;
-        data[1] = one.getUserEmail();
-        data[2] = one.getFirstName() + " " + one.getLastName();
-        data[3] = one.getCompanyName();
-        data[4] = one.getPhone();
-        result.put(one.getFileName().substring(0, one.getFileName().indexOf(".")), data);
-      } catch (Exception e) {
-        LOG.error(e.getMessage());
-        utils.sendAdminErrorEmail(e.getMessage(), e);
-        throw new CloudAdminException("A problem happened during retrieving requests list . It was reported to developers. Please, try again later.");
-      }
-    }
-    return utils.sortByComparator(result);
-  }
-
-  @GET
-  @Path("/validate/{decision}/{filename}")
-  @RolesAllowed("cloud-manager")
-  @Produces(MediaType.TEXT_PLAIN)
-  public Response validate(@PathParam("decision") String decision,
-                           @PathParam("filename") String filename) throws CloudAdminException {
-    filename = filename + ".properties";
-    UserRequest req = requestDao.searchByFilename(filename);
-    if (req == null) {
-      LOG.warn("Validation requested file which can not be found anymore: " + filename);
-      return Response.serverError().entity("File can not be found on server anymore.").build();
-    }
-
-    if (decision.equalsIgnoreCase("accept")) {
-      Response resp = createIntranet(req.getUserEmail(),
-                                     req.getFirstName(),
-                                     req.getLastName(),
-                                     req.getCompanyName(),
-                                     req.getPhone(),
-                                     req.getPassword(),
-                                     req.getConfirmationId());
-
-      if (resp.getStatus() == 200 && resp.getEntity() == null) {
-        List<UserRequest> list = requestDao.search(req.getTenantName(),
-                                                   RequestState.WAITING_CREATION);
-        for (UserRequest one : list) {
-          UserRequest req_new = new UserRequest(one.getFileName(),
-                                                one.getTenantName(),
-                                                one.getUserEmail(),
-                                                one.getFirstName(),
-                                                one.getLastName(),
-                                                one.getCompanyName(),
-                                                one.getPhone(),
-                                                one.getPassword(),
-                                                one.getConfirmationId(),
-                                                one.getUserEmail().equals(req.getUserEmail()) ? true
-                                                                                             : false,
-                                                RequestState.WAITING_JOIN);
-          requestDao.delete(one);
-          try {
-            Thread.sleep(100); // To let FS finish
-          } catch (InterruptedException e) {
-            LOG.warn(e.getMessage());
-          }
-          requestDao.put(req_new);
-        }
-        return resp;
-      } else {
-        String msg = "Can not finish accept operation - service returned HTTP status "
-            + resp.getStatus();
-        LOG.error(msg);
-        utils.sendAdminErrorEmail(msg, null);
-        return Response.serverError()
-                       .entity("Operation failed. It was reported to developers.")
-                       .build();
-      }
-    } else if (decision.equalsIgnoreCase("refuse")) {
-      LOG.info("Tenant " + req.getTenantName() + " creation was refused.");
-      requestDao.delete(req);
-      return Response.ok().build();
-    } else if (decision.equalsIgnoreCase("blacklist")) {
-      Map<String, String> props = new HashMap<String, String>();
-      props.put("tenant.masterhost", AdminConfigurationUtil.getMasterHost(adminConfiguration));
-      props.put("user.name", req.getFirstName());
-      utils.sendCreationRejectedEmail(req.getTenantName(), req.getUserEmail(), props);
-      utils.putInBlackList(req.getUserEmail());
-      requestDao.delete(req);
-      return Response.ok().build();
-    } else {
-      throw new CloudAdminException("Unknown action.");
-    }
-  }
-  */
+   * @POST
+   * @Path("/create") public Response create(@FormParam("user-mail") String
+   * userMail,
+   * @FormParam("first-name") String firstName,
+   * @FormParam("last-name") String lastName,
+   * @FormParam("company-name") String companyName,
+   * @FormParam("phone") String phone,
+   * @FormParam("password") String password,
+   * @FormParam("confirmation-id") String uuid) throws CloudAdminException { if
+   * (!utils.validateEmail(userMail)) return Response.status(Status.BAD_REQUEST)
+   * .entity("Please enter a valid email address.") .build(); if
+   * (!utils.validateUUID(userMail, uuid)) return
+   * Response.status(Status.BAD_REQUEST)
+   * .entity("Sorry, your registration link has expired. Please sign up again.")
+   * .build(); if (utils.isInBlackList(userMail)) { String domain =
+   * userMail.substring(userMail.indexOf("@")); return
+   * Response.status(Status.BAD_REQUEST)
+   * .entity("Sorry, we can't create workspace with an email address " + domain
+   * + ". Try with your work email.") .build(); } String tName =
+   * utils.email2tenantName(userMail); Map<String, String> props = new
+   * HashMap<String, String>(); String username = userMail.substring(0,
+   * (userMail.indexOf("@"))); props.put("tenant.masterhost",
+   * AdminConfigurationUtil.getMasterHost(adminConfiguration));
+   * props.put("tenant.repository.name", tName); props.put("user.mail",
+   * userMail); props.put("user.name", username); props.put("first.name",
+   * firstName); props.put("last.name", lastName);
+   * utils.sendCreationQueuedEmails(tName, userMail, props); UserRequest req =
+   * new UserRequest("", tName, userMail, firstName, lastName, companyName,
+   * phone, password, uuid, true, RequestState.WAITING_CREATION);
+   * requestDao.put(req); new
+   * ReferencesManager(adminConfiguration).removeEmail(userMail); return
+   * Response.ok().build(); }
+   * @GET
+   * @RolesAllowed("cloud-manager")
+   * @Produces(MediaType.APPLICATION_JSON)
+   * @Path("/requests") public Map<String, String[]> getTenantRequests() throws
+   * CloudAdminException { Map<String, String[]> result = new HashMap<String,
+   * String[]>(); List<UserRequest> list = requestDao.search(null,
+   * RequestState.WAITING_CREATION); if (list.isEmpty()) return result; for
+   * (UserRequest one : list) { try { String tName = one.getTenantName();
+   * String[] data = new String[5]; data[0] = tName; data[1] =
+   * one.getUserEmail(); data[2] = one.getFirstName() + " " + one.getLastName();
+   * data[3] = one.getCompanyName(); data[4] = one.getPhone();
+   * result.put(one.getFileName().substring(0, one.getFileName().indexOf(".")),
+   * data); } catch (Exception e) { LOG.error(e.getMessage());
+   * utils.sendAdminErrorEmail(e.getMessage(), e); throw new
+   * CloudAdminException(
+   * "A problem happened during retrieving requests list . It was reported to developers. Please, try again later."
+   * ); } } return utils.sortByComparator(result); }
+   * @GET
+   * @Path("/validate/{decision}/{filename}")
+   * @RolesAllowed("cloud-manager")
+   * @Produces(MediaType.TEXT_PLAIN) public Response
+   * validate(@PathParam("decision") String decision,
+   * @PathParam("filename") String filename) throws CloudAdminException {
+   * filename = filename + ".properties"; UserRequest req =
+   * requestDao.searchByFilename(filename); if (req == null) {
+   * LOG.warn("Validation requested file which can not be found anymore: " +
+   * filename); return
+   * Response.serverError().entity("File can not be found on server anymore."
+   * ).build(); } if (decision.equalsIgnoreCase("accept")) { Response resp =
+   * createIntranet(req.getUserEmail(), req.getFirstName(), req.getLastName(),
+   * req.getCompanyName(), req.getPhone(), req.getPassword(),
+   * req.getConfirmationId()); if (resp.getStatus() == 200 && resp.getEntity()
+   * == null) { List<UserRequest> list = requestDao.search(req.getTenantName(),
+   * RequestState.WAITING_CREATION); for (UserRequest one : list) { UserRequest
+   * req_new = new UserRequest(one.getFileName(), one.getTenantName(),
+   * one.getUserEmail(), one.getFirstName(), one.getLastName(),
+   * one.getCompanyName(), one.getPhone(), one.getPassword(),
+   * one.getConfirmationId(), one.getUserEmail().equals(req.getUserEmail()) ?
+   * true : false, RequestState.WAITING_JOIN); requestDao.delete(one); try {
+   * Thread.sleep(100); // To let FS finish } catch (InterruptedException e) {
+   * LOG.warn(e.getMessage()); } requestDao.put(req_new); } return resp; } else
+   * { String msg =
+   * "Can not finish accept operation - service returned HTTP status " +
+   * resp.getStatus(); LOG.error(msg); utils.sendAdminErrorEmail(msg, null);
+   * return Response.serverError()
+   * .entity("Operation failed. It was reported to developers.") .build(); } }
+   * else if (decision.equalsIgnoreCase("refuse")) { LOG.info("Tenant " +
+   * req.getTenantName() + " creation was refused."); requestDao.delete(req);
+   * return Response.ok().build(); } else if
+   * (decision.equalsIgnoreCase("blacklist")) { Map<String, String> props = new
+   * HashMap<String, String>(); props.put("tenant.masterhost",
+   * AdminConfigurationUtil.getMasterHost(adminConfiguration));
+   * props.put("user.name", req.getFirstName());
+   * utils.sendCreationRejectedEmail(req.getTenantName(), req.getUserEmail(),
+   * props); utils.putInBlackList(req.getUserEmail()); requestDao.delete(req);
+   * return Response.ok().build(); } else { throw new
+   * CloudAdminException("Unknown action."); } }
+   */
 
   @GET
   @Path("autojoin/{state}")
@@ -823,7 +775,7 @@ public class CloudWorkspacesTenantService extends TenantCreator {
   @Path("/maxallowed/{tenantname}")
   @Produces(MediaType.TEXT_PLAIN)
   public Response maxallowed(@PathParam("tenantname") String tName) throws CloudAdminException {
-    return Response.ok(Integer.toString(utils.getMaxUsersForTenant(tName))).build();
+    return Response.ok(Integer.toString(userLimitsStorage.getMaxUsersForTenant(tName))).build();
   }
 
   @GET
@@ -865,7 +817,7 @@ public class CloudWorkspacesTenantService extends TenantCreator {
 
       if (isuserexist(tName, username).getEntity().equals("TRUE")) {
         String uuid = manager.addReference(email);
-        utils.sendPasswordRestoreEmail(email, tName, uuid);
+        notificationMailSender.sendPasswordRestoreEmail(email, tName, uuid);
       } else {
         return Response.status(Status.BAD_REQUEST)
                        .entity("User with email " + email

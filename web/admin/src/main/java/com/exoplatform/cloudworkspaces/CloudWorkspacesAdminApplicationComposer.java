@@ -23,13 +23,8 @@ import com.exoplatform.cloudworkspaces.rest.CloudWorkspacesTenantService;
 import com.exoplatform.cloudworkspaces.shell.ShellConfigurationService;
 import com.exoplatform.cloudworkspaces.users.UserLimitsStorage;
 
-import org.apache.commons.configuration.Configuration;
-import org.apache.commons.configuration.ConfigurationException;
 import org.everrest.core.ResourceBinder;
 import org.exoplatform.cloudmanagement.admin.WorkspacesMailSender;
-import org.exoplatform.cloudmanagement.admin.configuration.ApplicationServerConfigurationManager;
-import org.exoplatform.cloudmanagement.admin.dao.TenantInfoDataManager;
-import org.exoplatform.cloudmanagement.admin.http.HttpClientManager;
 import org.exoplatform.cloudmanagement.admin.rest.CloudAdminApplicationComposer;
 import org.exoplatform.ide.shell.server.CLIResourceFactory;
 import org.exoplatform.ide.shell.server.rest.CLIResourcesService;
@@ -42,54 +37,33 @@ import javax.servlet.ServletContext;
 /**
  * cloud-ide.com specific composer
  */
-public class CloudWorkspacesAdminApplicationComposer extends CloudAdminApplicationComposer
-{
+public class CloudWorkspacesAdminApplicationComposer extends CloudAdminApplicationComposer {
 
-   private static final Logger LOG = LoggerFactory.getLogger(CloudWorkspacesAdminApplicationComposer.class);
+  private static final Logger LOG = LoggerFactory.getLogger(CloudWorkspacesAdminApplicationComposer.class);
 
-   @Override
-   protected void doComposeApplication(MutablePicoContainer container, ServletContext servletContext)
-   {
-      super.doComposeApplication(container, servletContext);
-      container.addComponent(CLIResourceFactory.class);
-      container.addComponent(ResourceBinder.class, servletContext.getAttribute(ResourceBinder.class.getName()));
+  @Override
+  protected void doComposeApplication(MutablePicoContainer container, ServletContext servletContext) {
+    super.doComposeApplication(container, servletContext);
+    container.addComponent(CLIResourceFactory.class);
+    container.addComponent(ResourceBinder.class,
+                           servletContext.getAttribute(ResourceBinder.class.getName()));
 
-      container.addComponent(WorkspacesMailSender.class);
+    container.addComponent(WorkspacesMailSender.class);
 
-      try
-      {
-         Configuration cloudAdminConfiguration = container.getComponent(Configuration.class);
-         TenantInfoDataManager tenantInfoDataManager = container.getComponent(TenantInfoDataManager.class);
-         ApplicationServerConfigurationManager applicationServerConfigurationManager =
-            container.getComponent(ApplicationServerConfigurationManager.class);
-         HttpClientManager httpClientManager = container.getComponent(HttpClientManager.class);
+    container.addComponent(UserLimitsStorage.class);
+    container.addComponent(WorkspacesOrganizationRequestPerformer.class);
+    container.addComponent(NotificationMailSender.class);
+  }
 
-         UserLimitsStorage userLimitsStorage =
-            new UserLimitsStorage(cloudAdminConfiguration, System.getProperty("cloud.admin.userlimit"));
-         container.addComponent(UserLimitsStorage.class, userLimitsStorage);
-
-         WorkspacesOrganizationRequestPerformer workspacesOrganizationRequestPerformer =
-            new WorkspacesOrganizationRequestPerformer(tenantInfoDataManager, applicationServerConfigurationManager,
-               httpClientManager, userLimitsStorage);
-         container.addComponent(WorkspacesOrganizationRequestPerformer.class, workspacesOrganizationRequestPerformer);
-      }
-      catch (ConfigurationException e)
-      {
-         LOG.error(e.getLocalizedMessage(), e);
-         throw new RuntimeException(e.getLocalizedMessage(), e);
-      }
-   }
-
-   @Override
-   protected void doComposeRequest(MutablePicoContainer container)
-   {
-      super.doComposeRequest(container);
-      container.addComponent(CloudWorkspacesTenantService.class);
-      container.addComponent(ShellConfigurationService.class);
-      container.addComponent(CLIResourcesService.class);
-      /*
-       * container.addComponent(TenantCreatorWithEmailAuthorization.class);
-       */
-   }
+  @Override
+  protected void doComposeRequest(MutablePicoContainer container) {
+    super.doComposeRequest(container);
+    container.addComponent(CloudWorkspacesTenantService.class);
+    container.addComponent(ShellConfigurationService.class);
+    container.addComponent(CLIResourcesService.class);
+    /*
+     * container.addComponent(TenantCreatorWithEmailAuthorization.class);
+     */
+  }
 
 }

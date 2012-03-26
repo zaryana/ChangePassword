@@ -19,9 +19,11 @@
 package com.exoplatform.cloudworkspaces.listener;
 
 import com.exoplatform.cloudworkspaces.CloudIntranetUtils;
+import com.exoplatform.cloudworkspaces.NotificationMailSender;
 import com.exoplatform.cloudworkspaces.RequestState;
 import com.exoplatform.cloudworkspaces.UserRequestDAO;
 import com.exoplatform.cloudworkspaces.http.WorkspacesOrganizationRequestPerformer;
+import com.exoplatform.cloudworkspaces.users.UserLimitsStorage;
 
 import org.apache.commons.configuration.Configuration;
 import org.exoplatform.cloudmanagement.admin.CloudAdminException;
@@ -43,6 +45,10 @@ public class TenantCreatedListenerThread implements Runnable {
 
   private WorkspacesOrganizationRequestPerformer workspacesOrganizationRequestPerformer;
 
+  private NotificationMailSender                 notificationMailSender;
+
+  private UserLimitsStorage                      userLimitsStorage;
+
   private UserRequestDAO                         requestDao;
 
   private int                                    interval                     = 15000;
@@ -52,11 +58,15 @@ public class TenantCreatedListenerThread implements Runnable {
   public TenantCreatedListenerThread(String tName,
                                      TenantInfoDataManager tenantInfoDataManager,
                                      WorkspacesOrganizationRequestPerformer workspacesOrganizationRequestPerformer,
+                                     NotificationMailSender notificationMailSender,
+                                     UserLimitsStorage userLimitsStorage,
                                      Configuration cloudAdminConfiguration,
                                      UserRequestDAO requestDao) {
     this.tName = tName;
     this.tenantInfoDataManager = tenantInfoDataManager;
     this.workspacesOrganizationRequestPerformer = workspacesOrganizationRequestPerformer;
+    this.notificationMailSender = notificationMailSender;
+    this.userLimitsStorage = userLimitsStorage;
     this.cloudAdminConfiguration = cloudAdminConfiguration;
     this.requestDao = requestDao;
   }
@@ -66,6 +76,8 @@ public class TenantCreatedListenerThread implements Runnable {
     CloudIntranetUtils utils = new CloudIntranetUtils(cloudAdminConfiguration,
                                                       tenantInfoDataManager,
                                                       workspacesOrganizationRequestPerformer,
+                                                      notificationMailSender,
+                                                      userLimitsStorage,
                                                       requestDao);
     long limit = Integer.parseInt(cloudAdminConfiguration.getString(CLOUD_ADMIN_CREATION_TIMEOUT,
                                                                     "86400")) * 1000; // in
@@ -77,27 +89,27 @@ public class TenantCreatedListenerThread implements Runnable {
         while (!tenantInfoDataManager.getValue(tName, TenantInfoFieldName.PROPERTY_STATE)
                                      .equals(TenantState.ONLINE.toString())) {
           if (count > limit) {
-            utils.sendAdminErrorEmail("Workspace " + tName + " creation timeout reached", null);
+            notificationMailSender.sendAdminErrorEmail("Workspace " + tName + " creation timeout reached", null);
             throw new CloudAdminException("Workspace " + tName + " creation timeout reached");
           }
           Thread.sleep(interval);
           count += interval;
         }
-/*
-        Thread.sleep(interval * 20); // To let the proxy to reload; 12.01.2012
-                                     // changed from 5min(20) to 30sec(2);
-                                     // 17.01.2012 back to 20
-*/
+        /*
+         * Thread.sleep(interval * 20); // To let the proxy to reload;
+         * 12.01.2012 // changed from 5min(20) to 30sec(2); // 17.01.2012 back
+         * to 20
+         */
         utils.joinAll(tName, RequestState.WAITING_JOIN);
       } else {
         LOG.error("Unable to find tenant '" + tName + "' in creation queue.");
       }
     } catch (InterruptedException e) {
       LOG.error("Unable to finish tenant '" + tName + "' creation", e);
-      utils.sendAdminErrorEmail("Unable to finish tenant '" + tName + "' creation", e);
+      notificationMailSender.sendAdminErrorEmail("Unable to finish tenant '" + tName + "' creation", e);
     } catch (CloudAdminException e) {
       LOG.error("Unable to finish tenant '" + tName + "' creation", e);
-      utils.sendAdminErrorEmail("Unable to finish tenant '" + tName + "' creation", e);
+      notificationMailSender.sendAdminErrorEmail("Unable to finish tenant '" + tName + "' creation", e);
     }
   }
 

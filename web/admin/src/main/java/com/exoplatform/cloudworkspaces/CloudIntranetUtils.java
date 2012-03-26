@@ -21,11 +21,10 @@ package com.exoplatform.cloudworkspaces;
 
 import com.exoplatform.cloudworkspaces.http.WorkspacesOrganizationRequestPerformer;
 import com.exoplatform.cloudworkspaces.listener.TenantResumeThread;
+import com.exoplatform.cloudworkspaces.users.UserLimitsStorage;
 
 import org.apache.commons.configuration.Configuration;
 import org.exoplatform.cloudmanagement.admin.CloudAdminException;
-import org.exoplatform.cloudmanagement.admin.WorkspacesMailSender;
-import org.exoplatform.cloudmanagement.admin.configuration.MailConfiguration;
 import org.exoplatform.cloudmanagement.admin.configuration.TenantInfoFieldName;
 import org.exoplatform.cloudmanagement.admin.dao.TenantInfoDataManager;
 import org.exoplatform.cloudmanagement.admin.util.AdminConfigurationUtil;
@@ -57,290 +56,35 @@ import javax.mail.internet.InternetAddress;
 
 public class CloudIntranetUtils {
 
-  private static final String                    CLOUD_ADMIN_TENANT_MAXUSERS = "cloud.admin.tenant.maxusers";
-
   private Configuration                          cloudAdminConfiguration;
 
   private WorkspacesOrganizationRequestPerformer workspacesOrganizationRequestPerformer;
 
   private TenantInfoDataManager                  tenantInfoDataManager;
 
-  private WorkspacesMailSender                   mailSender;
+  private NotificationMailSender                 notificationMailSender;
+
+  private UserLimitsStorage                      userLimitsStorage;
 
   UserRequestDAO                                 requestDao;
 
   private String                                 blackListConfigurationFolder;
 
-  private String                                 maxUsersConfigurationFile;
-
-  private static final Logger                    LOG                         = LoggerFactory.getLogger(CloudIntranetUtils.class);
+  private static final Logger                    LOG = LoggerFactory.getLogger(CloudIntranetUtils.class);
 
   public CloudIntranetUtils(Configuration cloudAdminConfiguration,
                             TenantInfoDataManager tenantInfoDataManager,
                             WorkspacesOrganizationRequestPerformer workspacesOrganizationRequestPerformer,
+                            NotificationMailSender notificationMailSender,
+                            UserLimitsStorage userLimitsStorage,
                             UserRequestDAO requestDao) {
     this.cloudAdminConfiguration = cloudAdminConfiguration;
     this.tenantInfoDataManager = tenantInfoDataManager;
     this.workspacesOrganizationRequestPerformer = workspacesOrganizationRequestPerformer;
-    this.mailSender = new WorkspacesMailSender(cloudAdminConfiguration);
+    this.notificationMailSender = notificationMailSender;
     this.blackListConfigurationFolder = cloudAdminConfiguration.getString("cloud.admin.blacklist.dir",
                                                                           null);
-    this.maxUsersConfigurationFile = System.getProperty("cloud.admin.userlimit");
     this.requestDao = requestDao;
-
-    /*
-     * TODO check this line Authenticator.setDefault(new
-     * AgentAuthenticator(cloudAdminConfiguration
-     * .getString("admin.agent.auth.username", null),
-     * cloudAdminConfiguration.getString("admin.agent.auth.password", null)));
-     */
-  }
-
-  public void sendOkToJoinEmail(String userMail, Map<String, String> props) throws CloudAdminException {
-    String mailTemplate = cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_JOIN_TEMPLATE,
-                                                            null);
-    try {
-      mailSender.sendMail(userMail,
-                          cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_JOIN_SUBJECT),
-                          mailTemplate,
-                          props,
-                          false);
-    } catch (CloudAdminException e) {
-      sendAdminErrorEmail("Configuration error - join email not send.", e);
-      LOG.error("Configuration error - join email not send.", e);
-    }
-  }
-
-  public void sendCreationQueuedEmails(String tName, String userMail, Map<String, String> props) throws CloudAdminException {
-
-    String userTemplate = cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_REQUEST_QUEUED_TEMPLATE,
-                                                            null);
-    String devTemplate = cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_REQUEST_QUEUED_DEVELOPERS_TEMPLATE,
-                                                           null);
-    try {
-      String email = cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_SUPPOR_EMAIL);
-      mailSender.sendMail(userMail,
-                          cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_REQUEST_QUEUED_SUBJECT),
-                          userTemplate,
-                          props,
-                          false);
-      mailSender.sendMail(email,
-                          cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_REQUEST_QUEUED_DEVELOPERS_SUBJECT)
-                                                 .replace("${workspace}", tName),
-                          devTemplate,
-                          props,
-                          false);
-    } catch (CloudAdminException e) {
-      sendAdminErrorEmail("Configuration error - creation queued emails is not send", e);
-      LOG.error("Configuration error - creation queued emails is not send", e);
-    }
-  }
-
-  public void sendCreationRejectedEmail(String tName, String userMail, Map<String, String> props) throws CloudAdminException {
-
-    String userTemplate = cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_REQUEST_REJECTED_TEMPLATE,
-                                                            null);
-    try {
-      mailSender.sendMail(userMail,
-                          cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_REQUEST_REJECTED_SUBJECT),
-                          userTemplate,
-                          props,
-                          false);
-    } catch (CloudAdminException e) {
-      sendAdminErrorEmail("Configuration error - creation rejected emails is not send", e);
-      LOG.error("Configuration error - creation rejected emails is not send", e);
-    }
-
-  }
-
-  public void sendJoinRejectedEmails(String tName, String userMail, Map<String, String> props) throws CloudAdminException {
-    String userTemplate = cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_JOIN_CLOSED_USER_TEMPLATE,
-                                                            null);
-    String ownerTemplate = cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_JOIN_CLOSED_OWNER_TEMPLATE,
-                                                             null);
-    String salesEmail = cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_SALES_EMAIL,
-                                                          null);
-    String salesTemplate = cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_JOIN_CLOSED_SALES_TEMPLATE,
-                                                             null);
-
-    try {
-      mailSender.sendMail(userMail,
-                          cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_JOIN_CLOSED_USER_SUBJECT),
-                          userTemplate,
-                          props,
-                          false);
-      mailSender.sendMail(salesEmail,
-                          cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_JOIN_CLOSED_SALES_SUBJECT)
-                                                 .replace("${company}",
-                                                          props.get("tenant.repository.name")),
-                          salesTemplate,
-                          props,
-                          true);
-
-      Map<String, String> adminEmails = workspacesOrganizationRequestPerformer.getTenantAdministrators(tName);
-      Iterator<String> it = adminEmails.keySet().iterator();
-      while (it.hasNext()) {
-        String username = it.next();
-        if (username.equals("root"))// Dont send those emails to root CLDINT-184
-          continue;
-        String adminEmail = adminEmails.get(username);
-        props.put("admin.firstname", username);
-        if (adminEmail != null)
-          mailSender.sendMail(adminEmail,
-                              cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_JOIN_CLOSED_OWNER_SUBJECT)
-                                                     .replace("${company}",
-                                                              props.get("tenant.repository.name")),
-                              ownerTemplate,
-                              props,
-                              false);
-      }
-    } catch (CloudAdminException e) {
-      sendAdminErrorEmail("Configuration error - join rejected emails is not send", e);
-      LOG.error("Configuration error - join rejected emails is not send", e);
-    }
-  }
-
-  public void sendUserJoinedEmails(String tName,
-                                   String firstName,
-                                   String userMail,
-                                   Map<String, String> props) throws CloudAdminException {
-    String userTemplate = cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_USER_JOINED_TEMPLATE,
-                                                            null);
-    String ownerTemplate = cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_USER_JOINED_OWNER_TEMPLATE,
-                                                             null);
-    String ownerSubject = cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_USER_JOINED_OWNER_SUBJECT)
-                                                 .replace("${company}", tName);
-    ownerSubject = ownerSubject.replace("${firstname}", firstName);
-    try {
-      Map<String, String> adminEmails = workspacesOrganizationRequestPerformer.getTenantAdministrators(tName);
-      mailSender.sendMail(userMail,
-                          cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_USER_JOINED_SUBJECT)
-                                                 .replace("${company}", tName),
-                          userTemplate,
-                          props,
-                          false);
-      Iterator<String> it = adminEmails.keySet().iterator();
-      while (it.hasNext()) {
-        String username = it.next();
-        if (username.equals("root"))// Dont send those emails to root CLDINT-184
-          continue;
-        String adminEmail = adminEmails.get(username);
-        props.put("admin.firstname", username);
-        if (adminEmail != null)
-          mailSender.sendMail(adminEmail, ownerSubject, ownerTemplate, props, false);
-      }
-    } catch (CloudAdminException e) {
-      sendAdminErrorEmail("Configuration error - user joined but notification emails is not send.",
-                          e);
-      LOG.error("Configuration error - user joined but notification emails is not send.", e);
-    }
-  }
-
-  public void sendIntranetCreatedEmail(String userMail, Map<String, String> props) throws CloudAdminException {
-    String userTemplate = cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_USER_INTRANET_CREATED_TEMPLATE,
-                                                            null);
-    try {
-      mailSender.sendMail(userMail,
-                          cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_USER_INTRANET_CREATED_SUBJECT)
-                                                 .replace("${company}",
-                                                          props.get("tenant.repository.name")),
-                          userTemplate,
-                          props,
-                          false);
-    } catch (CloudAdminException e) {
-      sendAdminErrorEmail("Configuration error - workspace created but owner email in not send", e);
-      LOG.error("Configuration error - workspace created but owner email in not send", e);
-    }
-  }
-
-  public void sendAdminErrorEmail(String msg, Exception error) {
-    String mailTemplate = cloudAdminConfiguration.getString(MailConfiguration.CLOUD_ADMIN_MAIL_ADMIN_ERROR_TEMPLATE,
-                                                            null);
-    String mailSubject = cloudAdminConfiguration.getString(MailConfiguration.CLOUD_ADMIN_MAIL_ADMIN_ERROR_SUBJECT,
-                                                           "Cloud admin error");
-    msg = msg.replaceAll("(\r\n|\n\r|\r|\n)", "<br>");
-
-    Map<String, String> props = new HashMap<String, String>();
-    props.put("message", msg);
-
-    if (error != null) {
-      String prettyMsg = error.getMessage().replaceAll("(\r\n|\n\r|\r|\n)", "<br>");
-      prettyMsg = prettyMsg.replaceAll("(\t)", "&nbsp;&nbsp;&nbsp;&nbsp;");
-      props.put("exception.message", prettyMsg);
-
-      StringBuilder trace = new StringBuilder();
-      for (StackTraceElement item : error.getStackTrace()) {
-        String line = item.toString();
-        if (line.startsWith("at ")) {
-          trace.append("&nbsp;&nbsp;&nbsp;&nbsp;");
-        }
-        trace.append(item.toString());
-        trace.append("<br>");
-      }
-      props.put("stack.trace", trace.toString());
-    } else {
-      props.put("exception.message", "No exception message provided");
-      props.put("stack.trace", "No stack trace provided");
-    }
-    try {
-      for (String email : cloudAdminConfiguration.getString(MailConfiguration.CLOUD_ADMIN_MAIL_ADMIN_EMAIL)
-                                                 .split(",")) {
-        mailSender.sendMail(email.trim(), mailSubject, mailTemplate, props, true);
-      }
-    } catch (CloudAdminException ex) {
-      LOG.error("Cannot send mail message to admin. Message was '" + msg + "' it is caused by '"
-          + (error != null ? error.getMessage() : "[ no error message provided]") + "'.", ex);
-    }
-  }
-
-  public void sendContactUsEmail(String userMail, String firstName, String subject, String text) {
-
-    String mailTemplate = cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_CONTACT_TEMPLATE,
-                                                            "");
-    String email = cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_SUPPOR_EMAIL,
-                                                     "support@cloud-workspaces.com");
-
-    Map<String, String> props = new HashMap<String, String>();
-    props.put("user.mail", userMail);
-    props.put("user.name", firstName);
-    props.put("message", text);
-    try {
-      mailSender.sendMail(email,
-                          "Contact-Us message submitted: " + subject,
-                          mailTemplate,
-                          props,
-                          false,
-                          userMail);
-    } catch (CloudAdminException ex) {
-      String msg = ("Cannot send mail contactUs message. Message was : <<" + text
-          + ">>. Sender email is: " + userMail);
-      LOG.error(msg);
-      sendAdminErrorEmail(msg, ex);
-    }
-  }
-
-  public void sendPasswordRestoreEmail(String email, String tName, String uuid) throws CloudAdminException {
-
-    String mailTemplate = cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_PASSWORD_RESTORE_TEMPLATE,
-                                                            "");
-    Map<String, String> props = new HashMap<String, String>();
-    props.put("user.mail", email);
-    props.put("uid", uuid);
-    props.put("tenant.masterhost", AdminConfigurationUtil.getMasterHost(cloudAdminConfiguration));
-    props.put("tenant.repository.name", tName);
-    try {
-      mailSender.sendMail(email,
-                          cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_PASSWORD_RESTORE_SUBJECT),
-                          mailTemplate,
-                          props,
-                          false,
-                          "noreply@cloud-workspaces.com");
-    } catch (CloudAdminException ex) {
-      String msg = ("Cannot send mail password restore message. Requestor email is: " + email);
-      LOG.error(msg);
-      sendAdminErrorEmail(msg, ex);
-    }
-
   }
 
   public boolean isInBlackList(String email) {
@@ -367,78 +111,33 @@ public class CloudIntranetUtils {
       LOG.info("Black list file not found, allowing tenant " + tName + " from email:" + email);
     } catch (IOException e) {
       LOG.error(e.getMessage(), e);
-      sendAdminErrorEmail(e.getMessage(), e);
+      notificationMailSender.sendAdminErrorEmail(e.getMessage(), e);
     }
     return false;
   }
 
   /*
-  public void putInBlackList(String email) {
-    String tail = email.substring(email.indexOf("@") + 1);
-    if (blackListConfigurationFolder == null
-        || (cloudAdminConfiguration.getString("cloud.admin.blacklist.file", null)) == null) {
-      String msg = "Blacklist action failed - blacklist folder/file not configured, cannot add new record for "
-          + tail;
-      LOG.warn(msg);
-      sendAdminErrorEmail(msg, null);
-      return;
-    }
-    File blacklistFolder = new File(blackListConfigurationFolder);
-    if (!blacklistFolder.exists())
-      blacklistFolder.mkdir();
-    try {
-      File propertyFile = new File(blacklistFolder + "/"
-          + cloudAdminConfiguration.getString("cloud.admin.blacklist.file"));
-      if (!propertyFile.exists())
-        propertyFile.createNewFile();
-      FileInputStream io = new FileInputStream(propertyFile);
-      Properties properties = new Properties();
-      properties.load(io);
-      io.close();
-      if (properties.containsKey(tail)) {
-        return;
-      } else {
-        properties.setProperty(tail, new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
-        properties.store(new FileOutputStream(propertyFile), "");
-      }
-      LOG.info("Registrations from " + tail + " was blacklisted.");
-    } catch (FileNotFoundException e) {
-      LOG.error(e.getMessage(), e);
-      sendAdminErrorEmail(e.getMessage(), e);
-    } catch (IOException e) {
-      LOG.error(e.getMessage(), e);
-      sendAdminErrorEmail(e.getMessage(), e);
-    }
-  }
-  */
-
-  public int getMaxUsersForTenant(String tName) throws CloudAdminException {
-    if (maxUsersConfigurationFile == null) {
-      return Integer.parseInt(cloudAdminConfiguration.getString(CLOUD_ADMIN_TENANT_MAXUSERS, "20"));
-    }
-    String value = null;
-    int count;
-    File propertyFile = new File(maxUsersConfigurationFile);
-    try {
-      FileInputStream io = new FileInputStream(propertyFile);
-      Properties properties = new Properties();
-      properties.load(io);
-      value = properties.getProperty(tName);
-      if (value == null || value.equals("")) {
-        return Integer.parseInt(cloudAdminConfiguration.getString(CLOUD_ADMIN_TENANT_MAXUSERS, "20"));
-      } else {
-        count = Integer.parseInt(value);
-      }
-      io.close();
-    } catch (FileNotFoundException e) {
-      return Integer.parseInt(cloudAdminConfiguration.getString(CLOUD_ADMIN_TENANT_MAXUSERS, "20"));
-    } catch (IOException e) {
-      LOG.error(e.getMessage(), e);
-      sendAdminErrorEmail(e.getMessage(), e);
-      throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
-    }
-    return count;
-  }
+   * public void putInBlackList(String email) { String tail =
+   * email.substring(email.indexOf("@") + 1); if (blackListConfigurationFolder
+   * == null || (cloudAdminConfiguration.getString("cloud.admin.blacklist.file",
+   * null)) == null) { String msg =
+   * "Blacklist action failed - blacklist folder/file not configured, cannot add new record for "
+   * + tail; LOG.warn(msg); sendAdminErrorEmail(msg, null); return; } File
+   * blacklistFolder = new File(blackListConfigurationFolder); if
+   * (!blacklistFolder.exists()) blacklistFolder.mkdir(); try { File
+   * propertyFile = new File(blacklistFolder + "/" +
+   * cloudAdminConfiguration.getString("cloud.admin.blacklist.file")); if
+   * (!propertyFile.exists()) propertyFile.createNewFile(); FileInputStream io =
+   * new FileInputStream(propertyFile); Properties properties = new
+   * Properties(); properties.load(io); io.close(); if
+   * (properties.containsKey(tail)) { return; } else {
+   * properties.setProperty(tail, new SimpleDateFormat("yyyy-MM-dd").format(new
+   * Date())); properties.store(new FileOutputStream(propertyFile), ""); }
+   * LOG.info("Registrations from " + tail + " was blacklisted."); } catch
+   * (FileNotFoundException e) { LOG.error(e.getMessage(), e);
+   * sendAdminErrorEmail(e.getMessage(), e); } catch (IOException e) {
+   * LOG.error(e.getMessage(), e); sendAdminErrorEmail(e.getMessage(), e); } }
+   */
 
   public void joinAll(String tName, RequestState state) throws CloudAdminException {
     if (state.equals(RequestState.WAITING_CREATION))
@@ -464,7 +163,7 @@ public class CloudIntranetUtils {
                                                                                       .toString()));
         if (workspacesOrganizationRequestPerformer.isNewUserAllowed(tenant, username)) {
           LOG.info("Sending join letter to " + userMail + " - his tenant is raised user limit.");
-          sendOkToJoinEmail(userMail, props);
+          notificationMailSender.sendOkToJoinEmail(userMail, props);
           requestDao.delete(one);
           continue;
         } else {
@@ -486,7 +185,7 @@ public class CloudIntranetUtils {
         try {
           if (workspacesOrganizationRequestPerformer.isNewUserAllowed(tenant, username)) {
             LOG.info("Sending join letter to " + userMail + " - his tenant is resumed.");
-            sendOkToJoinEmail(userMail, props);
+            notificationMailSender.sendOkToJoinEmail(userMail, props);
             requestDao.delete(one);
             continue;
           } else {
@@ -500,8 +199,9 @@ public class CloudIntranetUtils {
               LOG.warn(e.getMessage());
             }
             requestDao.put(two);
-            props.put("users.maxallowed", Integer.toString(getMaxUsersForTenant(tenant)));
-            sendJoinRejectedEmails(tenant, userMail, props);
+            props.put("users.maxallowed",
+                      Integer.toString(userLimitsStorage.getMaxUsersForTenant(tenant)));
+            notificationMailSender.sendJoinRejectedEmails(tenant, userMail, props);
             continue;
           }
         } catch (UserAlreadyExistsException e) {
@@ -511,10 +211,10 @@ public class CloudIntranetUtils {
       }
 
       try {
-       
+
         // Looking for administrators first
         if (one.isAdministrator()) {
-          
+
           // Checking status
           if (!tenantInfoDataManager.getValue(tenant, TenantInfoFieldName.PROPERTY_STATE)
                                     .equals(TenantState.ONLINE.toString())) {
@@ -523,7 +223,7 @@ public class CloudIntranetUtils {
             LOG.warn(msg);
             continue;
           }
-          
+
           // Prepare properties for mailing
           Map<String, String> props = new HashMap<String, String>();
           props.put("tenant.masterhost",
@@ -539,7 +239,7 @@ public class CloudIntranetUtils {
           } catch (UserAlreadyExistsException ex) {
             LOG.warn("Administrator " + userMail
                 + " is already exists, deleting from waiting queue.");
-            sendIntranetCreatedEmail(userMail, props);
+            notificationMailSender.sendIntranetCreatedEmail(userMail, props);
             requestDao.delete(one);
             continue;
           }
@@ -551,7 +251,7 @@ public class CloudIntranetUtils {
                                                            lName,
                                                            one.getPassword(),
                                                            true);
-          sendIntranetCreatedEmail(userMail, props);
+          notificationMailSender.sendIntranetCreatedEmail(userMail, props);
           requestDao.delete(one);
         } else {
           continue;
@@ -560,7 +260,7 @@ public class CloudIntranetUtils {
         String msg = ("An problem happened during creating administrator " + userMail
             + "  on tenant " + " : " + tenant + e.getMessage());
         LOG.error(msg, e);
-        sendAdminErrorEmail(msg, null);
+        notificationMailSender.sendAdminErrorEmail(msg, null);
       }
     }
 
@@ -578,8 +278,8 @@ public class CloudIntranetUtils {
         if (one.isAdministrator() || one.getPassword().equals("")) {
           continue;
         } else {
-          
-         // Checking status
+
+          // Checking status
           if (!tenantInfoDataManager.getValue(tenant, TenantInfoFieldName.PROPERTY_STATE)
                                     .equals(TenantState.ONLINE.toString())) {
             String msg = "Tenant " + tenant + " is not online, auto join skipped for user "
@@ -587,8 +287,8 @@ public class CloudIntranetUtils {
             LOG.warn(msg);
             continue;
           }
-          
-       // Prepare properties for mailing
+
+          // Prepare properties for mailing
           Map<String, String> props = new HashMap<String, String>();
           props.put("tenant.masterhost",
                     AdminConfigurationUtil.getMasterHost(cloudAdminConfiguration));
@@ -597,13 +297,13 @@ public class CloudIntranetUtils {
           props.put("user.name", username);
           props.put("first.name", fName);
           props.put("last.name", lName);
-          
+
           try {
             isUserAllowed = workspacesOrganizationRequestPerformer.isNewUserAllowed(tenant,
                                                                                     username);
           } catch (UserAlreadyExistsException e) {
             LOG.warn("User " + userMail + " is already exists, deleting from waiting queue.");
-            sendUserJoinedEmails(tenant, fName, userMail, props);
+            notificationMailSender.sendUserJoinedEmails(tenant, fName, userMail, props);
             requestDao.delete(one);
             continue;
           }
@@ -616,12 +316,13 @@ public class CloudIntranetUtils {
                                                              lName,
                                                              one.getPassword(),
                                                              false);
-            sendUserJoinedEmails(tenant, fName, userMail, props);
+            notificationMailSender.sendUserJoinedEmails(tenant, fName, userMail, props);
             requestDao.delete(one);
           } else {
             // Limit reached
-            props.put("users.maxallowed", Integer.toString(getMaxUsersForTenant(tenant)));
-            sendJoinRejectedEmails(tenant, userMail, props);
+            props.put("users.maxallowed",
+                      Integer.toString(userLimitsStorage.getMaxUsersForTenant(tenant)));
+            notificationMailSender.sendJoinRejectedEmails(tenant, userMail, props);
             // Changing type from WAITING_JOIN to WAITING_LIMIT
             UserRequest two = one.clone();
             two.setState(RequestState.WAITING_LIMIT);
@@ -638,7 +339,7 @@ public class CloudIntranetUtils {
         String msg = ("An problem happened during creating user " + userMail + "  on tenant "
             + " : " + tenant + e.getMessage());
         LOG.error(msg, e);
-        sendAdminErrorEmail(msg, null);
+        notificationMailSender.sendAdminErrorEmail(msg, null);
       }
     }
   }
