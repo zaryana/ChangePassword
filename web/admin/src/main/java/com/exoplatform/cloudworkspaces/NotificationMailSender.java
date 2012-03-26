@@ -107,7 +107,7 @@ public class NotificationMailSender {
     }
 
   }
-
+  */
   public void sendJoinRejectedEmails(String tName, String userMail, Map<String, String> props) throws CloudAdminException {
     String userTemplate = cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_JOIN_CLOSED_USER_TEMPLATE,
                                                             null);
@@ -154,7 +154,7 @@ public class NotificationMailSender {
       LOG.error("Configuration error - join rejected emails is not send", e);
     }
   }
-  */
+  
   public void sendUserJoinedEmails(String tName,
                                    String firstName,
                                    String userMail,
