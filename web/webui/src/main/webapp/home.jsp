@@ -105,9 +105,10 @@
                         fjs.parentNode.insertBefore(js, fjs);
                       }(document, 'script', 'facebook-jssdk'));
                     </script>
-                    <div  class="FL">
-                      <div class="fb-like" data-send="true" data-layout="button_count" data-width="100" data-show-faces="true"></div>
-                    </div>
+                    <div class="FL"> 
+                        <div class="fb-like" data-href="http://www.facebook.com/eXoPlatform" data-send="true" data-layout="button_count" data-show-faces="false">
+                        </div>
+                     </div>
                   </div>
                 </div>
               </div>
