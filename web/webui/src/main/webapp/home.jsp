@@ -52,8 +52,9 @@
     </script>
     <!-- load ThickBox to display video (http://jquery.com/demo/thickbox/) -->
     <link rel="stylesheet" href="/thickbox/thickbox.css" type="text/css" media="screen" />
-    <script src="/thickbox/thickbox.js" type="text/javascript"></script>
+    <script src="/thickbox/thickbox.js" type="text/javascript"></script>    
     <script type="text/javascript">var tb_pathToImage = "/background/img_video.png";</script>
+    <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
   </head>
 
   <body onLoad="tenants.init();">
@@ -83,7 +84,7 @@
                 <div class="BoxContent ClearFix">
     
                   <form class="UIForm" action="javascript:void(0);"   method="POST" name="cloud-workspaces-profile">
-                    <p class="SignUpInfo">Cloud Workspaces is currently in private beta. To participate, register with your work email address. We'll keep you updated when your company's social intranet is ready.</p>
+                    <p class="SignUpInfo">Cloud Workspaces is currently in beta. To participate, register with your work email address. We'll keep you updated when your company's social intranet is ready.</p>
                     <div id="messageString" class="TenantFormMsg"></div>
                     <input class="InputText" type="text" name="email" id="email" value="Enter your professional email" onclick="this.value='';" />
                     <input class="Button" type="submit" id="t_submit"  value="Sign Up" onClick="tenants.doSingupRequest();" />
@@ -93,10 +94,8 @@
                     <iframe id="loopfuseOutput" name="loopfuseOutput" style='display:none; visibility:hidden'></iframe>
                   </form>
                   <div class="SocialBox">
-                    <div class="Social FR">
-                      <a href="http://twitter.com/exoplatform" class="twitterLink" target="_blank"><img src="background/icon-twiter.png" alt=""/></a>
-                      <a href="#"><img src="background/icon-tweet.png" alt=""/></a>
-                    </div>
+                   
+                    
                     <script>(function(d, s, id) {
                         var js, fjs = d.getElementsByTagName(s)[0];
                         if (d.getElementById(id)) return;
@@ -108,6 +107,13 @@
                     <div class="FL"> 
                         <div class="fb-like" data-href="http://www.facebook.com/eXoPlatform" data-send="true" data-layout="button_count" data-show-faces="false">
                         </div>
+                     </div>
+                     <div class="FR"> 
+                           <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://cloud-workspaces.com" data-text="Cloud-Workspaces: The Free Social Intranet for Your Company" data-via="eXoPlatform" data-count="none">Tweet</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+   
+                        <!-- Place this tag where you want the +1 button to render -->
+                        <g:plusone size="medium"></g:plusone>
                      </div>
                   </div>
                 </div>
