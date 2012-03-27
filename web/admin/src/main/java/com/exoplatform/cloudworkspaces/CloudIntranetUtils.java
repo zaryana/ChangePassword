@@ -25,6 +25,8 @@ import static org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConf
 import static org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration.CLOUD_ADMIN_MAIL_ADMIN_ERROR_SUBJECT;
 import static org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration.CLOUD_ADMIN_MAIL_ADMIN_ERROR_TEMPLATE;
 
+import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -52,6 +54,7 @@ import java.util.Properties;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.regex.Pattern;
 
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
@@ -1017,8 +1020,32 @@ public class CloudIntranetUtils {
 
   public String email2tenantName(String email) {
     String tail = email.substring(email.indexOf("@") + 1);
-    String tName = tail.substring(0, tail.indexOf("."));
-    return tName;
+    String[] arr = tail.split("\\.");
+    if (arr.length <3)
+    	return arr[0];
+    
+    boolean isMatched = false;
+    try {
+    String hostNamesFile = System.getProperty("cloud.admin.hostname.file");
+    FileInputStream stream = new FileInputStream(hostNamesFile);
+    DataInputStream in = new DataInputStream(stream);
+    BufferedReader br = new BufferedReader(new InputStreamReader(in));
+    String line;
+    while ( (line = br.readLine()) != null && !isMatched)   
+    {
+    	isMatched = Pattern.matches(line, email);
+    }
+    in.close();
+    } catch (FileNotFoundException e){
+    	e.printStackTrace();
+    } catch (IOException e){
+    	e.printStackTrace();
+    }
+    if (isMatched)
+    	return arr[0];
+    else
+    	return arr[0]+"_"+arr[1];
+    
   }
 
   public Map<String, String[]> sortByComparator(Map<String, String[]> unsortMap) {
