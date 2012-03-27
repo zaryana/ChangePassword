@@ -910,5 +910,13 @@ public class IntranetAdminService extends TenantCreator {
     else
       return Response.ok("FALSE").build();
   }
+  
+  @GET
+  @Path("tenantname/{email}")
+  @Produces(MediaType.TEXT_PLAIN)
+  public Response tenantname(@PathParam("email")
+  String email) {
+      return Response.ok(utils.email2tenantName(email)).build();
+  }
 
 }
