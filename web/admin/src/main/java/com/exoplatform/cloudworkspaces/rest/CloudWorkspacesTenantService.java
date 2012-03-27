@@ -603,8 +603,13 @@ public class CloudWorkspacesTenantService extends TenantCreator {
 
     String tName = utils.email2tenantName(userMail);
     Response resp = super.createTenantWithConfirmedEmail(uuid);
-    if (resp.getStatus() != 200)
-      return Response.serverError().entity((String) resp.getEntity()).build();
+    if (resp.getStatus() != 200) {
+      notificationMailSender.sendAdminErrorEmail("Tenant " + tName + " creation admin error: "
+          + resp.getEntity(), null);
+      return Response.status(resp.getStatus())
+                     .entity("An problem happened during processsing this request. It was reported to developers. Please, try again later.")
+                     .build();
+    }
     TenantCreatedListenerThread thread = new TenantCreatedListenerThread(tName,
                                                                          tenantInfoDataManager,
                                                                          workspacesOrganizationRequestPerformer,
