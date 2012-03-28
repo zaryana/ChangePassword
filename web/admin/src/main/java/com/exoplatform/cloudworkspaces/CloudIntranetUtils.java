@@ -1030,7 +1030,7 @@ public class CloudIntranetUtils {
       return subdomains[0];
     } else {
       // special cases
-      tenantName = hostname;
+      tenantName = hostname.substring(0, hostname.lastIndexOf("."));
     }
 
     String hostNamesConf = System.getProperty(CLOUD_ADMIN_HOSTNAME_FILE);
@@ -1040,18 +1040,14 @@ public class CloudIntranetUtils {
       try {
         BufferedReader br = new BufferedReader(new InputStreamReader(in));
         String hostRegexp;
-        boolean isFound = false;
         while ((hostRegexp = br.readLine()) != null) {
           Pattern p = Pattern.compile(hostRegexp);
           Matcher m = p.matcher(hostname);
           if (m.find()) {
             tenantName = hostname.substring(0, m.start());
-            isFound = true; 
             break;
           }
         }
-        if (!isFound)
-          tenantName = tenantName.substring(0, tenantName.lastIndexOf("."));
       } finally {
         in.close();
       }
