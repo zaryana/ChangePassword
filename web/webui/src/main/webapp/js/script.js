@@ -709,12 +709,12 @@ Tenants.prototype.xmlhttpPost = function(strURL, handler, paramsMapper) {
 }
 
 Tenants.prototype.getquerystringSignup = function() {
-  qstr = 'user-mail=' + jQuery.trim(_gel('email').value.toLowerCase());
+  qstr = 'user-mail=' + jQuery.trim(_gel('email').value);
   return qstr;
 }
 
 Tenants.prototype.getquerystringJoin = function() {
-  qstr = 'user-mail=' + jQuery.trim(_gel('email').value.toLowerCase());
+  qstr = 'user-mail=' + jQuery.trim(_gel('email').value);
   qstr += '&first-name=' + jQuery.trim(_gel('first_name').value);
   qstr += '&last-name=' + jQuery.trim(_gel('last_name').value);
   qstr += '&password=' + jQuery.trim(_gel('password').value);
@@ -723,7 +723,7 @@ Tenants.prototype.getquerystringJoin = function() {
 }
 
 Tenants.prototype.getquerystringCreate = function() {
-  qstr = 'user-mail=' + jQuery.trim(_gel('email').value.toLowerCase());
+  qstr = 'user-mail=' + jQuery.trim(_gel('email').value);
   qstr += '&first-name=' + jQuery.trim(_gel('first_name').value);
   qstr += '&last-name=' + jQuery.trim(_gel('last_name').value);
   qstr += '&password=' + jQuery.trim(_gel('password').value);

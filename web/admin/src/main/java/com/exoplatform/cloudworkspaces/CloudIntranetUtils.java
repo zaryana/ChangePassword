@@ -1022,7 +1022,7 @@ public class CloudIntranetUtils {
   }
 
   public String email2tenantName(String email) {
-    String hostname = email.substring(email.indexOf("@") + 1);
+    String hostname = email.substring(email.indexOf("@") + 1).toLowerCase();
     String[] subdomains = hostname.split("\\.");
     String tenantName;
     if (subdomains.length < 3) {
