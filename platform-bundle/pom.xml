@@ -152,6 +152,10 @@
                       <fileset dir="${project.build.directory}/platform-cloud-tomcat/conf/Catalina/localhost"
                         includes="default-website.xml" />
                       <fileset dir="${project.build.directory}/platform-cloud-tomcat/lib" includes="exo.platform.sample.default-website.*.jar" />
+
+                      <!-- workflow dependencies -->
+                      <fileset dir="${project.build.directory}/platform-cloud-tomcat/webapps" includes="workflow.war" />
+                      <fileset dir="${project.build.directory}/platform-cloud-tomcat/lib" includes="exo-ecms-ext-workflow-.*.jar" />
                     </delete>
 
                     <unzip src="${project.build.directory}/platform-cloud-tomcat/webapps/portal.war" dest="${project.build.directory}/platform-cloud-tomcat/webapps/portal" />
