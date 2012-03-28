@@ -229,7 +229,7 @@ public class InviteJoinWsRESTService implements ResourceContainer {
             props.put("registration.link", registration.trim());
             mailContent = getBody("/html/invite-join-ws.html", props);
                  
-            subject += sender + " has invited you to join the " + currentTenant + " Workspace";
+            subject += sender + " has invited you to join the " + currentTenant + " social intranet";
             
             } else {
             	
@@ -240,7 +240,7 @@ public class InviteJoinWsRESTService implements ResourceContainer {
                 props.put("registration.link", registration.trim());
                 mailContent = getBody("/html/invite-try-cw.html", props);
             	
-                subject += sender + " has invited you to try eXo Cloud Workspace";
+                subject += sender + " has invited you to try Cloud Workspace";
             } 
        
 		  try{
@@ -265,7 +265,7 @@ public class InviteJoinWsRESTService implements ResourceContainer {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Unable to send invitation email. Please contact support.").build();
       }
       } else {
-    	  return Response.status(Status.BAD_REQUEST).entity("User already signed up or Workspace is not ready. Please try again later.").build();
+    	  return Response.status(Status.BAD_REQUEST).entity("User already signed up or the social intranet is not ready. Please try again later.").build();
       }
     }
     
