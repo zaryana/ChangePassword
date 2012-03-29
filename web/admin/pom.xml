@@ -110,7 +110,7 @@
             <configuration>
               <tasks>
                 <unwar src="${project.build.directory}/packager-conf/war/shell.war" dest="${project.build.directory}/packager-conf/unwar/shell"/>
-                <copy todir="${project.build.directory}/cloud-workspaces-web-admin-1.1.0-Alpha1/admin-shell">
+                <copy todir="${project.build.directory}/${project.artifactId}-${project.version}/admin-shell">
                   <fileset dir="${project.build.directory}/packager-conf/unwar/shell">
                     <exclude name="**/META-INF/**"/>
                     <exclude name="**/WEB-INF/**"/>
