@@ -43,10 +43,9 @@ public class UserLimitsStorage {
   }
 
   public int getMaxUsersForTenant(String tName) {
-    if (userLimits != null) {
+    if (userLimits != null && userLimits.containsKey(tName)) {
       return userLimits.getInt(tName);
     }
     return cloudAdminConfiguration.getInt(CLOUD_ADMIN_TENANT_MAXUSERS, 20);
   }
-
 }
