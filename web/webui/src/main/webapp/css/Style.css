@@ -27,61 +27,65 @@ html {
 
 body {
 	font-family: Verdana, Arial, Tahoma, Sans-serif;
-  margin: 0;
-  font-size: 12px;
-  color:#666666;
-  height:100%;
+	margin: 0;
+	font-size: 12px;
+	color:#666666;
+	height:100%;
 }
 
 div, table, tr, td, img, form, p,h1, h2, h3, h4, h5, h6,ul ,fieldset{
-  margin: 0;
-  padding: 0;
+	margin: 0;
+	padding: 0;
 }
 
 img,fieldset {
-  border: none;
+	border: none;
 }
 
 a {
-  text-decoration: none;
-  outline: none;
-  color:#0868b9;
+	text-decoration: none;
+	outline: none;
+	color:#0868b9;
 }
 
 li {
-  list-style-type:none;
+	list-style-type:none;
 }
-h1,h2,h3,h4,h5 {
-  font-weight:normal;
-  font-family:arial,tahoma,serif;
-  margin:10px 0;
+
+h1, h2, h3, h4, h5 {
+	font-weight:normal;
+	font-family: arial, helvetica,sans-serif;
+	margin:10px 0;
 }
 
 label.error { 
-  float: none; 
-  color: red; 
-  padding-left: .5em;
-  font-size: 11px; 
-  vertical-align: top; 
+	float: none; 
+	color: red; 
+	padding-left: .5em;
+	font-size: 11px; 
+	vertical-align: top; 
 } 
 
 h1{
-  font-family:MyriadProSemibold,arial,tahoma;
-  font-size: 48px;
-  
+	font-family: MyriadProSemibold, arial, tahoma;
+	font-size: 48px;
 }
+
 h2{
-  font-family:MyriadProSemibold,arial,tahoma;
+  font-family: MyriadProSemibold, arial, tahoma;
   font-size: 42px;
 
 }
+
 h3{
   font-size: 18px;  
 }
+
 h4{
   font-size: 14px;  
   font-weight: bold;
 }
+
 h5{
   font-size: 12px;
 }
@@ -161,7 +165,7 @@ p {
   text-transform:uppercase;
   font-size: 10px;
   padding: 0 14px;
-  font-family: arial,tahoma,serif;  
+  font-family: arial, tahoma, serif;  
   height: 31px;
   line-height: 35px;
 
@@ -443,7 +447,7 @@ input.Button {
   margin: 0;
   padding: 0;
   color: #fff;
-  font-family: Myriad Pro;
+  font-family: 'Myriad Pro', Arial, Helvetica, Tahoma, sans-serif;
   font-size: 18px;
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
@@ -512,7 +516,7 @@ input.Button {
   color: #414141;
 }
 
-.UIPageBody input.InputText {
+.UIPageBody input.InputText, .GetStartedPage input.InputText {
   -moz-box-shadow: 0 5px 8px #F4F4F4 inset;
   -webkit-box-shadow: 0 5px 8px #F4F4F4 inset;
   box-shadow: 0 5px 8px #F4F4F4 inset;
@@ -528,7 +532,7 @@ input.Button {
   color: #4c4c4c;
 }
 
-.UIPageBody input.DisabledArea {
+.UIPageBody input.DisabledArea, .GetStartedPage input.DisabledArea {
   background: #f4f4f4;
   color: #bfbfbf;
   font-size: 18px;
@@ -574,7 +578,7 @@ input.Button {
   font-size: 16px;
   text-align: center;
   margin: -15px 0 25px;
-  font-family: arial;
+  font-family: arial, helvetica,sans-serif;
 }
 
 .UIPageBody p.AlignLeftTxt {
@@ -606,7 +610,7 @@ input.Button {
   font-size: 18px;
   margin: 0px 0px 20px 0px;
   font-weight: normal;
-  font-family: arial,tahoma,serif;
+  font-family: arial, helvetica,sans-serif;
 }
 
 .ThanksPages .LeftContent {
@@ -639,7 +643,7 @@ input.Button {
 }
 
 .AboutPages h3 {
-  font-family: arial,tahoma,serif;
+  font-family: arial, helvetica,sans-serif;
   color: #636363;
   line-height: 30px;
   font-size: 18px;
@@ -676,7 +680,7 @@ input.Button {
   line-height: 20px;
   color: #6b6b6b;
   margin-bottom: 15px;
-  font-family: verdana;
+  font-family: Verdana, Arial, Helvetica, sans-serif;
 }
 
 .AboutPages ul li span {
@@ -735,7 +739,7 @@ input.Button {
   box-shadow: 0px 2px 2px #f3f3f3;
   width: 710px;
   margin: 0px auto;
-  font-family: arial;
+  font-family: arial, helvetica,sans-serif;
 }
 
 .UIFormBox .TitleForm {
@@ -746,7 +750,7 @@ input.Button {
   background: #f5f5f5;
   margin: 0px 0px 25px 0px;
   font-size: 24px;
-  font-family: arial;
+  font-family: arial, helvetica,sans-serif;
   font-weight: normal;
   text-shadow: 0 1px 0 #FFFFFF;
 }
@@ -1038,13 +1042,20 @@ hr {
 
 
 /*================started=============*/
-.UIPageBody .StartedStep {
+.GetStartedPage {
+	background: url(../background/GrayPattern.png) repeat center center;
+	margin: 0 auto;
+	padding: 60px 0;
+	height: 100%;
+}
+
+.GetStartedPage .StartedStep {
 	background: white;
 	border-radius: 8px;
-	border-radius: 8px;
+	box-shadow: 1px 3px 5px #BDBDCE;
+	border: none;
 	width: 676px;
-	margin: auto !important;
-	font-family: verdana;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
 }
 
 .StartedStep .StartedBarBG{
@@ -1052,11 +1063,12 @@ hr {
 	border-radius: 8px 8px 0 0;
 	border-radius: 8px 8px 0 0;
 	color: white;
-    font-family: Myriad Pro;
+    font-family: 'Myriad Pro', Arial, Helvetica, Tahoma, sans-serif;
     font-size: 24px;
     font-weight: normal;
     line-height: 94px;
-	margin-bottom: 35px;
+	margin: 0 0 35px;
+	padding: 0 40px;
 }
 
 .StartedStep .Steps{
@@ -1076,7 +1088,7 @@ hr {
 .StartedStep .StepSelectIcon{
 	background: url(../background/StepSelectIcon.png) no-repeat center;
 	color: white;
-    font-family: arial;
+    font-family: arial, helvetica,sans-serif;
     font-size: 26px;
     font-weight: bold;
     padding: 10px 17px;
@@ -1088,7 +1100,7 @@ hr {
 .StartedStep .StartedIcon{
 	background: url(../background/StartedIcon.png) no-repeat center;
 	color: white;
-    font-family: arial;
+    font-family: arial, helvetica,sans-serif;
     font-size: 26px;
     font-weight: bold;
     padding: 10px 17px;
@@ -1100,7 +1112,7 @@ hr {
 .StartedStep .StepIcon{
 	background: url(../background/StepIcon.png) no-repeat center;
 	color: white;
-    font-family: arial;
+    font-family: arial, helvetica,sans-serif;
     font-size: 26px;
     font-weight: bold;
     padding: 10px 17px;
@@ -1162,11 +1174,14 @@ hr {
 	margin-top: 20px;
 }
 
-.StartedStep .Link{
-	color: #8b8b8b;
+.StartedStep .Link {
 	text-align: right;
 	font-size: 11px;
-	margin: 0 29px 17px 0;
+	padding: 0 29px 17px 0;
+}
+
+.StartedStep .Link a {
+	color: #8b8b8b;
 }
 
 .StartedStep .BorderDot{

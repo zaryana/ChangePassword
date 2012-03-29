@@ -6,12 +6,8 @@
     <%@ include file="common/headScript.jsp"%>
   </head>
   <body onLoad="tenants.init();">
-    <div class="UIPageContainer">
-      <!--begin header-->
-      <%@ include file="common/header.jsp"%>
-	  
-	<div class="UIPageBody">
-		<form class="UIForm UIFormBox StartedStep" style="display: block;" name="" id="" method="POST" action="javascript:void(0);" >
+	<div class="GetStartedPage">
+		<form class="UIFormBox StartedStep" style="display: block;" name="" id="" method="POST" action="javascript:void(0);" >
 			<h1 class="StartedBarBG">Welcome to Cloud Workspaces - Get started in 3 easy steps</h1>
 			<div class="Steps" id="">
 				<span class="StepBG"></span>
@@ -19,12 +15,11 @@
 			</div>
 			<h3>Step 1:  Invite Coworkers</h3>
 			<p><strong>Invite colleagues to join your company’s</strong><br/>(note: Only @exoplatform.com email addresses will be invited to your workspace. Other addresses will receive an invitation to discover Cloud Workspaces)</p>
-			<table class="BorderDot" cols="2">
+			<table class="BorderDot">
 				<tbody>
 					<tr>
-						
-						<td class="FormInput"> <input type="text" onclick="this.value='';" value="Your email" id="email" name="" class="required InputText"></td>
-						<td class="FormButton"> <input type="submit" onclick="tenants.doLogin();" value="Next" id="t_submit" class="Button"></td>
+						<td class="FormInput"> <input type="text" onclick="this.value='';" value="Your email" id="email" name="" class="required InputText" /></td>
+						<td class="FormButton"> <input type="submit" onclick="tenants.doLogin();" value="Next" id="t_submit" class="Button" /></td>
 					</tr>
 				</tbody>
 			</table>
@@ -35,7 +30,7 @@
 			<div class="Link"><a href="#" class="Link">Skip to homepage >></a></div>
 		</form>
 		
-		<form class="UIForm UIFormBox StartedStep" style="display: none;" name="" id="" method="POST" action="javascript:void(0);" >
+		<form class="UIFormBox StartedStep" style="display: none;" name="" id="" method="POST" action="javascript:void(0);" >
 			<h1 class="StartedBarBG">Welcome to Cloud Workspaces - Get started in 3 easy steps</h1>
 			<div class="Steps" id="">
 				<span class="StepBG"></span>
@@ -47,7 +42,7 @@
 				<tbody>
 					<tr>
 						<td class="FormInput"><div class="HelpText">Drag and drop a document to add it to your private folder</div></td>
-						<td class="FormButton"> <input type="submit" onclick="tenants.doLogin();" value="Next" id="t_submit" class="Button"></td>
+						<td class="FormButton"> <input type="submit" onclick="tenants.doLogin();" value="Next" id="t_submit" class="Button" /></td>
 					</tr>
 				</tbody>
 			</table>
@@ -58,7 +53,7 @@
 			<div class="Link"><a href="#" class="Link">Skip to homepage >></a></div>
 		</form>
 		
-		<form class="UIForm UIFormBox StartedStep" style="display: none;" name="" id="" method="POST" action="javascript:void(0);" >
+		<form class="UIFormBox StartedStep" style="display: none;" name="" id="" method="POST" action="javascript:void(0);" >
 			<h1 class="StartedBarBG">Welcome to Cloud Workspaces - Get started in 3 easy steps</h1>
 			<div class="Steps" id="">
 				<span class="StepBG"></span>
@@ -72,20 +67,20 @@
 						<td class="FormInput CheckBox">
 							<ul class="ClearFix">
 								<li class="FL">
-									<input type="checkbox"/>Maketting <br/>
-									<input type="checkbox"/>Sales
+									<input type="checkbox" />Maketting <br/>
+									<input type="checkbox" />Sales
 								</li>
 								<li class="FL">
-									<input type="checkbox"/>Finance<br/>
-									<input type="checkbox"/>IT 
+									<input type="checkbox" />Finance<br/>
+									<input type="checkbox" />IT 
 								</li>
 								<li class="FL">
-									<input type="checkbox"/>Accountant<br/>
-									<input type="checkbox"/>Design
+									<input type="checkbox" />Accountant<br/>
+									<input type="checkbox" />Design
 								</li>
 							</ul>
 						</td>
-						<td class="FormButton"> <input type="submit" onclick="tenants.doLogin();" value="Next" id="t_submit" class="Button"></td>
+						<td class="FormButton"> <input type="submit" onclick="tenants.doLogin();" value="Next" id="t_submit" class="Button" /></td>
 					</tr>
 				</tbody>
 			</table>
@@ -93,14 +88,11 @@
 				<a href="#" class="FR RightStartTip"><img width="264" src="background/img_st.png" alt=""/></a>
 				<p class="LeftStartTip"><strong>Tip:</strong> Easily access your documents on your iPhone, iPad or Android device with the eXo mobile app. You can keep files private, share them with specific coworkers or publish them in a dedicated space.</p>
 			</div>
-			<div class="Link"><a href="#" class="Link">Skip to homepage >></a></div>
+			<div class="Link"><a href="#">Skip to homepage &gt;&gt;</a></div>
 		</form>
 	</div>
 	<!--end code body here-->
 		
-	<!--begin Footer-->
-      <%@ include file="common/footer.jsp"%>  
-    </div>
     
     <!-- BEGIN: LOOPFUSE TRACKING -->
     <script type="text/javascript" src="http://lfov.net/webrecorder/js/listen.js"></script>
