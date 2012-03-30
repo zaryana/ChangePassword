@@ -114,7 +114,6 @@
                     <artifactItem>
                       <groupId>com.exoplatform.platform.cloud</groupId>
                       <artifactId>exo-platform-cloud-packaging-tomcat</artifactId>
-                      <version>${org.exoplatform.platform.version}</version>
                       <classifier>tomcat</classifier>
                       <type>zip</type>
                       <outputDirectory>target</outputDirectory>

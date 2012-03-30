@@ -13,7 +13,6 @@
     <dependency>
       <groupId>org.exoplatform.platform</groupId>
       <artifactId>exo.platform.extension.portlets.platformNavigation</artifactId>
-      <version>${org.exoplatform.platform.version}</version>
       <scope>runtime</scope>
       <type>war</type>
     </dependency>
