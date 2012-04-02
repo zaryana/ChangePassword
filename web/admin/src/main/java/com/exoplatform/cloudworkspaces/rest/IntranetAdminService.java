@@ -96,8 +96,8 @@ public class IntranetAdminService extends TenantCreator {
   @Override
   @POST
   @Path("/create-with-confirm/{tenantname}/{user-mail}")
-  public Response createTenantWithEmailConfirmation(@PathParam("tenantname")
-  String tenantName, @PathParam("user-mail")  String userMail) throws CloudAdminException {
+  public Response createTenantWithEmailConfirmation(@PathParam("tenantname") String tenantName,
+                                                    @PathParam("user-mail") String userMail) throws CloudAdminException {
     return Response.status(Status.FORBIDDEN).entity("It's forbidden to use this method").build();
   }
 
@@ -109,8 +109,7 @@ public class IntranetAdminService extends TenantCreator {
   @Override
   @POST
   @Path("/create-confirmed")
-  public Response createTenantWithConfirmedEmail(@QueryParam("id")
-  String uuid) throws CloudAdminException {
+  public Response createTenantWithConfirmedEmail(@QueryParam("id") String uuid) throws CloudAdminException {
     return Response.status(Status.FORBIDDEN).entity("It's forbidden to use this method").build();
   }
 
@@ -124,8 +123,7 @@ public class IntranetAdminService extends TenantCreator {
    */
   @POST
   @Path("/signup")
-  public Response signup(@FormParam("user-mail")
-  String userMail) throws CloudAdminException {
+  public Response signup(@FormParam("user-mail") String userMail) throws CloudAdminException {
     LOG.info("Received Signup request from " + userMail);
     String tName = null;
     String username = null;
@@ -184,7 +182,7 @@ public class IntranetAdminService extends TenantCreator {
             return Response.ok().build();
           } else {
             LOG.info("User " + userMail + " was put in waiting state - users limit reached.");
-            UserRequest req = new UserRequest("", 
+            UserRequest req = new UserRequest("",
                                               tName,
                                               userMail,
                                               "",
@@ -280,8 +278,7 @@ public class IntranetAdminService extends TenantCreator {
    */
   @POST
   @Path("/signup-link")
-  public Response signupLink(@FormParam("user-mail")
-  String userMail) throws CloudAdminException {
+  public Response signupLink(@FormParam("user-mail") String userMail) throws CloudAdminException {
     LOG.info("Received Signup Link request for " + userMail);
     String tName = null;
     String username = null;
@@ -379,13 +376,12 @@ public class IntranetAdminService extends TenantCreator {
    */
   @POST
   @Path("/join")
-  public Response joinIntranet(@FormParam("user-mail")
-  String userMail, @FormParam("first-name")
-  String firstName, @FormParam("last-name")
-  String lastName, @FormParam("password")
-  String password, @FormParam("confirmation-id")
-  String uuid, @FormParam("rfid")
-  String hash) throws CloudAdminException {
+  public Response joinIntranet(@FormParam("user-mail") String userMail,
+                               @FormParam("first-name") String firstName,
+                               @FormParam("last-name") String lastName,
+                               @FormParam("password") String password,
+                               @FormParam("confirmation-id") String uuid,
+                               @FormParam("rfid") String hash) throws CloudAdminException {
     String tName = null;
     String username = null;
     try {
@@ -536,14 +532,13 @@ public class IntranetAdminService extends TenantCreator {
 
   @POST
   @Path("/create")
-  public Response createIntranet(@FormParam("user-mail")
-  String userMail, @FormParam("first-name")
-  String firstName, @FormParam("last-name")
-  String lastName, @FormParam("company-name")
-  String companyName, @FormParam("phone")
-  String phone, @FormParam("password")
-  String password, @FormParam("confirmation-id")
-  String uuid) throws CloudAdminException {
+  public Response createIntranet(@FormParam("user-mail") String userMail,
+                                 @FormParam("first-name") String firstName,
+                                 @FormParam("last-name") String lastName,
+                                 @FormParam("company-name") String companyName,
+                                 @FormParam("phone") String phone,
+                                 @FormParam("password") String password,
+                                 @FormParam("confirmation-id") String uuid) throws CloudAdminException {
     if (!utils.validateEmail(userMail))
       return Response.status(Status.BAD_REQUEST)
                      .entity("Please enter a valid email address.")
@@ -568,8 +563,8 @@ public class IntranetAdminService extends TenantCreator {
       utils.sendAdminErrorEmail("Tenant " + tName + " creation admin error: " + resp.getEntity(),
                                 null);
       return Response.status(resp.getStatus())
-                    .entity("An problem happened during processsing this request. It was reported to developers. Please, try again later.")
-                    .build();
+                     .entity("An problem happened during processsing this request. It was reported to developers. Please, try again later.")
+                     .build();
     }
     UserRequest req = new UserRequest("",
                                       tName,
@@ -603,8 +598,7 @@ public class IntranetAdminService extends TenantCreator {
   @GET
   @Path("/status/{tenantname}")
   @Produces(MediaType.TEXT_PLAIN)
-  public Response tenantStatus(@PathParam("tenantname")
-  String tenantName) {
+  public Response tenantStatus(@PathParam("tenantname") String tenantName) {
     try {
       TenantStatus status = cloudInfoHolder.getTenantStatus(tenantName);
       return Response.ok(status.getState().toString()).build();
@@ -615,67 +609,45 @@ public class IntranetAdminService extends TenantCreator {
 
   @POST
   @Path("/contactus")
-  public Response contactUs(@FormParam("user-mail")
-  String userMail, @FormParam("first-name")
-  String firstName, @FormParam("subject")
-  String subject, @FormParam("text")
-  String text) {
+  public Response contactUs(@FormParam("user-mail") String userMail,
+                            @FormParam("first-name") String firstName,
+                            @FormParam("subject") String subject,
+                            @FormParam("text") String text) {
     utils.sendContactUsEmail(userMail, firstName, subject, text);
     return Response.ok().build();
   }
 
   /*
-  @POST
-  @Path("/create")
-  public Response create(@FormParam("user-mail")
-  String userMail, @FormParam("first-name")
-  String firstName, @FormParam("last-name")
-  String lastName, @FormParam("company-name")
-  String companyName, @FormParam("phone")
-  String phone, @FormParam("password")
-  String password, @FormParam("confirmation-id")
-  String uuid) throws CloudAdminException {
-    if (!utils.validateEmail(userMail))
-      return Response.status(Status.BAD_REQUEST)
-                     .entity("Please enter a valid email address.")
-                     .build();
-    if (!utils.validateUUID(userMail, uuid))
-      return Response.status(Status.BAD_REQUEST)
-                     .entity("Sorry, your registration link has expired. Please sign up again.")
-                     .build();
-    if (utils.isInBlackList(userMail)) {
-      String domain = userMail.substring(userMail.indexOf("@"));
-      return Response.status(Status.BAD_REQUEST)
-                     .entity("Sorry, we can't create workspace with an email address " + domain
-                         + ". Try with your work email.")
-                     .build();
-    }
-    String tName = utils.email2tenantName(userMail);
-    Map<String, String> props = new HashMap<String, String>();
-    String username = userMail.substring(0, (userMail.indexOf("@")));
-    props.put("tenant.masterhost", adminConfiguration.getMasterHost());
-    props.put("tenant.repository.name", tName);
-    props.put("user.mail", userMail);
-    props.put("user.name", username);
-    props.put("first.name", firstName);
-    props.put("last.name", lastName);
-    utils.sendCreationQueuedEmails(tName, userMail, props);
-    UserRequest req = new UserRequest("",
-                                      tName,
-                                      userMail,
-                                      firstName,
-                                      lastName,
-                                      companyName,
-                                      phone,
-                                      password,
-                                      uuid,
-                                      true,
-                                      RequestState.WAITING_CREATION);
-    requestDao.put(req);
-    new ReferencesManager(adminConfiguration).removeEmail(userMail);
-    return Response.ok().build();
-  }
-  */ 
+   * @POST
+   * @Path("/create") public Response create(@FormParam("user-mail") String
+   * userMail, @FormParam("first-name") String firstName,
+   * @FormParam("last-name") String lastName, @FormParam("company-name") String
+   * companyName, @FormParam("phone") String phone, @FormParam("password")
+   * String password, @FormParam("confirmation-id") String uuid) throws
+   * CloudAdminException { if (!utils.validateEmail(userMail)) return
+   * Response.status(Status.BAD_REQUEST)
+   * .entity("Please enter a valid email address.") .build(); if
+   * (!utils.validateUUID(userMail, uuid)) return
+   * Response.status(Status.BAD_REQUEST)
+   * .entity("Sorry, your registration link has expired. Please sign up again.")
+   * .build(); if (utils.isInBlackList(userMail)) { String domain =
+   * userMail.substring(userMail.indexOf("@")); return
+   * Response.status(Status.BAD_REQUEST)
+   * .entity("Sorry, we can't create workspace with an email address " + domain
+   * + ". Try with your work email.") .build(); } String tName =
+   * utils.email2tenantName(userMail); Map<String, String> props = new
+   * HashMap<String, String>(); String username = userMail.substring(0,
+   * (userMail.indexOf("@"))); props.put("tenant.masterhost",
+   * adminConfiguration.getMasterHost()); props.put("tenant.repository.name",
+   * tName); props.put("user.mail", userMail); props.put("user.name", username);
+   * props.put("first.name", firstName); props.put("last.name", lastName);
+   * utils.sendCreationQueuedEmails(tName, userMail, props); UserRequest req =
+   * new UserRequest("", tName, userMail, firstName, lastName, companyName,
+   * phone, password, uuid, true, RequestState.WAITING_CREATION);
+   * requestDao.put(req); new
+   * ReferencesManager(adminConfiguration).removeEmail(userMail); return
+   * Response.ok().build(); }
+   */
 
   @GET
   @RolesAllowed("cloud-manager")
@@ -710,9 +682,8 @@ public class IntranetAdminService extends TenantCreator {
   @Path("/validate/{decision}/{filename}")
   @RolesAllowed("cloud-manager")
   @Produces(MediaType.TEXT_PLAIN)
-  public Response validate(@PathParam("decision")
-  String decision, @PathParam("filename")
-  String filename) throws CloudAdminException {
+  public Response validate(@PathParam("decision") String decision,
+                           @PathParam("filename") String filename) throws CloudAdminException {
     filename = filename + ".properties";
     UserRequest req = requestDao.searchByFilename(filename);
     if (req == null) {
@@ -782,8 +753,7 @@ public class IntranetAdminService extends TenantCreator {
 
   @GET
   @Path("autojoin/{state}")
-  public Response autojoin(@PathParam("state")
-  String state) throws CloudAdminException {
+  public Response autojoin(@PathParam("state") String state) throws CloudAdminException {
     utils.joinAll(null, RequestState.valueOf(state));
     return Response.ok().build();
   }
@@ -791,9 +761,8 @@ public class IntranetAdminService extends TenantCreator {
   @GET
   @Path("/isuserexist/{tenantname}/{username}")
   @Produces(MediaType.TEXT_PLAIN)
-  public Response isuserexist(@PathParam("tenantname")
-  String tName, @PathParam("username")
-  String username) throws CloudAdminException {
+  public Response isuserexist(@PathParam("tenantname") String tName,
+                              @PathParam("username") String username) throws CloudAdminException {
     try {
       utils.isNewUserAllowed(tName, username);
       return Response.ok("FALSE").build();
@@ -805,16 +774,14 @@ public class IntranetAdminService extends TenantCreator {
   @GET
   @Path("/maxallowed/{tenantname}")
   @Produces(MediaType.TEXT_PLAIN)
-  public Response maxallowed(@PathParam("tenantname")
-  String tName) throws CloudAdminException {
+  public Response maxallowed(@PathParam("tenantname") String tName) throws CloudAdminException {
     return Response.ok(Integer.toString(utils.getMaxUsersForTenant(tName))).build();
   }
 
   @GET
   @Path("uuid/{uuid}")
   @Produces(MediaType.TEXT_PLAIN)
-  public Response uuid(@PathParam("uuid")
-  String uuid) throws CloudAdminException {
+  public Response uuid(@PathParam("uuid") String uuid) throws CloudAdminException {
     String email = new ReferencesManager(adminConfiguration).getEmail(uuid);
     if (email != null)
       return Response.ok(email).build();
@@ -827,8 +794,7 @@ public class IntranetAdminService extends TenantCreator {
   @GET
   @Path("passrestore/{email}")
   @Produces(MediaType.TEXT_PLAIN)
-  public Response passrestore(@PathParam("email")
-  String email) throws CloudAdminException {
+  public Response passrestore(@PathParam("email") String email) throws CloudAdminException {
     if (!utils.validateEmail(email))
       return Response.status(Status.BAD_REQUEST)
                      .entity("Please enter a valid email address.")
@@ -879,9 +845,7 @@ public class IntranetAdminService extends TenantCreator {
   @POST
   @Path("passconfirm")
   @Produces(MediaType.TEXT_PLAIN)
-  public Response passconfirm(@FormParam("uuid")
-  String uuid, @FormParam("password")
-  String password) throws CloudAdminException {
+  public Response passconfirm(@FormParam("uuid") String uuid, @FormParam("password") String password) throws CloudAdminException {
     ChangePasswordManager manager = new ChangePasswordManager(adminConfiguration);
     try {
       String email = manager.validateReference(uuid);
@@ -903,12 +867,18 @@ public class IntranetAdminService extends TenantCreator {
   @GET
   @Path("blacklisted/{email}")
   @Produces(MediaType.TEXT_PLAIN)
-  public Response balcklisted(@PathParam("email")
-  String email) {
+  public Response balcklisted(@PathParam("email") String email) {
     if (utils.isInBlackList(email))
       return Response.ok("TRUE").build();
     else
       return Response.ok("FALSE").build();
+  }
+
+  @GET
+  @Path("tenantname/{email}")
+  @Produces(MediaType.TEXT_PLAIN)
+  public Response tenantname(@PathParam("email") String email) {
+    return Response.ok(utils.email2tenantName(email)).build();
   }
 
 }

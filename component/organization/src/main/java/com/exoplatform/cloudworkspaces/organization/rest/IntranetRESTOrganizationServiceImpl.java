@@ -134,15 +134,14 @@ public class IntranetRESTOrganizationServiceImpl {
   @POST
   @Path("/adduser")
   @RolesAllowed("cloud-admin")
-  public Response createUser(@FormParam("tname")
-  String tname, @FormParam("URI")
-  String baseURI, @FormParam("username")
-  String userName, @FormParam("password")
-  String password, @FormParam("first-name")
-  String firstName, @FormParam("last-name")
-  String lastName, @FormParam("email")
-  String email, @FormParam("isadministrator")
-  String administrator) throws Exception {
+  public Response createUser(@FormParam("tname") String tname,
+                             @FormParam("URI") String baseURI,
+                             @FormParam("username") String userName,
+                             @FormParam("password") String password,
+                             @FormParam("first-name") String firstName,
+                             @FormParam("last-name") String lastName,
+                             @FormParam("email") String email,
+                             @FormParam("isadministrator") String administrator) throws Exception {
     try {
       repositoryService.setCurrentRepositoryName(tname);
       UserHandler userHandler = organizationService.getUserHandler();
@@ -200,9 +199,8 @@ public class IntranetRESTOrganizationServiceImpl {
   @Produces(MediaType.APPLICATION_JSON)
   @Path("/users/{tname}")
   @RolesAllowed("cloud-admin")
-  public Map<String, String> getUsersList(@PathParam("tname")
-  String tname, @QueryParam("administratorsonly")
-  String onlyAdmins) throws Exception {
+  public Map<String, String> getUsersList(@PathParam("tname") String tname,
+                                          @QueryParam("administratorsonly") String onlyAdmins) throws Exception {
     try {
       Map<String, String> result = new HashMap<String, String>();
       repositoryService.setCurrentRepositoryName(tname);
@@ -230,10 +228,9 @@ public class IntranetRESTOrganizationServiceImpl {
   @POST
   @Path("/newpassword")
   @RolesAllowed("cloud-admin")
-  public Response updatePassword(@FormParam("tname")
-  String tname, @FormParam("username")
-  String userName, @FormParam("password")
-  String password) throws Exception {
+  public Response updatePassword(@FormParam("tname") String tname,
+                                 @FormParam("username") String userName,
+                                 @FormParam("password") String password) throws Exception {
     try {
       repositoryService.setCurrentRepositoryName(tname);
       User user = organizationService.getUserHandler().findUserByName(userName);

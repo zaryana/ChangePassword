@@ -4,7 +4,7 @@
   <parent>
     <groupId>com.exoplatform.cloudworkspaces</groupId>
     <artifactId>cloud-workspaces-parent</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.1</version>
   </parent>
   <artifactId>cloud-workspaces-platform-navigation</artifactId>
   <packaging>war</packaging>
@@ -13,7 +13,6 @@
     <dependency>
       <groupId>org.exoplatform.platform</groupId>
       <artifactId>exo.platform.extension.portlets.platformNavigation</artifactId>
-      <version>${org.exoplatform.platform.version}</version>
       <scope>runtime</scope>
       <type>war</type>
     </dependency>

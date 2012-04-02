@@ -34,9 +34,9 @@ import javax.mail.internet.InternetAddress;
  *
  */
 public class TenantMetadataValidator {
-  public static final int       MAX_TENANT_NAME_LENGTH = 20;
+  public static final int       MAX_TENANT_NAME_LENGTH = 60;
 
-  public static final Pattern   TENANT_NAME_PATTERN    = Pattern.compile("[a-z\\d]*[a-z]+[a-z\\d]*");
+  public static final Pattern   TENANT_NAME_PATTERN    = Pattern.compile("[a-z](?:[a-z0-9\\-]*[a-z0-9])?");
 
   private static final Logger   LOG                    = LoggerFactory.getLogger(TenantMetadataValidator.class);
 
@@ -82,11 +82,11 @@ public class TenantMetadataValidator {
       if (LOG.isDebugEnabled()) {
         LOG.debug("Domain name: "
             + tenantName
-            + " should contain only lower-case characters (a-z) and/or digits (0-9); at least one character is required.");
+            + " should contain only lower-case characters (a-z) and/or digits (0-9) and/or dash (-); at least one character is required.");
       }
       throw new TenantValidationException("Domain name: "
           + tenantName
-          + " should contain only lower-case characters (a-z) and/or digits (0-9); at least one character is required.");
+          + " should contain only lower-case characters (a-z) and/or digits (0-9) and/or dash (-); at least one character is required.");
     }
 
   }

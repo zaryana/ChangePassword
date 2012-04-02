@@ -297,7 +297,7 @@ Tenants.prototype.initDonePage = function() {
          } else {
             _gel('first_name').value = prefix;
          }
-        _gel('workspace').value = split[1].substring(0, split[1].indexOf('.'));
+         $('#workspace').val(getTenantName(email));
         _gel('rfid').value = rfid;
          }else{
         _gel("messageString").innerHTML = "<div class=\"Ok\">Application error: email is not found. Please contact support.</div>";
@@ -318,9 +318,9 @@ Tenants.prototype.initSignInPage = function() {
   var email_start = queryString.indexOf('email=');
   email = (email_start != -1) ? queryString.substring(email_start + 6) : null;
    if (email != null && email != "") {
-   _gel("email").value = email;
+    $("#email").val(email);
     var split = email.split('@');
-   _gel('workspace').value = split[1].substring(0, split[1].indexOf('.'));
+    $('#workspace').val(getTenantName(email));
   }
  }
 }
@@ -1053,5 +1053,22 @@ function hideContactUsForm() {
     container.innerHTML = "";
     container.style.display = "none";
     return false;
+}
+
+function getTenantName(email) {
+	var checkURL = tenantServicePath + "/tenantname/" + email;
+	var result;
+	$.ajax({
+	  url : checkURL,
+	  async: false,
+	  success : function(data) {
+          result =  data;
+	  },
+	  error : function(request, status, error) {
+		  _gel("messageString").innerHTML = "Application error: cannot get tenant name. Please contact support."
+	  },
+	  dataType : 'text'
+	});
+	return result;
 }
 

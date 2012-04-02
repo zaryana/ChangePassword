@@ -25,6 +25,8 @@ import static org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConf
 import static org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration.CLOUD_ADMIN_MAIL_ADMIN_ERROR_SUBJECT;
 import static org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration.CLOUD_ADMIN_MAIL_ADMIN_ERROR_TEMPLATE;
 
+import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -52,6 +54,8 @@ import java.util.Properties;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
@@ -73,7 +77,11 @@ import com.exoplatform.cloudworkspaces.listener.TenantResumeThread;
 
 public class CloudIntranetUtils {
 
-  private static final String     CLOUD_ADMIN_TENANT_MAXUSERS = "cloud.admin.tenant.maxusers";
+  public static final String     CLOUD_ADMIN_TENANT_MAXUSERS = "cloud.admin.tenant.maxusers";
+
+  public static final String     CLOUD_ADMIN_HOSTNAME_FILE   = "cloud.admin.hostname.file";
+  
+  public static final char        TENANT_NAME_DELIMITER = '-';
 
   private CloudAdminConfiguration cloudAdminConfiguration;
 
@@ -829,13 +837,13 @@ public class CloudIntranetUtils {
         if (one.isAdministrator()) {
 
           // Checking status
-            if (!holder.getTenantStatus(tenant).getState().equals(TenantState.ONLINE)) {
-              String msg = "Tenant " + tenant + " is not online, auto join skipped for user "
-                  + userMail;
-              LOG.warn(msg);
-              continue;
-            }
-          
+          if (!holder.getTenantStatus(tenant).getState().equals(TenantState.ONLINE)) {
+            String msg = "Tenant " + tenant + " is not online, auto join skipped for user "
+                + userMail;
+            LOG.warn(msg);
+            continue;
+          }
+
           // Prepare properties for mailing
           Map<String, String> props = new HashMap<String, String>();
           props.put("tenant.masterhost", cloudAdminConfiguration.getMasterHost());
@@ -859,8 +867,7 @@ public class CloudIntranetUtils {
           storeUser(tenant, userMail, fName, lName, one.getPassword(), true);
           sendIntranetCreatedEmail(userMail, props);
           requestDao.delete(one);
-        } else 
-        {
+        } else {
           continue;
         }
       } catch (CloudAdminException e) {
@@ -873,8 +880,7 @@ public class CloudIntranetUtils {
 
     // Now regular users
     List<UserRequest> list2 = requestDao.search(tName, state);
-    for (UserRequest one : list2) 
-    {
+    for (UserRequest one : list2) {
       String tenant = one.getTenantName();
       String userMail = one.getUserEmail();
       String fName = one.getFirstName();
@@ -883,19 +889,19 @@ public class CloudIntranetUtils {
       boolean isUserAllowed;
 
       try {
-  
+
         if (one.isAdministrator() || one.getPassword().equals("")) {
           continue;
         } else {
-          
-         // Checking status
+
+          // Checking status
           if (!holder.getTenantStatus(tenant).getState().equals(TenantState.ONLINE)) {
             String msg = "Tenant " + tenant + " is not online, auto join skipped for user "
                 + userMail;
             LOG.warn(msg);
             continue;
           }
-          
+
           // Prepare properties for mailing
           Map<String, String> props = new HashMap<String, String>();
           props.put("tenant.masterhost", cloudAdminConfiguration.getMasterHost());
@@ -904,7 +910,7 @@ public class CloudIntranetUtils {
           props.put("user.name", username);
           props.put("first.name", fName);
           props.put("last.name", lName);
-          
+
           try {
             isUserAllowed = isNewUserAllowed(tenant, username);
           } catch (UserAlreadyExistsException e) {
@@ -1016,9 +1022,45 @@ public class CloudIntranetUtils {
   }
 
   public String email2tenantName(String email) {
-    String tail = email.substring(email.indexOf("@") + 1);
-    String tName = tail.substring(0, tail.indexOf("."));
-    return tName;
+    String hostname = email.substring(email.indexOf("@") + 1).toLowerCase();
+    String[] subdomains = hostname.split("\\.");
+    String tenantName;
+    if (subdomains.length < 3) {
+      // first or second level domain name
+      return subdomains[0];
+    } else {
+      // special cases
+      tenantName = hostname.substring(0, hostname.lastIndexOf("."));
+    }
+
+    String hostNamesConf = System.getProperty(CLOUD_ADMIN_HOSTNAME_FILE);
+    try {
+      FileInputStream stream = new FileInputStream(hostNamesConf);
+      DataInputStream in = new DataInputStream(stream);
+      try {
+        BufferedReader br = new BufferedReader(new InputStreamReader(in));
+        String hostRegexp;
+        while ((hostRegexp = br.readLine()) != null) {
+          Pattern p = Pattern.compile(hostRegexp);
+          Matcher m = p.matcher(hostname);
+          if (m.find()) {
+            tenantName = hostname.substring(0, m.start());
+            break;
+          }
+        }
+      } finally {
+        in.close();
+      }
+    } catch (FileNotFoundException e) {
+      LOG.warn("Hostnames file cloud.admin.hostname.file not found. Using default logic for tenant name from "
+          + email + ". Caused by error: " + e.getMessage());
+    } catch (IOException e) {
+      LOG.error("Cannot read hostnames file cloud.admin.hostname.file. Using default logic for tenant name from "
+                    + email,
+                e);
+    }
+
+    return tenantName.replace('.', TENANT_NAME_DELIMITER);
   }
 
   public Map<String, String[]> sortByComparator(Map<String, String[]> unsortMap) {

@@ -12,7 +12,7 @@
   </parent>
   <groupId>com.exoplatform.cloudworkspaces</groupId>
   <artifactId>cloud-workspaces-parent</artifactId>
-  <version>1.0.1-SNAPSHOT</version>
+  <version>1.0.1</version>
   <packaging>pom</packaging>
   <name>eXo Cloud Workspaces</name>
   <description>Parent POM for Cloud Workspaces projects.</description>
@@ -30,6 +30,7 @@
     <maven.compiler.target>1.6</maven.compiler.target>
 
     <!-- eXo Modules -->
+    <org.exoplatform.platform.cloud.version>3.5.2-1</org.exoplatform.platform.cloud.version>
     <org.exoplatform.platform.version>3.5.2</org.exoplatform.platform.version>
     <org.exoplatform.kernel.version>2.3.6-GA</org.exoplatform.kernel.version>
     <org.exoplatform.core.version>2.4.6-GA</org.exoplatform.core.version>
@@ -156,7 +157,7 @@
       <dependency>
         <groupId>com.exoplatform.platform.cloud</groupId>
         <artifactId>exo-platform-cloud-packaging-tomcat</artifactId>
-        <version>${org.exoplatform.platform.version}</version>
+        <version>${org.exoplatform.platform.cloud.version}</version>
         <type>zip</type>
         <classifier>tomcat</classifier>
       </dependency>
@@ -194,6 +195,12 @@
       </dependency>
 
       <!-- eXo dependencies -->
+      <dependency>
+        <groupId>org.exoplatform.platform</groupId>
+        <artifactId>exo.platform.extension.portlets.platformNavigation</artifactId>
+        <version>${org.exoplatform.platform.version}</version>
+        <type>war</type>
+      </dependency>
       <dependency>
         <groupId>org.exoplatform.kernel</groupId>
         <artifactId>exo.kernel.container</artifactId>
