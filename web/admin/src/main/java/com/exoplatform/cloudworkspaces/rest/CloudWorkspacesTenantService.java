@@ -80,6 +80,8 @@ public class CloudWorkspacesTenantService extends TenantCreator {
 
   private UserLimitsStorage                      userLimitsStorage;
 
+  private ReferencesManager                      referencesManager;
+
   public CloudWorkspacesTenantService(EmailValidationStorage emailValidationStorage,
                                       TenantStateDataManager tenantStateDataManager,
                                       TenantNameValidator tenantNameValidator,
@@ -89,7 +91,10 @@ public class CloudWorkspacesTenantService extends TenantCreator {
                                       NotificationMailSender notificationMailSender,
                                       UserLimitsStorage userLimitsStorage,
                                       Configuration cloudAdminConfiguration,
-                                      WorkspacesMailSender mailSender) {
+                                      WorkspacesMailSender mailSender,
+                                      ReferencesManager referencesManager,
+                                      UserRequestDAO requestDao,
+                                      CloudIntranetUtils cloudIntranetUtils) {
     super(emailValidationStorage,
           tenantStateDataManager,
           tenantNameValidator,
@@ -97,17 +102,12 @@ public class CloudWorkspacesTenantService extends TenantCreator {
           tenantInfoDataManager,
           cloudAdminConfiguration,
           mailSender);
-    this.requestDao = new UserRequestDAO(cloudAdminConfiguration);
+    this.requestDao = requestDao;
     this.workspacesOrganizationRequestPerformer = workspacesOrganizationRequestPerformer;
     this.notificationMailSender = notificationMailSender;
     this.userLimitsStorage = userLimitsStorage;
-    this.utils = new CloudIntranetUtils(cloudAdminConfiguration,
-                                        tenantInfoDataManager,
-                                        workspacesOrganizationRequestPerformer,
-                                        notificationMailSender,
-                                        userLimitsStorage,
-                                        requestDao);
-
+    this.referencesManager = referencesManager;
+    this.utils = cloudIntranetUtils;
   }
 
   /*
@@ -172,7 +172,7 @@ public class CloudWorkspacesTenantService extends TenantCreator {
 
       if (requestDao.searchByEmail(userMail) == null) {
         Response resp = super.createTenantWithEmailConfirmation(tName, userMail);
-        new ReferencesManager(adminConfiguration).putEmail(userMail, (String) resp.getEntity());
+        referencesManager.putEmail(userMail, (String) resp.getEntity());
       } else {
         LOG.info("User " + userMail + " already signed up to " + tName
             + ". Wait until a workspace will be created.");
@@ -191,18 +191,14 @@ public class CloudWorkspacesTenantService extends TenantCreator {
         switch (tState) {
         case CREATION:
         case WAITING_CREATION: {
-          props.put("rfid", new ReferencesManager(adminConfiguration).putEmail(userMail,
-                                                                               UUID.randomUUID()
-                                                                                   .toString()));
+          props.put("rfid", referencesManager.putEmail(userMail, UUID.randomUUID().toString()));
           notificationMailSender.sendOkToJoinEmail(userMail, props);
           return Response.ok().build();
         }
         case ONLINE: {
           if (workspacesOrganizationRequestPerformer.isNewUserAllowed(tName, username)) {
             // send OK email
-            props.put("rfid", new ReferencesManager(adminConfiguration).putEmail(userMail,
-                                                                                 UUID.randomUUID()
-                                                                                     .toString()));
+            props.put("rfid", referencesManager.putEmail(userMail, UUID.randomUUID().toString()));
             notificationMailSender.sendOkToJoinEmail(userMail, props);
             return Response.ok().build();
           } else {
@@ -244,11 +240,9 @@ public class CloudWorkspacesTenantService extends TenantCreator {
           requestDao.put(req);
           TenantCreatedListenerThread thread = new TenantCreatedListenerThread(tName,
                                                                                tenantInfoDataManager,
-                                                                               workspacesOrganizationRequestPerformer,
                                                                                notificationMailSender,
-                                                                               userLimitsStorage,
                                                                                adminConfiguration,
-                                                                               requestDao);
+                                                                               utils);
           ExecutorService executor = Executors.newSingleThreadExecutor();
           executor.execute(thread);
           return Response.status(309)
@@ -330,7 +324,7 @@ public class CloudWorkspacesTenantService extends TenantCreator {
 
       if (requestDao.searchByEmail(userMail) == null) {
         String uuid = super.createTenant(tName, userMail);
-        new ReferencesManager(adminConfiguration).putEmail(userMail, uuid);
+        referencesManager.putEmail(userMail, uuid);
         URI location = URI.create("http://"
             + AdminConfigurationUtil.getMasterHost(adminConfiguration) + "/registration.jsp?id="
             + uuid);
@@ -355,7 +349,7 @@ public class CloudWorkspacesTenantService extends TenantCreator {
         case WAITING_CREATION:
         case SUSPENDED: {
           final String uuid = UUID.randomUUID().toString();
-          new ReferencesManager(adminConfiguration).putEmail(userMail, uuid);
+          referencesManager.putEmail(userMail, uuid);
           return Response.ok()
                          .entity("http://"
                              + AdminConfigurationUtil.getMasterHost(adminConfiguration)
@@ -366,7 +360,7 @@ public class CloudWorkspacesTenantService extends TenantCreator {
           if (workspacesOrganizationRequestPerformer.isNewUserAllowed(tName, username)) {
             // send OK email
             final String uuid = UUID.randomUUID().toString();
-            new ReferencesManager(adminConfiguration).putEmail(userMail, uuid);
+            referencesManager.putEmail(userMail, uuid);
             return Response.ok()
                            .entity("http://"
                                + AdminConfigurationUtil.getMasterHost(adminConfiguration)
@@ -520,14 +514,12 @@ public class CloudWorkspacesTenantService extends TenantCreator {
         requestDao.put(req);
         TenantCreatedListenerThread thread = new TenantCreatedListenerThread(tName,
                                                                              tenantInfoDataManager,
-                                                                             workspacesOrganizationRequestPerformer,
                                                                              notificationMailSender,
-                                                                             userLimitsStorage,
                                                                              adminConfiguration,
-                                                                             requestDao);
+                                                                             utils);
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(thread);
-        new ReferencesManager(adminConfiguration).removeEmail(userMail);
+        referencesManager.removeEmail(userMail);
         return Response.status(309)
                        .header("Location",
                                "http://" + AdminConfigurationUtil.getMasterHost(adminConfiguration)
@@ -557,7 +549,7 @@ public class CloudWorkspacesTenantService extends TenantCreator {
                                         RequestState.WAITING_JOIN);
       requestDao.put(req);
     }
-    new ReferencesManager(adminConfiguration).removeEmail(userMail);
+    referencesManager.removeEmail(userMail);
     return Response.ok().build();
   }
 
@@ -612,11 +604,9 @@ public class CloudWorkspacesTenantService extends TenantCreator {
     }
     TenantCreatedListenerThread thread = new TenantCreatedListenerThread(tName,
                                                                          tenantInfoDataManager,
-                                                                         workspacesOrganizationRequestPerformer,
                                                                          notificationMailSender,
-                                                                         userLimitsStorage,
                                                                          adminConfiguration,
-                                                                         requestDao);
+                                                                         utils);
     ExecutorService executor = Executors.newSingleThreadExecutor();
     executor.execute(thread);
     UserRequest req = new UserRequest("",
@@ -631,7 +621,7 @@ public class CloudWorkspacesTenantService extends TenantCreator {
                                       true,
                                       RequestState.WAITING_JOIN);
     requestDao.put(req);
-    new ReferencesManager(adminConfiguration).removeEmail(userMail);
+    referencesManager.removeEmail(userMail);
     return Response.ok().build();
   }
 
@@ -787,7 +777,7 @@ public class CloudWorkspacesTenantService extends TenantCreator {
   @Path("uuid/{uuid}")
   @Produces(MediaType.TEXT_PLAIN)
   public Response uuid(@PathParam("uuid") String uuid) throws CloudAdminException {
-    String email = new ReferencesManager(adminConfiguration).getEmail(uuid);
+    String email = referencesManager.getEmail(uuid);
     if (email != null)
       return Response.ok(email).build();
     else

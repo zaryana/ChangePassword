@@ -21,9 +21,6 @@ package com.exoplatform.cloudworkspaces.listener;
 import com.exoplatform.cloudworkspaces.CloudIntranetUtils;
 import com.exoplatform.cloudworkspaces.NotificationMailSender;
 import com.exoplatform.cloudworkspaces.RequestState;
-import com.exoplatform.cloudworkspaces.UserRequestDAO;
-import com.exoplatform.cloudworkspaces.http.WorkspacesOrganizationRequestPerformer;
-import com.exoplatform.cloudworkspaces.users.UserLimitsStorage;
 
 import org.apache.commons.configuration.Configuration;
 import org.exoplatform.cloudmanagement.admin.CloudAdminException;
@@ -35,50 +32,36 @@ import org.slf4j.LoggerFactory;
 
 public class TenantCreatedListenerThread implements Runnable {
 
-  private static final Logger                    LOG                          = LoggerFactory.getLogger(TenantCreatedListenerThread.class);
+  private static final Logger    LOG                          = LoggerFactory.getLogger(TenantCreatedListenerThread.class);
 
-  private static final String                    CLOUD_ADMIN_CREATION_TIMEOUT = "cloud.admin.tenant.creation.timeout";
+  private static final String    CLOUD_ADMIN_CREATION_TIMEOUT = "cloud.admin.tenant.creation.timeout";
 
-  private String                                 tName;
+  private String                 tName;
 
-  private TenantInfoDataManager                  tenantInfoDataManager;
+  private TenantInfoDataManager  tenantInfoDataManager;
 
-  private WorkspacesOrganizationRequestPerformer workspacesOrganizationRequestPerformer;
+  private NotificationMailSender notificationMailSender;
 
-  private NotificationMailSender                 notificationMailSender;
+  private int                    interval                     = 15000;
 
-  private UserLimitsStorage                      userLimitsStorage;
+  private Configuration          cloudAdminConfiguration;
 
-  private UserRequestDAO                         requestDao;
-
-  private int                                    interval                     = 15000;
-
-  private Configuration                          cloudAdminConfiguration;
+  private CloudIntranetUtils     cloudIntranetUtils;
 
   public TenantCreatedListenerThread(String tName,
                                      TenantInfoDataManager tenantInfoDataManager,
-                                     WorkspacesOrganizationRequestPerformer workspacesOrganizationRequestPerformer,
                                      NotificationMailSender notificationMailSender,
-                                     UserLimitsStorage userLimitsStorage,
                                      Configuration cloudAdminConfiguration,
-                                     UserRequestDAO requestDao) {
+                                     CloudIntranetUtils cloudIntranetUtils) {
     this.tName = tName;
     this.tenantInfoDataManager = tenantInfoDataManager;
-    this.workspacesOrganizationRequestPerformer = workspacesOrganizationRequestPerformer;
     this.notificationMailSender = notificationMailSender;
-    this.userLimitsStorage = userLimitsStorage;
     this.cloudAdminConfiguration = cloudAdminConfiguration;
-    this.requestDao = requestDao;
+    this.cloudIntranetUtils = cloudIntranetUtils;
   }
 
   @Override
   public void run() {
-    CloudIntranetUtils utils = new CloudIntranetUtils(cloudAdminConfiguration,
-                                                      tenantInfoDataManager,
-                                                      workspacesOrganizationRequestPerformer,
-                                                      notificationMailSender,
-                                                      userLimitsStorage,
-                                                      requestDao);
     long limit = Integer.parseInt(cloudAdminConfiguration.getString(CLOUD_ADMIN_CREATION_TIMEOUT,
                                                                     "86400")) * 1000; // in
                                                                                       // milliseconds
@@ -89,7 +72,8 @@ public class TenantCreatedListenerThread implements Runnable {
         while (!tenantInfoDataManager.getValue(tName, TenantInfoFieldName.PROPERTY_STATE)
                                      .equals(TenantState.ONLINE.toString())) {
           if (count > limit) {
-            notificationMailSender.sendAdminErrorEmail("Workspace " + tName + " creation timeout reached", null);
+            notificationMailSender.sendAdminErrorEmail("Workspace " + tName
+                + " creation timeout reached", null);
             throw new CloudAdminException("Workspace " + tName + " creation timeout reached");
           }
           Thread.sleep(interval);
@@ -100,16 +84,18 @@ public class TenantCreatedListenerThread implements Runnable {
          * 12.01.2012 // changed from 5min(20) to 30sec(2); // 17.01.2012 back
          * to 20
          */
-        utils.joinAll(tName, RequestState.WAITING_JOIN);
+        cloudIntranetUtils.joinAll(tName, RequestState.WAITING_JOIN);
       } else {
         LOG.error("Unable to find tenant '" + tName + "' in creation queue.");
       }
     } catch (InterruptedException e) {
       LOG.error("Unable to finish tenant '" + tName + "' creation", e);
-      notificationMailSender.sendAdminErrorEmail("Unable to finish tenant '" + tName + "' creation", e);
+      notificationMailSender.sendAdminErrorEmail("Unable to finish tenant '" + tName + "' creation",
+                                                 e);
     } catch (CloudAdminException e) {
       LOG.error("Unable to finish tenant '" + tName + "' creation", e);
-      notificationMailSender.sendAdminErrorEmail("Unable to finish tenant '" + tName + "' creation", e);
+      notificationMailSender.sendAdminErrorEmail("Unable to finish tenant '" + tName + "' creation",
+                                                 e);
     }
   }
 

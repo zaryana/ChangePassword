@@ -53,6 +53,9 @@ public class CloudWorkspacesAdminApplicationComposer extends CloudAdminApplicati
     container.addComponent(UserLimitsStorage.class);
     container.addComponent(WorkspacesOrganizationRequestPerformer.class);
     container.addComponent(NotificationMailSender.class);
+    container.addComponent(ReferencesManager.class);
+    container.addComponent(CloudIntranetUtils.class);
+    container.addComponent(UserRequestDAO.class);
   }
 
   @Override

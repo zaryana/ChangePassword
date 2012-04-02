@@ -70,6 +70,8 @@ public class CloudIntranetUtils {
 
   private String                                 blackListConfigurationFolder;
 
+  private ReferencesManager                      referencesManager;
+
   private static final Logger                    LOG = LoggerFactory.getLogger(CloudIntranetUtils.class);
 
   public CloudIntranetUtils(Configuration cloudAdminConfiguration,
@@ -77,13 +79,15 @@ public class CloudIntranetUtils {
                             WorkspacesOrganizationRequestPerformer workspacesOrganizationRequestPerformer,
                             NotificationMailSender notificationMailSender,
                             UserLimitsStorage userLimitsStorage,
-                            UserRequestDAO requestDao) {
+                            UserRequestDAO requestDao,
+                            ReferencesManager referencesManager) {
     this.cloudAdminConfiguration = cloudAdminConfiguration;
     this.tenantInfoDataManager = tenantInfoDataManager;
     this.workspacesOrganizationRequestPerformer = workspacesOrganizationRequestPerformer;
     this.notificationMailSender = notificationMailSender;
     this.blackListConfigurationFolder = cloudAdminConfiguration.getString("cloud.admin.blacklist.dir",
                                                                           null);
+    this.referencesManager = referencesManager;
     this.requestDao = requestDao;
   }
 
@@ -158,9 +162,7 @@ public class CloudIntranetUtils {
                   AdminConfigurationUtil.getMasterHost(cloudAdminConfiguration));
         props.put("tenant.repository.name", tenant);
         props.put("user.mail", userMail);
-        props.put("rfid", new ReferencesManager(cloudAdminConfiguration).putEmail(userMail,
-                                                                                  UUID.randomUUID()
-                                                                                      .toString()));
+        props.put("rfid", referencesManager.putEmail(userMail, UUID.randomUUID().toString()));
         if (workspacesOrganizationRequestPerformer.isNewUserAllowed(tenant, username)) {
           LOG.info("Sending join letter to " + userMail + " - his tenant is raised user limit.");
           notificationMailSender.sendOkToJoinEmail(userMail, props);
@@ -179,9 +181,7 @@ public class CloudIntranetUtils {
                   AdminConfigurationUtil.getMasterHost(cloudAdminConfiguration));
         props.put("tenant.repository.name", tenant);
         props.put("user.mail", userMail);
-        props.put("rfid", new ReferencesManager(cloudAdminConfiguration).putEmail(userMail,
-                                                                                  UUID.randomUUID()
-                                                                                      .toString()));
+        props.put("rfid", referencesManager.putEmail(userMail, UUID.randomUUID().toString()));
         try {
           if (workspacesOrganizationRequestPerformer.isNewUserAllowed(tenant, username)) {
             LOG.info("Sending join letter to " + userMail + " - his tenant is resumed.");
@@ -366,7 +366,7 @@ public class CloudIntranetUtils {
   }
 
   public boolean validateUUID(String aEmailAddress, String UUID) throws CloudAdminException {
-    String hash = new ReferencesManager(cloudAdminConfiguration).getHash(aEmailAddress);
+    String hash = referencesManager.getHash(aEmailAddress);
     if (hash == null)
       return false;
     else
