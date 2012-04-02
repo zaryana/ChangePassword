@@ -1,6 +1,7 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+ï»¿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
   <head>
+    <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
     <% String pageName = "Help eXo Cloud Workspace"; %>
     <%@ include file="common/headStyle.jsp"%>
     <%@ include file="common/headScript.jsp"%>
@@ -14,7 +15,7 @@
 				<a href="#" class="StepSelectIcon" style="left: 60px;">1</a><a href="#" class="StepIcon" style="left: 310px;" >2</a><a href="#" class="StepIcon" style="left: 569px;">3</a>
 			</div>
 			<h3>Step 1:  Invite Coworkers</h3>
-			<p><strong>Invite colleagues to join your company’s</strong><br/>(note: Only @exoplatform.com email addresses will be invited to your workspace. Other addresses will receive an invitation to discover Cloud Workspaces)</p>
+			<p><strong>Invite colleagues to join your company's</strong><br/>(note: Only @exoplatform.com email addresses will be invited to your workspace. Other addresses will receive an invitation to discover Cloud Workspaces)</p>
 			<table class="BorderDot">
 				<tbody>
 					<tr>
@@ -24,7 +25,7 @@
 				</tbody>
 			</table>
 			<div class="ClearFix StartTip">
-				<a href="#" class="FR RightStartTip"><img width="264" src="background/img_st.png" alt=""/></a>
+				<a href="#" class="FR RightStartTip"><img width="264" src="<%=request.getContextPath()%>/background/img_st.png" alt=""/></a>
 				<p class="LeftStartTip"><strong>Tip:</strong> Find and connect with your colleagues to see their latest updates in your activity stream.</p>
 			</div>
 			<div class="Link"><a href="#" class="Link">Skip to homepage >></a></div>
@@ -47,7 +48,7 @@
 				</tbody>
 			</table>
 			<div class="ClearFix StartTip">
-				<a href="#" class="FR RightStartTip"><img width="264" src="background/img_st.png" alt=""/></a>
+				<a href="#" class="FR RightStartTip"><img width="264" src="<%=request.getContextPath()%>/background/img_st.png" alt=""/></a>
 				<p class="LeftStartTip"><strong>Tip:</strong> Easily access your documents on your iPhone, iPad or Android device with the eXo mobile app. You can keep files private, share them with specific coworkers or publish them in a dedicated space.</p>
 			</div>
 			<div class="Link"><a href="#" class="Link">Skip to homepage >></a></div>
@@ -60,7 +61,7 @@
 				<a href="#" class="StartedIcon" style="left: 60px;">1</a><a href="#" class="StartedIcon" style="left: 310px;" >2</a><a href="#" class="StepSelectIcon" style="left: 569px;">3</a>
 			</div>
 			<h3>Step 3:  Join the Welcome Space</h3>
-			<p>Create your own dedicated collaboration spaces for your team or specific projects. We’ve set up your first space to help you get started.</p>
+			<p>Create your own dedicated collaboration spaces for your team or specific projects. Weâ€™ve set up your first space to help you get started.</p>
 			<table class="BorderDot" cols="2">
 				<tbody>
 					<tr>
@@ -85,7 +86,7 @@
 				</tbody>
 			</table>
 			<div class="ClearFix StartTip">
-				<a href="#" class="FR RightStartTip"><img width="264" src="background/img_st.png" alt=""/></a>
+				<a href="#" class="FR RightStartTip"><img width="264" src="<%=request.getContextPath()%>/background/img_st.png" alt=""/></a>
 				<p class="LeftStartTip"><strong>Tip:</strong> Easily access your documents on your iPhone, iPad or Android device with the eXo mobile app. You can keep files private, share them with specific coworkers or publish them in a dedicated space.</p>
 			</div>
 			<div class="Link"><a href="#">Skip to homepage &gt;&gt;</a></div>
@@ -97,6 +98,6 @@
     <!-- BEGIN: LOOPFUSE TRACKING -->
     <script type="text/javascript" src="http://lfov.net/webrecorder/js/listen.js"></script>
     <!-- END: LOOPFUSE TRACKING -->
-    <script type="text/javascript" src="/js/trackers.js"></script>    
+    <script type="text/javascript" src="<%=request.getContextPath()%>//js/trackers.js"></script>    
   </body>
 </html>

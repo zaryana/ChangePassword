@@ -44,6 +44,7 @@
     <!-- Db libs -->
     <mysql.connector.java.version>5.1.13</mysql.connector.java.version>
     <tomcat.version>6.0.32</tomcat.version>
+    <jcr.version>1.0</jcr.version>
 
     <!-- overridding tomcat version -->
     <org.apache.tomcat.version>6.0.32</org.apache.tomcat.version>
@@ -206,8 +207,20 @@
         <type>jar</type>
       </dependency>
       <dependency>
+        <groupId>org.exoplatform.kernel</groupId>
+        <artifactId>exo.kernel.commons</artifactId>
+        <version>${org.exoplatform.kernel.version}</version>
+        <type>jar</type>
+      </dependency>
+      <dependency>
         <groupId>org.exoplatform.portal</groupId>
         <artifactId>exo.portal.component.portal</artifactId>
+        <version>${org.exoplatform.portal.version}</version>
+        <type>jar</type>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.portal</groupId>
+        <artifactId>exo.portal.component.web.api</artifactId>
         <version>${org.exoplatform.portal.version}</version>
         <type>jar</type>
       </dependency>
@@ -226,6 +239,12 @@
       <dependency>
         <groupId>org.exoplatform.core</groupId>
         <artifactId>exo.core.component.organization.api</artifactId>
+        <version>${org.exoplatform.core.version}</version>
+        <type>jar</type>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.core</groupId>
+        <artifactId>exo.core.component.security.core</artifactId>
         <version>${org.exoplatform.core.version}</version>
         <type>jar</type>
       </dependency>
@@ -283,6 +302,12 @@
         <groupId>javax.annotation</groupId>
         <artifactId>jsr250-api</artifactId>
         <version>1.0</version>
+        <type>jar</type>
+      </dependency>
+      <dependency>
+        <groupId>javax.jcr</groupId>
+        <artifactId>jcr</artifactId>
+        <version>${jcr.version}</version>
         <type>jar</type>
       </dependency>
     </dependencies>
