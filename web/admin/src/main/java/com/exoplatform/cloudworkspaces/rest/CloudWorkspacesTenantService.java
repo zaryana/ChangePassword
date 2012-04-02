@@ -27,7 +27,6 @@ import com.exoplatform.cloudworkspaces.UserAlreadyExistsException;
 import com.exoplatform.cloudworkspaces.UserRequest;
 import com.exoplatform.cloudworkspaces.UserRequestDAO;
 import com.exoplatform.cloudworkspaces.http.WorkspacesOrganizationRequestPerformer;
-import com.exoplatform.cloudworkspaces.listener.TenantCreatedListenerThread;
 import com.exoplatform.cloudworkspaces.users.UserLimitsStorage;
 
 import org.apache.commons.configuration.Configuration;
@@ -51,8 +50,6 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -60,7 +57,6 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -213,13 +209,6 @@ public class CloudWorkspacesTenantService extends TenantCreator {
                                             false,
                                             RequestState.WAITING_JOIN);
           requestDao.put(req);
-          TenantCreatedListenerThread thread = new TenantCreatedListenerThread(tName,
-                                                                               tenantInfoDataManager,
-                                                                               notificationMailSender,
-                                                                               adminConfiguration,
-                                                                               utils);
-          ExecutorService executor = Executors.newSingleThreadExecutor();
-          executor.execute(thread);
           return Response.status(309)
                          .header("Location",
                                  "http://"
@@ -487,13 +476,6 @@ public class CloudWorkspacesTenantService extends TenantCreator {
                                           false,
                                           RequestState.WAITING_JOIN);
         requestDao.put(req);
-        TenantCreatedListenerThread thread = new TenantCreatedListenerThread(tName,
-                                                                             tenantInfoDataManager,
-                                                                             notificationMailSender,
-                                                                             adminConfiguration,
-                                                                             utils);
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(thread);
         referencesManager.removeEmail(userMail);
         return Response.status(309)
                        .header("Location",
@@ -577,13 +559,6 @@ public class CloudWorkspacesTenantService extends TenantCreator {
                      .entity("An problem happened during processsing this request. It was reported to developers. Please, try again later.")
                      .build();
     }
-    TenantCreatedListenerThread thread = new TenantCreatedListenerThread(tName,
-                                                                         tenantInfoDataManager,
-                                                                         notificationMailSender,
-                                                                         adminConfiguration,
-                                                                         utils);
-    ExecutorService executor = Executors.newSingleThreadExecutor();
-    executor.execute(thread);
     UserRequest req = new UserRequest("",
                                       tName,
                                       userMail,
@@ -732,7 +707,7 @@ public class CloudWorkspacesTenantService extends TenantCreator {
   @Path("/isuserexist/{tenantname}/{username}")
   @Produces(MediaType.TEXT_PLAIN)
   public boolean isuserexist(@PathParam("tenantname") String tName,
-                              @PathParam("username") String username) throws CloudAdminException {
+                             @PathParam("username") String username) throws CloudAdminException {
     try {
       workspacesOrganizationRequestPerformer.isNewUserAllowed(tName, username);
       return false;

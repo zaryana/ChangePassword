@@ -19,6 +19,7 @@
 package com.exoplatform.cloudworkspaces;
 
 import com.exoplatform.cloudworkspaces.http.WorkspacesOrganizationRequestPerformer;
+import com.exoplatform.cloudworkspaces.listener.TenantCreatedListener;
 import com.exoplatform.cloudworkspaces.rest.CloudWorkspacesTenantService;
 import com.exoplatform.cloudworkspaces.shell.ShellConfigurationService;
 import com.exoplatform.cloudworkspaces.users.UserLimitsStorage;
@@ -56,6 +57,8 @@ public class CloudWorkspacesAdminApplicationComposer extends CloudAdminApplicati
     container.addComponent(ReferencesManager.class);
     container.addComponent(CloudIntranetUtils.class);
     container.addComponent(UserRequestDAO.class);
+    
+    container.addComponent(TenantCreatedListener.class);
   }
 
   @Override
