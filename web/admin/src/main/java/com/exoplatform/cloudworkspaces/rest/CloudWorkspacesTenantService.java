@@ -110,31 +110,6 @@ public class CloudWorkspacesTenantService extends TenantCreator {
     this.utils = cloudIntranetUtils;
   }
 
-  /*
-   * (non-Javadoc)
-   * @see org.exoplatform.cloudmanagement.admin.rest.TenantCreator#
-   * createTenantWithEmailConfirmation(java.lang.String, java.lang.String)
-   */
-  @Override
-  @POST
-  @Path("/create-with-confirm/{tenantname}/{user-mail}")
-  public Response createTenantWithEmailConfirmation(@PathParam("tenantname") String tenantName,
-                                                    @PathParam("user-mail") String userMail) throws CloudAdminException {
-    return Response.status(Status.FORBIDDEN).entity("It's forbidden to use this method").build();
-  }
-
-  /*
-   * (non-Javadoc)
-   * @see org.exoplatform.cloudmanagement.admin.rest.TenantCreator#
-   * createTenantWithConfirmedEmail(java.lang.String)
-   */
-  @Override
-  @POST
-  @Path("/create-confirmed")
-  public Response createTenantWithConfirmedEmail(@QueryParam("id") String uuid) throws CloudAdminException {
-    return Response.status(Status.FORBIDDEN).entity("It's forbidden to use this method").build();
-  }
-
   /**
    * Sign-up the Cloud. Result is an email with instructions on creation or
    * joining a tenant.
@@ -256,7 +231,7 @@ public class CloudWorkspacesTenantService extends TenantCreator {
           String msg = "Sorry, we cannot process your join request right now, workspace seems not ready. Please, try again later.";
           LOG.warn("Signup failed for user " + userMail + ", tenant " + tName + " state is "
               + tenantInfoDataManager.getValue(tName, TenantInfoFieldName.PROPERTY_STATE));
-          return Response.status(Status.BAD_REQUEST).entity(msg).build();
+          return Response.status(Status.SERVICE_UNAVAILABLE).entity(msg).build();
         }
         }
       } catch (UserAlreadyExistsException e) {
@@ -380,7 +355,7 @@ public class CloudWorkspacesTenantService extends TenantCreator {
           LOG.warn("Link request for signup of user " + userMail + " failed, tenant " + tName
               + " state is "
               + tenantInfoDataManager.getValue(tName, TenantInfoFieldName.PROPERTY_STATE));
-          return Response.status(Status.BAD_REQUEST).entity(msg).build();
+          return Response.status(Status.SERVICE_UNAVAILABLE).entity(msg).build();
         }
         }
       } catch (UserAlreadyExistsException e) {
@@ -530,7 +505,7 @@ public class CloudWorkspacesTenantService extends TenantCreator {
         String msg = "Sorry, we cannot process your join request right now, workspace seems not ready. Please, try again later.";
         LOG.warn("Joining user " + userMail + " failed, tenant " + tName + " state is "
             + tenantInfoDataManager.getValue(tName, TenantInfoFieldName.PROPERTY_STATE));
-        return Response.status(Status.BAD_REQUEST).entity(msg).build();
+        return Response.status(Status.SERVICE_UNAVAILABLE).entity(msg).build();
       }
       }
 
@@ -641,7 +616,7 @@ public class CloudWorkspacesTenantService extends TenantCreator {
       String state = tenantInfoDataManager.getValue(tenantName, TenantInfoFieldName.PROPERTY_STATE);
       return Response.ok(state).build();
     }
-    return Response.ok("NOT_FOUND").build();
+    return Response.status(Status.NOT_FOUND).build();
   }
 
   @POST
@@ -756,13 +731,13 @@ public class CloudWorkspacesTenantService extends TenantCreator {
   @GET
   @Path("/isuserexist/{tenantname}/{username}")
   @Produces(MediaType.TEXT_PLAIN)
-  public Response isuserexist(@PathParam("tenantname") String tName,
+  public boolean isuserexist(@PathParam("tenantname") String tName,
                               @PathParam("username") String username) throws CloudAdminException {
     try {
       workspacesOrganizationRequestPerformer.isNewUserAllowed(tName, username);
-      return Response.ok("FALSE").build();
+      return false;
     } catch (UserAlreadyExistsException e) {
-      return Response.ok("TRUE").build();
+      return true;
     }
   }
 
@@ -831,7 +806,7 @@ public class CloudWorkspacesTenantService extends TenantCreator {
     }
 
     default: {
-      return Response.status(Status.BAD_REQUEST)
+      return Response.status(Status.SERVICE_UNAVAILABLE)
                      .entity("Workspace " + tName + " seems not ready. Please, try again later.")
                      .build();
     }
@@ -863,11 +838,11 @@ public class CloudWorkspacesTenantService extends TenantCreator {
   @GET
   @Path("blacklisted/{email}")
   @Produces(MediaType.TEXT_PLAIN)
-  public Response balcklisted(@PathParam("email") String email) {
+  public boolean blacklisted(@PathParam("email") String email) {
     if (utils.isInBlackList(email))
-      return Response.ok("TRUE").build();
+      return true;
     else
-      return Response.ok("FALSE").build();
+      return false;
   }
 
 }
