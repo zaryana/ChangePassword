@@ -28,6 +28,10 @@
 
 #MyDocumentsGadget ul li a {
     display: block
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
 }
 
 #MyDocumentsGadget ul li a:hover {
@@ -50,7 +54,7 @@ text-decoration: none;
 #MyDocumentsGadget .default16x16icon {
  
  height: auto;
- width: auto;
+ width: 180px;
   
 }
 
