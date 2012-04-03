@@ -38,6 +38,7 @@ import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Context;
 
+import javax.jcr.RepositoryException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.AddressException;
 import java.net.URI;
@@ -151,7 +152,13 @@ public class InviteJoinWsRESTService implements ResourceContainer {
     		@PathParam("hostname") String hostname) throws Exception {
       
       String prefixUrl = "http://" + hostname;
-      String masterhost = System.getProperty("tenant.masterhost");
+      
+      String masterhost = "";
+      try {
+    	  masterhost = System.getProperty("tenant.masterhost");
+      } catch(NullPointerException e){
+    	  log.warn("Property tenant.masterhost not found.");
+      }
       
       String tail = mail.substring(mail.indexOf("@") + 1);
       String domainName = tail.substring(0,tail.indexOf("."));
@@ -173,8 +180,15 @@ public class InviteJoinWsRESTService implements ResourceContainer {
       
          String viewerId = getUserId(sc, uriInfo);
          Identity currentIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, viewerId, true);
-         String sender = currentIdentity.getProfile().getFullName();
-         String myAvatar = currentIdentity.getProfile().getAvatarUrl();
+         String sender = "";
+         String myAvatar = "";
+         if (currentIdentity != null) {
+            sender = currentIdentity.getProfile().getFullName();
+            myAvatar = currentIdentity.getProfile().getAvatarUrl();
+         } else {
+        	 log.warn("Can not get identity of current user");
+        	 return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Unable to send invitation email. Please contact support.").build();
+         }
          if (myAvatar == null || myAvatar.isEmpty()) {
         	 myAvatar = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
          }
@@ -260,9 +274,12 @@ public class InviteJoinWsRESTService implements ResourceContainer {
 				  return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Unable to send invitation email. Please contact support.").build();
 			  }
          
+      } catch (RepositoryException e){
+    	  log.error(e.getMessage(), e);
+    	  return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Unable to send invitation email. Please contact support.").build();
       } catch (Exception e){
-            log.error(e.getMessage(), e);
-            return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Unable to send invitation email. Please contact support.").build();
+          log.error(e.getMessage(), e);
+          return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Unable to send invitation email. Please contact support.").build();
       }
       } else {
     	  return Response.status(Status.BAD_REQUEST).entity("User already signed up or the social intranet is not ready. Please try again later.").build();
