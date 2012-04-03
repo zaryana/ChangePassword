@@ -373,8 +373,7 @@ public class CloudWorkspacesTenantService extends TenantCreator {
                                @FormParam("first-name") String firstName,
                                @FormParam("last-name") String lastName,
                                @FormParam("password") String password,
-                               @FormParam("confirmation-id") String uuid,
-                               @FormParam("rfid") String hash) throws CloudAdminException {
+                               @FormParam("confirmation-id") String uuid) throws CloudAdminException {
     String tName = null;
     String username = null;
     try {
@@ -383,7 +382,7 @@ public class CloudWorkspacesTenantService extends TenantCreator {
                        .entity("Please enter a valid email address.")
                        .build();
 
-      if (!utils.validateUUID(userMail, hash))
+      if (!utils.validateUUID(userMail, uuid))
         return Response.status(Status.BAD_REQUEST)
                        .entity("Email address provided does not match with hash.")
                        .build();
