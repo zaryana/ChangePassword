@@ -27,6 +27,7 @@ import com.exoplatform.cloudworkspaces.UserAlreadyExistsException;
 import com.exoplatform.cloudworkspaces.UserRequest;
 import com.exoplatform.cloudworkspaces.UserRequestDAO;
 import com.exoplatform.cloudworkspaces.http.WorkspacesOrganizationRequestPerformer;
+import com.exoplatform.cloudworkspaces.listener.AsyncTenantStarter;
 import com.exoplatform.cloudworkspaces.users.UserLimitsStorage;
 
 import org.apache.commons.configuration.Configuration;
@@ -78,6 +79,8 @@ public class CloudWorkspacesTenantService extends TenantCreator {
 
   private ReferencesManager                      referencesManager;
 
+  private AsyncTenantStarter                     tenantStarter;
+
   public CloudWorkspacesTenantService(EmailValidationStorage emailValidationStorage,
                                       TenantStateDataManager tenantStateDataManager,
                                       TenantNameValidator tenantNameValidator,
@@ -90,6 +93,7 @@ public class CloudWorkspacesTenantService extends TenantCreator {
                                       WorkspacesMailSender mailSender,
                                       ReferencesManager referencesManager,
                                       UserRequestDAO requestDao,
+                                      AsyncTenantStarter tenantStarter,
                                       CloudIntranetUtils cloudIntranetUtils) {
     super(emailValidationStorage,
           tenantStateDataManager,
@@ -103,6 +107,7 @@ public class CloudWorkspacesTenantService extends TenantCreator {
     this.notificationMailSender = notificationMailSender;
     this.userLimitsStorage = userLimitsStorage;
     this.referencesManager = referencesManager;
+    this.tenantStarter = tenantStarter;
     this.utils = cloudIntranetUtils;
   }
 
@@ -196,7 +201,7 @@ public class CloudWorkspacesTenantService extends TenantCreator {
         case SUSPENDED: {
           LOG.info("User " + userMail
               + " was put in waiting state after singup - tenant suspended.");
-          utils.resumeTenant(tName);
+          tenantStarter.startTenant(tName);
           UserRequest req = new UserRequest("",
                                             tName,
                                             userMail,
@@ -461,7 +466,7 @@ public class CloudWorkspacesTenantService extends TenantCreator {
         break;
       }
       case SUSPENDED: {
-        utils.resumeTenant(tName);
+        tenantStarter.startTenant(tName);
         LOG.info("User " + userMail + " was put in waiting state after join - tenant suspended.");
         UserRequest req = new UserRequest("",
                                           tName,

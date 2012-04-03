@@ -20,7 +20,6 @@
 package com.exoplatform.cloudworkspaces;
 
 import com.exoplatform.cloudworkspaces.http.WorkspacesOrganizationRequestPerformer;
-import com.exoplatform.cloudworkspaces.listener.TenantResumeThread;
 import com.exoplatform.cloudworkspaces.users.UserLimitsStorage;
 
 import org.apache.commons.configuration.Configuration;
@@ -48,8 +47,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
@@ -378,13 +375,6 @@ public class CloudIntranetUtils {
       return false;
     else
       return hash.equals(UUID);
-  }
-
-  public void resumeTenant(String tName) throws CloudAdminException {
-    TenantResumeThread thread = new TenantResumeThread(cloudAdminConfiguration, tName);
-    ExecutorService executor = Executors.newSingleThreadExecutor();
-    executor.execute(thread);
-
   }
 
   /**

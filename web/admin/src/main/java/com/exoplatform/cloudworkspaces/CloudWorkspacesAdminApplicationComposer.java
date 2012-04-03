@@ -19,6 +19,7 @@
 package com.exoplatform.cloudworkspaces;
 
 import com.exoplatform.cloudworkspaces.http.WorkspacesOrganizationRequestPerformer;
+import com.exoplatform.cloudworkspaces.listener.AsyncTenantStarter;
 import com.exoplatform.cloudworkspaces.listener.JoinAllInOnlineServerListener;
 import com.exoplatform.cloudworkspaces.listener.TenantCreatedListener;
 import com.exoplatform.cloudworkspaces.listener.UserLimitListenerSupervisor;
@@ -69,6 +70,8 @@ public class CloudWorkspacesAdminApplicationComposer extends CloudAdminApplicati
     container.removeComponent(ServerOnlineListenersInvoker.class);
     container.addComponent(JoinAllInOnlineServerListener.class);
     container.addComponent(WorkspacesServerOnlineListenersInvoker.class);
+
+    container.addComponent(AsyncTenantStarter.class);
   }
 
   @Override
