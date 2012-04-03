@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+  <ModulePrefs title="MyProfileGadget" >
+    <Require feature="opensocial-0.8" />
+    <Require feature="dynamic-height"/>
+    <Locale messages="locale/default.xml" />
+    <Locale lang="fr" messages="locale/fr.xml" />
+  </ModulePrefs>
+  <Content type="html" view="default, home, profile">
+    <![CDATA[   
+    
+    <head>
+      
+      <link rel="stylesheet" type="text/css" href="style/profile.css" />
+      <link type="text/css" rel="stylesheet" href="/exo-gadget-resources/skin/exo-gadget/gadget-common.css" />
+      
+      <script type="text/javascript">
+        
+        
+        function loadProfile() {
+          var opts = {};
+          opts[opensocial.DataRequest.PeopleRequestFields.PROFILE_DETAILS] = [
+            opensocial.Person.Field.PROFILE_URL, opensocial.Person.Field.THUMBNAIL_URL,
+            "portalName", "restContext", "host"];        
+          var req = opensocial.newDataRequest();
+          req.add(req.newFetchPersonRequest(opensocial.IdSpec.PersonId.VIEWER, opts), 'viewer');
+          req.send(onLoadProfile);
+        }
+        
+        function onLoadProfile(data) {
+          this.viewer = data.get('viewer').getData();
+          
+          var restContext = viewer.getField('restContextName');
+          var address = window.top.location.href;        
+          var context = "/" + viewer.getField('portalName') + "/intranet";
+          var profileTempUrl = this.viewer.getField(opensocial.Person.Field.PROFILE_URL);
+          var eXoUserID = profileTempUrl.substr(profileTempUrl.lastIndexOf('/') + 1);         
+          var profileUrl = context + '/profile/' + eXoUserID;
+          
+          var profileName = viewer.getDisplayName();
+          var profileThumb = this.viewer.getField(opensocial.Person.Field.THUMBNAIL_URL);
+                    
+          var prefs = new gadgets.Prefs();
+          var linkmodifylabel = prefs.getMsg("modifylink");
+          
+         
+          document.getElementById('Profile').innerHTML = '<div class="ProfilePicture">' +
+                    '<img class="GadCont ProfilePicture" src="' + profileThumb + '" alt="Thumb"/></div>' +
+                    '<div class="GadCont ProfileInfo">' + profileName + "<br/>" +
+                    '<a target="_parent" href="' + profileUrl + '">' + linkmodifylabel + '</a>';          
+        
+          gadgets.window.adjustHeight();
+        }
+        
+        gadgets.util.registerOnLoadHandler(loadProfile);
+                
+      </script>
+      
+    </head>
+    
+    <body id="ProfileGadget">
+      
+      <!-- View of the gadget  -->
+      <div class="UIGadgetThemes" id="Profile">
+        
+                  
+      </div>
+      
+    </body>
+    
+    ]]></Content>
+</Module>

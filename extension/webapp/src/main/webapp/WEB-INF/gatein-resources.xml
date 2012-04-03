@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
 <!--
 
     Copyright (C) 2009 eXo Platform SAS.
@@ -19,17 +20,21 @@
 
 -->
 
-<messagebundle>
-  <msg name="title">
-    Invite Coworkers
-  </msg>
-  <msg name="email">
-    Email:
-  </msg>
-  <msg name="send">
-    Send
-  </msg>
-  <msg name="inputDefault">
-    name@domain.com
-  </msg>  
-</messagebundle>
+<gatein-resources
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   	xsi:schemaLocation="http://www.gatein.org/xml/ns/gatein_resources_1_2 http://www.gatein.org/xml/ns/gatein_resources_1_2"
+   	xmlns="http://www.gatein.org/xml/ns/gatein_resources_1_2">
+
+  <portal-skin>
+    <skin-name>Default</skin-name>
+    <skin-module>Intranet</skin-module>
+    <css-path>/skin/IntranetHomePageStylesheet.css</css-path>
+  </portal-skin>
+  <portal-skin>
+    <skin-name>SimpleSkin</skin-name>
+    <skin-module>Intranet</skin-module>
+    <css-path>/skin/IntranetHomePageStylesheet.css</css-path>
+  </portal-skin>
+
+</gatein-resources>
+

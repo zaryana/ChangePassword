@@ -20,16 +20,13 @@
 -->
 
 <messagebundle>
+  
   <msg name="title">
-    Invite Coworkers
+    Mon Profil
   </msg>
-  <msg name="email">
-    Email:
+  
+  <msg name="modifylink">
+    Editer Mon Profil
   </msg>
-  <msg name="send">
-    Send
-  </msg>
-  <msg name="inputDefault">
-    name@domain.com
-  </msg>  
+
 </messagebundle>

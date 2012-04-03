@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Module>
   <ModulePrefs author="eXoPlatform" title="Invite Join Workspace"
-   description="Invite people join Cloud Workspace.">
+  description="Invite people join Cloud Workspace.">
     <Locale messages="locale/default.xml" />
     <Locale lang="fr" messages="locale/fr.xml" />
     <Require feature="opensocial-0.8" />
@@ -11,105 +11,102 @@
     <![CDATA[     
     
     <head>
-      <link type="text/css" rel="stylesheet" href="/exo-gadget-resources/skin/exo-gadget/gadget-common.css" />
-      <link type="text/css" rel="stylesheet" href="skin/InviteJoinWs.css" />
+      <link rel="stylesheet" type="text/css" href="/exo-gadget-resources/skin/exo-gadget/gadget-common.css" />
+      <link rel="stylesheet" type="text/css" href="skin/InviteJoinWs.css" />
       <script language="javascript" type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
       <script type="text/javascript">
-                          
-    $(function(){
-
-      $("#send").click(function (){
-        var inputTxt = document.getElementById("email");
-              var email = inputTxt.value;
-              var notifyMsg = document.getElementById("notifyMsg");
-              var regex = /^[\w\.-_\+]+@[\w-]+(\.\w{2,4})+$/;  //regular expression for email validation
-              if (email.length == 0 || !regex.test(email)) {
-              
-                    notifyMsg.innerHTML = '<div class="Warning">Please enter a valid email address.</div>';
-                    notifyMsg.style.display = "block";
-                    gadgets.window.adjustHeight($("#content").get(0).offsetHeight);
-              } else {
-                  
-                    var hostname = location.hostname;
-                    if (location.port) {
-                        hostname += ":" + location.port;
-                    }
-                    
-                    notifyMsg.innerHTML = '<div class="Message">Sending...</div>';
-                    notifyMsg.style.display = "block";
-                    gadgets.window.adjustHeight($("#content").get(0).offsetHeight);
-                                  
-
-                    var mainUrl = "/rest/invite-join-ws/send-mail/" + email + "/" + hostname;
-
-                    $.ajax({
-                         url: mainUrl,
-                         success: function(status) {
-                                 var notifyMsg = document.getElementById("notifyMsg");
-                                 if (status.indexOf("Message sent") != -1) {
-                                           $('#notifyMsg').html('<div class="Message">Invitation sent</div>');
-                                           notifyMsg.style.display = "block";
-                                           $('#notifyMsg').fadeOut(5000, function(){
-                                                gadgets.window.adjustHeight($("#content").get(0).offsetHeight);
-                                           });
-                                 }
-
-                                 gadgets.window.adjustHeight($("#content").get(0).offsetHeight);
-
-                        },
-                        error: function(request, status, error){
-                                notifyMsg.innerHTML = '<div class="Warning">' + request.responseText + '</div>';
-                                notifyMsg.style.display = "block";
-                                gadgets.window.adjustHeight($("#content").get(0).offsetHeight);
-                        },
-                        dataType: 'text'
-                        });
-                        gadgets.window.adjustHeight($("#content").get(0).offsetHeight);
-                }
-      });
+        
+        $(function(){
           
-      $("#email").focus(function (){
-        
-        $("#email").removeClass("light_message");
-        document.getElementById("email").value = "";
-        document.getElementById("notifyMsg").style.display = "none";
-        gadgets.window.adjustHeight($("#content").get(0).offsetHeight);
-        
-      });
-      
-      $("#email").blur(function() {
-        var inputTxt = document.getElementById("email").value;
-        if (inputTxt == "") {
-          document.getElementById("email").value = "__MSG_inputDefault__";
-          $("#email").addClass("light_message");
-        }
-      });
-      
-      gadgets.window.adjustHeight($("#content").get(0).offsetHeight);
-
-    });
-
-      </script>
+          $("#send").click(function (){
+            var inputTxt = document.getElementById("email");
+            var email = inputTxt.value;
+            var notifyMsg = document.getElementById("notifyMsg");
+            var regex = /^[\w\.-_\+]+@[\w-]+(\.\w{2,4})+$/;  //regular expression for email validation
+            if (email.length == 0 || !regex.test(email)) {
+              
+              notifyMsg.innerHTML = '<div class="Warning">Please enter a valid email address.</div>';
+              notifyMsg.style.display = "block";
+              gadgets.window.adjustHeight();
+            } else {
+              
+              var hostname = location.hostname;
+              if (location.port) {
+                hostname += ":" + location.port;
+              }
+              
+              notifyMsg.innerHTML = '<div class="Message">Sending...</div>';
+              notifyMsg.style.display = "block";
+              gadgets.window.adjustHeight();
+              
+              
+              var mainUrl = "/rest/invite-join-ws/send-mail/" + email + "/" + hostname;
+              
+              $.ajax({
+                url: mainUrl,
+                success: function(status) {
+                  var notifyMsg = document.getElementById("notifyMsg");
+                  if (status.indexOf("Message sent") != -1) {
+                    $('#notifyMsg').html('<div class="Message">Invitation sent</div>');
+                    notifyMsg.style.display = "block";
+                    $('#notifyMsg').fadeOut(5000, function(){
+                      gadgets.window.adjustHeight();
+                    });
+                  }
+                  
+                  gadgets.window.adjustHeight();
+                  
+                },
+                error: function(request, status, error){
+                  notifyMsg.innerHTML = '<div class="Warning">' + request.responseText + '</div>';
+                  notifyMsg.style.display = "block";
+                  gadgets.window.adjustHeight();
+                },
+                dataType: 'text'
+              });
+              gadgets.window.adjustHeight();
+            }
+          });
+          
+          $("#email").focus(function (){
             
+            $("#email").removeClass("light_message");
+            document.getElementById("email").value = "";
+            $('#notifyMsg').fadeOut(200, function(){
+                gadgets.window.adjustHeight();
+            });           
+            
+          });
+          
+          $("#email").blur(function() {
+            var inputTxt = document.getElementById("email").value;
+            if (inputTxt == "") {
+              document.getElementById("email").value = "__MSG_inputDefault__";
+              $("#email").addClass("light_message");
+            }
+          });
+          
+          gadgets.window.adjustHeight();
+          
+        });
+        
+      </script>
+      
     </head>
-    <body>
-      <div id="content">
-         <div id="Invitation" class="UIGadgetThemes">
-            <div class="TitGad ClearFix">
-               <div class="ContTit">__MSG_title__</div>
-            </div>
-            <div class="GadCont">
-            <div id="notifyMsg" style="display: none"></div>              
-              <table width="100%" class="invited-box">
-                <tr>
-                  <td width="17%" class="Row"><label for="email">__MSG_email__</label></td>
-                  <td width="61%" class="Row"><input type="text" id="email" name="email-adress" class="light_message" value="__MSG_inputDefault__" /></td>
-                  <td width="20%" class="Row"><input type="button" value="__MSG_send__" id="send" /></td>
-                </tr>
-              </table>               
-               
-           </div>
-         </div>
+    <body id="InviteGadget">
+      
+      <div id="Invitation" class="UIGadgetThemes">
+      
+      <div class="gadgetTitle">Invite Coworkers</div>   
+              
+        <div id="notifyMsg" style="display: none"></div>              
+        <table width="100%" class="invited-box">
+          <tr>
+            <td width="80%" class="Row"><input type="text" id="email" name="email-adress" class="light_message" value="__MSG_inputDefault__" /></td>
+            <td width="20%" class="Row"><input type="button" value="__MSG_send__" id="send" /></td>
+          </tr>
+        </table>               
+        
       </div>
     </body>
     
