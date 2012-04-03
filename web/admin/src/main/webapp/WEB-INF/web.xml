@@ -23,12 +23,6 @@
    xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
    <display-name>cloud-admin</display-name>
 
-
-   <listener>
-      <description>ServletContextListener</description>
-      <listener-class>com.exoplatform.cloudworkspaces.listener.AutoResumeListener</listener-class>
-    </listener>
-
    <context-param>
       <param-name>webapp-composer-class</param-name>
       <param-value>com.exoplatform.cloudworkspaces.CloudWorkspacesAdminApplicationComposer</param-value>

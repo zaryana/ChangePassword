@@ -31,6 +31,8 @@ public class UserLimitsStorage {
 
   private final PropertiesConfiguration userLimits;
 
+  private long                          lastModifiedTime            = 0;
+
   public UserLimitsStorage(Configuration cloudAdminConfiguration) throws ConfigurationException {
     this.cloudAdminConfiguration = cloudAdminConfiguration;
     String filePath = System.getProperty("cloud.admin.userlimit", null);
@@ -43,9 +45,19 @@ public class UserLimitsStorage {
   }
 
   public int getMaxUsersForTenant(String tName) {
-    if (userLimits != null && userLimits.containsKey(tName)) {
-      return userLimits.getInt(tName);
+    if (userLimits != null) {
+      if (((FileChangedReloadingStrategy) userLimits.getReloadingStrategy()).reloadingRequired()) {
+        lastModifiedTime = System.currentTimeMillis();
+      }
+      if (userLimits.containsKey(tName)) {
+        return userLimits.getInt(tName);
+      }
     }
     return cloudAdminConfiguration.getInt(CLOUD_ADMIN_TENANT_MAXUSERS, 20);
   }
+
+  public long getLastModifiedTime() {
+    return lastModifiedTime;
+  }
+
 }

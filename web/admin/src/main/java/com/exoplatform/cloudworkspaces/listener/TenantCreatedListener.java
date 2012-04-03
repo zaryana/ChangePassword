@@ -63,9 +63,8 @@ public class TenantCreatedListener extends AbstractTenantStateListener {
     try {
       cloudIntranetUtils.joinAll(tenantName, RequestState.WAITING_JOIN);
     } catch (CloudAdminException e) {
-      LOG.error("Unable to finish tenant '" + tenantName + "' creation", e);
-      notificationMailSender.sendAdminErrorEmail("Unable to finish tenant '" + tenantName
-          + "' creation", e);
+      LOG.error("Unable to join users to tenant " + tenantName, e);
+      notificationMailSender.sendAdminErrorEmail("Unable to join users to tenant " + tenantName, e);
     }
   }
 

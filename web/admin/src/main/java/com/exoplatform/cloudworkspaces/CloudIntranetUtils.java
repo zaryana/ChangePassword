@@ -143,6 +143,13 @@ public class CloudIntranetUtils {
    * LOG.error(e.getMessage(), e); sendAdminErrorEmail(e.getMessage(), e); } }
    */
 
+  public void joinAll() throws CloudAdminException {
+    for (String tenant : tenantInfoDataManager.getNames()) {
+      joinAll(tenant, RequestState.WAITING_LIMIT);
+      joinAll(tenant, RequestState.WAITING_JOIN);
+    }
+  }
+
   public void joinAll(String tName, RequestState state) throws CloudAdminException {
     if (state.equals(RequestState.WAITING_CREATION))
       throw new CloudAdminException("Given request state does not implies autojoining.");
