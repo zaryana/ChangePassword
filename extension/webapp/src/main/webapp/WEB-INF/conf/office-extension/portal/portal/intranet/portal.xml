@@ -22,7 +22,7 @@
   <locale>en</locale>
   <!--<factory-id>office</factory-id>-->
   <access-permissions>*:/platform/users</access-permissions>
-  <edit-permission>*:/platform/administrators</edit-permission>
+  <edit-permission>manager:/platform/administrators</edit-permission>
   <properties>
     <entry key="sessionAlive">onDemand</entry>
     <entry key="showPortletInfo">0</entry>
