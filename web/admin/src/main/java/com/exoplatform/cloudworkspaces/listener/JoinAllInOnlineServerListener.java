@@ -18,8 +18,7 @@
  */
 package com.exoplatform.cloudworkspaces.listener;
 
-import com.exoplatform.cloudworkspaces.CloudIntranetUtils;
-import com.exoplatform.cloudworkspaces.RequestState;
+import com.exoplatform.cloudworkspaces.users.UsersManager;
 
 import org.exoplatform.cloudmanagement.admin.CloudAdminException;
 import org.exoplatform.cloudmanagement.admin.status.ServerBecomeOnlineListener;
@@ -31,20 +30,19 @@ import java.util.List;
 
 public class JoinAllInOnlineServerListener implements ServerBecomeOnlineListener {
 
-  private static final Logger      LOG = LoggerFactory.getLogger(JoinAllInOnlineServerListener.class);
+  private static final Logger LOG = LoggerFactory.getLogger(JoinAllInOnlineServerListener.class);
 
-  private final CloudIntranetUtils cloudIntranetUtils;
+  private final UsersManager  usersManager;
 
-  public JoinAllInOnlineServerListener(CloudIntranetUtils cloudIntranetUtils) {
-    this.cloudIntranetUtils = cloudIntranetUtils;
+  public JoinAllInOnlineServerListener(UsersManager usersManager) {
+    this.usersManager = usersManager;
   }
 
   @Override
   public void onServerBecomeOnline(String serverAlias, List<TenantInfo> currentTenantStates) {
     for (TenantInfo tenant : currentTenantStates) {
       try {
-        cloudIntranetUtils.joinAll(tenant.getTenantName(), RequestState.WAITING_LIMIT);
-        cloudIntranetUtils.joinAll(tenant.getTenantName(), RequestState.WAITING_JOIN);
+        usersManager.joinAll(tenant.getTenantName());
       } catch (CloudAdminException e) {
         LOG.error("Unable to autojoin user.", e);
       }

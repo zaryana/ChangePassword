@@ -701,13 +701,6 @@ public class CloudWorkspacesTenantService extends TenantCreator {
    */
 
   @GET
-  @Path("autojoin/{state}")
-  public Response autojoin(@PathParam("state") String state) throws CloudAdminException {
-    utils.joinAll(null, RequestState.valueOf(state));
-    return Response.ok().build();
-  }
-
-  @GET
   @Path("/isuserexist/{tenantname}/{username}")
   @Produces(MediaType.TEXT_PLAIN)
   public boolean isuserexist(@PathParam("tenantname") String tName,
