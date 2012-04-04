@@ -266,7 +266,7 @@ public class UsersManager {
                                                        user.getPassword(),
                                                        user.isAdministrator());
     } catch (UserAlreadyExistsException ex) {
-      LOG.warn("Administrator " + userMail + " is already exists, deleting from waiting queue.");
+      LOG.warn(user.isAdministrator() ? "Administrator" : "User "  + userMail + " is already exists, deleting from waiting queue.");
     }
   }
 
