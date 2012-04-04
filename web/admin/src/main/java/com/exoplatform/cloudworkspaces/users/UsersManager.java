@@ -55,7 +55,7 @@ public class UsersManager {
 
   private final UserRequestDAO                         userRequestDao;
 
-  private ReferencesManager                            referencesManager;
+  private final ReferencesManager                      referencesManager;
 
   public UsersManager(Configuration cloudAdminConfiguration,
                       WorkspacesOrganizationRequestPerformer workspacesOrganizationRequestPerformer,
@@ -70,6 +70,7 @@ public class UsersManager {
     this.notificationMailSender = notificationMailSender;
     this.userLimitsStorage = userLimitsStorage;
     this.userRequestDao = userRequestDao;
+    this.referencesManager = referencesManager;
   }
 
   public synchronized void joinAll() throws CloudAdminException {
@@ -97,14 +98,8 @@ public class UsersManager {
       joinWaitingJoinUsers(tName);
       break;
     case WAITING_LIMIT:
-      joinWaitingLimitUsersWithPassword(tName);
-      joinWaitingLimitUsersWithoutPassword(tName);
+      joinWaitingLimitUsers(tName);
       break;
-    }
-
-    if (state.equals(RequestState.WAITING_LIMIT)) {
-      joinWaitingJoinAdministrators(tName);
-      joinWaitingJoinUsers(tName);
     }
   }
 
@@ -150,8 +145,6 @@ public class UsersManager {
         String lName = user.getLastName();
         String username = userMail.substring(0, (userMail.indexOf("@")));
 
-        joinUser(user);
-
         // Prepare properties for mailing
         Map<String, String> props = new HashMap<String, String>();
         props.put("tenant.masterhost",
@@ -184,35 +177,22 @@ public class UsersManager {
           } catch (InterruptedException ignored) {
           }
           userRequestDao.put(two);
-        }
-      }
-    }
-  }
-
-  public synchronized void joinWaitingLimitUsersWithoutPassword(String tName) throws CloudAdminException {
-    for (UserRequest user : userRequestDao.search(tName, RequestState.WAITING_LIMIT)) {
-      String tenant = user.getTenantName();
-      String userMail = user.getUserEmail();
-      String username = userMail.substring(0, (userMail.indexOf("@")));
-
-      // Whose who only signed up and stopped on limit - sending them join links
-      if (user.getPassword().isEmpty()) {
-        Map<String, String> props = new HashMap<String, String>();
-        props.put("tenant.masterhost",
-                  AdminConfigurationUtil.getMasterHost(cloudAdminConfiguration));
-        props.put("tenant.repository.name", tenant);
-        props.put("user.mail", userMail);
-        props.put("rfid", referencesManager.putEmail(userMail, UUID.randomUUID().toString()));
-        if (workspacesOrganizationRequestPerformer.isNewUserAllowed(tenant, username)) {
+        } catch (UsersFormNotFilledException e) {
+          Map<String, String> formProps = new HashMap<String, String>();
+          formProps.put("tenant.masterhost",
+                        AdminConfigurationUtil.getMasterHost(cloudAdminConfiguration));
+          formProps.put("tenant.repository.name", tenant);
+          formProps.put("user.mail", userMail);
+          formProps.put("rfid", referencesManager.putEmail(userMail, UUID.randomUUID().toString()));
           LOG.info("Sending join letter to " + userMail + " - his tenant is raised user limit.");
-          notificationMailSender.sendOkToJoinEmail(userMail, props);
+          notificationMailSender.sendOkToJoinEmail(userMail, formProps);
           userRequestDao.delete(user);
         }
       }
     }
   }
 
-  public synchronized void joinWaitingLimitUsersWithPassword(String tName) throws CloudAdminException {
+  public synchronized void joinWaitingLimitUsers(String tName) throws CloudAdminException {
     for (UserRequest user : userRequestDao.search(tName, RequestState.WAITING_LIMIT)) {
       if (!user.getPassword().isEmpty()) {
         String tenant = user.getTenantName();
@@ -220,8 +200,6 @@ public class UsersManager {
         String fName = user.getFirstName();
         String lName = user.getLastName();
         String username = userMail.substring(0, (userMail.indexOf("@")));
-
-        joinUser(user);
 
         Map<String, String> props = new HashMap<String, String>();
         props.put("tenant.masterhost",
@@ -232,8 +210,27 @@ public class UsersManager {
         props.put("first.name", fName);
         props.put("last.name", lName);
 
-        notificationMailSender.sendUserJoinedEmails(tenant, fName, userMail, props);
-        userRequestDao.delete(user);
+        try {
+          joinUser(user);
+          notificationMailSender.sendUserJoinedEmails(tenant, fName, userMail, props);
+          userRequestDao.delete(user);
+        } catch (UserAlreadyExistsException e) {
+          LOG.warn("User " + userMail + " is already exists, deleting from waiting queue.");
+          notificationMailSender.sendUserJoinedEmails(tenant, fName, userMail, props);
+          userRequestDao.delete(user);
+        } catch (UsersLimitExceedException e) {
+          // do nothing this user already has status WAITING_LIMIT
+        } catch (UsersFormNotFilledException e) {
+          Map<String, String> formProps = new HashMap<String, String>();
+          formProps.put("tenant.masterhost",
+                        AdminConfigurationUtil.getMasterHost(cloudAdminConfiguration));
+          formProps.put("tenant.repository.name", tenant);
+          formProps.put("user.mail", userMail);
+          formProps.put("rfid", referencesManager.putEmail(userMail, UUID.randomUUID().toString()));
+          LOG.info("Sending join letter to " + userMail + " - his tenant is raised user limit.");
+          notificationMailSender.sendOkToJoinEmail(userMail, formProps);
+          userRequestDao.delete(user);
+        }
       }
     }
   }
@@ -257,6 +254,10 @@ public class UsersManager {
       if (!workspacesOrganizationRequestPerformer.isNewUserAllowed(tenant, username)) {
         throw new UsersLimitExceedException("Not enough space for this user in tenant");
       }
+
+      if (user.getPassword().isEmpty()) {
+        throw new UsersFormNotFilledException("User's form not filled yet.");
+      }
       LOG.info("Joining {} {} to tenant {} from queue.", new Object[] {
           (user.isAdministrator()) ? "administrator" : "user", userMail, tenant });
       workspacesOrganizationRequestPerformer.storeUser(tenant,
@@ -266,7 +267,8 @@ public class UsersManager {
                                                        user.getPassword(),
                                                        user.isAdministrator());
     } catch (UserAlreadyExistsException ex) {
-      LOG.warn((user.isAdministrator() ? "Administrator " : "User ")  + userMail + " is already exists, deleting from waiting queue.");
+      LOG.warn((user.isAdministrator() ? "Administrator " : "User ") + userMail
+          + " is already exists, deleting from waiting queue.");
     }
   }
 
