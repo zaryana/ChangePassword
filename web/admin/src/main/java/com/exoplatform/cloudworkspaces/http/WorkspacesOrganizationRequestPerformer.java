@@ -87,25 +87,19 @@ public class WorkspacesOrganizationRequestPerformer {
     strUrl.append(ORGANIZATION_SERVICE_PATH + "/adduser");
 
     ArrayList<BasicNameValuePair> params = new ArrayList<BasicNameValuePair>();
-    try {
-      params.add(new BasicNameValuePair("tname", tName));
-      params.add(new BasicNameValuePair("URI", java.net.URLEncoder.encode(username, "utf-8")));
-      params.add(new BasicNameValuePair("username", java.net.URLEncoder.encode(username, "utf-8")));
-      params.add(new BasicNameValuePair("password", java.net.URLEncoder.encode(password, "utf-8")));
-      params.add(new BasicNameValuePair("first-name",
-                                        java.net.URLEncoder.encode(firstName, "utf-8")));
-      params.add(new BasicNameValuePair("last-name", java.net.URLEncoder.encode(lastName, "utf-8")));
-      params.add(new BasicNameValuePair("email", java.net.URLEncoder.encode(userMail, "utf-8")));
-      params.add(new BasicNameValuePair("isadministrator", Boolean.toString(isAdministrator)));
-    } catch (UnsupportedEncodingException e) {
-      LOG.error(e.getMessage(), e);
-      throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
-    }
+    params.add(new BasicNameValuePair("tname", tName));
+    params.add(new BasicNameValuePair("URI", username));
+    params.add(new BasicNameValuePair("username", username));
+    params.add(new BasicNameValuePair("password", password));
+    params.add(new BasicNameValuePair("first-name", firstName));
+    params.add(new BasicNameValuePair("last-name", lastName));
+    params.add(new BasicNameValuePair("email", userMail));
+    params.add(new BasicNameValuePair("isadministrator", Boolean.toString(isAdministrator)));
 
     HttpPost request = new HttpPost(strUrl.toString());
     HttpResponse response = null;
     try {
-      request.setEntity(new UrlEncodedFormEntity(params));
+      request.setEntity(new UrlEncodedFormEntity(params, "utf-8"));
       response = httpClient.execute(request);
       if (response.getStatusLine().getStatusCode() != HTTP_CREATED) {
         LOG.error("Unable to add user to workspace {} ({}) - HTTP status: {}", new Object[] {
