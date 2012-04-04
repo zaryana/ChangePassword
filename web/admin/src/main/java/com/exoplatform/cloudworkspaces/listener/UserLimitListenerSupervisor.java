@@ -18,8 +18,8 @@
  */
 package com.exoplatform.cloudworkspaces.listener;
 
-import com.exoplatform.cloudworkspaces.CloudIntranetUtils;
 import com.exoplatform.cloudworkspaces.users.UserLimitsStorage;
+import com.exoplatform.cloudworkspaces.users.UsersManager;
 
 import org.exoplatform.cloudmanagement.admin.CloudAdminException;
 import org.picocontainer.Startable;
@@ -36,7 +36,7 @@ public class UserLimitListenerSupervisor implements Startable {
   private final Timer         supervisorTimer;
 
   public UserLimitListenerSupervisor(final UserLimitsStorage userLimitsStorage,
-                                     final CloudIntranetUtils cloudIntranetUtils) {
+                                     final UsersManager usersManager) {
 
     this.supervisorTimer = new Timer(true);
     this.supervisorTimer.schedule(new TimerTask() {
@@ -48,7 +48,7 @@ public class UserLimitListenerSupervisor implements Startable {
         try {
           if (userLimitsStorage.getLastModifiedTime() > previousLastModifiedTime) {
             previousLastModifiedTime = userLimitsStorage.getLastModifiedTime();
-            cloudIntranetUtils.joinAll();
+            usersManager.joinAll();
           }
         } catch (CloudAdminException e) {
           LOG.error("Exception in limit listener", e);

@@ -19,6 +19,7 @@
 package com.exoplatform.cloudworkspaces;
 
 import com.exoplatform.cloudworkspaces.http.WorkspacesOrganizationRequestPerformer;
+import com.exoplatform.cloudworkspaces.listener.AsyncTenantStarter;
 import com.exoplatform.cloudworkspaces.listener.JoinAllInOnlineServerListener;
 import com.exoplatform.cloudworkspaces.listener.TenantCreatedListener;
 import com.exoplatform.cloudworkspaces.listener.UserLimitListenerSupervisor;
@@ -26,6 +27,7 @@ import com.exoplatform.cloudworkspaces.listener.WorkspacesServerOnlineListenersI
 import com.exoplatform.cloudworkspaces.rest.CloudWorkspacesTenantService;
 import com.exoplatform.cloudworkspaces.shell.ShellConfigurationService;
 import com.exoplatform.cloudworkspaces.users.UserLimitsStorage;
+import com.exoplatform.cloudworkspaces.users.UsersManager;
 
 import org.everrest.core.ResourceBinder;
 import org.exoplatform.cloudmanagement.admin.WorkspacesMailSender;
@@ -69,6 +71,10 @@ public class CloudWorkspacesAdminApplicationComposer extends CloudAdminApplicati
     container.removeComponent(ServerOnlineListenersInvoker.class);
     container.addComponent(JoinAllInOnlineServerListener.class);
     container.addComponent(WorkspacesServerOnlineListenersInvoker.class);
+
+    container.addComponent(AsyncTenantStarter.class);
+
+    container.addComponent(UsersManager.class);
   }
 
   @Override

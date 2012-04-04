@@ -18,9 +18,9 @@
  */
 package com.exoplatform.cloudworkspaces.listener;
 
-import com.exoplatform.cloudworkspaces.CloudIntranetUtils;
 import com.exoplatform.cloudworkspaces.NotificationMailSender;
 import com.exoplatform.cloudworkspaces.RequestState;
+import com.exoplatform.cloudworkspaces.users.UsersManager;
 
 import org.exoplatform.cloudmanagement.admin.CloudAdminException;
 import org.exoplatform.cloudmanagement.admin.status.AbstractTenantStateListener;
@@ -36,17 +36,17 @@ public class TenantCreatedListener extends AbstractTenantStateListener {
 
   private final NotificationMailSender notificationMailSender;
 
-  private final CloudIntranetUtils     cloudIntranetUtils;
+  private final UsersManager           usersManager;
 
   /**
    * @param tenantStateDataManager
    */
   public TenantCreatedListener(TenantStateDataManager tenantStateDataManager,
                                NotificationMailSender notificationMailSender,
-                               CloudIntranetUtils cloudIntranetUtils) {
+                               UsersManager usersManager) {
     super(tenantStateDataManager);
     this.notificationMailSender = notificationMailSender;
-    this.cloudIntranetUtils = cloudIntranetUtils;
+    this.usersManager = usersManager;
   }
 
   @Override
@@ -61,7 +61,7 @@ public class TenantCreatedListener extends AbstractTenantStateListener {
 
   private void doAutoJoin(String tenantName) {
     try {
-      cloudIntranetUtils.joinAll(tenantName, RequestState.WAITING_JOIN);
+      usersManager.joinAll(tenantName, RequestState.WAITING_JOIN);
     } catch (CloudAdminException e) {
       LOG.error("Unable to join users to tenant " + tenantName, e);
       notificationMailSender.sendAdminErrorEmail("Unable to join users to tenant " + tenantName, e);
