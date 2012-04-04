@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Module>
   <ModulePrefs title="WhosOnlineGadget"
-  thumbnail="images/gadget-online-icon-80x80.png" height="500px;">
+  thumbnail="images/gadget-online-icon-80x80.png" height="250">
     <Require feature="opensocial-0.8" />
     <Require feature="dynamic-height"/>
   </ModulePrefs>
