@@ -361,6 +361,7 @@ p {
   width: 100%;
   overflow: hidden;
   bottom:0;
+  position: absolute;
 }
 
 .UIFooterPortlet span a {

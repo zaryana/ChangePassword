@@ -14,7 +14,7 @@
       <!--begin FormPages-->
       <div class="UIPageBodyContainer">
         <div class="UIPageBody FormPages">
-          <h1>Create Your Cloud Workspace</h1>
+          <h1>Create Your Company's Social Intranet</h1>
           <div id="messageString" class="TenantFormMsg"></div>
             <form class="UIForm" action="javascript:void(0);"  method="POST" name="cloud-workspaces-profile" id="registrationForm">
             <table cols="2">

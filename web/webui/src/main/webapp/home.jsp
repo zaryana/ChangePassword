@@ -95,7 +95,7 @@
                   </form>
                   <div class="SocialBox">
                    
-                    
+                    <div id="fb-root"></div>
                     <script>(function(d, s, id) {
                         var js, fjs = d.getElementsByTagName(s)[0];
                         if (d.getElementById(id)) return;
@@ -104,7 +104,8 @@
                         fjs.parentNode.insertBefore(js, fjs);
                       }(document, 'script', 'facebook-jssdk'));
                     </script>
-                    <div class="FL"> 
+                    <div class="FL">
+                    	 
                         <div class="fb-like" data-href="http://www.facebook.com/eXoPlatform" data-send="true" data-layout="button_count" data-show-faces="false">
                         </div>
                      </div>

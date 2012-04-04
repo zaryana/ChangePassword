@@ -11,7 +11,8 @@
       <!--begin header-->
       <%@ include file="common/header.jsp"%>
 		
-<div class="UIPageBody MobileApplePages">
+	<div class="UIPageBodyContainer">
+		<div class="UIPageBody MobileApplePages">
 			<h1>eXo Platform 3.5 Mobile Apps</h1>
 			<div class="ClearFix">
 				<a href="#" class="FR Iphone"><img alt="" width="200" src="background/Iphone.png"/></a>
@@ -45,6 +46,7 @@
 				</div>
 			</div>
 		</div>
+	</div>	
 	<!--end code body here-->	
 		
 <!--begin Footer-->
