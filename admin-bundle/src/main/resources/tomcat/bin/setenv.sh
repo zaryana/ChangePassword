@@ -74,6 +74,7 @@ EXO_CLOUD_ADMIN_OPTS="-Dadmin.agent.auth.username=$CLOUD_AGENT_USERNAME \
                       -Dcloud.admin.configuration.dir=$EXO_ADMIN_CONF_DIR \
                       -Dcloud.admin.userlimit=$EXO_ADMIN_CONF_DIR/user-limits.properties \
                       -Dcloud.admin.configuration.file=$EXO_ADMIN_CONF_DIR/admin.properties \
+                      -Dcloud.admin.hostname.file=$EXO_ADMIN_CONF_DIR/hostname.cfg \
                       -Dlogback.configurationFile=$CATALINA_HOME/conf/logback.xml \
                       -Dlogback.smtp.appender.conf.file=${EXO_LOGBACK_SMTP_CONF}"
 

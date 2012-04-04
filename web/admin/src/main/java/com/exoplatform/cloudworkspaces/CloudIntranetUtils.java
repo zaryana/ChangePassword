@@ -28,6 +28,8 @@ import org.exoplatform.cloudmanagement.admin.dao.TenantInfoDataManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -42,6 +44,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
@@ -63,6 +67,11 @@ public class CloudIntranetUtils {
   private String                                 blackListConfigurationFolder;
 
   private ReferencesManager                      referencesManager;
+  
+  public static final String                     CLOUD_ADMIN_HOSTNAME_FILE = "cloud.admin.hostname.file";
+
+  public static final char                       TENANT_NAME_DELIMITER     = '-';
+
 
   private static final Logger                    LOG = LoggerFactory.getLogger(CloudIntranetUtils.class);
 
@@ -192,9 +201,45 @@ public class CloudIntranetUtils {
   }
 
   public String email2tenantName(String email) {
-    String tail = email.substring(email.indexOf("@") + 1);
-    String tName = tail.substring(0, tail.indexOf("."));
-    return tName;
+    String hostname = email.substring(email.indexOf("@") + 1).toLowerCase();
+    String[] subdomains = hostname.split("\\.");
+    String tenantName;
+    if (subdomains.length < 3) {
+      // first or second level domain name
+      return subdomains[0];
+    } else {
+      // special cases
+      tenantName = hostname.substring(0, hostname.lastIndexOf("."));
+    }
+
+    String hostNamesConf = System.getProperty(CLOUD_ADMIN_HOSTNAME_FILE);
+    try {
+      FileInputStream stream = new FileInputStream(hostNamesConf);
+      DataInputStream in = new DataInputStream(stream);
+      try {
+        BufferedReader br = new BufferedReader(new InputStreamReader(in));
+        String hostRegexp;
+        while ((hostRegexp = br.readLine()) != null) {
+          Pattern p = Pattern.compile(hostRegexp);
+          Matcher m = p.matcher(hostname);
+          if (m.find()) {
+            tenantName = hostname.substring(0, m.start());
+            break;
+          }
+        }
+      } finally {
+        in.close();
+      }
+    } catch (FileNotFoundException e) {
+      LOG.warn("Hostnames file cloud.admin.hostname.file not found. Using default logic for tenant name from "
+          + email + ". Caused by error: " + e.getMessage());
+    } catch (IOException e) {
+      LOG.error("Cannot read hostnames file cloud.admin.hostname.file. Using default logic for tenant name from "
+                    + email,
+                e);
+    }
+
+    return tenantName.replace('.', TENANT_NAME_DELIMITER);
   }
 
   public Map<String, String[]> sortByComparator(Map<String, String[]> unsortMap) {
