@@ -116,7 +116,7 @@ Tenants.prototype.initDonePage = function() {
             $.ajax({
               url : checkURL,
               success : function(data) {
-                    var search = "TRUE";
+                    var search = "true";
                     if (data.substring(0, search.length) === search) {
                       $("#sign_link").html("You can now <span style=\"color:#19BBE7;\"><u>sign-in</u></span> the "
                           + tName + "  Workspace.");
