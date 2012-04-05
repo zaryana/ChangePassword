@@ -52,6 +52,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.swing.text.StyledEditorKit.BoldAction;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -703,13 +704,13 @@ public class CloudWorkspacesTenantService extends TenantCreator {
   @GET
   @Path("/isuserexist/{tenantname}/{username}")
   @Produces(MediaType.TEXT_PLAIN)
-  public boolean isuserexist(@PathParam("tenantname") String tName,
+  public Response isuserexist(@PathParam("tenantname") String tName,
                              @PathParam("username") String username) throws CloudAdminException {
     try {
       workspacesOrganizationRequestPerformer.isNewUserAllowed(tName, username);
-      return false;
+      return Response.ok(Boolean.toString(false)).build();
     } catch (UserAlreadyExistsException e) {
-      return true;
+      return Response.ok(Boolean.toString(true)).build();
     }
   }
 
@@ -757,7 +758,7 @@ public class CloudWorkspacesTenantService extends TenantCreator {
     switch (tState) {
     case ONLINE: {
 
-      if (isuserexist(tName, username)) {
+      if (isuserexist(tName, username).getEntity().equals("false")) {
         String uuid = manager.addReference(email);
         notificationMailSender.sendPasswordRestoreEmail(email, tName, uuid);
       } else {
@@ -810,11 +811,9 @@ public class CloudWorkspacesTenantService extends TenantCreator {
   @GET
   @Path("blacklisted/{email}")
   @Produces(MediaType.TEXT_PLAIN)
-  public boolean blacklisted(@PathParam("email") String email) {
-    if (utils.isInBlackList(email))
-      return true;
-    else
-      return false;
+  public Response blacklisted(@PathParam("email") String email) {
+    boolean blacklisted = utils.isInBlackList(email);
+    return Response.ok(Boolean.toString(blacklisted)).build();
   }
   
   @GET
