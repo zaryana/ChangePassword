@@ -517,7 +517,7 @@ input.Button {
   color: #414141;
 }
 
-.UIPageBody input.InputText, .GetStartedPage input.InputText {
+.UIPageBody input.InputText {
   -moz-box-shadow: 0 5px 8px #F4F4F4 inset;
   -webkit-box-shadow: 0 5px 8px #F4F4F4 inset;
   box-shadow: 0 5px 8px #F4F4F4 inset;
@@ -533,6 +533,17 @@ input.Button {
   color: #4c4c4c;
 }
 
+.GetStartedPage input.InputText {
+  box-shadow: 0 5px 8px #F4F4F4 inset !important;
+  width: 300px;
+  height: 38px;
+  line-height: 36px;
+  padding: 0px 10px;
+  border: 1px solid #dddddd !important;
+  border-radius: 3px !important;
+  font-size: 14px;
+  color: #4c4c4c;
+}
 .UIPageBody input.DisabledArea, .GetStartedPage input.DisabledArea {
   background: #f4f4f4;
   color: #bfbfbf;

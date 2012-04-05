@@ -1,14 +1,48 @@
-﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
+﻿<%--
+
+    Copyright (C) 2009 eXo Platform SAS.
+    
+    This is free software; you can redistribute it and/or modify it
+    under the terms of the GNU Lesser General Public License as
+    published by the Free Software Foundation; either version 2.1 of
+    the License, or (at your option) any later version.
+    
+    This software is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+    Lesser General Public License for more details.
+    
+    You should have received a copy of the GNU Lesser General Public
+    License along with this software; if not, write to the Free
+    Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+    02110-1301 USA, or see the FSF site: http://www.fsf.org.
+
+--%>
+<%@ page language="java" %>
+<%
+  String contextPath = request.getContextPath() ;
+  String lang = request.getLocale().getLanguage();
+
+  String uri = (String)request.getAttribute("org.cloudworkspaces.login.initial_uri");
+
+  response.setCharacterEncoding("UTF-8"); 
+  response.setContentType("text/html; charset=UTF-8");
+%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<%=lang%>" lang="<%=lang%>" dir="ltr">
   <head>
     <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
     <% String pageName = "Help eXo Cloud Workspace"; %>
     <%@ include file="common/headStyle.jsp"%>
+    <link href="<%=request.getContextPath()%>/css/cloudlogin/textext-1.3.0.css" rel="stylesheet" type="text/css" />
     <%@ include file="common/headScript.jsp"%>
+    <script type="text/javascript" src="<%=request.getContextPath()%>/js/cloudlogin/textext-1.3.0.js"></script>
+    <script type="text/javascript" src="<%=request.getContextPath()%>/js/cloudlogin/cloudlogin.js"></script>
+    
   </head>
-  <body onLoad="tenants.init();">
+  <body onLoad="tenants.init();CloudLogin.initCloudLogin();">
 	<div class="GetStartedPage">
-		<form class="UIFormBox StartedStep" style="display: block;" name="" id="" method="POST" action="javascript:void(0);" >
+		<form class="UIFormBox StartedStep" style="display: block;" name="" id="StartedStep1" method="POST" action="javascript:void(0);" >
 			<h1 class="StartedBarBG">Welcome to Cloud Workspaces - Get started in 3 easy steps</h1>
 			<div class="Steps" id="">
 				<span class="StepBG"></span>
@@ -20,7 +54,7 @@
 				<tbody>
 					<tr>
 						<td class="FormInput"> <input type="text" onclick="this.value='';" value="Your email" id="email" name="" class="required InputText" /></td>
-						<td class="FormButton"> <input type="submit" onclick="tenants.doLogin();" value="Next" id="t_submit" class="Button" /></td>
+						<td class="FormButton"> <input type="button" onclick="CloudLogin.validateStep1();" value="Next" id="t_submit" class="Button" /></td>
 					</tr>
 				</tbody>
 			</table>
@@ -28,10 +62,10 @@
 				<a href="#" class="FR RightStartTip"><img width="264" src="<%=request.getContextPath()%>/background/img_st.png" alt=""/></a>
 				<p class="LeftStartTip"><strong>Tip:</strong> Find and connect with your colleagues to see their latest updates in your activity stream.</p>
 			</div>
-			<div class="Link"><a href="#" class="Link">Skip to homepage >></a></div>
+			<div class="Link"><a href="<%= uri %>" class="Link">Skip to homepage >></a></div>
 		</form>
 		
-		<form class="UIFormBox StartedStep" style="display: none;" name="" id="" method="POST" action="javascript:void(0);" >
+		<form class="UIFormBox StartedStep" style="display: none;" name="" id="StartedStep2" method="POST" action="javascript:void(0);" >
 			<h1 class="StartedBarBG">Welcome to Cloud Workspaces - Get started in 3 easy steps</h1>
 			<div class="Steps" id="">
 				<span class="StepBG"></span>
@@ -43,7 +77,7 @@
 				<tbody>
 					<tr>
 						<td class="FormInput"><div class="HelpText">Drag and drop a document to add it to your private folder</div></td>
-						<td class="FormButton"> <input type="submit" onclick="tenants.doLogin();" value="Next" id="t_submit" class="Button" /></td>
+						<td class="FormButton"> <input type="button" onclick="CloudLogin.validateStep2();" value="Next" id="t_submit" class="Button" /></td>
 					</tr>
 				</tbody>
 			</table>
@@ -51,10 +85,13 @@
 				<a href="#" class="FR RightStartTip"><img width="264" src="<%=request.getContextPath()%>/background/img_st.png" alt=""/></a>
 				<p class="LeftStartTip"><strong>Tip:</strong> Easily access your documents on your iPhone, iPad or Android device with the eXo mobile app. You can keep files private, share them with specific coworkers or publish them in a dedicated space.</p>
 			</div>
-			<div class="Link"><a href="#" class="Link">Skip to homepage >></a></div>
+			<div class="Link"><a href="<%= uri %>" class="Link">Skip to homepage >></a></div>
 		</form>
 		
-		<form class="UIFormBox StartedStep" style="display: none;" name="" id="" method="POST" action="javascript:void(0);" >
+		<form class="UIFormBox StartedStep" style="display: none;" name="" id="StartedStep3" method="POST" action="javascript:void(0);" >
+			<% if (uri != null) { %>
+	    <input type="hidden" name="initialURI" id="initialURI" value="<%= uri %>" />
+	    <% } %>
 			<h1 class="StartedBarBG">Welcome to Cloud Workspaces - Get started in 3 easy steps</h1>
 			<div class="Steps" id="">
 				<span class="StepBG"></span>
@@ -81,7 +118,7 @@
 								</li>
 							</ul>
 						</td>
-						<td class="FormButton"> <input type="submit" onclick="tenants.doLogin();" value="Next" id="t_submit" class="Button" /></td>
+						<td class="FormButton"> <input type="button" onclick="CloudLogin.validateStep3();" value="Next" id="t_submit" class="Button" /></td>
 					</tr>
 				</tbody>
 			</table>
@@ -89,7 +126,7 @@
 				<a href="#" class="FR RightStartTip"><img width="264" src="<%=request.getContextPath()%>/background/img_st.png" alt=""/></a>
 				<p class="LeftStartTip"><strong>Tip:</strong> Easily access your documents on your iPhone, iPad or Android device with the eXo mobile app. You can keep files private, share them with specific coworkers or publish them in a dedicated space.</p>
 			</div>
-			<div class="Link"><a href="#">Skip to homepage &gt;&gt;</a></div>
+			<div class="Link"><a href="<%= uri %>">Skip to homepage &gt;&gt;</a></div>
 		</form>
 	</div>
 	<!--end code body here-->
