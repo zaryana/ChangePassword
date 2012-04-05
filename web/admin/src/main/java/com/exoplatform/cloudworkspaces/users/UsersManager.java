@@ -194,7 +194,6 @@ public class UsersManager {
 
   public synchronized void joinWaitingLimitUsers(String tName) throws CloudAdminException {
     for (UserRequest user : userRequestDao.search(tName, RequestState.WAITING_LIMIT)) {
-      if (!user.getPassword().isEmpty()) {
         String tenant = user.getTenantName();
         String userMail = user.getUserEmail();
         String fName = user.getFirstName();
@@ -210,17 +209,21 @@ public class UsersManager {
         props.put("first.name", fName);
         props.put("last.name", lName);
 
-        try {
+        try 
+        {
           joinUser(user);
           notificationMailSender.sendUserJoinedEmails(tenant, fName, userMail, props);
           userRequestDao.delete(user);
-        } catch (UserAlreadyExistsException e) {
+        } 
+        catch (UserAlreadyExistsException e) {
           LOG.warn("User " + userMail + " is already exists, deleting from waiting queue.");
           notificationMailSender.sendUserJoinedEmails(tenant, fName, userMail, props);
           userRequestDao.delete(user);
-        } catch (UsersLimitExceedException e) {
+        } 
+        catch (UsersLimitExceedException e) {
           // do nothing this user already has status WAITING_LIMIT
-        } catch (UsersFormNotFilledException e) {
+        } 
+        catch (UsersFormNotFilledException e) {
           Map<String, String> formProps = new HashMap<String, String>();
           formProps.put("tenant.masterhost",
                         AdminConfigurationUtil.getMasterHost(cloudAdminConfiguration));
@@ -230,7 +233,6 @@ public class UsersManager {
           LOG.info("Sending join letter to " + userMail + " - his tenant is raised user limit.");
           notificationMailSender.sendOkToJoinEmail(userMail, formProps);
           userRequestDao.delete(user);
-        }
       }
     }
   }
