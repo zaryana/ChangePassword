@@ -57,6 +57,11 @@ public class UserLimitsStorage {
   }
 
   public long getLastModifiedTime() {
+    FileChangedReloadingStrategy strategy = (FileChangedReloadingStrategy) userLimits.getReloadingStrategy();
+    if (strategy.reloadingRequired()) {
+      lastModifiedTime = System.currentTimeMillis();
+      userLimits.reload();
+    }
     return lastModifiedTime;
   }
 

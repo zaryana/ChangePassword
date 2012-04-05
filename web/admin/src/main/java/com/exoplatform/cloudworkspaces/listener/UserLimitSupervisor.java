@@ -29,13 +29,13 @@ import org.slf4j.LoggerFactory;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class UserLimitListenerSupervisor implements Startable {
+public class UserLimitSupervisor implements Startable {
 
-  private static final Logger LOG = LoggerFactory.getLogger(UserLimitListenerSupervisor.class);
+  private static final Logger LOG = LoggerFactory.getLogger(UserLimitSupervisor.class);
 
   private final Timer         supervisorTimer;
 
-  public UserLimitListenerSupervisor(final UserLimitsStorage userLimitsStorage,
+  public UserLimitSupervisor(final UserLimitsStorage userLimitsStorage,
                                      final UsersManager usersManager) {
 
     this.supervisorTimer = new Timer(true);
