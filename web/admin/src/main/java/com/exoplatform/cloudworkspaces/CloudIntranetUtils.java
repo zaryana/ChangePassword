@@ -19,12 +19,8 @@
  */
 package com.exoplatform.cloudworkspaces;
 
-import com.exoplatform.cloudworkspaces.http.WorkspacesOrganizationRequestPerformer;
-import com.exoplatform.cloudworkspaces.users.UserLimitsStorage;
-
 import org.apache.commons.configuration.Configuration;
 import org.exoplatform.cloudmanagement.admin.CloudAdminException;
-import org.exoplatform.cloudmanagement.admin.dao.TenantInfoDataManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,39 +48,27 @@ import javax.mail.internet.InternetAddress;
 
 public class CloudIntranetUtils {
 
-  private Configuration                          cloudAdminConfiguration;
+  private Configuration          cloudAdminConfiguration;
 
-  private WorkspacesOrganizationRequestPerformer workspacesOrganizationRequestPerformer;
+  private NotificationMailSender notificationMailSender;
 
-  private TenantInfoDataManager                  tenantInfoDataManager;
+  UserRequestDAO                 requestDao;
 
-  private NotificationMailSender                 notificationMailSender;
+  private String                 blackListConfigurationFolder;
 
-  private UserLimitsStorage                      userLimitsStorage;
+  private ReferencesManager      referencesManager;
 
-  UserRequestDAO                                 requestDao;
+  public static final String     CLOUD_ADMIN_HOSTNAME_FILE = "cloud.admin.hostname.file";
 
-  private String                                 blackListConfigurationFolder;
+  public static final char       TENANT_NAME_DELIMITER     = '-';
 
-  private ReferencesManager                      referencesManager;
-  
-  public static final String                     CLOUD_ADMIN_HOSTNAME_FILE = "cloud.admin.hostname.file";
-
-  public static final char                       TENANT_NAME_DELIMITER     = '-';
-
-
-  private static final Logger                    LOG = LoggerFactory.getLogger(CloudIntranetUtils.class);
+  private static final Logger    LOG                       = LoggerFactory.getLogger(CloudIntranetUtils.class);
 
   public CloudIntranetUtils(Configuration cloudAdminConfiguration,
-                            TenantInfoDataManager tenantInfoDataManager,
-                            WorkspacesOrganizationRequestPerformer workspacesOrganizationRequestPerformer,
                             NotificationMailSender notificationMailSender,
-                            UserLimitsStorage userLimitsStorage,
                             UserRequestDAO requestDao,
                             ReferencesManager referencesManager) {
     this.cloudAdminConfiguration = cloudAdminConfiguration;
-    this.tenantInfoDataManager = tenantInfoDataManager;
-    this.workspacesOrganizationRequestPerformer = workspacesOrganizationRequestPerformer;
     this.notificationMailSender = notificationMailSender;
     this.blackListConfigurationFolder = cloudAdminConfiguration.getString("cloud.admin.blacklist.dir",
                                                                           null);
@@ -96,7 +80,7 @@ public class CloudIntranetUtils {
     String tail = email.substring(email.indexOf("@") + 1);
     if (blackListConfigurationFolder == null
         || (cloudAdminConfiguration.getString("cloud.admin.blacklist.file", null)) == null) {
-      String tName = tail.substring(0, tail.indexOf("."));
+      String tName = email2tenantName(email);
       LOG.info("Black list not configured, allowing tenant " + tName + " from email:" + email);
       return false;
     }
@@ -112,7 +96,7 @@ public class CloudIntranetUtils {
       io.close();
       return properties.containsKey(tail);
     } catch (FileNotFoundException e) {
-      String tName = tail.substring(0, tail.indexOf("."));
+      String tName = email2tenantName(email);
       LOG.info("Black list file not found, allowing tenant " + tName + " from email:" + email);
     } catch (IOException e) {
       LOG.error(e.getMessage(), e);

@@ -394,8 +394,7 @@ public class CloudWorkspacesTenantService extends TenantCreator {
                        .build();
 
       username = userMail.substring(0, (userMail.indexOf("@")));
-      String tail = userMail.substring(userMail.indexOf("@") + 1);
-      tName = tail.substring(0, tail.indexOf(".")).toLowerCase();
+      tName = utils.email2tenantName(userMail);
       // Prepare properties for mailing
       Map<String, String> props = new HashMap<String, String>();
       props.put("tenant.masterhost", AdminConfigurationUtil.getMasterHost(adminConfiguration));
@@ -745,8 +744,7 @@ public class CloudWorkspacesTenantService extends TenantCreator {
 
     ChangePasswordManager manager = new ChangePasswordManager(adminConfiguration);
     String username = email.substring(0, (email.indexOf("@")));
-    String tail = email.substring(email.indexOf("@") + 1);
-    String tName = tail.substring(0, tail.indexOf(".")).toLowerCase();
+    String tName = utils.email2tenantName(email);
 
     if (!tenantInfoDataManager.isExists(tName)) {
       return Response.status(Status.BAD_REQUEST)
@@ -793,7 +791,8 @@ public class CloudWorkspacesTenantService extends TenantCreator {
     ChangePasswordManager manager = new ChangePasswordManager(adminConfiguration);
     try {
       String email = manager.validateReference(uuid);
-      workspacesOrganizationRequestPerformer.updatePassword(email, password);
+      String tName = utils.email2tenantName(email);
+      workspacesOrganizationRequestPerformer.updatePassword(tName, email, password);
       return Response.ok().build();
     } catch (CloudAdminException e) {
       return Response.serverError().entity(e.getMessage()).build();
@@ -815,7 +814,7 @@ public class CloudWorkspacesTenantService extends TenantCreator {
     boolean blacklisted = utils.isInBlackList(email);
     return Response.ok(Boolean.toString(blacklisted)).build();
   }
-  
+
   @GET
   @Path("tenantname/{email}")
   @Produces(MediaType.TEXT_PLAIN)

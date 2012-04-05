@@ -131,13 +131,11 @@ public class WorkspacesOrganizationRequestPerformer {
     }
   }
 
-  public void updatePassword(String email, String password) throws CloudAdminException {
+  public void updatePassword(String tName, String email, String password) throws CloudAdminException {
     if (email == null || password == null)
       throw new CloudAdminException("Cannot validate user with such input data. Please, review it.");
 
     String username = email.substring(0, (email.indexOf("@")));
-    String tail = email.substring(email.indexOf("@") + 1);
-    String tName = tail.substring(0, tail.indexOf("."));
 
     String alias = tenantInfoDataManager.getValue(tName,
                                                   TenantInfoFieldName.PROPERTY_APSERVER_ALIAS);
