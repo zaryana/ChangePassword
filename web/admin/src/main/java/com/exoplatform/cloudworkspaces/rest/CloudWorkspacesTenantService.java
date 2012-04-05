@@ -816,5 +816,12 @@ public class CloudWorkspacesTenantService extends TenantCreator {
     else
       return false;
   }
+  
+  @GET
+  @Path("tenantname/{email}")
+  @Produces(MediaType.TEXT_PLAIN)
+  public Response tenantname(@PathParam("email") String email) {
+    return Response.ok(utils.email2tenantName(email)).build();
+  }
 
 }

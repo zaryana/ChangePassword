@@ -301,7 +301,7 @@ Tenants.prototype.initJoinPage = function() {
               } else {
                 $('#first_name').val(prefix);
               }
-              $('#workspace').val(split[1].substring(0, split[1].indexOf('.')));
+              $('#workspace').val(getTenantName(email));
               $('#rfid').val(rfid);
             } else {
               $("#messageString").html("Application error: email is not found. Please contact support.");
@@ -323,8 +323,7 @@ Tenants.prototype.initSignInPage = function() {
     email = (email_start != -1) ? queryString.substring(email_start + 6) : null;
     if (email != null && email != "") {
       $('#email').val(email);
-      var split = email.split('@');
-      $('#workspace').val(split[1].substring(0, split[1].indexOf('.')));
+      $('#workspace').val(getTenantName(email));
     }
   }
 }
@@ -792,6 +791,23 @@ function sendDataToLoopfuse(data, afterSubmitCallback) {
     }, 100);
   }
 }
+
+function getTenantName(email) {
+      var checkURL = tenantServicePath + "/tenantname/" + email;
+      var result;
+      $.ajax({
+          url : checkURL,
+          async: false,
+          success : function(data) {
+          result =  data;
+          },
+          error : function(request, status, error) {
+             _gel("messageString").innerHTML = "Application error: cannot get tenant name. Please contact support."
+           },
+          dataType : 'text'
+          });
+          return result;
+          }
 
 function isLoopfuseResponseReceived(iframeId) {
   try {
