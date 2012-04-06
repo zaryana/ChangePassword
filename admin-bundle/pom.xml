@@ -119,9 +119,9 @@
                     <copy file="${project.build.directory}/packager-conf/war/cloud-workspaces-web-admin-${project.version}.war" tofile="${project.build.directory}/admin-tomcat/webapps/ROOT.war" />
                     <chmod file="${project.build.directory}/admin-tomcat/bin/*.sh" perm="+x" />
                     <echo message="Copy cloud-admin-valve.jar" />
-                    <copy file="${project.build.directory}/packager-conf/jar/cloud-admin-valve-${org.exoplatform.cloud-management.version}.jar" tofile="${project.build.directory}/admin-tomcat/lib/cloud-admin-valve-${project.version}.jar" />
+                    <copy file="${project.build.directory}/packager-conf/jar/cloud-admin-valve-${org.exoplatform.cloud-management.version}.jar" tofile="${project.build.directory}/admin-tomcat/lib/cloud-admin-valve-${org.exoplatform.cloud-management.version}.jar" />
                     <echo message="Copy cloud-services-common.jar" />
-                    <copy file="${project.build.directory}/packager-conf/jar/cloud-services-common-${org.exoplatform.cloud-management.version}.jar" tofile="${project.build.directory}/admin-tomcat/lib/cloud-services-common-${project.version}.jar" />
+                    <copy file="${project.build.directory}/packager-conf/jar/cloud-services-common-${org.exoplatform.cloud-management.version}.jar" tofile="${project.build.directory}/admin-tomcat/lib/cloud-services-common-${org.exoplatform.cloud-management.version}.jar" />
                     <echo message="Copy tomcat-catalina-jmx-remote.jar" />
                     <copy file="${project.build.directory}/packager-conf/jar/tomcat-catalina-jmx-remote-${tomcat.version}.jar" tofile="${project.build.directory}/admin-tomcat/lib/tomcat-catalina-jmx-remote-${tomcat.version}.jar" />
                   </tasks>
