@@ -25,7 +25,7 @@ import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 
 public class UserLimitsStorage {
 
-  private static final String           CLOUD_ADMIN_TENANT_MAXUSERS = "cloud.admin.tenant.maxusers";
+  public static final String            CLOUD_ADMIN_TENANT_MAXUSERS = "cloud.admin.tenant.maxusers";
 
   private final Configuration           cloudAdminConfiguration;
 
@@ -42,6 +42,14 @@ public class UserLimitsStorage {
     } else {
       this.userLimits = null;
     }
+  }
+
+  public long getRefreshDelay() {
+    return ((FileChangedReloadingStrategy) userLimits.getReloadingStrategy()).getRefreshDelay();
+  }
+
+  public void setRefreshDelay(long delay) {
+    ((FileChangedReloadingStrategy) userLimits.getReloadingStrategy()).setRefreshDelay(delay);
   }
 
   public int getMaxUsersForTenant(String tName) {

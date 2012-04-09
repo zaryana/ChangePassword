@@ -80,6 +80,11 @@
 
     <everrest.version>1.0.2</everrest.version>
 
+    <!-- test -->
+    <testng.version>6.3.1</testng.version>
+    <mockito.version>1.9.0</mockito.version>
+    <everrest.assured.version>0.4</everrest.assured.version>
+
     <!-- maven-release-plugin -->
     <arguments>-Prelease,distrib,exo-private,exo-staging -Dgatein.working.dir=target -Dmaven.wagon.provider.http=httpclient</arguments>
   </properties>
@@ -352,6 +357,21 @@
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-core</artifactId>
         <version>${ch.qos.logback.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.testng</groupId>
+        <artifactId>testng</artifactId>
+        <version>${testng.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-all</artifactId>
+        <version>${mockito.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.everrest</groupId>
+        <artifactId>everrest-assured</artifactId>
+        <version>${everrest.assured.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
