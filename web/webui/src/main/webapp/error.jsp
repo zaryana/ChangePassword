@@ -23,7 +23,7 @@
       </div>
       <div class="UIPageBodyContainer">
         <div class="UIPageBody ErrorPages">
-          <p><span class="ErrorIcon">Sorry, we are currently unable to process your request due to exceptionnaly high traffic. Please try again later.</span></p>
+          <p><span class="ErrorIcon">Sorry, we are currently unable to process your request due to exceptionally high traffic. Please try again later.</span></p>
           <center><a class="BackIcon" href="#" onClick="history.go(-1)">Back</a></center>
         </div>
       </div>
