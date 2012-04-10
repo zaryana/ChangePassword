@@ -149,8 +149,6 @@ p {
 }
 .UIMenuTop {
   background:#474848;
-  -moz-border-radius: 0 0 5px 5px;
-  -webkit-border-radius: 0 0 5px 5px;
   border-radius: 0 0 5px 5px;
 }
 
@@ -257,11 +255,7 @@ p {
   text-align: center;
   font-size:18px;
   border: 1px solid #dedede;
-  -moz-border-radius: 3px;
-  -webkit-border-radius: 3px;
   border-radius: 3px;
-  -moz-box-shadow: 0 5px 8px #F4F4F4 inset;
-  -webkit-box-shadow: 0 5px 8px #F4F4F4 inset;
   box-shadow: 0 5px 8px #F4F4F4 inset;
 }
 
@@ -277,8 +271,6 @@ p {
   display:inline-block;
   text-align:center;
   border: 1px solid #3495b9;
-  -moz-border-radius: 5px;
-  -webkit-border-radius: 5px;
   border-radius: 5px;
   height: 41px;
   line-height: 41px;
@@ -298,7 +290,6 @@ p {
   text-align: left;
   color: #7DAE19;
 }
-
 
 .UIBanner .FormBox .Social .twitterLink {
   display: block;
@@ -411,16 +402,16 @@ p {
 }
 
 .UI-Intro .LCol {
-  width: 300px;
+  width: 290px;
 }
 
 .UI-Intro .MCol {
-  width: 310px;
-  margin: 0 10px 0 20px;
+  width: 350px;
+  margin: 0 10px 0 35px;
 }
 
 .UI-Intro .RCol {
-  width: 290px;
+  width: 260px;
   text-align: right;
 }
 
@@ -429,8 +420,8 @@ p {
 }
 
 .UI-Intro .RCol li {
-  display:block;  
-  margin: 15px 0;
+  display: block;  
+  margin: 5px 0;
 }
 
 .UI-Intro .Readmore {
@@ -450,8 +441,6 @@ input.Button {
   color: #fff;
   font-family: 'Myriad Pro', Arial, Helvetica, Tahoma, sans-serif;
   font-size: 18px;
-  -moz-border-radius: 3px;
-  -webkit-border-radius: 3px;
   border-radius: 3px;
   text-shadow: 0px 1px 0px #1d7aae;
   cursor: pointer;
@@ -518,16 +507,12 @@ input.Button {
 }
 
 .UIPageBody input.InputText, .GetStartedPage input.InputText {
-  -moz-box-shadow: 0 5px 8px #F4F4F4 inset;
-  -webkit-box-shadow: 0 5px 8px #F4F4F4 inset;
   box-shadow: 0 5px 8px #F4F4F4 inset;
   width: 300px;
   height: 38px;
   line-height: 36px;
   padding: 0px 10px;
   border: 1px solid #dddddd;
-  -moz-border-radius: 3px;
-  -webkit-border-radius: 3px;
   border-radius: 3px;
   font-size: 14px;
   color: #4c4c4c;
@@ -546,25 +531,47 @@ input.Button {
   margin-left: 20px;
 }
 
-.UIPageBody .RowEven , .UIPageBody .RowOdd {
-  margin: 30px 0;
+.UIPageBody p {
+  line-height: 18px;
 }
 
-.UIPageBody p{
-  line-height: 16px;
-  text-align: justify;
+.UIPageBody .LastestItems {
+	margin: 20px 0 30px;
 }
 
-.UIPageBody .RowEven .BoxText {
-  padding-right: 320px;
+.UIPageBody .LCol {
+    width: 290px;
 }
 
-.UIPageBody .RowOdd .BoxText {
-  padding-left: 320px;
+.UIPageBody .MCol {
+	margin-left: 45px;
+    width: 290px;
+}
+
+.UIPageBody .RCol {
+    width: 290px;
+}
+
+.UIPageBody .BigCol {
+	width: 555px;
+	padding: 35px;
+	background: #f5f5f5;
+	border: 1px solid #e7e5e5;
+}
+
+.UIPageBody .BigCol a {
+	display: block;
+    float: left;
+    margin-right: 35px;
+}
+
+.UIPageBody .BigCol h4 {
+	margin-top: 0;
 }
 
 .UIPageBody .SpecialTit {
   color: #0868B9;
+  margin: 30px 0 15px;
 }
 
 .UIPageBody .info {
@@ -717,8 +724,6 @@ input.Button {
   background: black;
   opacity: 0.4;
   filter: alpha(opacity=40);
-  -moz-opacity:0.5;
-  -khtml-opacity: 0.5;
   -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
   position: absolute;
 }
@@ -735,8 +740,6 @@ input.Button {
 /*Form*/
 .UIFormBox {
   border: 1px solid #e0e0e0;
-  -moz-box-shadow: 0px 2px 2px #f3f3f3;
-  -webkit-box-shadow: 0px 2px 2px #f3f3f3;
   box-shadow: 0px 2px 2px #f3f3f3;
   width: 710px;
   margin: 0px auto;
@@ -763,15 +766,11 @@ input.Button {
 }
 
 .UIFormBox textarea{
-  -moz-box-shadow: 0 5px 8px #F4F4F4 inset;
-  -webkit-box-shadow: 0 5px 8px #F4F4F4 inset;
   box-shadow: 0 5px 8px #F4F4F4 inset;
   width: 300px;
   height: 100px;
   padding: 5px 10px;
   border: 1px solid #dddddd;
-  -moz-border-radius: 3px;
-  -webkit-border-radius: 3px;
   border-radius: 3px;
   font-size: 18px;
   color: #c0c0c0;
@@ -797,13 +796,9 @@ input.Button {
 }
 
 .InviPages .PermissionsBox {
-  -moz-box-shadow: 0 5px 8px #F4F4F4 inset;
-  -webkit-box-shadow: 0 5px 8px #F4F4F4 inset;
   box-shadow: 0 5px 8px #F4F4F4 inset;
   padding: 5px 10px;
   border: 1px solid #dddddd;
-  -moz-border-radius: 3px;
-  -webkit-border-radius: 3px;
   border-radius: 3px;
   font-size: 18px;
   color: #c0c0c0;

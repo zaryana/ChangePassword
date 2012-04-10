@@ -149,46 +149,39 @@
     
         <!--IndexPage-->
          <div class="UIPageBody IndexPage">
-          <div class="MainContent" >
-            <h3>Features Overview</h3>
-            <div class="ClearFix RowOdd">
-              <div class="FL BoxImg"><a class="lightbox-enabled" rel="lightbox" href="background/social.png" title="Connect with your colleagues for an instant enterprise social network"><img src="background/01-mini.png" alt=""/></a></div>
-              <div class="BoxText">
-                <h4 class="SpecialTit"><a name="Connect-Collaborate">Connect with your colleagues for an instant enterprise social network</a></h4>
-                <p>Support for OpenSocial allows Cloud Workspaces users to create and connect rich user profiles, share activity streams, and collaborate in real-time. When you sign up with your professional email, we'll create a private domain for your company. When anyone else joins <a href="http://cloud-workspaces.com/">cloud-workspaces.com</a> using your company's email address, they will automatically be added to your company's network.</p>
-              </div>
-            </div>
-            <div class="ClearFix RowEven">
-              <div class="FR BoxImg"><a href="background/wiki.png" class="lightbox-enabled" rel="lightbox"  title="More than a private social network: enterprise wiki, forums, calendars, and more"><img src="background/02-mini.png" alt=""/></a></div>
-              <div class="BoxText">
-                <h4 class="SpecialTit"><a name="Status-Update" href="background/wiki.png">More than a private social network: enterprise wiki, forums, calendars, and more</a></h4>
-                <p>Following updates and comments from your coworkers is a great way to stay informed, but it's only the first step towards productive collaboration. Cloud Workspaces combines the benefits of a social network with the tools that support your online work. You can share documents, build workflows to manage business processes automatically, interact in forums and add team and project calendars. There's also a full-featured enterprise wiki built into every workspace, so your team can create, edit, store and easily find content and resources.</p>
-              </div>
-            </div>
-    
-            <div class="ClearFix RowOdd">
-              <div class="FL BoxImg"><a href="background/dashboard2.png" class="lightbox-enabled" rel="lightbox" title="Personalized dashboards provide a work start page for every user"><img src="background/03-mini.png" alt=""/></a></div>
-              <div class="BoxText">
-                <h4 class="SpecialTit">Personalized dashboards provide a work start page for every user</h4>
-                <p>Users can easily create their own personalized dashboards with simple drag-and-drop controls, so your Cloud Workspaces start page will display the most relevant, useful information about your work.</p>
-              </div>
-            </div>
-            <div class="ClearFix RowEven">
-              <div class="FR BoxImg"><a href="background/ide.png" class="lightbox-enabled" rel="lightbox" title="Extend and customize your social intranet with the built-in Cloud IDE"><img src="background/04-mini.png" alt=""/></a></div>
-              <div class="BoxText">
-                <h4 class="SpecialTit"><a name="Customize-Social">Extend and customize your social intranet with the built-in Cloud IDE</a></h4>
-                <p>Toggling between your company social network and other sites you regularly use, such as web analytics or project management tools, can be distracting and inefficient. Third party web apps can be integrated directly in your Cloud Workspaces as gadgets. eXo Cloud IDE, a full-featured development environment for building and integrating applications, gadgets and mashups, is available within every Cloud Workspaces account.</p>
-                <p>Reuse or share gadgets with other Cloud Workspaces or Cloud IDE users - just drag-and-drop to add them in your personal dashboard or any of your company's private workspaces.</p>
-              </div>
-            </div>
-            <div class="ClearFix RowOdd">
-              <div class="FL BoxImg"><a href="background/iPad-Gadgets.png" class="lightbox-enabled" rel="lightbox" title="Your personal dashboard on-the-go: native mobile apps for Cloud Workspaces"><img src="background/05-mini.png" alt=""/></a></div>
-              <div class="BoxText">
-                <h4 class="SpecialTit"><a name="Direct-PaaS">Your personal dashboard on-the-go: native mobile apps for Cloud Workspaces</a></h4>
-                <p>Native iPhone, iPad, and Android apps let you securely and easily view your personal dashboard, including any of the custom gadgets you've added. Post status updates and share photos, stay updated with your colleagues' activities, access your internal document repository - all the key functions of your social intranet, right in your pocket.</p>
-              </div>
-            </div>
-          </div>
+			<h3>Features Overview</h3>
+			<div class="LastestItems ClearFix">
+				<div class="Cols LCol FL">
+					<div><a class="lightbox-enabled" rel="lightbox" href="background/social.png" title="Connect with your colleagues for an instant enterprise social network"><img src="background/01_Mini.png" alt=""/></a></div>
+					<h4 class="SpecialTit">Connect with your colleagues for an instant enterprise social network</h4>
+					<p>Support for OpenSocial allows Cloud Workspaces users to create and connect rich user profiles, share activity streams, and collaborate in real-time. When you sign up with your professional email, we'll create a private domain for your company.</p>
+				</div>
+				
+				<div class="Cols MCol FL">
+					<a class="lightbox-enabled" rel="lightbox" href="background/wiki.png" title="More than a private social network: enterprise wiki, forums, calendars, and more"><img src="background/02_Mini.png" alt=""/></a>
+					<h4 class="SpecialTit">More than a private social network: enterprise wiki, forums, calendars, and more</h4>
+					<p>Following updates and comments from your coworkers is a great way to stay informed, but it's only the first step towards productive collaboration. Cloud Workspaces combines the benefits of a social network with the tools that support your online work.</p>
+				</div>
+				
+				<div class="Cols RCol FR">
+					<a class="lightbox-enabled" rel="lightbox" href="background/dashboard2.png" title="Personalized dashboards provide a work start page for every user"><img src="background/03_Mini.png" alt=""/></a>
+					<h4 class="SpecialTit">Personalized dashboards provide a work start page for every user</h4>
+					<p>Users can easily create their own personalized dashboards with simple drag-and-drop controls, so your Cloud Workspaces start page will display the most relevant, useful information about your work.</p>
+				</div>
+			</div>
+			<div class="ClearFix">
+				<div class="Cols LCol FL">
+					<a class="lightbox-enabled" rel="lightbox" href="background/ide.png" title="Extend and customize your social intranet with the built-in Cloud IDE"><img src="background/04_Mini.png" alt=""/></a>
+					<h4 class="SpecialTit">Extend and customize your social intranet with the built-in Cloud IDE</h4>
+					<p>Toggling between your company social network and other sites you regularly use, such as web analytics or project management tools, can be distracting and inefficient. Third party web apps can be integrated directly in your Cloud Workspaces as gadgets. </p>
+				</div>
+				
+				<div class="Cols BigCol FR">
+					<a class="lightbox-enabled" rel="lightbox" href="background/iPad-Gadgets.png" title="Your personal dashboard on-the-go: native mobile apps for Cloud Workspaces"><img src="background/05_Mini.png" alt=""/></a>
+					<h4 class="SpecialTit">Your personal dashboard on-the-go: native mobile apps for Cloud Workspaces</h4>
+					<p>Native iPhone, iPad, and Android apps let you securely and easily view your personal dashboard, including any of the custom gadgets you've added. Post status updates and share photos, stay updated with your colleagues' activities, access your internal document repository - all the key functions of your social intranet, right in your pocket.</p>
+				</div>
+			</div>
         </div>
       </div>
         
