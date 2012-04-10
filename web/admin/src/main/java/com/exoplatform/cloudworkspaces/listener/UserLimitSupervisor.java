@@ -35,8 +35,13 @@ public class UserLimitSupervisor implements Startable {
 
   private final Timer         supervisorTimer;
 
+  public UserLimitSupervisor(UserLimitsStorage userLimitsStorage, UsersManager usersManager) {
+    this(userLimitsStorage, usersManager, 120000);
+  }
+
   public UserLimitSupervisor(final UserLimitsStorage userLimitsStorage,
-                                     final UsersManager usersManager) {
+                             final UsersManager usersManager,
+                             final long delay) {
 
     this.supervisorTimer = new Timer(true);
     this.supervisorTimer.schedule(new TimerTask() {
@@ -55,7 +60,7 @@ public class UserLimitSupervisor implements Startable {
         }
       }
 
-    }, 0, 120000);
+    }, 0, delay);
   }
 
   @Override
