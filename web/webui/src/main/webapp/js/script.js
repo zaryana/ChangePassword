@@ -370,7 +370,8 @@ Tenants.prototype.doLogin = function() {
     if (!valid) return;
    
    var username = login.substring(0, login.indexOf('@'));
-   var redirect = location.protocol + '//' + tname + '.' + location.hostname;
+   var host = location.hostname.indexOf("www") == 0 ? location.hostname.substring(4) : location.hostname;
+   var redirect = location.protocol + '//' + tname + '.' + host;
    redirect += '/portal/login?username=';
    redirect += username;
    redirect += '&password=';
