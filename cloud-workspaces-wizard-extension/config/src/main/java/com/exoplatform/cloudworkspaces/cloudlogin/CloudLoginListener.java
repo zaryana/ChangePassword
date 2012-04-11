@@ -18,12 +18,9 @@ package com.exoplatform.cloudworkspaces.cloudlogin;
 
 import org.exoplatform.services.listener.Event;
 import org.exoplatform.services.listener.Listener;
-import org.exoplatform.services.log.ExoLogger;
-import org.exoplatform.services.log.Log;
 import org.exoplatform.services.security.ConversationRegistry;
 import org.exoplatform.services.security.ConversationState;
 
-import com.exoplatform.cloudworkspaces.cloudlogin.CloudLoginService;
 import com.exoplatform.cloudworkspaces.cloudlogin.data.CloudLoginStatus;
 
 /**
@@ -33,8 +30,6 @@ import com.exoplatform.cloudworkspaces.cloudlogin.data.CloudLoginStatus;
  *
  */
 public class CloudLoginListener extends Listener<ConversationRegistry, ConversationState> {
-
-  private static Log logger = ExoLogger.getLogger(CloudLoginListener.class);
 
   private CloudLoginService cloudLoginService;
 

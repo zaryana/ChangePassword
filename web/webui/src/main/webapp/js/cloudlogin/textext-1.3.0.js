@@ -977,8 +977,6 @@
 		self.trigger(EVENT_PRE_INVALIDATE);
 
 		height = input.outerHeight();
-    
-    console.log(width);
 
 		input.width(width);
 		wrap.width(width).height(height);
@@ -3797,8 +3795,6 @@
 		var self  = this,
 			input = self.input()
 			;
-      
-    console.log("invalidateBounds: " + input.css('paddingTop'));
 
 		self.containerElement().css({
 			paddingLeft : input.css('paddingLeft'),
@@ -4303,8 +4299,6 @@
 				mousemove : self.onInputMouseMove
 			});
 		}
-    
-    console.log("init: " + input.css('paddingTop'));
 
 		self._originalPadding = {
 			left : parseInt(input.css('paddingLeft') || 0),
@@ -4482,8 +4476,6 @@
 			pos = self._originalPadding;
 
 		self._paddingBox = pos;
-    
-    console.log("onPreInvalidate: " + pos.top);
 
 		self.input().css({
 			paddingLeft : pos.left,
@@ -4510,6 +4502,9 @@
 			focus  = 0,
 			tag
 			;
+    
+    // HACK chrome, ff, safari, we need to clear textarea on click
+    self.val('');
 
 		if(source.is(CSS_DOT_TAGS))
 		{

@@ -267,6 +267,12 @@
         <version>${org.exoplatform.jcr.version}</version>
         <type>jar</type>
       </dependency>
+      <dependency>
+        <groupId>org.exoplatform.platform</groupId>
+        <artifactId>gadget-pack-services</artifactId>
+        <version>${org.exoplatform.platform.version}</version>
+        <type>jar</type>
+      </dependency>
 
       <!-- Third-parties -->
       <dependency>
@@ -341,6 +347,7 @@
     <module>admin-bundle</module>
     <module>cloud-gadgets</module>
     <module>extension</module>
+    <module>cloud-workspaces-wizard-extension</module>
     <module>navigation</module>
     <module>platform-bundle</module>
   </modules>

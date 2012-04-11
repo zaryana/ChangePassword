@@ -18,12 +18,13 @@
     02110-1301 USA, or see the FSF site: http://www.fsf.org.
 
 --%>
+<%@ page import="com.exoplatform.cloudworkspaces.cloudlogin.CloudLoginServlet"%>
 <%@ page language="java" %>
 <%
   String contextPath = request.getContextPath() ;
   String lang = request.getLocale().getLanguage();
 
-  String uri = (String)request.getAttribute("org.cloudworkspaces.login.initial_uri");
+  String uri = (String)request.getAttribute(CloudLoginServlet.INITIAL_URI_ATTRIBUTE);
 
   response.setCharacterEncoding("UTF-8"); 
   response.setContentType("text/html; charset=UTF-8");
@@ -35,12 +36,14 @@
     <% String pageName = "Help eXo Cloud Workspace"; %>
     <%@ include file="common/headStyle.jsp"%>
     <link href="<%=request.getContextPath()%>/css/cloudlogin/textext-1.3.0.css" rel="stylesheet" type="text/css" />
+    
     <%@ include file="common/headScript.jsp"%>
+    
     <script type="text/javascript" src="<%=request.getContextPath()%>/js/cloudlogin/textext-1.3.0.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/js/cloudlogin/cloudlogin.js"></script>
     
   </head>
-  <body onLoad="tenants.init();CloudLogin.initCloudLogin();">
+  <body onLoad="CloudLogin.initCloudLogin();">
 	<div class="GetStartedPage">
 		<form class="UIFormBox StartedStep" style="display: block;" name="" id="StartedStep1" method="POST" action="javascript:void(0);" >
 			<h1 class="StartedBarBG">Welcome to Cloud Workspaces - Get started in 3 easy steps</h1>
@@ -53,7 +56,7 @@
 			<table class="BorderDot">
 				<tbody>
 					<tr>
-						<td class="FormInput"> <input type="text" onclick="this.value='';" value="Your email" id="email" name="" class="required InputText" /></td>
+						<td class="FormInput"> <textarea value="Your email" id="email" name="" class="required InputText">Your email</textarea></td>
 						<td class="FormButton"> <input type="button" onclick="CloudLogin.validateStep1();" value="Next" id="t_submit" class="Button" /></td>
 					</tr>
 				</tbody>
@@ -62,7 +65,7 @@
 				<a href="#" class="FR RightStartTip"><img width="264" src="<%=request.getContextPath()%>/background/img_st.png" alt=""/></a>
 				<p class="LeftStartTip"><strong>Tip:</strong> Find and connect with your colleagues to see their latest updates in your activity stream.</p>
 			</div>
-			<div class="Link"><a href="<%= uri %>" class="Link">Skip to homepage >></a></div>
+			<div class="Link"><a href="#" onclick="CloudLogin.exit();" class="Link">Skip to homepage >></a></div>
 		</form>
 		
 		<form class="UIFormBox StartedStep" style="display: none;" name="" id="StartedStep2" method="POST" action="javascript:void(0);" >
@@ -85,13 +88,10 @@
 				<a href="#" class="FR RightStartTip"><img width="264" src="<%=request.getContextPath()%>/background/img_st.png" alt=""/></a>
 				<p class="LeftStartTip"><strong>Tip:</strong> Easily access your documents on your iPhone, iPad or Android device with the eXo mobile app. You can keep files private, share them with specific coworkers or publish them in a dedicated space.</p>
 			</div>
-			<div class="Link"><a href="<%= uri %>" class="Link">Skip to homepage >></a></div>
+			<div class="Link"><a href="#" onclick="CloudLogin.exit();" class="Link">Skip to homepage >></a></div>
 		</form>
 		
 		<form class="UIFormBox StartedStep" style="display: none;" name="" id="StartedStep3" method="POST" action="javascript:void(0);" >
-			<% if (uri != null) { %>
-	    <input type="hidden" name="initialURI" id="initialURI" value="<%= uri %>" />
-	    <% } %>
 			<h1 class="StartedBarBG">Welcome to Cloud Workspaces - Get started in 3 easy steps</h1>
 			<div class="Steps" id="">
 				<span class="StepBG"></span>
@@ -126,15 +126,17 @@
 				<a href="#" class="FR RightStartTip"><img width="264" src="<%=request.getContextPath()%>/background/img_st.png" alt=""/></a>
 				<p class="LeftStartTip"><strong>Tip:</strong> Easily access your documents on your iPhone, iPad or Android device with the eXo mobile app. You can keep files private, share them with specific coworkers or publish them in a dedicated space.</p>
 			</div>
-			<div class="Link"><a href="<%= uri %>">Skip to homepage &gt;&gt;</a></div>
+			<div class="Link"><a href="#" onclick="CloudLogin.exit();">Skip to homepage &gt;&gt;</a></div>
 		</form>
 	</div>
 	<!--end code body here-->
-		
-    
-    <!-- BEGIN: LOOPFUSE TRACKING -->
-    <script type="text/javascript" src="http://lfov.net/webrecorder/js/listen.js"></script>
-    <!-- END: LOOPFUSE TRACKING -->
-    <script type="text/javascript" src="<%=request.getContextPath()%>//js/trackers.js"></script>    
+	
+	<form class="UIFormBox StartedStep" style="display: none;" name="CloudExitForm" id="CloudExitForm" method="POST" action="<%= CloudLoginServlet.CL_SERVLET_CTX + CloudLoginServlet.CL_SERVLET_URL %>" >
+    <% if (uri != null) { %>
+    <input type="hidden" name="<%= CloudLoginServlet.CLOUD_REQUESTED_URI %>" id="<%= CloudLoginServlet.CLOUD_REQUESTED_URI %>" value="<%= uri %>" />
+    <% } %>
+    <input type="hidden" name="<%= CloudLoginServlet.CLOUD_PROCESS_DISPLAYED %>" id="<%= CloudLoginServlet.CLOUD_PROCESS_DISPLAYED %>" value="true" />
+	</form>
+	   
   </body>
 </html>

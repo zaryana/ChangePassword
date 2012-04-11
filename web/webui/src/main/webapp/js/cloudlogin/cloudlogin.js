@@ -6,7 +6,8 @@ var CloudLogin = {};
 
 CloudLogin.WS_SENDMAIL_URL = "/rest/invite-join-ws/send-mail/";
 CloudLogin.EMAIL_REGEXP = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-CloudLogin.FLAG_EMAIL_OK = false;
+CloudLogin.NB_EMAILS_OK = 0;
+CloudLogin.NB_EMAILS = 0;
 
 CloudLogin.initCloudLogin = function() {
   // tenants.init();
@@ -17,29 +18,45 @@ CloudLogin.initCloudLogin = function() {
   console.error = console.error || function(){};
   console.info = console.info || function(){};
   
+  // Event only for IE
+  document.getElementById('email').onclick = function() {document.getElementById('email').value = '';}
+
+  CloudLogin.initTextExt();
+}
+
+CloudLogin.initTextExt = function() {
   // http://textextjs.com
-  $('#email').textext({ 
+  var textExt = $('#email').textext({ 
     plugins: 'tags',
     ext : {
-        itemManager: {
-            itemToString: function(item) {
-              return item.replace(/@.*$/,"");
-            }
+      itemManager: {
+        itemToString: function(item) {
+          return item.replace(/@.*$/,"");
         }
+      }
     },
     html : {
       hidden: '<input type="hidden" id="emails" />'
     }
-  }).bind(
+  });
+  
+  textExt.bind(
+    'onClick', function(e) {
+      console.log("click");
+    }
+  );
+  
+  textExt.bind(
     'isTagAllowed', function(e, data) {
-      if(!CloudLogin.EMAIL_REGEXP.test(data.tag))
+      var dataTag = data.tag.replace(/^\s+|\s+$/g,'');
+      if(!CloudLogin.EMAIL_REGEXP.test(dataTag))
       {
-        alert('email not ok: ' + data.tag);
+        alert('email not ok: ' + dataTag);
         data.result = false;
         return;
       }
-    });
-    
+    }
+  );
 }
 
 CloudLogin.showStep = function(n) {
@@ -63,22 +80,23 @@ CloudLogin.sendEmail = function(email) {
     success: function(status) {
       if (status.indexOf("Message sent") != -1) {
         console.log("mail ok: " + email);
-        CloudLogin.FLAG_EMAIL_OK = true;
+        
+        // Test if we pass all emails
+        CloudLogin.NB_EMAILS_OK++;
+        if(CloudLogin.NB_EMAILS_OK == CloudLogin.NB_EMAILS) {
+          CloudLogin.showStep(2);
+        }
       }
       else {
         console.log("mail not ok: " + email);
-        alert("mail not ok: " + email);
-
-
+        alert("mail not ok: [" + email + "]");
       }
-  },
-  error: function(request, status, error){
-    console.log("mail not ok: " + email +" [Status: " + status + "], [Error: " + error + "]");
-    alert("mail not ok: " + email +" [Status: " + status + "], [Error: " + error + "]");
-
-
-  },
-  dataType: 'text'
+    },
+    error: function(request, status, error) {
+      console.log("mail not ok: " + email +" [Status: " + status + "], [Error: " + error + "]");
+      alert("mail not ok: " + email +" [Status: " + status + "], [Error: " + error + "]");
+    },
+    dataType: 'text'
   });
 }
 
@@ -86,14 +104,16 @@ CloudLogin.validateStep1 = function() {
   
   var emails = eval(document.getElementById("emails").value);
   
+  CloudLogin.NB_EMAILS_OK = 0;
+  CloudLogin.NB_EMAILS = emails.length;
+  
+  if(emails.length == 0) {
+    CloudLogin.showStep(2);
+  }
+  
   for(var i=0; i<emails.length; i++) {
     CloudLogin.sendEmail(emails[i]);
   }
-  
-  //if(CloudLogin.FLAG_EMAIL_OK == true) {
-    // TODO delete
-    CloudLogin.showStep(2);
-  //}
 
   //tenants.doLogin();
 }
@@ -105,9 +125,11 @@ CloudLogin.validateStep2 = function() {
 }
 
 CloudLogin.validateStep3 = function() {
-  
-  // Redirect to initialURI
-  window.location=document.getElementById("initialURI").value;
+  CloudLogin.exit();
   
   //tenants.doLogin();
+}
+
+CloudLogin.exit = function() {
+  $("#CloudExitForm").submit();
 }
