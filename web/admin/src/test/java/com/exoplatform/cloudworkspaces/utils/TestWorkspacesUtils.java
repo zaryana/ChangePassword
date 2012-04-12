@@ -69,6 +69,7 @@ public class TestWorkspacesUtils {
             {"test1@exoplatform.fed.us", "exoplatform"},
             {"test1@exoplatform.crimea.ua", "exoplatform-crimea"},
             {"test1@exoplatform.crimea.zp.ua", "exoplatform-crimea-zp"},
+            {"test1@exoplatform.crimea.pa.us", "exoplatform-crimea-pa"}
     };
   }
   
