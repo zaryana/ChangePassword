@@ -98,7 +98,7 @@ public class IntranetAdminService extends TenantCreator {
   @Path("/create-with-confirm/{tenantname}/{user-mail}")
   public Response createTenantWithEmailConfirmation(@PathParam("tenantname") String tenantName,
                                                     @PathParam("user-mail") String userMail) throws CloudAdminException {
-    return Response.status(Status.FORBIDDEN).entity("It's forbidden to use this method").build();
+    return Response.status(Status.FORBIDDEN).entity(new String("It's forbidden to use this method")).build();
   }
 
   /*
@@ -558,34 +558,42 @@ public class IntranetAdminService extends TenantCreator {
     }
     String tName = utils.email2tenantName(userMail);
 
-    Response resp = super.createTenantWithConfirmedEmail(uuid);
-    if (resp.getStatus() != 200) {
-      utils.sendAdminErrorEmail("Tenant " + tName + " creation admin error: " + resp.getEntity(),
-                                null);
-      return Response.status(resp.getStatus())
-                     .entity("An problem happened during processsing this request. It was reported to developers. Please, try again later.")
-                     .build();
+
+    try {
+      Response resp = super.createTenantWithConfirmedEmail(uuid);
+
+      if (resp.getStatus() != 200) {
+        utils.sendAdminErrorEmail("Tenant " + tName + " creation admin error: " + resp.getEntity(),
+                                  null);
+        return Response.status(resp.getStatus())
+                       .entity("An problem happened during processsing this request. It was reported to developers. Please, try again later.")
+                       .build();
+      }
+      UserRequest req = new UserRequest("",
+                                        tName,
+                                        userMail,
+                                        firstName,
+                                        lastName,
+                                        companyName,
+                                        phone,
+                                        password,
+                                        uuid,
+                                        true,
+                                        RequestState.WAITING_JOIN);
+      requestDao.put(req);
+      TenantCreatedListenerThread thread = new TenantCreatedListenerThread(tName,
+                                                                           cloudInfoHolder,
+                                                                           adminConfiguration,
+                                                                           requestDao);
+      ExecutorService executor = Executors.newSingleThreadExecutor();
+      executor.execute(thread);
+      new ReferencesManager(adminConfiguration).removeEmail(userMail);
+      return Response.ok().build();
+    } catch (TenantAlreadyExistException e) {
+      LOG.warn(" Duplicate creation request for tenant " + tName + " from " + userMail);
+      new ReferencesManager(adminConfiguration).removeEmail(userMail);
+      return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
     }
-    UserRequest req = new UserRequest("",
-                                      tName,
-                                      userMail,
-                                      firstName,
-                                      lastName,
-                                      companyName,
-                                      phone,
-                                      password,
-                                      uuid,
-                                      true,
-                                      RequestState.WAITING_JOIN);
-    requestDao.put(req);
-    TenantCreatedListenerThread thread = new TenantCreatedListenerThread(tName,
-                                                                         cloudInfoHolder,
-                                                                         adminConfiguration,
-                                                                         requestDao);
-    ExecutorService executor = Executors.newSingleThreadExecutor();
-    executor.execute(thread);
-    new ReferencesManager(adminConfiguration).removeEmail(userMail);
-    return Response.ok().build();
   }
 
   /**
