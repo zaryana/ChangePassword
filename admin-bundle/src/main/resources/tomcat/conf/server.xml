@@ -118,7 +118,7 @@
            Documentation at: /docs/config/valve.html -->
       <Valve className="org.exoplatform.cloudmanagement.admin.ResumeValve"
              resumeTimeout="30000"
-             serversOverloadUrl="http://h1.exoplatform.org/overloaded.html"
+             serversOverloadUrl="http://h1.exoplatform.org/overload.html"
              resumeRestServiceUrl="http://localhost:8080/rest/cloud-admin/tenant-service/resume"/>
 
       <!-- This Realm uses the UserDatabase configured in the global JNDI
