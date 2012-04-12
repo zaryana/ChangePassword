@@ -26,4 +26,12 @@
 <web-app>
   <display-name>cloud-workspaces-wizard-extension</display-name>
   
+  <!-- ================================================================== -->
+  <!-- LISTENER mandatory to have our webapp conf listened by portal      -->
+  <!-- ================================================================== -->
+  
+  <listener>
+    <listener-class>org.exoplatform.container.web.PortalContainerConfigOwner</listener-class>
+  </listener>
+  
 </web-app>

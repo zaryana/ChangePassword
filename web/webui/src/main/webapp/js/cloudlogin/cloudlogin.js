@@ -5,7 +5,7 @@
 var CloudLogin = {};
 
 CloudLogin.WS_SENDMAIL_URL = "/rest/invite-join-ws/send-mail/";
-CloudLogin.EMAIL_REGEXP = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+CloudLogin.EMAIL_REGEXP = /^([a-zA-Z0-9_\.\-])+\@((([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+)$/;
 CloudLogin.NB_EMAILS_OK = 0;
 CloudLogin.NB_EMAILS = 0;
 
@@ -71,8 +71,7 @@ CloudLogin.showStep = function(n) {
  */
 CloudLogin.sendEmail = function(email) {
   
-  // TODO extract hostname from email
-  var hostname = "toto.com";
+  var hostname = CloudLogin.getDomainFromEmail(email);
   var mainUrl = CloudLogin.WS_SENDMAIL_URL + email + "/" + hostname;
   
   $.ajax({
@@ -107,6 +106,7 @@ CloudLogin.validateStep1 = function() {
   CloudLogin.NB_EMAILS_OK = 0;
   CloudLogin.NB_EMAILS = emails.length;
   
+  // TODO delete this, temporary lets pass
   if(emails.length == 0) {
     CloudLogin.showStep(2);
   }
@@ -132,4 +132,22 @@ CloudLogin.validateStep3 = function() {
 
 CloudLogin.exit = function() {
   $("#CloudExitForm").submit();
+}
+
+/**
+ * Returns a domain from an email. If email is not correct, returns all email
+ */
+CloudLogin.getDomainFromEmail = function(email) {
+ var domain = email;
+ // If is mail
+ if(CloudLogin.EMAIL_REGEXP.test(email)) {
+   var match = CloudLogin.EMAIL_REGEXP.exec(email);
+   if(typeof(match) != "undefined"){
+     domain = match[2];
+   }
+ }
+ else {
+    console.debug("CloudLogin: " + email + "is not valid mail");
+ }
+ return domain;
 }
