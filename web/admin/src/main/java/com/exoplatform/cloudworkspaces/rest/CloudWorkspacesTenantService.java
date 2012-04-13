@@ -765,7 +765,7 @@ public class CloudWorkspacesTenantService extends TenantCreator {
     switch (tState) {
     case ONLINE: {
 
-      if (isuserexist(tName, username).getEntity().equals("true")) {
+      if (workspacesOrganizationRequestPerformer.getTenantUsers(tName, false).containsValue(email)) {
         String uuid = manager.addReference(email);
         notificationMailSender.sendPasswordRestoreEmail(email, tName, uuid);
       } else {
