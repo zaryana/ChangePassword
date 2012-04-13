@@ -342,7 +342,7 @@ public class CloudIntranetUtils {
     }
   }
 
-  public Map<String, String> getTenantAdministrators(String tName) throws CloudAdminException {
+  public Map<String, String> getTenantUsers(String tName, boolean administratorsOnly) throws CloudAdminException {
 
     Map<String, String> result = new HashMap<String, String>();
     URL url;
@@ -355,7 +355,7 @@ public class CloudIntranetUtils {
     strUrl.append(cloudAdminConfiguration.getProperty(CLOUD_ADMIN_FRONT_END_SERVER_HOST));
     strUrl.append("/cloud-agent/rest/organization/users/" + tName);
     strUrl.append("?");
-    strUrl.append("administratorsonly=true");
+    strUrl.append("administratorsonly=" + administratorsOnly);
 
     InputStream io;
     try {
@@ -487,7 +487,7 @@ public class CloudIntranetUtils {
                           props,
                           true);
 
-      Map<String, String> adminEmails = getTenantAdministrators(tName);
+      Map<String, String> adminEmails = getTenantUsers(tName, true);
       Iterator<String> it = adminEmails.keySet().iterator();
       while (it.hasNext()) {
         String username = it.next();
@@ -522,7 +522,7 @@ public class CloudIntranetUtils {
                                                  .replace("${company}", tName);
     ownerSubject = ownerSubject.replace("${firstname}", firstName);
     try {
-      Map<String, String> adminEmails = getTenantAdministrators(tName);
+      Map<String, String> adminEmails = getTenantUsers(tName, true);
       mailSender.sendMail(userMail,
                           cloudAdminConfiguration.getProperty(MailingProperties.CLOUD_ADMIN_MAIL_USER_JOINED_SUBJECT)
                                                  .replace("${company}", tName),

@@ -822,7 +822,7 @@ public class IntranetAdminService extends TenantCreator {
     switch (tState) {
     case ONLINE: {
 
-      if (isuserexist(tName, username).getEntity().equals("TRUE")) {
+      if (utils.getTenantUsers(tName, false).containsValue(email)) {
         String uuid = manager.addReference(email);
         utils.sendPasswordRestoreEmail(email, tName, uuid);
       } else {
