@@ -20,6 +20,7 @@ package com.exoplatform.cloudworkspaces.rest;
 
 import com.exoplatform.cloudworkspaces.ChangePasswordManager;
 import com.exoplatform.cloudworkspaces.CloudIntranetUtils;
+import com.exoplatform.cloudworkspaces.EmailBlacklist;
 import com.exoplatform.cloudworkspaces.NotificationMailSender;
 import com.exoplatform.cloudworkspaces.ReferencesManager;
 import com.exoplatform.cloudworkspaces.RequestState;
@@ -52,7 +53,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.swing.text.StyledEditorKit.BoldAction;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -82,6 +82,8 @@ public class CloudWorkspacesTenantService extends TenantCreator {
 
   private AsyncTenantStarter                     tenantStarter;
 
+  private EmailBlacklist                         emailBlacklist;
+
   public CloudWorkspacesTenantService(EmailValidationStorage emailValidationStorage,
                                       TenantStateDataManager tenantStateDataManager,
                                       TenantNameValidator tenantNameValidator,
@@ -95,7 +97,8 @@ public class CloudWorkspacesTenantService extends TenantCreator {
                                       ReferencesManager referencesManager,
                                       UserRequestDAO requestDao,
                                       AsyncTenantStarter tenantStarter,
-                                      CloudIntranetUtils cloudIntranetUtils) {
+                                      CloudIntranetUtils cloudIntranetUtils,
+                                      EmailBlacklist emailBlacklist) {
     super(emailValidationStorage,
           tenantStateDataManager,
           tenantNameValidator,
@@ -110,6 +113,7 @@ public class CloudWorkspacesTenantService extends TenantCreator {
     this.referencesManager = referencesManager;
     this.tenantStarter = tenantStarter;
     this.utils = cloudIntranetUtils;
+    this.emailBlacklist = emailBlacklist;
   }
 
   /**
@@ -136,7 +140,7 @@ public class CloudWorkspacesTenantService extends TenantCreator {
 
       username = userMail.substring(0, (userMail.indexOf("@")));
 
-      if (utils.isInBlackList(userMail)) {
+      if (emailBlacklist.isInBlackList(userMail)) {
         String domain = userMail.substring(userMail.indexOf("@"));
         LOG.info("User " + userMail + " rejected. Need work email address.");
         return Response.status(Status.BAD_REQUEST)
@@ -144,7 +148,6 @@ public class CloudWorkspacesTenantService extends TenantCreator {
                            + ". Try with your work email.")
                        .build();
       }
-
       tName = utils.email2tenantName(userMail);
 
       if (requestDao.searchByEmail(userMail) == null) {
@@ -283,7 +286,7 @@ public class CloudWorkspacesTenantService extends TenantCreator {
 
       username = userMail.substring(0, (userMail.indexOf("@")));
 
-      if (utils.isInBlackList(userMail)) {
+      if (emailBlacklist.isInBlackList(userMail)) {
         String domain = userMail.substring(userMail.indexOf("@"));
         return Response.status(Status.BAD_REQUEST)
                        .entity("Cannot sign up with an email address " + domain
@@ -546,20 +549,20 @@ public class CloudWorkspacesTenantService extends TenantCreator {
                      .entity("Sorry, your registration link has expired. Please sign up again.")
                      .build();
 
-    if (utils.isInBlackList(userMail)) {
+    if (emailBlacklist.isInBlackList(userMail)) {
       String domain = userMail.substring(userMail.indexOf("@"));
       return Response.status(Status.BAD_REQUEST)
                      .entity("Sorry, we can't create workspace with an email address " + domain
                          + ". Try with your work email.")
                      .build();
     }
-
     String tName = utils.email2tenantName(userMail);
+
     try {
       Response resp = super.createTenantWithConfirmedEmail(uuid);
       if (resp.getStatus() != 200) {
         notificationMailSender.sendAdminErrorEmail("Tenant " + tName + " creation admin error: "
-                                                           + resp.getEntity(), null);
+            + resp.getEntity(), null);
         return Response.status(resp.getStatus())
                        .entity("An problem happened during processsing this request. It was reported to developers. Please, try again later.")
                        .build();
@@ -710,7 +713,7 @@ public class CloudWorkspacesTenantService extends TenantCreator {
   @Path("/isuserexist/{tenantname}/{username}")
   @Produces(MediaType.TEXT_PLAIN)
   public Response isuserexist(@PathParam("tenantname") String tName,
-                             @PathParam("username") String username) throws CloudAdminException {
+                              @PathParam("username") String username) throws CloudAdminException {
     try {
       workspacesOrganizationRequestPerformer.isNewUserAllowed(tName, username);
       return Response.ok(Boolean.toString(false)).build();
@@ -806,8 +809,9 @@ public class CloudWorkspacesTenantService extends TenantCreator {
   }
 
   /**
-   * Answers on question "Does the given email's domain address is blackisted?".
-   * Used in Invitation gadget.
+   * Answers on question
+   * "Does the given email's domain address is blacklisted?". Used in Invitation
+   * gadget.
    * 
    * @param String email
    * @return String, TRUE or FALSE - the answer on the question
@@ -817,7 +821,7 @@ public class CloudWorkspacesTenantService extends TenantCreator {
   @Path("blacklisted/{email}")
   @Produces(MediaType.TEXT_PLAIN)
   public Response blacklisted(@PathParam("email") String email) {
-    boolean blacklisted = utils.isInBlackList(email);
+    boolean blacklisted = emailBlacklist.isInBlackList(email);
     return Response.ok(Boolean.toString(blacklisted)).build();
   }
 

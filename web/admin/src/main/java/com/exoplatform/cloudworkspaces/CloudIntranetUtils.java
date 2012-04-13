@@ -19,27 +19,17 @@
  */
 package com.exoplatform.cloudworkspaces;
 
-import org.apache.commons.configuration.Configuration;
 import org.exoplatform.cloudmanagement.admin.CloudAdminException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -48,85 +38,17 @@ import javax.mail.internet.InternetAddress;
 
 public class CloudIntranetUtils {
 
-  private Configuration          cloudAdminConfiguration;
+  private ReferencesManager   referencesManager;
 
-  private NotificationMailSender notificationMailSender;
+  public static final String  CLOUD_ADMIN_HOSTNAME_FILE = "cloud.admin.hostname.file";
 
-  UserRequestDAO                 requestDao;
+  public static final char    TENANT_NAME_DELIMITER     = '-';
 
-  private String                 blackListConfigurationFolder;
+  private static final Logger LOG                       = LoggerFactory.getLogger(CloudIntranetUtils.class);
 
-  private ReferencesManager      referencesManager;
-
-  public static final String     CLOUD_ADMIN_HOSTNAME_FILE = "cloud.admin.hostname.file";
-
-  public static final char       TENANT_NAME_DELIMITER     = '-';
-
-  private static final Logger    LOG                       = LoggerFactory.getLogger(CloudIntranetUtils.class);
-
-  public CloudIntranetUtils(Configuration cloudAdminConfiguration,
-                            NotificationMailSender notificationMailSender,
-                            UserRequestDAO requestDao,
-                            ReferencesManager referencesManager) {
-    this.cloudAdminConfiguration = cloudAdminConfiguration;
-    this.notificationMailSender = notificationMailSender;
-    this.blackListConfigurationFolder = cloudAdminConfiguration.getString("cloud.admin.blacklist.dir",
-                                                                          null);
+  public CloudIntranetUtils(ReferencesManager referencesManager) {
     this.referencesManager = referencesManager;
-    this.requestDao = requestDao;
   }
-
-  public boolean isInBlackList(String email) {
-    String tail = email.substring(email.indexOf("@") + 1);
-    if (blackListConfigurationFolder == null
-        || (cloudAdminConfiguration.getString("cloud.admin.blacklist.file", null)) == null) {
-      String tName = email2tenantName(email);
-      LOG.info("Black list not configured, allowing tenant " + tName + " from email:" + email);
-      return false;
-    }
-    File blacklistFolder = new File(blackListConfigurationFolder);
-    if (!blacklistFolder.exists())
-      return false;
-    try {
-      File propertyFile = new File(blacklistFolder + "/"
-          + cloudAdminConfiguration.getString("cloud.admin.blacklist.file"));
-      FileInputStream io = new FileInputStream(propertyFile);
-      Properties properties = new Properties();
-      properties.load(io);
-      io.close();
-      return properties.containsKey(tail);
-    } catch (FileNotFoundException e) {
-      String tName = email2tenantName(email);
-      LOG.info("Black list file not found, allowing tenant " + tName + " from email:" + email);
-    } catch (IOException e) {
-      LOG.error(e.getMessage(), e);
-      notificationMailSender.sendAdminErrorEmail(e.getMessage(), e);
-    }
-    return false;
-  }
-
-  /*
-   * public void putInBlackList(String email) { String tail =
-   * email.substring(email.indexOf("@") + 1); if (blackListConfigurationFolder
-   * == null || (cloudAdminConfiguration.getString("cloud.admin.blacklist.file",
-   * null)) == null) { String msg =
-   * "Blacklist action failed - blacklist folder/file not configured, cannot add new record for "
-   * + tail; LOG.warn(msg); sendAdminErrorEmail(msg, null); return; } File
-   * blacklistFolder = new File(blackListConfigurationFolder); if
-   * (!blacklistFolder.exists()) blacklistFolder.mkdir(); try { File
-   * propertyFile = new File(blacklistFolder + "/" +
-   * cloudAdminConfiguration.getString("cloud.admin.blacklist.file")); if
-   * (!propertyFile.exists()) propertyFile.createNewFile(); FileInputStream io =
-   * new FileInputStream(propertyFile); Properties properties = new
-   * Properties(); properties.load(io); io.close(); if
-   * (properties.containsKey(tail)) { return; } else {
-   * properties.setProperty(tail, new SimpleDateFormat("yyyy-MM-dd").format(new
-   * Date())); properties.store(new FileOutputStream(propertyFile), ""); }
-   * LOG.info("Registrations from " + tail + " was blacklisted."); } catch
-   * (FileNotFoundException e) { LOG.error(e.getMessage(), e);
-   * sendAdminErrorEmail(e.getMessage(), e); } catch (IOException e) {
-   * LOG.error(e.getMessage(), e); sendAdminErrorEmail(e.getMessage(), e); } }
-   */
 
   public boolean validateEmail(String aEmailAddress) {
     if (aEmailAddress == null)
@@ -226,23 +148,4 @@ public class CloudIntranetUtils {
     return tenantName.replace('.', TENANT_NAME_DELIMITER);
   }
 
-  public Map<String, String[]> sortByComparator(Map<String, String[]> unsortMap) {
-
-    List<String> list = new LinkedList<String>(unsortMap.keySet());
-    // sort list based on comparator
-    Collections.sort(list, Collections.reverseOrder(new Comparator<String>() {
-      public int compare(String o1, String o2) {
-        Long f1 = Long.valueOf(o1.substring(o1.indexOf("_") + 1));
-        Long f2 = Long.valueOf(o2.substring(o2.indexOf("_") + 1));
-        return f1.compareTo(f2);
-      }
-    }));
-    // put sorted list into map again
-    Map<String, String[]> sortedMap = new LinkedHashMap<String, String[]>();
-    for (Iterator<String> it = list.iterator(); it.hasNext();) {
-      String key = (String) it.next();
-      sortedMap.put(key, unsortMap.get(key));
-    }
-    return sortedMap;
-  }
 }

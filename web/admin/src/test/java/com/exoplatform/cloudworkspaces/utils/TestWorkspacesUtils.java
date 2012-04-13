@@ -19,16 +19,11 @@
 package com.exoplatform.cloudworkspaces.utils;
 
 
+import com.exoplatform.cloudworkspaces.CloudIntranetUtils;
+import com.exoplatform.cloudworkspaces.ReferencesManager;
+
 import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.Configuration;
-import org.apache.commons.configuration.ConfigurationException;
-import com.exoplatform.cloudworkspaces.ReferencesManager;
-import com.exoplatform.cloudworkspaces.UserRequestDAO;
-import com.exoplatform.cloudworkspaces.NotificationMailSender;
-import com.exoplatform.cloudworkspaces.CloudIntranetUtils;
-import org.mockito.Mockito;
-import com.exoplatform.cloudworkspaces.users.UserLimitsStorage;
-import com.exoplatform.cloudworkspaces.users.UsersManager;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -42,10 +37,8 @@ public class TestWorkspacesUtils {
   @BeforeMethod
   public void initMocks() {
     Configuration cloudAdminConfiguration = new CompositeConfiguration();
-    NotificationMailSender notificationMailSender = Mockito.mock(NotificationMailSender.class);
-    UserRequestDAO requestDao = new UserRequestDAO(cloudAdminConfiguration);
     ReferencesManager referencesManager = new ReferencesManager(cloudAdminConfiguration);
-    utils = new CloudIntranetUtils(cloudAdminConfiguration, notificationMailSender, requestDao, referencesManager);
+    utils = new CloudIntranetUtils(referencesManager);
   }
   
   @DataProvider(name = "emails1")

@@ -75,6 +75,8 @@ public class CloudWorkspacesAdminApplicationComposer extends CloudAdminApplicati
     container.addComponent(AsyncTenantStarter.class);
 
     container.addComponent(UsersManager.class);
+
+    container.addComponent(EmailBlacklist.class);
   }
 
   @Override
