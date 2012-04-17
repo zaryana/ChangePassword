@@ -81,41 +81,6 @@
       <groupId>org.everrest</groupId>
       <artifactId>everrest-assured</artifactId>
     </dependency>
-      <dependency>
-          <groupId>commons-configuration</groupId>
-          <artifactId>commons-configuration</artifactId>
-          <version>1.8</version>
-      </dependency>
-      <dependency>
-          <groupId>commons-configuration</groupId>
-          <artifactId>commons-configuration</artifactId>
-          <version>1.8</version>
-      </dependency>
-      <dependency>
-          <groupId>commons-configuration</groupId>
-          <artifactId>commons-configuration</artifactId>
-          <version>1.8</version>
-      </dependency>
-      <dependency>
-          <groupId>org.testng</groupId>
-          <artifactId>testng</artifactId>
-          <version>6.4</version>
-      </dependency>
-      <dependency>
-          <groupId>commons-configuration</groupId>
-          <artifactId>commons-configuration</artifactId>
-          <version>1.8</version>
-      </dependency>
-      <dependency>
-          <groupId>org.testng</groupId>
-          <artifactId>testng</artifactId>
-          <version>6.4</version>
-      </dependency>
-      <dependency>
-          <groupId>org.testng</groupId>
-          <artifactId>testng</artifactId>
-          <version>6.4</version>
-      </dependency>
   </dependencies>
 
   <build>
