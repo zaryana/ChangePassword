@@ -275,8 +275,8 @@ Tenants.prototype.initJoinPage = function() {
   tenants.init();
   var email;
   if (queryString != null && queryString != "") {
-    var rfid_start = queryString.indexOf('confirmation-id=');
-    rfid = (rfid_start != -1) ? queryString.substring(rfid_start + 16) : null;
+    var rfid_start = queryString.indexOf('rfid=');
+    rfid = (rfid_start != -1) ? queryString.substring(rfid_start + 5) : null;
     if (rfid == null) {
       $("#joinForm").html("<br><center><a class=\"BackIcon\" href=\"/index.jsp\">Home</a></center>");
       $("#messageString").html("Sorry, your registration link has expired. Please <a class=\"TenantFormMsg\" href=\"index.jsp\"><u>sign up</u></a> again.");
