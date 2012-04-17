@@ -149,7 +149,6 @@
                 <phase>prepare-package</phase>
                 <configuration>
                   <tasks>
-<<<<<<< HEAD
                     <echo message="Copy configuration for cloud-admin"/>
                       <copy todir="${project.build.directory}/admin-tomcat/exo-admin-conf" overwrite="true">
                         <fileset dir="${basedir}/src/main/resources/tomcat/exo-admin-conf"/>
