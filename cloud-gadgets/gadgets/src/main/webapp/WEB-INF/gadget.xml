@@ -49,6 +49,9 @@
   </gadget>
   <gadget name="WhosOnlineGadget">
     <path>/gadgets/WhosOnlineGadget/WhosOnlineGadget.xml</path>
-  </gadget> 
+  </gadget>
+  <gadget name="CalendarGadget">
+    <path>/gadgets/CalendarGadget/CalendarGadget.xml</path>
+  </gadget>  
 
 </gadgets>

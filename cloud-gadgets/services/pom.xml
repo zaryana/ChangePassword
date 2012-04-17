@@ -73,5 +73,19 @@
     	<scope>provided</scope>
     	<type>jar</type>
     </dependency>
+    
+    <dependency>
+      <groupId>org.exoplatform.cs</groupId>
+      <artifactId>exo.cs.web.webservice</artifactId>
+      <version>${org.exoplatform.cs.version}</version>
+      <scope>provided</scope>
+    </dependency>    
+
+    <dependency>
+      <groupId>org.exoplatform.cs</groupId>
+      <artifactId>exo.cs.eXoApplication.calendar.service</artifactId>
+      <version>${org.exoplatform.cs.version}</version>      
+      <scope>provided</scope>
+    </dependency>    
   </dependencies>
 </project>
