@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Module>
-  <ModulePrefs author="eXoPlatform"
-  title="Getting Started">
+  <ModulePrefs title="GettingStarted">
     <Require feature="opensocial-0.8" />
     <Require feature="dynamic-height"/>
   </ModulePrefs>
@@ -15,30 +14,14 @@
       <script type="text/javascript">
         
         
-         function showTutorials(){
-            $("#QuickStartLabel").removeClass("selectedLink");
-            $("#TutorialLabel").addClass("selectedLink");                     
-            $("#QuickStartList").hide();
-            $("#TutorialList").show(); 
-            gadgets.window.adjustHeight();
-        }
-        
-        function showGettingStarted(){
-            $("#TutorialLabel").removeClass("selectedLink");  
-            $("#QuickStartLabel").addClass("selectedLink");                                                           
-            $("#TutorialList").hide();
-            $("#QuickStartList").show(); 
-            gadgets.window.adjustHeight();  
-        }
-        
         function callRestAndUpdate(){
-            $.getJSON("/rest/getting-started/get", function(items){            
+          $.getJSON("/rest/getting-started/get", function(items){            
             var rate = 0;            
             $.each(items, function(i, item){                                 
               var id = item.name.substring(4);                            
               if(item.value == "true"){                     
                 $("#"+id).addClass("done");  
-                rate +=15;
+                rate +=20;
               }
               else {
                 $("#"+id).removeClass("done");  
@@ -50,8 +33,8 @@
         
         function updateProgress(rate){
           if (rate == 90){
-            rate = 100;
-            showTutorials();
+            //rate = 100;
+            //showTutorials();
           }
           var width= Math.round(170/100*rate);
           $("#progress-rate").attr("style", "width: "+width+"px;");  
@@ -60,17 +43,11 @@
         
         function init() {
           
-          $("#QuickStartLabel").live("click", showGettingStarted);  
-          
-          $("#TutorialLabel").live("click", showTutorials);
           
           $("#gs_mobile").live("click", function(){
             $.getJSON("/rest/getting-started/set/exo:gs_mobile/true", callRestAndUpdate);
           });
           
-          $("#gs_wiki").live("click", function(){
-            $.getJSON("/rest/getting-started/set/exo:gs_wiki/true", callRestAndUpdate);
-          });
           
           callRestAndUpdate();           
           gadgets.window.adjustHeight();
@@ -94,59 +71,39 @@
           $("#gs_profile a").attr("href",profileUrl);
           $("#gs_dashboard a").attr("href",dashboardUrl);
         }
-                 
+        
         gadgets.util.registerOnLoadHandler(init);
         
       </script>         
       
     </head>
     
-    <body>
-      <div id="content">
-        <div id="GettingStarted" class="UIGadgetThemes">
-          <div class="TitGad ClearFix">
-            <div class="ContTit" style="float:left;">Getting Started</div>
-          </div>
-          
-          <div class="GadCont">
-            
-            <div id="gsTitles">
-              <span id="QuickStartLabel" href="#" class="link selectedLink">Quick Start</span>
-              &nbsp; | &nbsp;
-              <span id="TutorialLabel" href="#" class="link">Tutorials</span> 
-            </div>
-            
-            <div id="QuickStartList" class="ItemList">
-              
-              <div id="progress-shell">
-                <div id="progress-rate" ></div>
-              </div>
-              <div id="progress-label">0 %</div>
-              
-              <ul>
-                <li id="gs_profile"><a href="" target="_parent">Add a Picture to Your Profile</a></li>
-                <li id="gs_connect"><a href="/portal/intranet/people" target="_parent">Connect with Colleagues</a></li>
-                <li id="gs_space"><a href="/portal/intranet/all-spaces" target="_parent">Join a Space</a></li>
-                <li id="gs_dashboard"><a href="/portal/intranet/all-spaces" target="_parent">Customize Your Dashboard</a></li>
-                <li id="gs_mobile"><a href="http://www.exoplatform.com/company/en/products/mobile" target="_blank">Get the eXo Mobile App</a></li>
-                <li id="gs_wiki"><a href="http://www.exoplatform.com/company/en/resource-viewer/Getting-Started-Guide/whats-new-in-platform-35" target="_blank">Read About the New Features</a></li>
-              </ul>              
-            </div> 
-            
-            <div id="TutorialList" class="ItemList" style="display: none;">
-              <ul>
-                <li><a href="http://www.exoplatform.com/company/en/resource-center" target="_blank">Create a Space</a></li>
-                <li><a href="http://www.exoplatform.com/company/en/resource-center" target="_blank">Customize Space</a></li>
-                <li><a href="http://www.exoplatform.com/company/en/resource-center" target="_blank">Upload and Manage Files</a></li>
-                <li><a href="http://www.exoplatform.com/company/en/resource-center" target="_blank">Connect your Google Calendar</a></li>
-                <li><a href="http://www.exoplatform.com/company/en/resource-center" target="_blank">Create a Poll</a></li>
-                <li><a href="http://www.exoplatform.com/company/en/resource-center" target="_blank">Configure Your Mobile App</a></li>
-                <li><a href="http://www.exoplatform.com/company/en/resource-center" target="_blank">Create a Gadget</a></li>               
-              </ul>
-            </div>           
-          </div>
+    <body id="GettingStarted">
+      
+      <div class="UIGadgetThemes">
+        
+        
+        <div class="gadgetTitle">Getting Started</div>
+        
+        <div id="progress-block">
+          <div id="progress-shell">
+            <div id="progress-rate" ></div>
+          </div>                    
+          <div id="progress-label">0 %</div>
         </div>
-      </div>
+        
+        <div id="list-block">
+          
+          <ul id="gsList">
+            <li id="gs_profile"><a href="" target="_parent">Add a Picture to Your Profile</a></li>
+            <li id="gs_connect"><a href="/portal/intranet/people" target="_parent">Connect with Colleagues</a></li>
+            <li id="gs_space"><a href="/portal/intranet/all-spaces" target="_parent">Join a Space</a></li>
+            <li id="gs_dashboard"><a href="/portal/intranet/all-spaces" target="_parent">Customize Your Dashboard</a></li>
+            <li id="gs_mobile"><a href="http://www.exoplatform.com/company/en/products/mobile" target="_blank">Get the eXo Mobile App</a></li>
+          </ul>
+          
+        </div>
+      </div> 
     </body>
     
     

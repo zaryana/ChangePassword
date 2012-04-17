@@ -16,6 +16,7 @@
         <div class="UIPageBody AboutPages">
           <div class="SocialBox ClearFix">
             <h1 class="FL">About Cloud Workspaces</h1>
+            <div id="fb-root"></div>
             <script>
               (function(d, s, id) {
                 var js, fjs = d.getElementsByTagName(s)[0];
@@ -25,8 +26,8 @@
                 fjs.parentNode.insertBefore(js, fjs);
               }(document, 'script', 'facebook-jssdk'));
             </script>
-            <div class="SocialInside FL">
-              <div class="fb-like" data-send="true" data-layout="button_count" data-width="100" data-show-faces="true"></div>
+            <div class="SocialInside FL">            
+				<div class="fb-like" data-href="http://www.facebook.com/eXoPlatform" data-send="true" data-layout="button_count" data-show-faces="false"></div>                            
             </div>
           </div>
           <h3>Cloud Workspaces: Your Company's Social Intranet in the Cloud</h3>
@@ -35,20 +36,22 @@
           <p>Cloud Workspaces lets you go beyond the basic chatter of activity streams, giving employees the tools to customize their working environment. Individual users can create personalized dashboards to act as the starting point for all their online work, while teams and projects can have their own dedicated workspace to connect, share resources and collaborate. Finally, developers can build and deploy custom apps with the embedded web-based IDE.
           </p>
           <h3>Availability</h3>
-          <p>Cloud Workspaces is currently in private beta. This means we're initially limiting the number of accounts while we continue testing the service and gathering feedback from users. Sign up for updates with your professional email and we'll send you an invitation to participate as the program expands. </p>
+          <p>Cloud Workspaces is currently in beta. Support with guaranteed SLA’s is not provided for Cloud Workspaces Beta. In addition, we will continue to add and improve features, documentation, performance, or make other changes based on user feedback. You might notice these changes or encounter minor issues; if so, please let us know so we can fix them for you. We will notify users of any planned downtime for upgrades, but there is still a chance of unplanned downtime as well.</p>
           <h3>Features & Benefits</h3>
           <div class="ClearFix">
             <ul class="LeftContent">
+            <li><span>Activity Streams:</span> Share and follow updates from your connections; view latest forum posts, wiki or content changes, calendar events and other activities happening within each space.</li>
               <li><span>Personalized Dashboards:</span> Arrange gadgets to support your daily work. Share and reply to status updates, view documents, discussions and wiki pages you've bookmarked, see your to-do list and calendar events, all in one view.</li>
-              <li><span>Activity Streams:</span> Share and follow updates from your connections; view latest forum posts, wiki or content changes, calendar events and other activities happening within each space.</li>
+              
               <li><span>Mobile:</span> Native iPhone, iPad, and Android apps let you take your intranet with you. Access your personalized gadget dashboard, activity stream, document repository and more.</li>
               <li><span>Cloud IDE:</span> A full-featured development environment for building and integrating applications, gadgets and mashups.</li>
             </ul>
             <ul class="RightContent">
+              <li><span>Document repository:</span> Store and manage internal documents, and build workflows to manage document-related processes.</li>
               <li><span>Forums:</span> Enable discussions, capture feeddback and create polls, with answers published in real-time activity streams.</li>
               <li><span>Enterprise Wiki:</span> Publish and organize content that members of a workspace can browse, search, edit and share, with wysiwyg, watches, macros, permissions, versioning and more.</li>
               <li><span>Calendars:</span> Every workspace has a calendar available for capturing team meeting schedules and project milestones. You can even synchronize with remote calendars (Gmail) so all your work, personal and team events are viewable from your dashboard.</li>
-              <li><span>Document repository:</span> Store and manage internal documents, and build workflows to manage document-related processes.</li>
+              
             </ul>
           </div>
           <h3>Core Technology</h3>

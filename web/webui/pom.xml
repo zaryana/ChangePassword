@@ -9,6 +9,7 @@
     <artifactId>cloud-workspaces-web</artifactId>
     <version>1.1.0-Alpha4</version>
   </parent>
+
   <artifactId>cloud-workspaces-webui</artifactId>
   <packaging>war</packaging>
   <name>eXo Cloud Workspaces :: WebUI</name>

@@ -30,6 +30,6 @@
     Send
   </msg>
   <msg name="inputDefault">
-    Enter email
+    name@domain.com
   </msg>  
 </messagebundle>

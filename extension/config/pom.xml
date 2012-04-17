@@ -6,6 +6,7 @@
     <artifactId>cloud-workspaces-extension</artifactId>
     <version>1.1.0-Alpha4</version>
   </parent>
+
   <artifactId>cloud-workspaces-extension-config</artifactId>
   <packaging>jar</packaging>
   <name>eXo Cloud Workspaces :: Extension Config</name>

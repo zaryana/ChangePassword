@@ -18,7 +18,7 @@
             <ul class="MenuBar">
               <li class="Title">Categories</li>
               <li><a href="#general">General</a></li>
-              <li><a href="#people">People</a></li>
+              <li><a href="#people">Connections</a></li>
               <li><a href="#spaces">Spaces</a></li>
               <li><a href="#documents">Documents</a></li>
               <li><a href="#mobile">Mobile</a></li>
@@ -61,9 +61,10 @@
     
               <div class="col5 FL">
                 <h3><a href="#documents">Documents</a></h3>
-                 <ul >
-                  <li><a href="documents1">Who can view my documents?</a></li>
-                  <li><a href="documents2">What type of document can I upload?</a></li>
+                 <ul>                
+                 <li><a href="documents1">What can I do with the eXo mobile apps?</a></li>
+                  <li><a href="documents2">Who can view my documents?</a></li>
+                  <li><a href="documents3">What type of document can I upload?</a></li>
                 </ul>
               </div>
             </div>
@@ -165,13 +166,18 @@
     
           <h1 id="mobile">Mobile</h1>
     
-          <div class="ClearFix RowOdd">
-            <h4 class="SpecialTit" id="mobile1">How do I download the mobile app?</h4>
-            <p>You can the eXo Mobile app on the Apple Store and Android Store under the name "eXo Platform 3.5".</p>
+    	  <div class="ClearFix RowOdd">
+            <h4 class="SpecialTit" id="mobile1">What can I do with the eXo mobile apps?</h4>
+            <p>For the full feature list, visit the <a href="/mobile.jsp">mobile apps page</a>.</p>
           </div>
     
           <div class="ClearFix RowOdd">
-            <h4 class="SpecialTit" id="mobile2">How do I connect my device to my company’s social intranet?</h4>
+            <h4 class="SpecialTit" id="mobile2">How do I download the mobile app?</h4>
+            <p>You can download the eXo Mobile app on the Apple Store and Android Store under the name "eXo Platform 3.5".</p>
+          </div>
+    
+          <div class="ClearFix RowOdd">
+            <h4 class="SpecialTit" id="mobile3">How do I connect my device to my company’s social intranet?</h4>
             <p>After installing and opening eXo Mobile on your device, select the settings tab from the homepage. In the server list, press "Modify Server" and enter your company network’s URL (for example, mycompany.cloud-workspaces.com).</p>
           </div>
     

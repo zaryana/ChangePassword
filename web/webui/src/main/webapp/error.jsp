@@ -21,10 +21,9 @@
           <div class="ClouIntranet FR"><h1>Cloud Workspaces</h1><span>The free Social Intranet for your company</span></div>
         </div>
       </div>
-      
       <div class="UIPageBodyContainer">
         <div class="UIPageBody ErrorPages">
-          <p><span class="ErrorIcon">Error: Donec tristique rhoncus dolor nec mollis.</span></p>
+          <p><span class="ErrorIcon">Sorry, we are currently unable to process your request due to exceptionally high traffic. Please try again later.</span></p>
           <center><a class="BackIcon" href="#" onClick="history.go(-1)">Back</a></center>
         </div>
       </div>

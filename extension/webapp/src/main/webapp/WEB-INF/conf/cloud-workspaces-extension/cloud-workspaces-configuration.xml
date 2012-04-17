@@ -29,5 +29,4 @@
     <key>org.exoplatform.cloudmanagement.CloudAgentApplication</key>
     <type>com.exoplatform.cloudworkspaces.multitenancy.application.CloudAgentApplication</type>
   </component>
-
 </configuration>

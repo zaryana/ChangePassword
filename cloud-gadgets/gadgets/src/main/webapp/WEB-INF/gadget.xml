@@ -22,11 +22,33 @@
     xsi:schemaLocation="http://www.gatein.org/xml/ns/gatein_objects_1_0 http://www.gatein.org/xml/ns/gadgets_1_0"
     xmlns="http://www.gatein.org/xml/ns/gadgets_1_0">
 
-  <gadget name="GettingStarted">
-    <path>/gadgets/GettingStarted/GettingStarted.xml</path>
-  </gadget>
+  
   <gadget name="InviteJoinWs">
     <path>/gadgets/InviteJoinWs/InviteJoinWs.xml</path>
-  </gadget>  
+  </gadget>
+  <gadget name="AppsGadget">
+    <path>/gadgets/AppsGadget/AppsGadget.xml</path>
+  </gadget>
+  <gadget name="GettingStarted">
+    <path>/gadgets/GettingStarted/GettingStarted.xml</path> 
+  </gadget>
+  <gadget name="MyDocumentsGadget">
+    <path>/gadgets/MyDocumentsGadget/MyDocumentsGadget.xml</path>
+  </gadget>
+  <gadget name="MyProfileGadget">
+    <path>/gadgets/MyProfileGadget/MyProfileGadget.xml</path>
+  </gadget> 
+  <gadget name="MySpacesGadget">
+    <path>/gadgets/MySpacesGadget/MySpacesGadget.xml</path>
+  </gadget>
+  <gadget name="SuggestPeopleGadget">
+    <path>/gadgets/SuggestPeopleGadget/SuggestPeopleGadget.xml</path>
+  </gadget> 
+  <gadget name="SuggestSpacesGadget">
+    <path>/gadgets/SuggestSpacesGadget/SuggestSpacesGadget.xml</path>
+  </gadget>
+  <gadget name="WhosOnlineGadget">
+    <path>/gadgets/WhosOnlineGadget/WhosOnlineGadget.xml</path>
+  </gadget> 
 
 </gadgets>

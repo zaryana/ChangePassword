@@ -10,6 +10,7 @@
     <artifactId>cloud-workspaces-parent</artifactId>
     <version>1.1.0-Alpha4</version>
   </parent>
+
   <artifactId>cloud-workspaces-platform-bundle</artifactId>
   <packaging>pom</packaging>
   <name>eXo Cloud Workspaces :: Platform bundle</name>
@@ -48,7 +49,13 @@
           <artifactId>cloud-workspaces-extension-config</artifactId>
           <scope>provided</scope>
           <type>jar</type>
-        </dependency> 
+        </dependency>
+        <dependency>
+          <groupId>com.exoplatform.cloudworkspaces</groupId>
+          <artifactId>cloud-workspaces-platform-navigation</artifactId>
+          <scope>provided</scope>
+          <type>war</type>
+        </dependency>
 
         <!-- Cloud Workspaces gadgets -->
         <dependency>
@@ -104,7 +111,7 @@
       </dependencies>
 
       <build>
-        <finalName>cloud-workspaces-platform</finalName>
+        <finalName>cloud-workspaces-platform-${project.version}</finalName>
         <plugins>
           <!-- Unpack Tomcat base -->
           <plugin>
@@ -123,7 +130,6 @@
                     <artifactItem>
                       <groupId>com.exoplatform.platform.cloud</groupId>
                       <artifactId>exo-platform-cloud-packaging-tomcat</artifactId>
-                      <version>${org.exoplatform.platform.version}</version>
                       <classifier>tomcat</classifier>
                       <type>zip</type>
                       <outputDirectory>target</outputDirectory>
@@ -162,6 +168,10 @@
                       <fileset dir="${project.build.directory}/platform-cloud-tomcat/conf/Catalina/localhost"
                         includes="default-website.xml" />
                       <fileset dir="${project.build.directory}/platform-cloud-tomcat/lib" includes="exo.platform.sample.default-website.*.jar" />
+
+                      <!-- workflow dependencies -->
+                      <fileset dir="${project.build.directory}/platform-cloud-tomcat/webapps" includes="workflow.war" />
+                      <fileset dir="${project.build.directory}/platform-cloud-tomcat/lib" includes="exo-ecms-ext-workflow-.*.jar" />
                     </delete>
 
                     <unzip src="${project.build.directory}/platform-cloud-tomcat/webapps/portal.war" dest="${project.build.directory}/platform-cloud-tomcat/webapps/portal" />

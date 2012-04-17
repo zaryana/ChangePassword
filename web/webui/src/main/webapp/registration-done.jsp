@@ -19,7 +19,7 @@
       <div class="UIPageBodyContainer">
         <div class="UIPageBody ThanksPages ClearFix">
           <h1>Thank you for your interest in Cloud Workspaces</h1>
-          <p class="FillProfileInfo AlignLeftTxt">We've received your request to participate in the private beta. When your Cloud Workspaces account is available, we'll notify you via email. In the meantime, you can learn more about Cloud Workspaces by checking out these helpful resources.</p>
+          <p class="FillProfileInfo AlignLeftTxt">We are now creating your social intranet. This might take a few minutes. You will be notified by email when ready. In the meantime, you can learn more about Cloud Workspaces by checking out these helpful resources.</p>
           <div class="LeftContent FL">
             <h3>Watch the Getting Started video:</h3>
             <a href="#TB_inline?height=420&width=670&inlineId=videoLeft" class="thickbox">

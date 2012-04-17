@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+  <ModulePrefs title="MySpacesGadget" >
+    <Require feature="opensocial-0.8" />
+    <Require feature="dynamic-height"/>
+  </ModulePrefs>
+  <Content type="html" view="default, home, profile">
+    <![CDATA[  
+    
+    <head>
+      
+      <link rel="stylesheet" type="text/css" href="style/myspaces.css" />
+      <link type="text/css" rel="stylesheet" href="/exo-gadget-resources/skin/exo-gadget/gadget-common.css" />
+      
+      <script language="javascript" type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+      <script type="text/javascript">
+        
+        function sortByMembers(a, b){
+          return b.members - a.members;
+        }
+        
+        
+        function initSpaces(){
+          $.getJSON("/rest/gadgets/spaces/myspaces", function(items){
+            
+            
+            if (items.length == 0){
+              $("#spaceList").append('<li><a target="_parent" href="/portal/intranet/all-spaces"><span class="arrow">+</span>  Join a Space</a></ul>');
+              gadgets.window.adjustHeight();
+            }
+            
+            else {
+              
+              if(items.length > 5){        
+                $("#mySpacesContainer").append('<div id="showAll"><a href="#" onclick="return false">&darr; Show all</a></div>');
+                $("#showAll").live("click", function(){
+                  $('#showAll').fadeOut(200, function() {
+                    $('#spaceList li:hidden').fadeIn(200, function() {
+                      gadgets.window.adjustHeight();
+                    });
+                  });                                                                             
+                });                                    
+              }
+              
+              items.sort(sortByMembers);
+              
+              $.each(items, function(i, item){               
+                var spaceItem = '';
+                
+                if (i < 5)
+                  spaceItem += '<li><a target="_parent" href="/portal/g/:spaces:'+item.spaceUrl+'"><span class="arrow">»</span>  '+item.displayName+'</a></ul>';
+                else
+                  spaceItem += '<li style="display:none;"><a target="_parent" href="/portal/g/:spaces:'+item.spaceUrl+'"><span class="arrow">»</span>  '+item.displayName+'</a></ul>';
+                
+                $("#spaceList").append(spaceItem);  
+                gadgets.window.adjustHeight();
+              });
+            }
+          }); 
+          
+        }
+        
+        
+        gadgets.util.registerOnLoadHandler(function(){         
+          initSpaces();
+        });
+        
+        
+      </script>  
+    </head>
+    
+    <body>
+      <div id="mySpacesGadget">
+      <div class="UIGadgetThemes" id="mySpacesContainer">
+        <span class="title">My Spaces</span>
+        <ul id="spaceList"></ul>
+      </div>
+      </div>
+    </body> 
+    ]]></Content>
+</Module>

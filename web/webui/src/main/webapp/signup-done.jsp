@@ -19,7 +19,7 @@
       <div class="UIPageBodyContainer">
         <div class="UIPageBody ThanksPages ClearFix">
           <h1>Thank you for your interest in Cloud Workspaces</h1>
-          <p class="FillProfileInfo AlignLeftTxt">We've received your request to participate in the private beta. When your Cloud Workspaces account is available, we'll notify you via email. In the meantime, you can learn more about Cloud Workspaces by checking out these helpful resources.</p>
+          <p class="FillProfileInfo AlignLeftTxt">Check your email inbox to complete your registration. In the meantime, you can learn more about Cloud Workspaces by checking out these helpful resources.</p>
           <div class="LeftContent FL">
             <h3>Watch the Getting Started video:</h3>
             <a href="#TB_inline?height=420&width=670&inlineId=videoLeft" class="thickbox">
@@ -28,7 +28,7 @@
           </div>
           <div class="RightContent FL">
             <h3>Even more to explore:</h3>
-            <a href="about.jsp">Read an introduction to the key features of Cloud Workspaces</a>
+            <a href="/about.jsp">Read an introduction to the key features of Cloud Workspaces</a>
             <a href="http://community.exoplatform.com">Join the eXo Community to connect with other users, access documentation, forums and more</a>
             <a href="http://exoplatform.com/company/en/products">Want to host your own social intranet on-premise or in a private cloud? Learn more about eXo Platform 3.5</a>
           </div>

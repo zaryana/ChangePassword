@@ -61,254 +61,238 @@ import org.slf4j.LoggerFactory;
 @Path("/cloudworkspaces/organization")
 public class WorkspacesRESTOrganizationServiceImpl
 {
-   protected static final Logger LOG = LoggerFactory.getLogger(WorkspacesRESTOrganizationServiceImpl.class);
+  protected static final Logger LOG = LoggerFactory.getLogger(WorkspacesRESTOrganizationServiceImpl.class);
 
-   protected static final String ROOT_USER = "root";
+  protected static final String       ROOT_USER    = "root";
 
-   protected Format dateFormater = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss SSS");
+  protected Format                    dateFormater = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss SSS");
 
-   protected final RepositoryService repositoryService;
+  protected final RepositoryService   repositoryService;
 
-   protected final OrganizationService organizationService;
+  protected final OrganizationService organizationService;
 
-   protected final String hostInfo;
+  protected final String              hostInfo;
 
-   public WorkspacesRESTOrganizationServiceImpl(RepositoryService repositoryService,
+  public WorkspacesRESTOrganizationServiceImpl(RepositoryService repositoryService,
       OrganizationService organizationService)
-   {
-      this.repositoryService = repositoryService;
-      this.organizationService = organizationService;
+  {
+    this.repositoryService = repositoryService;
+    this.organizationService = organizationService;
 
-      String hostname;
-      try
-      {
-         Enumeration<NetworkInterface> nis = NetworkInterface.getNetworkInterfaces();
+    String hostname;
+    try {
+      Enumeration<NetworkInterface> nis = NetworkInterface.getNetworkInterfaces();
 
-         StringBuffer allIfs = new StringBuffer("");
-         while (nis.hasMoreElements())
-         {
-            NetworkInterface ni = nis.nextElement();
-            if (ni != null && !ni.isLoopback())
-            {
-               Enumeration<InetAddress> ia = ni.getInetAddresses();
+      StringBuffer allIfs = new StringBuffer("");
+      while (nis.hasMoreElements()) {
+        NetworkInterface ni = nis.nextElement();
+        if (ni != null && !ni.isLoopback()) {
+          Enumeration<InetAddress> ia = ni.getInetAddresses();
+          StringBuffer allAddrs = new StringBuffer("");
+          while (ia.hasMoreElements()) {
+            InetAddress n = ia.nextElement();
+            if (n != null && !n.isLoopbackAddress()) {
+              if (allAddrs.length() > 0) {
+                allAddrs.append(", ");
+              } else {
 
-               StringBuffer allAddrs = new StringBuffer("");
-               while (ia.hasMoreElements())
-               {
-                  InetAddress n = ia.nextElement();
-                  if (n != null && !n.isLoopbackAddress())
-                  {
-
-                     if (allAddrs.length() > 0)
-                     {
-
-                        allAddrs.append(", ");
-
-                     }
-                     else
-                     {
-
-                        allAddrs.append("").append(n.getCanonicalHostName()).append(" (").append(n.getHostAddress())
-                           .append(")");
-                     }
-
-                  }
-               }
-
-               allIfs.append("[").append(allAddrs).append("]");
+                allAddrs.append("")
+                        .append(n.getCanonicalHostName())
+                        .append(" (")
+                        .append(n.getHostAddress())
+                        .append(")");
+              }
             }
-         }
-
-         if (allIfs.length() > 0)
-         {
-
-            hostname = allIfs.toString();
-
-         }
-         else
-         {
-
-            InetAddress lo = InetAddress.getLocalHost();
-            hostname = lo.getCanonicalHostName() + " (" + lo.getHostAddress() + ")";
-
-         }
-      }
-      catch (Throwable th)
-      {
-         hostname = "UNKNOWN: " + th.getMessage();
-      }
-
-      this.hostInfo = hostname;
-   }
-
-   /**
-    * Creates the user on given repository.
-    *
-    * @param tname the workspace name
-    * @param baseURI the base uri
-    * @param userName the user name
-    * @param password the password
-    * @param firstName the first name
-    * @param lastName the last name
-    * @param email the email
-    * @return the response
-    * @throws Exception the exception
-    */
-   @POST
-   @Path("/adduser")
-   @RolesAllowed("cloud-admin")
-   public Response createUser(@FormParam("tname") String tname, @FormParam("URI") String baseURI,
-      @FormParam("username") String userName, @FormParam("password") String password,
-      @FormParam("first-name") String firstName, @FormParam("last-name") String lastName,
-      @FormParam("email") String email, @FormParam("isadministrator") String administrator) throws Exception
-   {
-      try
-      {
-         repositoryService.setCurrentRepositoryName(tname);
-         UserHandler userHandler = organizationService.getUserHandler();
-         User newUser = userHandler.createUserInstance(userName);
-         newUser.setPassword(password);
-         newUser.setFirstName(firstName);
-         newUser.setLastName(lastName);
-         newUser.setEmail(email);
-         userHandler.createUser(newUser, true);
-
-         // register user in groups '/platform/developers' and '/platform/users'
-         GroupHandler groupHandler = organizationService.getGroupHandler();
-         MembershipType membership_member = organizationService.getMembershipTypeHandler().findMembershipType("member");
-         MembershipType membership_all = organizationService.getMembershipTypeHandler().findMembershipType("*");
-
-         if (Boolean.parseBoolean(administrator))
-         {
-            Group adminGroup = groupHandler.findGroupById("/platform/administrators");
-            Group devGroup = groupHandler.findGroupById("/developers");
-            Group contributorsGroup = groupHandler.findGroupById("/platform/web-contributors");
-            organizationService.getMembershipHandler().linkMembership(newUser, adminGroup, membership_member, true);
-            organizationService.getMembershipHandler().linkMembership(newUser, devGroup, membership_member, true);
-            organizationService.getMembershipHandler().linkMembership(newUser, contributorsGroup, membership_all, true);
-         }
-
-         return Response.status(HTTPStatus.CREATED).entity("Created").build();
-      }
-      catch (Exception e)
-      {
-         String err = "Unable to store user " + userName + " in tenant " + tname;
-         LOG.error(err, e);
-         throw new WebApplicationException(e, Response.status(HTTPStatus.INTERNAL_ERROR).entity(errorMessage(err, e))
-            .type("text/plain").build());
-      }
-   }
-
-   /**
-    * Gets the administrators list for given workspace.
-    * 
-    * @param tname workspace name
-    * @return json username:email value
-    * @throws Exception
-    */
-   @GET
-   @Produces(MediaType.APPLICATION_JSON)
-   @Path("/users/{tname}")
-   @RolesAllowed("cloud-admin")
-   public Map<String, String> getUsersList(@PathParam("tname") String tname,
-      @QueryParam("administratorsonly") String onlyAdmins) throws Exception
-   {
-      try
-      {
-         Map<String, String> result = new HashMap<String, String>();
-         repositoryService.setCurrentRepositoryName(tname);
-         ListAccess<User> list = organizationService.getUserHandler().findAllUsers();//findUsersByGroupId("/platform/administrators");
-         for (User one : list.load(0, list.getSize()))
-         {
-            Collection<Group> groups = organizationService.getGroupHandler().findGroupsOfUser(one.getUserName());
-            for (Group group : groups)
-            {
-               if (!Boolean.parseBoolean(onlyAdmins) || group.getId().equalsIgnoreCase("/platform/administrators"))
-                  result.put(one.getUserName(), one.getEmail());
-            }
-         }
-         return result;
-      }
-      catch (Exception e)
-      {
-         String err = "Unable to get administrators list in workspace " + tname;
-         LOG.error(err, e);
-         throw new WebApplicationException(e, Response.status(HTTPStatus.INTERNAL_ERROR).entity(errorMessage(err, e))
-            .type("text/plain").build());
-      }
-   }
-   
-   
-   @POST
-   @Path("/newpassword")
-   @RolesAllowed("cloud-admin")
-   public Response updatePassword(@FormParam("tname") String tname, 
-      @FormParam("username") String userName, @FormParam("password") String password) throws Exception
-   {
-      try 
-      {
-        repositoryService.setCurrentRepositoryName(tname);
-        User user = organizationService.getUserHandler().findUserByName(userName);
-        
-        if (user != null) 
-        {
-          // save new instance of an User object to workaround JCR org service caching to let PasswordEncrypterUserListener to know that we have to encript this password
-          User updatedUser = organizationService.getUserHandler().createUserInstance(user.getUserName());
-          updatedUser.setFirstName(user.getFirstName());
-          updatedUser.setLastName(user.getLastName());
-          updatedUser.setFullName(user.getFullName());
-          updatedUser.setEmail(user.getEmail());
-          updatedUser.setOrganizationId(user.getOrganizationId());
-          updatedUser.setPassword(password);
-          // and deprecated
-          updatedUser.setCreatedDate(user.getCreatedDate());
-          updatedUser.setLastLoginTime(user.getLastLoginTime());
-          
-          organizationService.getUserHandler().saveUser(updatedUser, true);
-          return Response.ok().build();
-        } 
-        else 
-        {
-          return Response.status(Status.BAD_REQUEST).entity("User " + userName + " not found on " + tname).build();
+          }
+          allIfs.append("[").append(allAddrs).append("]");
         }
-      } 
-      catch(Exception e) 
-      {
-        String err = "Unable to change password of user " + userName + " on " + tname;
-        LOG.error(err, e);
-        throw new WebApplicationException(e, Response.status(HTTPStatus.INTERNAL_ERROR).entity(errorMessage(err, e))
-           .type("text/plain").build());
       }
-   }
 
-   protected String errorMessage(String message, Exception err)
-   {
-      ByteArrayOutputStream baos = new ByteArrayOutputStream();
-      PrintWriter wr = new PrintWriter(baos);
-      try
-      {
-         err.printStackTrace(wr);
-         wr.flush();
-         StringBuilder str = new StringBuilder();
-         str.append('[');
-         str.append(dateFormater.format(new Date()));
-         str.append(']');
-         str.append(' ');
-         str.append(hostInfo);
-         str.append(':');
-         str.append(message);
-         str.append("\r\n");
-         str.append(new String(baos.toByteArray()));
-         return str.toString();
+      if (allIfs.length() > 0) {
+        hostname = allIfs.toString();
+      } else {
+        InetAddress lo = InetAddress.getLocalHost();
+        hostname = lo.getCanonicalHostName() + " (" + lo.getHostAddress() + ")";
       }
-      catch (Throwable th)
-      {
-         LOG.error("Cannot prepare error message:", th);
-         return message + " (Error trace isn't available, see server logs (" + hostInfo + ") for details)";
+    } catch (Throwable th) {
+      hostname = "UNKNOWN: " + th.getMessage();
+    }
+    this.hostInfo = hostname;
+  }
+
+  /**
+   * Creates the user on given repository.
+   * 
+   * @param tname the workspace name
+   * @param baseURI the base uri
+   * @param userName the user name
+   * @param password the password
+   * @param firstName the first name
+   * @param lastName the last name
+   * @param email the email
+   * @return the response
+   * @throws Exception the exception
+   */
+  @POST
+  @Path("/adduser")
+  @RolesAllowed("cloud-admin")
+  public Response createUser(@FormParam("tname") String tname,
+                             @FormParam("URI") String baseURI,
+                             @FormParam("username") String userName,
+                             @FormParam("password") String password,
+                             @FormParam("first-name") String firstName,
+                             @FormParam("last-name") String lastName,
+                             @FormParam("email") String email,
+                             @FormParam("isadministrator") String administrator) throws Exception {
+    try {
+      repositoryService.setCurrentRepositoryName(tname);
+      UserHandler userHandler = organizationService.getUserHandler();
+      User newUser = userHandler.createUserInstance(userName);
+      newUser.setPassword(password);
+      newUser.setFirstName(firstName);
+      newUser.setLastName(lastName);
+      newUser.setEmail(email);
+      userHandler.createUser(newUser, true);
+
+      // register user in groups '/platform/developers' and '/platform/users'
+      GroupHandler groupHandler = organizationService.getGroupHandler();
+      MembershipType membership_member = organizationService.getMembershipTypeHandler()
+                                                            .findMembershipType("member");
+      MembershipType membership_all = organizationService.getMembershipTypeHandler()
+                                                         .findMembershipType("*");
+
+      if (Boolean.parseBoolean(administrator)) {
+        Group adminGroup = groupHandler.findGroupById("/platform/administrators");
+        Group devGroup = groupHandler.findGroupById("/developers");
+        Group contributorsGroup = groupHandler.findGroupById("/platform/web-contributors");
+        organizationService.getMembershipHandler().linkMembership(newUser,
+                                                                  adminGroup,
+                                                                  membership_member,
+                                                                  true);
+        organizationService.getMembershipHandler().linkMembership(newUser,
+                                                                  devGroup,
+                                                                  membership_member,
+                                                                  true);
+        organizationService.getMembershipHandler().linkMembership(newUser,
+                                                                  contributorsGroup,
+                                                                  membership_all,
+                                                                  true);
       }
-      finally
-      {
-         wr.close();
+
+      return Response.status(HTTPStatus.CREATED).entity("Created").build();
+    } catch (Exception e) {
+      String err = "Unable to store user " + userName + " in tenant " + tname;
+      LOG.error(err, e);
+      throw new WebApplicationException(e, Response.status(HTTPStatus.INTERNAL_ERROR)
+                                                   .entity(errorMessage(err, e))
+                                                   .type("text/plain")
+                                                   .build());
+    }
+  }
+
+  /**
+   * Gets the administrators list for given workspace.
+   * 
+   * @param tname workspace name
+   * @return json username:email value
+   * @throws Exception
+   */
+  @GET
+  @Produces(MediaType.APPLICATION_JSON)
+  @Path("/users/{tname}")
+  @RolesAllowed("cloud-admin")
+  public Map<String, String> getUsersList(@PathParam("tname") String tname,
+                                          @QueryParam("administratorsonly") String onlyAdmins) throws Exception {
+    try {
+      Map<String, String> result = new HashMap<String, String>();
+      repositoryService.setCurrentRepositoryName(tname);
+      ListAccess<User> list = organizationService.getUserHandler().findAllUsers();// findUsersByGroupId("/platform/administrators");
+      for (User one : list.load(0, list.getSize())) {
+        Collection<Group> groups = organizationService.getGroupHandler()
+                                                      .findGroupsOfUser(one.getUserName());
+        for (Group group : groups) {
+          if (!Boolean.parseBoolean(onlyAdmins)
+              || group.getId().equalsIgnoreCase("/platform/administrators"))
+            result.put(one.getUserName(), one.getEmail());
+        }
       }
-   }
+      return result;
+    } catch (Exception e) {
+      String err = "Unable to get administrators list in workspace " + tname;
+      LOG.error(err, e);
+      throw new WebApplicationException(e, Response.status(HTTPStatus.INTERNAL_ERROR)
+                                                   .entity(errorMessage(err, e))
+                                                   .type("text/plain")
+                                                   .build());
+    }
+  }
+
+  @POST
+  @Path("/newpassword")
+  @RolesAllowed("cloud-admin")
+  public Response updatePassword(@FormParam("tname") String tname,
+                                 @FormParam("username") String userName,
+                                 @FormParam("password") String password) throws Exception {
+    try {
+      repositoryService.setCurrentRepositoryName(tname);
+      User user = organizationService.getUserHandler().findUserByName(userName);
+
+      if (user != null) {
+        // save new instance of an User object to workaround JCR org service
+        // caching to let PasswordEncrypterUserListener to know that we have to
+        // encript this password
+        User updatedUser = organizationService.getUserHandler()
+                                              .createUserInstance(user.getUserName());
+        updatedUser.setFirstName(user.getFirstName());
+        updatedUser.setLastName(user.getLastName());
+        updatedUser.setFullName(user.getFullName());
+        updatedUser.setEmail(user.getEmail());
+        updatedUser.setOrganizationId(user.getOrganizationId());
+        updatedUser.setPassword(password);
+        // and deprecated
+        updatedUser.setCreatedDate(user.getCreatedDate());
+        updatedUser.setLastLoginTime(user.getLastLoginTime());
+
+        organizationService.getUserHandler().saveUser(updatedUser, true);
+        return Response.ok().build();
+      } else {
+        return Response.status(Status.BAD_REQUEST)
+                       .entity("User " + userName + " not found on " + tname)
+                       .build();
+      }
+    } catch (Exception e) {
+      String err = "Unable to change password of user " + userName + " on " + tname;
+      LOG.error(err, e);
+      throw new WebApplicationException(e, Response.status(HTTPStatus.INTERNAL_ERROR)
+                                                   .entity(errorMessage(err, e))
+                                                   .type("text/plain")
+                                                   .build());
+    }
+  }
+
+  protected String errorMessage(String message, Exception err) {
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    PrintWriter wr = new PrintWriter(baos);
+    try {
+      err.printStackTrace(wr);
+      wr.flush();
+      StringBuilder str = new StringBuilder();
+      str.append('[');
+      str.append(dateFormater.format(new Date()));
+      str.append(']');
+      str.append(' ');
+      str.append(hostInfo);
+      str.append(':');
+      str.append(message);
+      str.append("\r\n");
+      str.append(new String(baos.toByteArray()));
+      return str.toString();
+    } catch (Throwable th) {
+      LOG.error("Cannot prepare error message:", th);
+      return message + " (Error trace isn't available, see server logs (" + hostInfo
+          + ") for details)";
+    } finally {
+      wr.close();
+    }
+  }
 }

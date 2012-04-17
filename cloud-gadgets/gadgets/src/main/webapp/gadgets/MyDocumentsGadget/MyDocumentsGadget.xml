@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+  <ModulePrefs title="MyDocumentsGadget" >
+    <Require feature="opensocial-0.8" />
+    <Require feature="dynamic-height"/>
+  </ModulePrefs>
+  <Content type="html" view="default, home, profile">
+    <![CDATA[  
+    
+    <head>
+      
+      <link type="text/css" rel="stylesheet" href="style/mydocuments.css" />
+      <link type="text/css" rel="stylesheet" href="/exo-gadget-resources/skin/exo-gadget/gadget-common.css" />
+      <link type="text/css" rel="stylesheet" href="/eXoDMSResources/skin/DefaultSkin/Stylesheet-lt.css" />
+
+      
+      <script language="javascript" type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+      <script type="text/javascript">
+        
+
+        
+        function initDocuments(){
+          $.getJSON("/rest/gadgets/mydocuments/all", function(items){
+             
+                        
+            if (items.length == 0){
+              $("#documentList").append('<li><a target="_parent" href="/portal/intranet/all-spaces"><span class="arrow">+</span>  Upload a document</a></ul>');
+              gadgets.window.adjustHeight();
+            }
+            
+            else {
+              
+              if(items.length > 5){        
+                $("#myDocumentsContainer").append('<div id="showAll"><a href="#" onclick="return false">&darr; Show all</a></div>');
+                $("#showAll").live("click", function(){
+                  $('#showAll').fadeOut(200, function() {
+                    $('#documentList li:hidden').fadeIn(200, function() {
+                      gadgets.window.adjustHeight();
+                    });
+                  });                                                                             
+                });                                    
+              }
+              
+              
+              $.each(items, function(i, item){               
+                
+                var documentItem = "";
+                
+                if(item.title == "Public") {
+                    item.title = "Public Folder";
+                    item.linkImage = " nt_folder16x16Icon";
+                }
+                
+                if (i < 5)
+                  documentItem += '<li class="Icon '+item.linkImage+'"><a target="_parent" href="/portal/intranet/documents?path=Personal Documents'+item.nodePath+'">'+item.title+'</a></ul>';
+                else
+                  documentItem += '<li style="display:none;" class="Icon '+item.linkImage+'"><a target="_parent" href="/portal/intranet/documents?path=Personal Documents'+item.nodePath+'">'+item.title+'</a></ul>';
+                
+                $("#documentList").append(documentItem);  
+                gadgets.window.adjustHeight();
+              });
+            }
+          }); 
+          
+        }
+               
+        gadgets.util.registerOnLoadHandler(function(){         
+          initDocuments();
+        });       
+        
+      </script>  
+    </head>
+    
+    <body > 
+      <div id="MyDocumentsGadget">
+      <div class="UIGadgetThemes" id="myDocumentsContainer">
+        <span class="title">My Documents</span>
+        <ul id="documentList"></ul>
+        </div>
+      </div>
+    </body> 
+    ]]></Content>
+</Module>

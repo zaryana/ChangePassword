@@ -51,7 +51,6 @@
       <groupId>org.exoplatform.cloud-management</groupId>
       <artifactId>cloud-commons</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-catalina-jmx-remote</artifactId>
@@ -70,23 +69,18 @@
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-core</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>jul-to-slf4j</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>jcl-over-slf4j</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>log4j-over-slf4j</artifactId>
     </dependency>
-
-    <!-- Dependency for SMTPAppender -->
     <dependency>
       <groupId>javax.mail</groupId>
       <artifactId>mail</artifactId>
@@ -97,6 +91,7 @@
     <profile>
       <id>distrib</id>
       <build>
+        <finalName>cloud-workspaces-admin-${project.version}</finalName>
         <plugins>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
@@ -148,12 +143,13 @@
                 <goals>
                   <goal>run</goal>
                 </goals>
-              </execution>          
+              </execution>
               <execution>
                 <id>configure-cloud-admin</id>
                 <phase>prepare-package</phase>
                 <configuration>
                   <tasks>
+<<<<<<< HEAD
                     <echo message="Copy configuration for cloud-admin"/>
                       <copy todir="${project.build.directory}/admin-tomcat/exo-admin-conf" overwrite="true">
                         <fileset dir="${basedir}/src/main/resources/tomcat/exo-admin-conf"/>

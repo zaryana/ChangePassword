@@ -1,19 +1,21 @@
-/***************************************************************************
- * Copyright (C) 2003-2007 eXo Platform SAS.
+/*
+ * Copyright (C) 2012 eXo Platform SAS.
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU Affero General Public License
- * as published by the Free Software Foundation; either version 3
- * of the License, or (at your option) any later version.
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
+ * This software is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, see<http://www.gnu.org/licenses/>.
- ***************************************************************************/
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ */
 package com.exoplatform.cloudworkspaces.gadget.services.InviteJoinWs;
 
 import javax.ws.rs.Path;
@@ -36,6 +38,7 @@ import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Context;
 
+import javax.jcr.RepositoryException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.AddressException;
 import java.net.URI;
@@ -149,7 +152,13 @@ public class InviteJoinWsRESTService implements ResourceContainer {
     		@PathParam("hostname") String hostname) throws Exception {
       
       String prefixUrl = "http://" + hostname;
-      String masterhost = System.getProperty("tenant.masterhost");
+      
+      String masterhost = "";
+      try {
+    	  masterhost = System.getProperty("tenant.masterhost");
+      } catch(NullPointerException e){
+    	  log.warn("Property tenant.masterhost not found.");
+      }
       
       String tail = mail.substring(mail.indexOf("@") + 1);
       String domainName = tail.substring(0,tail.indexOf("."));
@@ -171,8 +180,15 @@ public class InviteJoinWsRESTService implements ResourceContainer {
       
          String viewerId = getUserId(sc, uriInfo);
          Identity currentIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, viewerId, true);
-         String sender = currentIdentity.getProfile().getFullName();
-         String myAvatar = currentIdentity.getProfile().getAvatarUrl();
+         String sender = "";
+         String myAvatar = "";
+         if (currentIdentity != null) {
+            sender = currentIdentity.getProfile().getFullName();
+            myAvatar = currentIdentity.getProfile().getAvatarUrl();
+         } else {
+        	 log.warn("Can not get identity of current user");
+        	 return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Unable to send invitation email. Please contact support.").build();
+         }
          if (myAvatar == null || myAvatar.isEmpty()) {
         	 myAvatar = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
          }
@@ -227,7 +243,7 @@ public class InviteJoinWsRESTService implements ResourceContainer {
             props.put("registration.link", registration.trim());
             mailContent = getBody("/html/invite-join-ws.html", props);
                  
-            subject += sender + " has invited you to join the " + currentTenant + " Workspace";
+            subject += sender + " has invited you to join the " + currentTenant + " social intranet";
             
             } else {
             	
@@ -238,7 +254,7 @@ public class InviteJoinWsRESTService implements ResourceContainer {
                 props.put("registration.link", registration.trim());
                 mailContent = getBody("/html/invite-try-cw.html", props);
             	
-                subject += sender + " has invited you to try eXo Cloud Workspace";
+                subject += sender + " has invited you to try Cloud Workspace";
             } 
        
 		  try{
@@ -258,12 +274,15 @@ public class InviteJoinWsRESTService implements ResourceContainer {
 				  return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Unable to send invitation email. Please contact support.").build();
 			  }
          
+      } catch (RepositoryException e){
+    	  log.error(e.getMessage(), e);
+    	  return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Unable to send invitation email. Please contact support.").build();
       } catch (Exception e){
-            log.error(e.getMessage(), e);
-            return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Unable to send invitation email. Please contact support.").build();
+          log.error(e.getMessage(), e);
+          return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Unable to send invitation email. Please contact support.").build();
       }
       } else {
-    	  return Response.status(Status.BAD_REQUEST).entity("User already signed up or Workspace is not ready. Please try again later.").build();
+    	  return Response.status(Status.BAD_REQUEST).entity("User already signed up or the social intranet is not ready. Please try again later.").build();
       }
     }
     

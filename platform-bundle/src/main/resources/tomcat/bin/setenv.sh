@@ -22,6 +22,8 @@
 
 # custom JAVA options
 [ -z "$EXO_JAVA_OPTS" ]  && EXO_JAVA_OPTS="-Xms1g -Xmx4g -XX:MaxPermSize=256m -XX:+UseCompressedOops"
+[ -z "$JMXACC" ] && JMXACC="$CATALINA_HOME/conf/jmxremote.access"
+[ -z "$JMXPAS" ] && JMCPAS="$CATALINA_HOME/conf/jmxremote.password"
 
 # master tenant name
 [ -z "$TENANT_MASTERHOST" ]  && TENANT_MASTERHOST="cloud-workspaces.com"
@@ -67,9 +69,9 @@ EXO_CLOUD_SECURITY_OPTS="-Djava.security.manager=org.exoplatform.cloudmanagement
     -Djava.security.policy==../conf/catalina.policy"
 
 JMX_OPTS="-Dcom.sun.management.jmxremote=true -Djava.rmi.server.hostname=$HOST_EXTERNAL_ADDR \
-    -Dcom.sun.management.jmxremote.password.file=$CATALINA_HOME/conf/jmxremote.password \
-    -Dcom.sun.management.jmxremote.access.file=$CATALINA_HOME/conf/jmxremote.access \
     -Dcom.sun.management.jmxremote.authenticate=true \
+    -Dcom.sun.management.jmxremote.password.file=$JMXPAS \
+    -Dcom.sun.management.jmxremote.access.file=$JMXACC \
     -Dcom.sun.management.jmxremote.ssl=false"
 
 # Remote debug configuration
@@ -79,6 +81,4 @@ REMOTE_DEBUG=""
 export JAVA_OPTS="$EXO_JAVA_OPTS $JAVA_OPTS $LOG_OPTS $SECURITY_OPTS $EXO_OPTS $IDE_OPTS $EXO_CLOUD_OPTS $EXO_CLOUD_SECURITY_OPTS $EXO_CLOUD_ADMIN_OPTS $JMX_OPTS $REMOTE_DEBUG $EXO_PROFILES"
 
 export CLASSPATH="$CATALINA_HOME/lib/cloud-agent-security-1.1-M6.jar:$CATALINA_HOME/conf/:$CATALINA_HOME/lib/jul-to-slf4j-1.5.8.jar:$CATALINA_HOME/lib/slf4j-api-1.5.8.jar:$CATALINA_HOME/lib/logback-classic-0.9.20.jar:$CATALINA_HOME/lib/logback-core-0.9.20.jar"
-
-
 

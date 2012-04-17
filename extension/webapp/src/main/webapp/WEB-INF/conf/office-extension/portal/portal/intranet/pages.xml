@@ -40,7 +40,7 @@
 						<preferences>
 							<preference>
 								<name>url</name>
-								<value>local://Profile</value>
+								<value>local://MyProfileGadget</value>
 								<read-only>false</read-only>
 							</preference>
 						</preferences>
@@ -59,7 +59,7 @@
 						<preferences>
 							<preference>
 								<name>url</name>
-								<value>local://Invitations</value>
+								<value>local://AppsGadget</value>
 								<read-only>false</read-only>
 							</preference>
 						</preferences>
@@ -78,7 +78,7 @@
 						<preferences>
 							<preference>
 								<name>url</name>
-								<value>local://Agenda</value>
+								<value>local://MySpacesGadget</value>
 								<read-only>false</read-only>
 							</preference>
 						</preferences>
@@ -97,7 +97,7 @@
 						<preferences>
 							<preference>
 								<name>url</name>
-								<value>local://FeaturedPoll</value>
+								<value>local://MyDocumentsGadget</value>
 								<read-only>false</read-only>
 							</preference>
 						</preferences>
@@ -108,14 +108,14 @@
 					<show-application-state>true</show-application-state>
 				</portlet-application>
 				<!-- My spaces gadget -->
-				<!--portlet-application>
+				<portlet-application>
 					<portlet>
 						<application-ref>dashboard</application-ref>
 						<portlet-ref>GadgetPortlet</portlet-ref>
 						<preferences>
 							<preference>
 								<name>url</name>
-								<value>local://MySpaces</value>
+								<value>local://WhosOnlineGadget</value>
 								<read-only>false</read-only>
 							</preference>
 						</preferences>
@@ -124,7 +124,8 @@
 					<access-permissions>*:/platform/users</access-permissions>
 					<show-info-bar>false</show-info-bar>
 					<show-application-state>true</show-application-state>
-				</portlet-application-->
+				</portlet-application>
+				
 				<!-- My task gadget -->
 				<!--portlet-application>
 					<portlet>
@@ -373,7 +374,7 @@
 						<preferences>
 							<preference>
 								<name>url</name>
-								<value>local://WhoIsOnline</value>
+								<value>local://SuggestPeopleGadget</value>
 								<read-only>false</read-only>
 							</preference>
 						</preferences>
@@ -392,7 +393,7 @@
 						<preferences>
 							<preference>
 								<name>url</name>
-								<value>local://Bookmark</value>
+								<value>local://SuggestSpacesGadget</value>
 								<read-only>false</read-only>
 							</preference>
 						</preferences>
@@ -402,25 +403,6 @@
 					<show-info-bar>false</show-info-bar>
 					<show-application-state>true</show-application-state>
 				</portlet-application>				
-
-                                <!-- Favorites Documents gadget -->
-				<portlet-application>
-					<portlet>
-						<application-ref>dashboard</application-ref>
-						<portlet-ref>GadgetPortlet</portlet-ref>
-						<preferences>
-							<preference>
-								<name>url</name>
-								<value>local://FavoriteDocument</value>
-								<read-only>false</read-only>
-							</preference>
-						</preferences>
-					</portlet>
-					<title>Gadget Portlet</title>
-					<access-permissions>*:/platform/users</access-permissions>
-					<show-info-bar>false</show-info-bar>
-					<show-application-state>true</show-application-state>
-				</portlet-application>
 
 			</container>
 
@@ -1271,4 +1253,3 @@
     </portlet-application>
   </page>
 </page-set>
-

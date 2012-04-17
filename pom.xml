@@ -30,13 +30,16 @@
     <maven.compiler.target>1.6</maven.compiler.target>
 
     <!-- eXo Modules -->
-    <org.exoplatform.platform.version>3.5.2-CMM6-2</org.exoplatform.platform.version>
+    <org.exoplatform.platform.cloud.version>3.5.2-CMM6-2</org.exoplatform.platform.cloud.version>
+    <org.exoplatform.platform.version>3.5.2</org.exoplatform.platform.version>
     <org.exoplatform.kernel.version>2.3.6-GA</org.exoplatform.kernel.version>
     <org.exoplatform.core.version>2.4.6-GA</org.exoplatform.core.version>
     <org.exoplatform.ws.version>2.2.6-GA</org.exoplatform.ws.version>
     <org.exoplatform.jcr.version>1.14.6-GA</org.exoplatform.jcr.version>
     <org.exoplatform.cloud-management.version>1.1-M6</org.exoplatform.cloud-management.version>
-    <org.exoplatform.ide.version>1.2.0-M4</org.exoplatform.ide.version>
+    <org.exoplatform.ide.version>1.1.0-M4</org.exoplatform.ide.version>
+    <org.exoplatform.ks.version>2.2.8</org.exoplatform.ks.version>
+    <org.exoplatform.ecms.version>2.3.5</org.exoplatform.ecms.version>
 
     <!-- Cloud gadget services -->
     <org.exoplatform.portal.version>3.2.3-PLF</org.exoplatform.portal.version>
@@ -137,6 +140,12 @@
         <artifactId>cloud-workspaces-extension-config</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <dependency>
+        <groupId>com.exoplatform.cloudworkspaces</groupId>
+        <artifactId>cloud-workspaces-platform-navigation</artifactId>
+        <version>${project.version}</version>
+        <type>war</type>
+      </dependency>
 
       <!-- Cloud Workspaces gadgets -->
       <dependency>
@@ -162,7 +171,7 @@
       <dependency>
         <groupId>com.exoplatform.platform.cloud</groupId>
         <artifactId>exo-platform-cloud-packaging-tomcat</artifactId>
-        <version>${org.exoplatform.platform.version}</version>
+        <version>${org.exoplatform.platform.cloud.version}</version>
         <type>zip</type>
         <classifier>tomcat</classifier>
       </dependency>
@@ -228,13 +237,13 @@
         <type>war</type>
       </dependency>
 
-      <dependency>
-        <groupId>org.everrest</groupId>
-        <artifactId>everrest-groovy</artifactId>
-        <version>${everrest.version}</version>
-      </dependency>
-
       <!-- eXo dependencies -->
+      <dependency>
+        <groupId>org.exoplatform.platform</groupId>
+        <artifactId>exo.platform.extension.portlets.platformNavigation</artifactId>
+        <version>${org.exoplatform.platform.version}</version>
+        <type>war</type>
+      </dependency>
       <dependency>
         <groupId>org.exoplatform.kernel</groupId>
         <artifactId>exo.kernel.container</artifactId>
@@ -283,6 +292,19 @@
         <version>${org.exoplatform.jcr.version}</version>
         <type>jar</type>
       </dependency>
+      <dependency>
+      <groupId>org.exoplatform.ks</groupId>
+        <artifactId>exo.ks.eXoApplication.forum.service</artifactId>
+        <version>${org.exoplatform.ks.version}</version>
+        <scope>provided</scope>
+        <type>jar</type>
+        </dependency>
+      <dependency>
+        <groupId>org.exoplatform.ecms</groupId>
+        <artifactId>exo-ecms-core-services</artifactId>
+        <version>${org.exoplatform.ecms.version}</version>
+        <type>jar</type>
+      </dependency>
 
       <!-- Third-parties -->
       <dependency>
@@ -327,7 +349,6 @@
         <version>1.0</version>
         <type>jar</type>
       </dependency>
-
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
@@ -370,6 +391,11 @@
       </dependency>
       <dependency>
         <groupId>org.everrest</groupId>
+        <artifactId>everrest-groovy</artifactId>
+        <version>${everrest.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.everrest</groupId>
         <artifactId>everrest-assured</artifactId>
         <version>${everrest.assured.version}</version>
       </dependency>
@@ -397,6 +423,7 @@
     <module>admin-bundle</module>
     <module>cloud-gadgets</module>
     <module>extension</module>
+    <module>navigation</module>
     <module>platform-bundle</module>
   </modules>
 </project>
