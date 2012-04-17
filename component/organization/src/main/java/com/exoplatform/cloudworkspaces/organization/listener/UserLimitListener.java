@@ -57,20 +57,14 @@ public class UserLimitListener extends UserEventListener {
         return;
       }
 
-      String tName = reposervice.getCurrentRepository().getConfiguration().getName();
-      String masterhost = System.getProperty("tenant.masterhost");
-      StringBuilder strUrl = new StringBuilder();
-      strUrl.append("http://");
-      strUrl.append(masterhost);
-      strUrl.append("/rest/cloud-admin/cloudworkspaces/tenant-service/maxallowed/");
-      strUrl.append(tName);
+      ListAccess<User> list = organizationService.getUserHandler().findAllUsers();
 
       String tName = reposervice.getCurrentRepository().getConfiguration().getName();
       String masterhost = System.getProperty("tenant.masterhost");
       StringBuilder strUrl = new StringBuilder();
       strUrl.append("http://");
       strUrl.append(masterhost);
-      strUrl.append("/rest/cloud-admin/public-tenant-service/maxallowed/");
+      strUrl.append("/rest/cloud-admin/cloudworkspaces/tenant-service/maxallowed/");
       strUrl.append(tName);
 
       url = new URL(strUrl.toString());
@@ -90,8 +84,7 @@ public class UserLimitListener extends UserEventListener {
         while ((inputLine = in.readLine()) != null)
           resp_body = resp_body.concat(inputLine);
         in.close();
-        if (Integer.parseInt(resp_body) == -1 || Integer.parseInt(resp_body) > list.getSize() - 1) // minus
-                                                                                                   // root
+        if (Integer.parseInt(resp_body) == -1 || Integer.parseInt(resp_body) > list.getSize() - 1) // minus root
           return;
         else
           throw new RepositoryException("Unable to add user " + user.getUserName()
