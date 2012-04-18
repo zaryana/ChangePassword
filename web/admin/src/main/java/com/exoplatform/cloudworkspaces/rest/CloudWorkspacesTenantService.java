@@ -84,6 +84,8 @@ public class CloudWorkspacesTenantService extends TenantCreator {
 
   private EmailBlacklist                         emailBlacklist;
 
+  private ChangePasswordManager                  changePasswordManager;
+
   public CloudWorkspacesTenantService(EmailValidationStorage emailValidationStorage,
                                       TenantStateDataManager tenantStateDataManager,
                                       TenantNameValidator tenantNameValidator,
@@ -98,7 +100,8 @@ public class CloudWorkspacesTenantService extends TenantCreator {
                                       UserRequestDAO requestDao,
                                       AsyncTenantStarter tenantStarter,
                                       CloudIntranetUtils cloudIntranetUtils,
-                                      EmailBlacklist emailBlacklist) {
+                                      EmailBlacklist emailBlacklist,
+                                      ChangePasswordManager changePasswordManager) {
     super(emailValidationStorage,
           tenantStateDataManager,
           tenantNameValidator,
@@ -114,6 +117,7 @@ public class CloudWorkspacesTenantService extends TenantCreator {
     this.tenantStarter = tenantStarter;
     this.utils = cloudIntranetUtils;
     this.emailBlacklist = emailBlacklist;
+    this.changePasswordManager = changePasswordManager;
   }
 
   /**
@@ -751,7 +755,6 @@ public class CloudWorkspacesTenantService extends TenantCreator {
                      .entity("Please enter a valid email address.")
                      .build();
 
-    ChangePasswordManager manager = new ChangePasswordManager(adminConfiguration);
     String username = email.substring(0, (email.indexOf("@")));
     String tName = utils.email2tenantName(email);
 
@@ -766,7 +769,7 @@ public class CloudWorkspacesTenantService extends TenantCreator {
     case ONLINE: {
 
       if (workspacesOrganizationRequestPerformer.getTenantUsers(tName, false).containsValue(email)) {
-        String uuid = manager.addReference(email);
+        String uuid = changePasswordManager.addReference(email);
         notificationMailSender.sendPasswordRestoreEmail(email, tName, uuid);
       } else {
         return Response.status(Status.BAD_REQUEST)
@@ -797,9 +800,8 @@ public class CloudWorkspacesTenantService extends TenantCreator {
   @Path("passconfirm")
   @Produces(MediaType.TEXT_PLAIN)
   public Response passconfirm(@FormParam("uuid") String uuid, @FormParam("password") String password) throws CloudAdminException {
-    ChangePasswordManager manager = new ChangePasswordManager(adminConfiguration);
     try {
-      String email = manager.validateReference(uuid);
+      String email = changePasswordManager.validateReference(uuid);
       String tName = utils.email2tenantName(email);
       workspacesOrganizationRequestPerformer.updatePassword(tName, email, password);
       return Response.ok().build();
