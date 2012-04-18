@@ -32,11 +32,10 @@
         }
         
         function updateProgress(rate){
-          if (rate == 90){
-            //rate = 100;
-            //showTutorials();
+          if (rate > 100){
+            rate = 100;
           }
-          var width= Math.round(170/100*rate);
+          var width= Math.round(160/100*rate);
           $("#progress-rate").attr("style", "width: "+width+"px;");  
           $("#progress-label").html(rate+"%");       
         }
