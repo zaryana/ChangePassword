@@ -72,7 +72,7 @@ public class EmailBlacklist implements Startable {
     if (blacklist != null)
       return blacklist.contains(email.substring(email.indexOf('@') + 1));
     else
-      return true;
+      return false;
   }
 
   private void reload() throws FileNotFoundException {
