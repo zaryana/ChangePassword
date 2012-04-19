@@ -32,6 +32,7 @@ import com.exoplatform.cloudworkspaces.users.UsersManager;
 import org.everrest.core.ResourceBinder;
 import org.exoplatform.cloudmanagement.admin.WorkspacesMailSender;
 import org.exoplatform.cloudmanagement.admin.rest.CloudAdminApplicationComposer;
+import org.exoplatform.cloudmanagement.admin.rest.TenantCreator;
 import org.exoplatform.cloudmanagement.admin.status.ServerOnlineListenersInvoker;
 import org.exoplatform.ide.shell.server.CLIResourceFactory;
 import org.exoplatform.ide.shell.server.rest.CLIResourcesService;
@@ -77,6 +78,8 @@ public class CloudWorkspacesAdminApplicationComposer extends CloudAdminApplicati
     container.addComponent(UsersManager.class);
     container.addComponent(EmailBlacklist.class);
     container.addComponent(ChangePasswordManager.class);
+
+    container.addComponent(TenantCreator.class);
   }
 
   @Override

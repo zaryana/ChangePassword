@@ -34,15 +34,10 @@ import com.exoplatform.cloudworkspaces.users.UserLimitsStorage;
 import org.apache.commons.configuration.Configuration;
 import org.exoplatform.cloudmanagement.admin.CloudAdminException;
 import org.exoplatform.cloudmanagement.admin.TenantAlreadyExistException;
-import org.exoplatform.cloudmanagement.admin.WorkspacesMailSender;
 import org.exoplatform.cloudmanagement.admin.configuration.TenantInfoFieldName;
-import org.exoplatform.cloudmanagement.admin.dao.EmailValidationStorage;
 import org.exoplatform.cloudmanagement.admin.dao.TenantDataManagerException;
 import org.exoplatform.cloudmanagement.admin.dao.TenantInfoDataManager;
 import org.exoplatform.cloudmanagement.admin.rest.TenantCreator;
-import org.exoplatform.cloudmanagement.admin.tenant.TenantNameValidator;
-import org.exoplatform.cloudmanagement.admin.tenant.TenantStateDataManager;
-import org.exoplatform.cloudmanagement.admin.tenant.UserMailValidator;
 import org.exoplatform.cloudmanagement.admin.util.AdminConfigurationUtil;
 import org.exoplatform.cloudmanagement.status.TenantState;
 import org.slf4j.Logger;
@@ -64,13 +59,19 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 @Path("/cloud-admin/cloudworkspaces/tenant-service")
-public class CloudWorkspacesTenantService extends TenantCreator {
-
-  CloudIntranetUtils                             utils;
-
-  UserRequestDAO                                 requestDao;
+public class CloudWorkspacesTenantService {
 
   private static final Logger                    LOG = LoggerFactory.getLogger(CloudWorkspacesTenantService.class);
+
+  private CloudIntranetUtils                     utils;
+
+  private UserRequestDAO                         requestDao;
+
+  private TenantCreator                          tenantCreator;
+
+  private Configuration                          cloudAdminConfiguration;
+
+  private TenantInfoDataManager                  tenantInfoDataManager;
 
   private WorkspacesOrganizationRequestPerformer workspacesOrganizationRequestPerformer;
 
@@ -86,29 +87,21 @@ public class CloudWorkspacesTenantService extends TenantCreator {
 
   private ChangePasswordManager                  changePasswordManager;
 
-  public CloudWorkspacesTenantService(EmailValidationStorage emailValidationStorage,
-                                      TenantStateDataManager tenantStateDataManager,
-                                      TenantNameValidator tenantNameValidator,
-                                      UserMailValidator userMailValidator,
+  public CloudWorkspacesTenantService(TenantCreator tenantCreator,
                                       TenantInfoDataManager tenantInfoDataManager,
                                       WorkspacesOrganizationRequestPerformer workspacesOrganizationRequestPerformer,
                                       NotificationMailSender notificationMailSender,
                                       UserLimitsStorage userLimitsStorage,
                                       Configuration cloudAdminConfiguration,
-                                      WorkspacesMailSender mailSender,
                                       ReferencesManager referencesManager,
                                       UserRequestDAO requestDao,
                                       AsyncTenantStarter tenantStarter,
                                       CloudIntranetUtils cloudIntranetUtils,
                                       EmailBlacklist emailBlacklist,
                                       ChangePasswordManager changePasswordManager) {
-    super(emailValidationStorage,
-          tenantStateDataManager,
-          tenantNameValidator,
-          userMailValidator,
-          tenantInfoDataManager,
-          cloudAdminConfiguration,
-          mailSender);
+    this.cloudAdminConfiguration = cloudAdminConfiguration;
+    this.tenantInfoDataManager = tenantInfoDataManager;
+    this.tenantCreator = tenantCreator;
     this.requestDao = requestDao;
     this.workspacesOrganizationRequestPerformer = workspacesOrganizationRequestPerformer;
     this.notificationMailSender = notificationMailSender;
@@ -155,7 +148,7 @@ public class CloudWorkspacesTenantService extends TenantCreator {
       tName = utils.email2tenantName(userMail);
 
       if (requestDao.searchByEmail(userMail) == null) {
-        Response resp = super.createTenantWithEmailConfirmation(tName, userMail);
+        Response resp = tenantCreator.createTenantWithEmailConfirmation(tName, userMail);
         referencesManager.putEmail(userMail, (String) resp.getEntity());
       } else {
         LOG.info("User " + userMail + " already signed up to " + tName
@@ -165,7 +158,7 @@ public class CloudWorkspacesTenantService extends TenantCreator {
       }
     } catch (TenantAlreadyExistException ex) {
       Map<String, String> props = new HashMap<String, String>();
-      props.put("tenant.masterhost", AdminConfigurationUtil.getMasterHost(adminConfiguration));
+      props.put("tenant.masterhost", AdminConfigurationUtil.getMasterHost(cloudAdminConfiguration));
       props.put("tenant.repository.name", tName);
       props.put("user.mail", userMail);
 
@@ -225,7 +218,7 @@ public class CloudWorkspacesTenantService extends TenantCreator {
           return Response.status(309)
                          .header("Location",
                                  "http://"
-                                     + AdminConfigurationUtil.getMasterHost(adminConfiguration)
+                                     + AdminConfigurationUtil.getMasterHost(cloudAdminConfiguration)
                                      + "/resuming.jsp?email=" + userMail)
                          .build();
         }
@@ -242,7 +235,8 @@ public class CloudWorkspacesTenantService extends TenantCreator {
             + ". Redirect to signin page.");
         return Response.status(309)
                        .header("Location",
-                               "http://" + AdminConfigurationUtil.getMasterHost(adminConfiguration)
+                               "http://"
+                                   + AdminConfigurationUtil.getMasterHost(cloudAdminConfiguration)
                                    + "/signin.jsp?email=" + userMail)
                        .build();
       }
@@ -300,11 +294,11 @@ public class CloudWorkspacesTenantService extends TenantCreator {
       tName = utils.email2tenantName(userMail);
 
       if (requestDao.searchByEmail(userMail) == null) {
-        String uuid = super.createTenant(tName, userMail);
+        String uuid = tenantCreator.createTenant(tName, userMail);
         referencesManager.putEmail(userMail, uuid);
         URI location = URI.create("http://"
-            + AdminConfigurationUtil.getMasterHost(adminConfiguration) + "/registration.jsp?id="
-            + uuid);
+            + AdminConfigurationUtil.getMasterHost(cloudAdminConfiguration)
+            + "/registration.jsp?id=" + uuid);
         return Response.created(location).entity(location.toString()).build();
       } else {
         LOG.info("Client error: user " + userMail + " already signed up to " + tName
@@ -329,7 +323,7 @@ public class CloudWorkspacesTenantService extends TenantCreator {
           referencesManager.putEmail(userMail, uuid);
           return Response.ok()
                          .entity("http://"
-                             + AdminConfigurationUtil.getMasterHost(adminConfiguration)
+                             + AdminConfigurationUtil.getMasterHost(cloudAdminConfiguration)
                              + "/join.jsp?rfid=" + uuid)
                          .build();
         }
@@ -340,7 +334,7 @@ public class CloudWorkspacesTenantService extends TenantCreator {
             referencesManager.putEmail(userMail, uuid);
             return Response.ok()
                            .entity("http://"
-                               + AdminConfigurationUtil.getMasterHost(adminConfiguration)
+                               + AdminConfigurationUtil.getMasterHost(cloudAdminConfiguration)
                                + "/join.jsp?rfid=" + uuid)
                            .build();
           } else {
@@ -404,7 +398,7 @@ public class CloudWorkspacesTenantService extends TenantCreator {
       tName = utils.email2tenantName(userMail);
       // Prepare properties for mailing
       Map<String, String> props = new HashMap<String, String>();
-      props.put("tenant.masterhost", AdminConfigurationUtil.getMasterHost(adminConfiguration));
+      props.put("tenant.masterhost", AdminConfigurationUtil.getMasterHost(cloudAdminConfiguration));
       props.put("tenant.repository.name", tName);
       props.put("user.mail", userMail);
       props.put("user.name", username);
@@ -490,14 +484,14 @@ public class CloudWorkspacesTenantService extends TenantCreator {
         referencesManager.removeEmail(userMail);
         return Response.status(309)
                        .header("Location",
-                               "http://" + AdminConfigurationUtil.getMasterHost(adminConfiguration)
+                               "http://"
+                                   + AdminConfigurationUtil.getMasterHost(cloudAdminConfiguration)
                                    + "/resuming.jsp?email=" + userMail)
                        .build();
       }
       default: {
         String msg = "Sorry, we cannot process your join request right now, workspace seems not ready. Please, try again later.";
-        LOG.warn("Joining user " + userMail + " failed, tenant " + tName + " state is "
-            + tenantInfoDataManager.getValue(tName, TenantInfoFieldName.PROPERTY_STATE));
+        LOG.warn("Joining user " + userMail + " failed, tenant " + tName + " state is " + tState);
         return Response.status(Status.SERVICE_UNAVAILABLE).entity(msg).build();
       }
       }
@@ -563,7 +557,7 @@ public class CloudWorkspacesTenantService extends TenantCreator {
     String tName = utils.email2tenantName(userMail);
 
     try {
-      Response resp = super.createTenantWithConfirmedEmail(uuid);
+      Response resp = tenantCreator.createTenantWithConfirmedEmail(uuid);
       if (resp.getStatus() != 200) {
         notificationMailSender.sendAdminErrorEmail("Tenant " + tName + " creation admin error: "
             + resp.getEntity(), null);
@@ -587,7 +581,7 @@ public class CloudWorkspacesTenantService extends TenantCreator {
       return Response.ok().build();
     } catch (TenantAlreadyExistException e) {
       LOG.warn(" Duplicate creation request for tenant " + tName + " from " + userMail);
-      new ReferencesManager(adminConfiguration).removeEmail(userMail);
+      referencesManager.removeEmail(userMail);
       return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
     }
   }
@@ -783,7 +777,8 @@ public class CloudWorkspacesTenantService extends TenantCreator {
     case SUSPENDED: {
       return Response.status(309)
                      .header("Location",
-                             "http://" + AdminConfigurationUtil.getMasterHost(adminConfiguration)
+                             "http://"
+                                 + AdminConfigurationUtil.getMasterHost(cloudAdminConfiguration)
                                  + "/resuming.jsp?email=" + email)
                      .build();
     }
@@ -800,14 +795,11 @@ public class CloudWorkspacesTenantService extends TenantCreator {
   @Path("passconfirm")
   @Produces(MediaType.TEXT_PLAIN)
   public Response passconfirm(@FormParam("uuid") String uuid, @FormParam("password") String password) throws CloudAdminException {
-    try {
-      String email = changePasswordManager.validateReference(uuid);
-      String tName = utils.email2tenantName(email);
-      workspacesOrganizationRequestPerformer.updatePassword(tName, email, password);
-      return Response.ok().build();
-    } catch (CloudAdminException e) {
-      return Response.serverError().entity(e.getMessage()).build();
-    }
+    // TODO if uuid not found, return BAD_REQUEST
+    String email = changePasswordManager.validateReference(uuid);
+    String tName = utils.email2tenantName(email);
+    workspacesOrganizationRequestPerformer.updatePassword(tName, email, password);
+    return Response.ok().build();
   }
 
   /**
