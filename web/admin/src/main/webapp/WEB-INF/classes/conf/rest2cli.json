@@ -122,4 +122,60 @@
     "method": "GET",
     "description" : "Get list of users and its email addresses from all online tenants."   
 },
+{
+    "command": ["server types"],
+    "path": "/cloud-admin/info-service/get-types",
+    "method": "GET",
+    "description" : "Get all registered application server types."   
+},
+{
+    "command": ["server start"],
+    "path": "/cloud-admin/application-service/start-server",
+    "method": "POST",
+    "description" : "Start new application server. Options: -t, --type - type for new application server.",
+    "params": [
+      {
+	  "name": "type",
+	  "type": "QUERY",
+	  "options":[-t, --type],
+	  "hasArg": true,
+	  "mandatory": true
+      }
+    ]
+},
+{
+    "command": ["server stop"],
+    "path": "/cloud-admin/application-service/stop-server",
+    "method": "POST",
+    "description" : "Stop application server. Options: -a, --alias - server for stop",
+    "params": [
+      {
+	  "name": "alias",
+	  "type": "QUERY",
+	  "options":[-a, --alias],
+	  "hasArg": true,
+	  "mandatory": true
+      }
+    ]
+},
+
+{
+    "command": ["autoscaling block"],
+    "path": "/cloud-admin/autoscaling-service/block-autoscaling",
+    "method": "POST",
+    "description" : "Block cloud autoscaling."   
+},
+{
+    "command": ["autoscaling allow"],
+    "path": "/cloud-admin/autoscaling-service/allow-autoscaling",
+    "method": "POST",
+    "description" : "Allow cloud autoscaling."   
+},
+{
+    "command": ["autoscaling status"],
+    "path": "/cloud-admin/autoscaling-service/autoscaling-status",
+    "method": "GET",
+    "description" : "Shows cloud autoscaling status."   
+},
+
 ]

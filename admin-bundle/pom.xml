@@ -189,6 +189,21 @@
                   <goal>run</goal>
                 </goals>
               </execution>
+              <execution>
+                <id>copy-scripts-for-tests</id>
+                <phase>prepare-package</phase>
+                <configuration>
+                  <tasks>
+                    <copy todir="${project.build.directory}/local-cloud">
+                      <fileset dir="${basedir}/src/main/resources/local-cloud" />
+                    </copy>
+                    <chmod file="${project.build.directory}/local-cloud/*.sh" perm="+x"/>
+                  </tasks>
+                </configuration>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+              </execution>
             </executions>
           </plugin>
           <plugin>

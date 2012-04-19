@@ -48,7 +48,12 @@
       <scope>provided</scope>
       <type>jar</type>
     </dependency>
-
+    <dependency>
+      <groupId>com.exoplatform.platform.cloud</groupId>
+      <artifactId>cloud-admin-connector-localhost</artifactId>
+      <type>jar</type>
+    </dependency>
+ 
     <!-- add exo-ide-shell dependency for using CLIResourcesService -->
     <dependency>
       <groupId>org.exoplatform.ide</groupId>
@@ -76,10 +81,12 @@
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-all</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.everrest</groupId>
       <artifactId>everrest-assured</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 
