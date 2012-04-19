@@ -51,7 +51,7 @@
     <path>/gadgets/WhosOnlineGadget/WhosOnlineGadget.xml</path>
   </gadget>
   <gadget name="CalendarGadget">
-    <path>/gadgets/CalendarGadget/CalendarGadget.xml</path>
+    <path>/gadgets/AgendaGadget/AgendaGadget.xml</path>
   </gadget>  
 
 </gadgets>
