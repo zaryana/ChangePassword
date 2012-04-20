@@ -51,6 +51,11 @@
     <type>com.exoplatform.cloudworkspaces.gadget.services.InviteJoinWs.InviteJoinWsRESTService</type>
   </component>
   
+  <!-- CALENDAR -->
+  <component>
+    <type>com.exoplatform.cloudworkspaces.gadget.services.AgendaGadget.GetEventRESTService</type>
+  </component>
+  
   <component>
     <key>org.exoplatform.services.mail.MailService</key>
     <type>org.exoplatform.services.mail.impl.MailServiceImpl</type>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Module>
+  <ModulePrefs author="eXoPlatform"
+    title="Agenda Gadget"
+    title_url="http://www.exoplatform.org"
+    description="Tasks and Upcoming Event list.">
+    <Locale messages="locale/default.xml" />
+    <Locale lang="fr" messages="locale/fr.xml" />
+    <Require feature="setprefs"/>
+    <Require feature="dynamic-height"/>
+  </ModulePrefs>
+  <Content type="html">
+    <![CDATA[
+    <link rel="stylesheet" href="css/Agenda.css" type="text/css" />
+    <link type="text/css" rel="stylesheet" href="/exo-gadget-resources/skin/exo-gadget/gadget-common.css" />
+    <script type="text/javascript" src="js/jquery.js"></script>
+    <script type="text/javascript" src="js/Agenda.js"></script>
+  <div id="CalendarGadget">
+    <div id="Calendar" class="UIGadgetThemes">
+
+        <div class="gadgetTitle">__MSG_titlegadget__</div>
+      
+        <div id="gadget-Content"> 
+
+           <div class="listEvent" id="eventDiv">
+           </div>
+           
+           <div class="addLink">+ <a id="addEvent" target="_parent">__MSG_addEvent__</a></div>
+           
+        </div>         
+    </div>
+    ]]>
+  </Content>
+</Module>

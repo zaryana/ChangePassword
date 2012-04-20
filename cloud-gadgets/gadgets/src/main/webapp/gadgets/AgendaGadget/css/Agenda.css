@@ -1,0 +1,71 @@
+.listEvent {
+        margin-bottom: 5px;
+}
+
+.listEvent ul {
+        width: 100%;
+        list-style-type: none;
+        padding-left: 0px;
+}
+
+.listEvent ul li {
+        float: left;
+}
+			
+.listEvent ul li a {
+	text-decoration: none;
+}
+
+.listEvent ul .eventType {
+        width: 30%;
+}
+			
+.listEvent ul .eventTitle {
+        width: 70%;				
+}
+
+.listEvent ul .eventEmpty{
+        width: 30%;
+        margin-bottom: 5px;
+}
+
+.listEvent ul .eventTime {
+        width: 70%;
+        margin-bottom: 5px;        
+}
+
+.listEvent ul .eventTime span {
+        font-size: 10px;
+        color: 	#606060;
+        font-style: italic;       
+}
+
+.addLink {
+        margin: 5px 3px;
+        font-weight: bold;
+        text-decoration: none;
+        clear: both;
+        padding-top: 10px;
+}
+
+#CalendarGadget {
+        border: dashed 1px #E2DDC7;
+        margin-right: 15px;
+        -moz-border-radius: 3px;
+        -webkit-border-radius: 3px;
+}
+
+#CalendarGadget .UIGadgetThemes { 
+        padding: 10px 15px;
+}
+
+.gadgetTitle {
+        margin-bottom: 12px;
+        font-weight: bold;
+}
+
+#CalendarGadget .UIGadgetThemes .light_message {
+        margin-left: 5px;
+        color: lightgray;
+        font-size: 11px;        
+}
