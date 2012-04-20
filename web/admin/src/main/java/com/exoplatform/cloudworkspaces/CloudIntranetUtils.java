@@ -159,39 +159,55 @@ public class CloudIntranetUtils {
       throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
     }
 
-    try {
-      url = new URL(strUrl.toString());
-      connection = (HttpURLConnection) url.openConnection();
-      connection.setRequestMethod("POST");
-      connection.setDoOutput(true);
-      OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
-      writer.write(params.toString());
-      writer.flush();
-      writer.close();
-      if (connection.getResponseCode() == HTTP_CREATED) {
-        return;
-      } else {
-        String err = readText(connection.getErrorStream());
-        String msg = ("Unable to add user to workspace " + tName + " (" + hostName
-            + ") - HTTP status:" + connection.getResponseCode() + (err != null ? ". Server error: \r\n"
-                                                                                  + err + "\r\n"
-                                                                              : ""));
-        LOG.error(msg);
-        sendAdminErrorEmail(msg, null);
+    int attepts = 1; // we have two attempts
+    retry: while (attepts >= 0) {
+      attepts--;
+      try {
+        url = new URL(strUrl.toString());
+        connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("POST");
+        connection.setDoOutput(true);
+        OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
+        writer.write(params.toString());
+        writer.flush();
+        writer.close();
+        if (connection.getResponseCode() == HTTP_CREATED) {
+          return;
+        } else {
+          String err = readText(connection.getErrorStream());
+          String msg = ("Unable to add user to workspace " + tName + " (" + hostName
+              + ") - HTTP status:" + connection.getResponseCode() + (err != null ? ". Server error: \r\n"
+                                                                                    + err + "\r\n" : ""));
+          LOG.error(msg);
+          
+          // check if it is not a deadlock in MySQL
+          if (msg.indexOf("MySQLTransactionRollbackException") >= 0) {
+            // was MySQL deadlock, try to apply a workaround: wait a bit and try again
+            try {
+              Thread.sleep(2000);
+            } catch(InterruptedException e) {
+              // don't care
+            }
+            
+            LOG.info("Was MySQL deadlock. Trying add user " + userMail + " one more time.");  
+            continue retry;
+          }
+          
+          sendAdminErrorEmail(msg, null);
+          throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
+        }
+      } catch (MalformedURLException e) {
+        LOG.error(e.getMessage(), e);
+        sendAdminErrorEmail(e.getMessage(), e);
         throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
-      }
-    } catch (MalformedURLException e) {
-      LOG.error(e.getMessage(), e);
-      sendAdminErrorEmail(e.getMessage(), e);
-      throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
-    } catch (IOException e) {
-      LOG.error(e.getMessage(), e);
-      sendAdminErrorEmail(e.getMessage(), e);
-      throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
-
-    } finally {
-      if (connection != null) {
-        connection.disconnect();
+      } catch (IOException e) {
+        LOG.error(e.getMessage(), e);
+        sendAdminErrorEmail(e.getMessage(), e);
+        throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
+      } finally {
+        if (connection != null) {
+          connection.disconnect();
+        }
       }
     }
   }
