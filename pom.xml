@@ -87,6 +87,7 @@
     <testng.version>6.3.1</testng.version>
     <mockito.version>1.9.0</mockito.version>
     <everrest.assured.version>0.4</everrest.assured.version>
+    <dumbster.version>1.6</dumbster.version>
 
     <!-- maven-release-plugin -->
     <arguments>-Prelease,distrib,exo-private,exo-staging -Dgatein.working.dir=target -Dmaven.wagon.provider.http=httpclient</arguments>
@@ -404,6 +405,11 @@
         <groupId>org.everrest</groupId>
         <artifactId>everrest-assured</artifactId>
         <version>${everrest.assured.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>dumbster</groupId>
+        <artifactId>dumbster</artifactId>
+        <version>${dumbster.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

@@ -238,8 +238,9 @@ public class NotificationMailSender {
       props.put("stack.trace", "No stack trace provided");
     }
     try {
-      for (String email : cloudAdminConfiguration.getString(MailConfiguration.CLOUD_ADMIN_MAIL_ADMIN_EMAIL)
-                                                 .split(",")) {
+      for (String email : cloudAdminConfiguration.getStringArray(MailConfiguration.CLOUD_ADMIN_MAIL_ADMIN_EMAIL))
+                                                 //.split(","))
+      {
         mailSender.sendMail(email.trim(), mailSubject, mailTemplate, props, true);
       }
     } catch (CloudAdminException ex) {
