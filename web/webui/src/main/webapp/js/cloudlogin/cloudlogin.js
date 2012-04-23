@@ -108,7 +108,7 @@ CloudLogin.validateStep1 = function() {
   
   // TODO delete this, temporary lets pass
   if(emails.length == 0) {
-    CloudLogin.showStep(2);
+    CloudLogin.exit();
   }
   
   for(var i=0; i<emails.length; i++) {
