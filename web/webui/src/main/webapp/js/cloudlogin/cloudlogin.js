@@ -5,6 +5,7 @@
 var CloudLogin = {};
 
 CloudLogin.WS_SENDMAIL_URL = "/rest/invite-join-ws/send-mail/";
+CloudLogin.WS_STATUS_RESPONSE_OK = "Message sent";
 CloudLogin.EMAIL_REGEXP = /^([a-zA-Z0-9_\.\-])+\@((([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+)$/;
 CloudLogin.NB_EMAILS_OK = 0;
 CloudLogin.NB_EMAILS = 0;
@@ -51,7 +52,7 @@ CloudLogin.initTextExt = function() {
       var dataTag = data.tag.replace(/^\s+|\s+$/g,'');
       if(!CloudLogin.EMAIL_REGEXP.test(dataTag))
       {
-        alert('email not ok: ' + dataTag);
+        alert('Email ' + dataTag + " is not valid");
         data.result = false;
         return;
       }
@@ -75,28 +76,28 @@ CloudLogin.sendEmail = function(email) {
   var mainUrl = CloudLogin.WS_SENDMAIL_URL + email + "/" + hostname;
   
   $.ajax({
-    url: mainUrl,
-    success: function(status) {
-      if (status.indexOf("Message sent") != -1) {
-        console.log("mail ok: " + email);
-        
-        // Test if we pass all emails
-        CloudLogin.NB_EMAILS_OK++;
-        if(CloudLogin.NB_EMAILS_OK == CloudLogin.NB_EMAILS) {
-          CloudLogin.showStep(2);
+      url: mainUrl,
+      success: function(status) {
+        if (status.indexOf(CloudLogin.WS_STATUS_RESPONSE_OK) != -1) {
+          console.log("Invitation has been sent to [" + email + "]");
+          
+          // Test if we pass all emails
+          CloudLogin.NB_EMAILS_OK++;
+          if(CloudLogin.NB_EMAILS_OK == CloudLogin.NB_EMAILS) {
+            CloudLogin.exit();
+          }
         }
-      }
-      else {
-        console.log("mail not ok: " + email);
-        alert("mail not ok: [" + email + "]");
-      }
-    },
-    error: function(request, status, error) {
-      console.log("mail not ok: " + email +" [Status: " + status + "], [Error: " + error + "]");
-      alert("mail not ok: " + email +" [Status: " + status + "], [Error: " + error + "]");
-    },
-    dataType: 'text'
-  });
+        else {
+          console.log("Invitation cannot be sent to [" + email + "], [Status=" + status + "]");
+          alert("Invitation cannot be sent to [" + email + "], [Status=" + status + "]");
+        }
+      },
+      error: function(request, status, error) {
+        console.log("Invitation cannot be sent to [" + email + "], [Status=" + status + "], [Error=" + error + "]");
+        alert("Invitation cannot be sent to [" + email + "], [Status=" + status + "], [Error=" + error + "]");
+      },
+      dataType: 'text'
+    });
 }
 
 CloudLogin.validateStep1 = function() {
@@ -106,7 +107,7 @@ CloudLogin.validateStep1 = function() {
   CloudLogin.NB_EMAILS_OK = 0;
   CloudLogin.NB_EMAILS = emails.length;
   
-  // TODO delete this, temporary lets pass
+  // TODO delete this, temporary lets pass if there isn't emails
   if(emails.length == 0) {
     CloudLogin.exit();
   }

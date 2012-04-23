@@ -56,7 +56,7 @@ public class CloudLoginFilter implements Filter {
       }
 
       // Get extension servlet context (because this filter is not on same context than configuration of servlet we need to forward)
-      ServletContext extensionContext = httpServletRequest.getSession().getServletContext().getContext(CloudLoginServlet.CL_SERVLET_CTX);
+      ServletContext extensionContext = httpServletRequest.getSession().getServletContext().getContext("/" + CloudLoginServlet.CL_SERVLET_CTX);
       
       // Forward to step1 of cloud login with request_uri into parameters
       String uriTarget = CloudLoginServlet.CL_SERVLET_URL + "?" + CloudLoginServlet.CLOUD_REQUESTED_URI + "=" + reqUri;
