@@ -155,7 +155,7 @@ CloudLogin.getDomainFromEmail = function(email) {
    }
  }
  else {
-    console.debug("CloudLogin: " + email + "is not valid mail");
+    console.log("CloudLogin: " + email + "is not valid mail");
  }
  return domain;
 }
