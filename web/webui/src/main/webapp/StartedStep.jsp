@@ -25,6 +25,7 @@
   String lang = request.getLocale().getLanguage();
 
   String uri = (String)request.getAttribute(CloudLoginServlet.INITIAL_URI_ATTRIBUTE);
+  String domain = request.getServerName();
 
   response.setCharacterEncoding("UTF-8"); 
   response.setContentType("text/html; charset=UTF-8");
@@ -52,7 +53,7 @@
         <a href="#" class="StepSelectIcon" style="left: 60px;">1</a><a href="#" class="StepIcon" style="left: 310px;" >2</a><a href="#" class="StepIcon" style="left: 569px;">3</a>
       </div-->
       <h3>Invite Coworkers</h3>
-      <p><strong>Invite colleagues to join your company's</strong><br/>(note: Only @exoplatform.com email addresses will be invited to your workspace. Other addresses will receive an invitation to discover Cloud Workspaces)</p>
+      <p><strong>Invite colleagues to join your company's</strong><br/>(note: Only @<%= domain %> email addresses will be invited to your workspace. Other addresses will receive an invitation to discover Cloud Workspaces)</p>
       <table class="BorderDot">
         <tbody>
           <tr>
