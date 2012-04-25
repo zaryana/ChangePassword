@@ -109,15 +109,16 @@ public class TestMailSender {
     Assert.assertEquals(server.getReceivedEmailSize(), 3);
     Iterator emails = server.getReceivedEmail();
     while (emails.hasNext()) {
-    SmtpMessage oneEmail = (SmtpMessage)emails.next();
-    Assert.assertNotNull(oneEmail);
-    String mailbody = oneEmail.getBody();
-    Assert.assertNotNull(mailbody);
-    Assert.assertTrue(mailbody.contains("test"));
-    Assert.assertTrue(mailbody.contains("message"));
-//  TODO: check contents depending on email type
-//  Assert.assertTrue(oneEmail.getHeaderValue("Subject").contains("JoinRejectedUser"));
-//  Assert.assertTrue(oneEmail.getHeaderValue("From").contains("support")); //its not an admin email
+      SmtpMessage oneEmail = (SmtpMessage)emails.next();
+      Assert.assertNotNull(oneEmail);
+      String mailbody = oneEmail.getBody();
+      Assert.assertNotNull(mailbody);
+      Assert.assertTrue(mailbody.contains("test"));
+      Assert.assertTrue(mailbody.contains("message"));
+      if(oneEmail.getHeaderValue("Subject").contains("JoinRejectedSales"))
+        Assert.assertTrue(oneEmail.getHeaderValue("From").contains("admin")); //its an admin email
+      else
+        Assert.assertTrue(oneEmail.getHeaderValue("From").contains("support")); //another is not an admin email
     }
   }
 
@@ -151,9 +152,7 @@ public class TestMailSender {
       Assert.assertNotNull(mailbody);
       Assert.assertTrue(mailbody.contains("test"));
       Assert.assertTrue(mailbody.contains("message"));
-//  TODO: check contents depending on email type
-//  Assert.assertTrue(oneEmail.getHeaderValue("Subject").contains("JoinRejectedUser"));
-//  Assert.assertTrue(oneEmail.getHeaderValue("From").contains("support")); //its not an admin email
+      Assert.assertTrue(oneEmail.getHeaderValue("From").contains("support")); //its not an admin email
     }
   }
 
