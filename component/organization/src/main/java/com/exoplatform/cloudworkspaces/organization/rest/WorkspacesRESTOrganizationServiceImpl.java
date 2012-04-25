@@ -18,42 +18,25 @@
  */
 package com.exoplatform.cloudworkspaces.organization.rest;
 
+import org.exoplatform.common.http.HTTPStatus;
+import org.exoplatform.commons.utils.ListAccess;
+import org.exoplatform.services.jcr.RepositoryService;
+import org.exoplatform.services.organization.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.annotation.security.RolesAllowed;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.text.Format;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.annotation.security.RolesAllowed;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-
-import org.exoplatform.common.http.HTTPStatus;
-import org.exoplatform.commons.utils.ListAccess;
-import org.exoplatform.services.jcr.RepositoryService;
-import org.exoplatform.services.organization.Group;
-import org.exoplatform.services.organization.GroupHandler;
-import org.exoplatform.services.organization.MembershipType;
-import org.exoplatform.services.organization.OrganizationService;
-import org.exoplatform.services.organization.User;
-import org.exoplatform.services.organization.UserHandler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.*;
 
 /**
  * The Class IntranetRESTOrganizationServiceImpl.
@@ -183,6 +166,7 @@ public class WorkspacesRESTOrganizationServiceImpl
     } catch (Exception e) {
       String err = "Unable to store user " + userName + " in tenant " + tname;
       LOG.error(err, e);
+      e.printStackTrace();
       throw new WebApplicationException(e, Response.status(HTTPStatus.INTERNAL_ERROR)
                                                    .entity(errorMessage(err, e))
                                                    .type("text/plain")
