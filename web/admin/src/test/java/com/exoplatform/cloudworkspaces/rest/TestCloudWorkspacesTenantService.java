@@ -60,21 +60,6 @@ import java.util.Map;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-/**
- * signup - done<br>
- * signup-link -<br>
- * join - done<br>
- * create - done<br>
- * status - done<br>
- * contactus - done<br>
- * isuserexist - done<br>
- * maxallowed - done<br>
- * uuid - done<br>
- * passrestore - done<br>
- * passconfirm - done<br>
- * blacklisted - done<br>
- * tenantname - done<br>
- */
 @Listeners(value = { EverrestJetty.class, MockitoTestNGListener.class })
 public class TestCloudWorkspacesTenantService {
 
