@@ -19,6 +19,7 @@
 package com.exoplatform.cloudworkspaces;
 
 import com.exoplatform.cloudworkspaces.http.WorkspacesOrganizationRequestPerformer;
+import com.exoplatform.cloudworkspaces.instance.WorkspacesUserDataGenerator;
 import com.exoplatform.cloudworkspaces.listener.AsyncTenantStarter;
 import com.exoplatform.cloudworkspaces.listener.JoinAllInOnlineServerListener;
 import com.exoplatform.cloudworkspaces.listener.TenantCreatedListener;
@@ -31,6 +32,7 @@ import com.exoplatform.cloudworkspaces.users.UsersManager;
 
 import org.everrest.core.ResourceBinder;
 import org.exoplatform.cloudmanagement.admin.WorkspacesMailSender;
+import org.exoplatform.cloudmanagement.admin.instance.UserDataGenerator;
 import org.exoplatform.cloudmanagement.admin.rest.CloudAdminApplicationComposer;
 import org.exoplatform.cloudmanagement.admin.rest.TenantCreator;
 import org.exoplatform.cloudmanagement.admin.status.ServerOnlineListenersInvoker;
@@ -80,6 +82,9 @@ public class CloudWorkspacesAdminApplicationComposer extends CloudAdminApplicati
     container.addComponent(ChangePasswordManager.class);
 
     container.addComponent(TenantCreator.class);
+
+    container.removeComponent(UserDataGenerator.class);
+    container.addComponent(UserDataGenerator.class, WorkspacesUserDataGenerator.class);
   }
 
   @Override
