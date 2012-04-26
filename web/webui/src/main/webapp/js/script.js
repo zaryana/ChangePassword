@@ -26,6 +26,7 @@ function Tenants() {
 
 var prefixUrl = location.protocol + '//' + location.hostname;
 var queryString = location.search;
+var mktURL = "http://learn.cloud-workspaces.com/index.php/leadCapture/save";
 var loopfuseURL = "http://lfov.net/webrecorder/f";
 
 if (location.port) {
@@ -595,13 +596,24 @@ Tenants.prototype.doReset = function() {
 
 /*  Handle signup response */
 Tenants.prototype.handleSignupResponse = function(resp) {
-
+	var cwProfileForm = _gel("cloud-workspaces-profile");
   if (resp == "") {
-    sendDataToLoopfuse({
-      "email" : _gel('email').value,
-      // hidden LoopFuse fields
-      "formid" : _gel('formid').value,
-      "cid" : _gel('cid').value
+    sendDataToMarketo({
+      "Email" : _gel('email').value,
+      "Cloud_Workspaces_User__c" : _gel('Cloud_Workspaces_User__c').value,
+			"LeadSource" : _gel('LeadSource').value,
+			"_marketo_comments": cwProfileForm._marketo_comments.value,
+			"lpId": cwProfileForm.lpId.value,
+			"subId": cwProfileForm.subId.value,
+			"kw": cwProfileForm.kw.value,
+			"cr": cwProfileForm.cr.value,
+			"searchstr": cwProfileForm.searchstr.value,
+			"lpurl": cwProfileForm.lpurl.value,
+			"formid": cwProfileForm.formid.value,
+			"returnURL": cwProfileForm.returnURL.value,
+			"retURL": cwProfileForm.retURL.value,
+			"_mkt_disp": cwProfileForm._mkt_disp.value,
+			"_mkt_trk": cwProfileForm._mkt_trk.value
     }, function() {
       window.location = prefixUrl + "/signup-done.jsp";
     });
@@ -615,17 +627,28 @@ Tenants.prototype.handleSignupResponse = function(resp) {
 
 /*  Handle creation response */
 Tenants.prototype.handleCreationResponse = function(resp) {
-
+	var registrationForm = _gel("registrationForm");
   if (resp == "") {
-    sendDataToLoopfuse({
-      "email" : _gel('email').value,
-      "first_name" : _gel('first_name').value,
-      "last_name" : _gel('last_name').value,
-      "company" : _gel('company').value,
-      "phone_work" : _gel('phone_work').value,
-      // hidden LoopFuse fields
-      "formid" : _gel('formid').value,
-      "cid" : _gel('cid').value
+    sendDataToMarketo({
+      "Email" : _gel('email').value,
+      "FirstName" : _gel('first_name').value,
+      "LastName" : _gel('last_name').value,
+      "Company" : _gel('company').value,
+      "Phone" : _gel('phone_work').value,
+      "Cloud_Workspaces_User__c" : _gel('Cloud_Workspaces_User__c').value,
+			"LeadSource" : _gel('LeadSource').value,
+			"_marketo_comments": registrationForm._marketo_comments.value,
+			"lpId": registrationForm.lpId.value,
+			"subId": registrationForm.subId.value,
+			"kw": registrationForm.kw.value,
+			"cr": registrationForm.cr.value,
+			"searchstr": registrationForm.searchstr.value,
+			"lpurl": registrationForm.lpurl.value,
+			"formid": registrationForm.formid.value,
+			"returnURL": registrationForm.returnURL.value,
+			"retURL": registrationForm.retURL.value,
+			"_mkt_disp": registrationForm._mkt_disp.value,
+			"_mkt_trk": registrationForm._mkt_trk.value
     }, function() {
       window.location = prefixUrl + "/registration-done.jsp";
     });
@@ -638,15 +661,27 @@ Tenants.prototype.handleCreationResponse = function(resp) {
 
 /*  Handle join response */
 Tenants.prototype.handleJoinResponse = function(resp) {
+	var joinForm = _gel('joinForm');
 
   if (resp == "") {
-    sendDataToLoopfuse({
-      "email" : _gel('email').value,
-      "first_name" : _gel('first_name').value,
-      "last_name" : _gel('last_name').value,
-      // hidden LoopFuse fields
-      "formid" : _gel('formid').value,
-      "cid" : _gel('cid').value
+    sendDataToMarketo({
+			"Email" : _gel('email').value,
+			"FirstName" : _gel('first_name').value,
+			"LastName" : _gel('last_name').value,
+			"Cloud_Workspaces_User__c" : _gel('Cloud_Workspaces_User__c').value,
+			"LeadSource" : _gel('LeadSource').value,
+			"_marketo_comments": joinForm._marketo_comments.value,
+			"lpId": joinForm.lpId.value,
+			"subId": joinForm.subId.value,
+			"kw": joinForm.kw.value,
+			"cr": joinForm.cr.value,
+			"searchstr": joinForm.searchstr.value,
+			"lpurl": joinForm.lpurl.value,
+			"formid": joinForm.formid.value,
+			"returnURL": joinForm.returnURL.value,
+			"retURL": joinForm.retURL.value,
+			"_mkt_disp": joinForm._mkt_disp.value,
+			"_mkt_trk": joinForm._mkt_trk.value
     }, function() {
       window.location = prefixUrl + "/join-done.jsp#"+_gel('email').value;
     });
@@ -659,18 +694,66 @@ Tenants.prototype.handleJoinResponse = function(resp) {
 
 }
 
-Tenants.prototype.handleContactResponse = function(resp) {
+Tenants.prototype.splitName = function(name) {
+	
+	// extract firstName and lastName from name
+  var firstName = "";      
+  var lastName = "";
+  
+  // trim name, remove duplicated spaces, split by spaces
+  var splittedName = jQuery.trim(name).replace(/\s+/g, " ").split(" ");
+  if (splittedName && splittedName.length > 0){
+     if (splittedName.length == 1){   
+        // parse case like "John"
+        firstName = splittedName[0];
+        lastName = "";
+     } else{
+        // parse case like "John  Smith", or "John Entony Smith"
+        lastName = splittedName.pop();
+        firstName = splittedName.join(" ");
+     }
+  }
+  
+  name = encodeURIComponent(name);
 
+	return {
+		getName: function(){
+			return name;
+		},
+
+		getFirstName: function(){
+			return firstName;
+		},
+
+		getLastName: function(){
+			return lastName;
+		}
+	}
+}; 
+
+Tenants.prototype.handleContactResponse = function(resp) {
+		var mycontactForm = _gel('mycontactForm');
+		var splitName = Tenants.splitName();
 	  if (resp == "") {
-		  sendDataToLoopfuse({
-		      "email" : _gel('email').value,
-		      "first_name" : _gel('name').value,
-		      "company" : _gel('subject').value,
-		      "message" : _gel('ContactUs_Message__c').value,
-		      // hidden LoopFuse fields
-		      "formid" : _gel('formid').value,
-		      "service_source" : _gel('service_source').value,
-		      "cid" : _gel('cid').value
+		  sendDataToMarketo({
+		      "FirstName" : splitName.getFirstName(),
+		      "LastName" : splitName.getLastName(),
+		      "Email" : _gel('email').value,
+		      "Cloud_Workspaces_Contact_Us_Subject__c" : _gel('subject').value,
+		      "Cloud_Workspaces_Contact_Us_Message__c" : _gel('ContactUs_Message__c').value,
+					"LeadSource": mycontactForm.LeadSource.value,
+					"_marketo_comments": mycontactForm._marketo_comments.value,
+					"lpId": mycontactForm.lpId.value,
+					"subId": mycontactForm.subId.value,
+					"kw": mycontactForm.kw.value,
+					"cr": mycontactForm.cr.value,
+					"searchstr": mycontactForm.searchstr.value,
+					"lpurl": mycontactForm.lpurl.value,
+					"formid": mycontactForm.formid.value,
+					"returnURL": mycontactForm.returnURL.value,
+					"retURL": mycontactForm.retURL.value,
+					"_mkt_disp": mycontactForm._mkt_disp.value,
+					"_mkt_trk": mycontactForm._mkt_trk.value
 		    }, function() {
 		     // document.getElementById('Content').innerHTML = "<div class=\"ThanksPages ClearFix\"><h1>Thank you!</h1><p style=\"text-align:center\">Your request has been successfully submitted. We will get back to you soon.</p></div>";
 		     window.location = "/contact-us-done.jsp";
@@ -748,7 +831,7 @@ function _gel(id) {
 }
 
 function onlyNumbers(evt) {
-  var charCode = (evt.which) ? evt.which : event.keyCode;
+  var charCode = (evt.which) ? evt.which : evt.keyCode;
 
   if (charCode > 31
       && ((charCode < 48 || charCode > 57) && charCode != 45 && charCode != 40
@@ -759,52 +842,57 @@ function onlyNumbers(evt) {
 
 }
 
-function sendDataToLoopfuse(data, afterSubmitCallback) {
 
-  var loopfuseOutputIframeId = "loopfuseOutput";
-  var loopfuseOutputIframeName = "loopfuseOutput";
-  var loopfuseFormId = "loopfuseForm";
-  var loopfuseFormName = "cloud-workspaces-profile";
+function sendDataToMarketo(data, afterSubmitCallback) {
+  var mktOutputIframeId = "mktOutput";
+  var mktOutputIframeName = "mktOutput";
+  var mktFormId = "mktForm";
+  var mktFormName = "cloud-workspaces-profile";
 
-  if (jQuery && document.getElementById(loopfuseOutputIframeId)) {
-    jQuery('#' + loopfuseFormId).remove();
-    jQuery('#' + loopfuseOutputIframeId).attr('src', ""); // clear iframe
+  if (jQuery && document.getElementById(mktOutputIframeId)) {
+    jQuery('#' + mktFormId).remove();
+    jQuery('#' + mktOutputIframeId).attr('src', ""); // clear iframe
 
     jQuery('body').append(jQuery('<form/>', {
-      id : loopfuseFormId,
-      name : loopfuseFormName,
+      id : mktFormId,
+      name : mktFormName,
       method : 'POST',
-      action : loopfuseURL,
-      target : loopfuseOutputIframeName
+      action : mktURL,
+      target : mktOutputIframeName,
+			enctype: 'application/x-www-form-urlencoded'
     }));
 
     for ( var i in data) {
-      jQuery('#' + loopfuseFormId).append(jQuery('<input/>', {
+      jQuery('#' + mktFormId).append(jQuery('<input/>', {
         type : 'hidden',
         name : i,
         value : data[i]
       }));
     }
 
-    jQuery('#' + loopfuseFormId).submit();
+		Mkto.formSubmit(document.getElementById(mktFormId));
 
-    var i = 200; // set limited iterations - interrupt after the 20
-    // seconds
+    var i = 200;  // set limited iterations - interrupt after the 20 seconds
     var afterSubmitHandler = window.setInterval(function() {
-      if (!(i--) || isLoopfuseResponseReceived(loopfuseOutputIframeId)) {
-        window.clearInterval(afterSubmitHandler);
-        if (afterSubmitCallback) {
-          afterSubmitCallback();
-        }
+       if (!(i--) || isMarketoResponseReceived(mktOutputIframeId))
+       {
+          window.clearInterval(afterSubmitHandler);
+          if (afterSubmitCallback) 
 
-        jQuery('#' + loopfuseOutputIframeId).attr('src', ""); // clear
-        // iframe
-      }
-    }, 100);
+          {
+             afterSubmitCallback();
+          }
+          
+          jQuery('#' + mktFormId).remove();
+          jQuery('#' + mktOutputIframeId).attr('src', ""); // clear iframe  
+       }
+      }, 10);
   }
 }
 
-function isLoopfuseResponseReceived(iframeId) {
+
+
+function isMarketoResponseReceived(iframeId) {
   try {
     return !document.getElementById(iframeId)
         || document.getElementById(iframeId).contentWindow.location.href != "about:blank";

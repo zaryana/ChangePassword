@@ -55,9 +55,7 @@
       </div>
     </div>
 
-    <!-- BEGIN: LOOPFUSE TRACKING -->
-    <script type="text/javascript" src="http://lfov.net/webrecorder/js/listen.js"></script>
-    <!-- END: LOOPFUSE TRACKING -->
+
     <script type="text/javascript" src="/js/trackers.js"></script>
   </body>
 </html>
