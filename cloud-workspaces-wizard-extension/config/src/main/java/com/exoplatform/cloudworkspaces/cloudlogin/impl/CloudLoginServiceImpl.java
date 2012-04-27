@@ -4,6 +4,8 @@ import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.nodetype.ConstraintViolationException;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.NodeType;
 
 import org.exoplatform.services.jcr.RepositoryService;
@@ -69,7 +71,11 @@ public class CloudLoginServiceImpl implements CloudLoginService {
             cloudLoginStatus = CloudLoginStatus.getCloudLoginStatus(pp.getString());
           }
         }
-      } 
+      }
+      catch (ConstraintViolationException e) {
+        // case of property CL_MIXIN_STATUS doesn't exist
+        logger.warn("Cloud Login: JCR property '" + CL_MIXIN_STATUS + "' doesn't exist");
+      }
       catch (RepositoryException e) {
         logger.error("Cloud Login: cannot get status for user '" + userId + "'", e);
       }
@@ -97,7 +103,11 @@ public class CloudLoginServiceImpl implements CloudLoginService {
       try {
         cloudUserNode.setProperty(CL_MIXIN_STATUS, status);
         cloudUserNode.save();
-      } 
+      }
+      catch (ConstraintViolationException e) {
+        // case of property CL_MIXIN_STATUS doesn't exist
+        logger.warn("Cloud Login: JCR property '" + CL_MIXIN_STATUS + "' doesn't exist");
+      }
       catch (RepositoryException e) {
         logger.error("Cloud Login: impossible to set status to '" + status + "' with user '" + userId + "'", e);
       }
@@ -152,6 +162,14 @@ public class CloudLoginServiceImpl implements CloudLoginService {
         else {
           logger.error("Cloud Login: Node '" + rootNode.getPath() + LOGIN_HISTORY_HOME + "' should exist.");
         }
+      }
+      catch (NoSuchNodeTypeException e) {
+        // case of CL_MIXIN_TYPE doesn't exist
+        logger.warn("Cloud Login: Problem with mixin '" + CL_MIXIN_TYPE + "'");
+      }
+      catch (ConstraintViolationException e) {
+        // case of property CL_MIXIN_STATUS doesn't exist
+        logger.warn("Cloud Login: JCR property '" + CL_MIXIN_STATUS + "' doesn't exist");
       }
       catch (Exception e) {
         logger.error("Cloud Login: Error while adding cloud login status for user '" + userId + "'", e);
