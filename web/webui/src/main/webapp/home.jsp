@@ -83,7 +83,7 @@
               <div class="FormBox">
                 <div class="BoxContent ClearFix">
     
-                  <form class="UIForm" action="javascript:void(0);"   method="POST" name="cloud-workspaces-profile" id="cloud-workspaces-profile">
+                  <form class="UIForm" action="javascript:void(0);"   method="POST" name="cloud-workspaces-profile" id="signupForm">
 										<!-- Marketo input hidden fields -->
 										<input name="Cloud_Workspaces_User__c" id="Cloud_Workspaces_User__c" type='hidden' value="yes" />
 										<input name="LeadSource" id="LeadSource" type='hidden' value="Web - Cloud Workspaces" />
@@ -95,18 +95,16 @@
 										<input type="hidden" name="searchstr" value="" />
 										<input type="hidden" name="lpurl" value="http://learn.cloud-workspaces.com/Cloud-Workspaces-Sign-Up-English.html?cr={creative}&kw={keyword}" />
 										<input type="hidden" name="formid" value="1035" />
-										<input type="hidden" name="returnURL" value="http://cloud-workspaces.com/" />
-										<input type="hidden" name="retURL" value="http://cloud-workspaces.com/" />
+										<input type="hidden" name="returnURL" value="" />
+										<input type="hidden" name="retURL" value="" />
 										<input type="hidden" name="_mkt_disp" value="return" />
 										<input type="hidden" name="_mkt_trk" value="" />
-
                     <p class="SignUpInfo">Cloud Workspaces is currently in beta. To participate, register with your work email address. We'll keep you updated when your company's social intranet is ready.</p>
                     <div id="messageString" class="TenantFormMsg"></div>
                     <input class="InputText" type="text" name="email" id="email" value="Enter your professional email" onclick="this.value='';" />
                     <input class="Button" type="submit" id="t_submit"  value="Sign Up" onClick="tenants.doSingupRequest();" />
                   </form>
                   <div class="SocialBox">
-                   
                     <div id="fb-root"></div>
                     <script>(function(d, s, id) {
                         var js, fjs = d.getElementsByTagName(s)[0];
@@ -117,14 +115,12 @@
                       }(document, 'script', 'facebook-jssdk'));
                     </script>
                     <div class="FL">
-                    	 
                         <div class="fb-like" data-href="http://www.facebook.com/eXoPlatform" data-send="true" data-layout="button_count" data-show-faces="false">
                         </div>
                      </div>
                      <div class="FR"> 
                            <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://cloud-workspaces.com" data-text="Cloud-Workspaces: The Free Social Intranet for Your Company" data-via="eXoPlatform" data-count="none">Tweet</a>
 <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-   
                         <!-- Place this tag where you want the +1 button to render -->
                         <g:plusone size="medium"></g:plusone>
                      </div>
@@ -134,7 +130,7 @@
             </div>
           </div>
         </div>
-    
+
         <!--begin IntroBox-->
         <div class="UI-Intro">
           <div class="MainContent ClearFix" >
@@ -196,10 +192,8 @@
 			</div>
         </div>
       </div>
-        
       <!--begin footer-->
       <%@ include file="common/footer.jsp"%>
-  
       <!-- Video panel -->
       <div class="video_display" id="videoLeft" name="videoLeft" style="display: none;">
         <object width="640" height="350">
@@ -216,10 +210,10 @@
       </div>
     </div>
     <!--  marketo response container  -->
-		<iframe id="mktOutput" name="mktOutput" style='display:none; visibility:hidden'></iframe>
+    <iframe id="mktOutput" name="mktOutput" style='display:none; visibility:hidden'></iframe>
     <!-- BEGIN: MARKETO TRACKING -->
-		<script type="text/javascript" src="/js/mktFormSupport.js"></script>	
-		<!-- END: MARKETO TRACKING -->
-		<script type="text/javascript" src="/js/trackers.js"></script>
+    <script type="text/javascript" src="/js/mktFormSupport.js"></script>
+    <!-- END: MARKETO TRACKING -->
+    <script type="text/javascript" src="/js/trackers.js"></script>
   </body>
 </html>

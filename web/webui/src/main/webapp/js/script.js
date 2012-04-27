@@ -596,11 +596,11 @@ Tenants.prototype.doReset = function() {
 
 /*  Handle signup response */
 Tenants.prototype.handleSignupResponse = function(resp) {
-	var cwProfileForm = _gel("cloud-workspaces-profile");
+  var cwProfileForm = _gel("signupForm");
   if (resp == "") {
     sendDataToMarketo({
       "Email" : _gel('email').value,
-      "Cloud_Workspaces_User__c" : _gel('Cloud_Workspaces_User__c').value,
+      "Cloud_Workspaces_User__c" : "Yes",
 			"LeadSource" : _gel('LeadSource').value,
 			"_marketo_comments": cwProfileForm._marketo_comments.value,
 			"lpId": cwProfileForm.lpId.value,
@@ -618,8 +618,27 @@ Tenants.prototype.handleSignupResponse = function(resp) {
       window.location = prefixUrl + "/signup-done.jsp";
     });
   } else {
-    _gel("messageString").innerHTML = resp;
+    sendDataToMarketo({
+      "Email" : _gel('email').value,
+      "Cloud_Workspaces_User__c" : "No",
+			"LeadSource" : _gel('LeadSource').value,
+			"_marketo_comments": cwProfileForm._marketo_comments.value,
+			"lpId": cwProfileForm.lpId.value,
+			"subId": cwProfileForm.subId.value,
+			"kw": cwProfileForm.kw.value,
+			"cr": cwProfileForm.cr.value,
+			"searchstr": cwProfileForm.searchstr.value,
+			"lpurl": cwProfileForm.lpurl.value,
+			"formid": cwProfileForm.formid.value,
+			"returnURL": cwProfileForm.returnURL.value,
+			"retURL": cwProfileForm.retURL.value,
+			"_mkt_disp": cwProfileForm._mkt_disp.value,
+			"_mkt_trk": cwProfileForm._mkt_trk.value
+    }, function() {
+      _gel("messageString").innerHTML = resp;
+    });
   }
+
   _gel("t_submit").disabled = false;
   _gel("t_submit").value = "Sign Up";
 }
@@ -627,7 +646,7 @@ Tenants.prototype.handleSignupResponse = function(resp) {
 
 /*  Handle creation response */
 Tenants.prototype.handleCreationResponse = function(resp) {
-	var registrationForm = _gel("registrationForm");
+  var registrationForm = _gel("registrationForm");
   if (resp == "") {
     sendDataToMarketo({
       "Email" : _gel('email').value,
@@ -635,7 +654,7 @@ Tenants.prototype.handleCreationResponse = function(resp) {
       "LastName" : _gel('last_name').value,
       "Company" : _gel('company').value,
       "Phone" : _gel('phone_work').value,
-      "Cloud_Workspaces_User__c" : _gel('Cloud_Workspaces_User__c').value,
+      "Cloud_Workspaces_User__c" : "Yes",
 			"LeadSource" : _gel('LeadSource').value,
 			"_marketo_comments": registrationForm._marketo_comments.value,
 			"lpId": registrationForm.lpId.value,
@@ -668,7 +687,7 @@ Tenants.prototype.handleJoinResponse = function(resp) {
 			"Email" : _gel('email').value,
 			"FirstName" : _gel('first_name').value,
 			"LastName" : _gel('last_name').value,
-			"Cloud_Workspaces_User__c" : _gel('Cloud_Workspaces_User__c').value,
+			"Cloud_Workspaces_User__c" : "Yes",
 			"LeadSource" : _gel('LeadSource').value,
 			"_marketo_comments": joinForm._marketo_comments.value,
 			"lpId": joinForm.lpId.value,

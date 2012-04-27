@@ -45,18 +45,16 @@
 				<input type="hidden" name="searchstr" value="" />
 				<input type="hidden" name="lpurl" value="http://learn.cloud-workspaces.com/CloudWorkspaces-Contact-Us-English.html?cr={creative}&kw={keyword}" />
 				<input type="hidden" name="formid" value="1024" />
-				<input type="hidden" name="returnURL" value="http://www.exoplatform.com/company/en/thankyou" />
-				<input type="hidden" name="retURL" value="http://www.exoplatform.com/company/en/thankyou" />
+				<input type="hidden" name="returnURL" value="" />
+				<input type="hidden" name="retURL" value="" />
 				<input type="hidden" name="_mkt_disp" value="return" />
 				<input type="hidden" name="_mkt_trk" value="" />
-
 		  </form>
     </div>
-
     <!--  marketo response container  -->
-		<iframe id="mktOutput" name="mktOutput" style='display:none; visibility:hidden'></iframe>
+    <iframe id="mktOutput" name="mktOutput" style='display:none; visibility:hidden'></iframe>
     <!-- BEGIN: MARKETO TRACKING -->
-    <script type="text/javascript" src="/js/mktFormSupport.js"></script>	
+    <script type="text/javascript" src="/js/mktFormSupport.js"></script>
     <!-- END: MARKETO TRACKING -->
     <script type="text/javascript" src="/js/trackers.js"></script>
   </body>
