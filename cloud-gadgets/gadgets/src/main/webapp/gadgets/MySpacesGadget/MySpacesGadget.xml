@@ -48,9 +48,9 @@
                 var spaceItem = '';
                 
                 if (i < 5)
-                  spaceItem += '<li><a target="_parent" href="/portal/g/:spaces:'+item.spaceUrl+'"><span class="arrow">Â»</span>  '+item.displayName+'</a></ul>';
+                  spaceItem += '<li><a target="_parent" href="/portal/g/:spaces:'+item.spaceUrl+'"><span class="arrow">»</span>  '+item.displayName+'</a></ul>';
                 else
-                  spaceItem += '<li style="display:none;"><a target="_parent" href="/portal/g/:spaces:'+item.spaceUrl+'"><span class="arrow">Â»</span>  '+item.displayName+'</a></ul>';
+                  spaceItem += '<li style="display:none;"><a target="_parent" href="/portal/g/:spaces:'+item.spaceUrl+'"><span class="arrow">»</span>  '+item.displayName+'</a></ul>';
                 
                 $("#spaceList").append(spaceItem);  
                 gadgets.window.adjustHeight();

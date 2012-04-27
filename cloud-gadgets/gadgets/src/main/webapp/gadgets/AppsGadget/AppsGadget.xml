@@ -18,10 +18,10 @@
       <span class="title">Applications</span>
       
       <ul>
-        <li><a target="_parent" href="/portal/intranet/calendar" ><span class="arrow">Â»</span>  Calendar</a></li>
-        <li><a target="_parent" href="/portal/intranet/documents" ><span class="arrow">Â»</span>  Documents</a></li>
-        <li><a target="_parent" href="/portal/intranet/forum" ><span class="arrow">Â»</span>  Forums</a></li>
-        <li><a target="_parent" href="/portal/intranet/wiki" ><span class="arrow">Â»</span>  Wiki</a></li>
+        <li><a target="_parent" href="/portal/intranet/calendar" ><span class="arrow">»</span>  Calendar</a></li>
+        <li><a target="_parent" href="/portal/intranet/documents" ><span class="arrow">»</span>  Documents</a></li>
+        <li><a target="_parent" href="/portal/intranet/forum" ><span class="arrow">»</span>  Forums</a></li>
+        <li><a target="_parent" href="/portal/intranet/wiki" ><span class="arrow">»</span>  Wiki</a></li>
       </ul>
             
     </div>

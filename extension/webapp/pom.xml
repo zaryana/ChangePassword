@@ -9,6 +9,16 @@
   <artifactId>cloud-workspaces-extension-webapp</artifactId>
   <packaging>war</packaging>
   <name>eXo Cloud Workspaces :: Extension Webapp</name>
+  
+  <dependencies>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <scope>provided</scope>
+      <type>jar</type>
+    </dependency>
+  </dependencies>
+  
   <build>
     <finalName>cloud-workspaces-extension</finalName>
   </build>

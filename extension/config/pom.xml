@@ -9,4 +9,15 @@
   <artifactId>cloud-workspaces-extension-config</artifactId>
   <packaging>jar</packaging>
   <name>eXo Cloud Workspaces :: Extension Config</name>
+  
+  <dependencies>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <scope>provided</scope>
+      <type>jar</type>
+    </dependency>
+  </dependencies>
+  
+  
 </project>
