@@ -50,7 +50,7 @@
   <gadget name="WhosOnlineGadget">
     <path>/gadgets/WhosOnlineGadget/WhosOnlineGadget.xml</path>
   </gadget>
-  <gadget name="CalendarGadget">
+  <gadget name="AgendaGadget">
     <path>/gadgets/AgendaGadget/AgendaGadget.xml</path>
   </gadget>  
 
