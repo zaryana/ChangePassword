@@ -1,0 +1,59 @@
+#MyDocumentsGadget .uigadgetthemes .GadCont {
+  padding: 0px;
+
+}
+
+#MyDocumentsGadget .title {
+    padding-left: 30px;
+    text-transform: uppercase;
+    font-weight: bold;    
+}
+
+#MyDocumentsGadget ul {
+  list-style-type: none;
+  list-style-position: inside; 
+  margin-bottom: 0px;
+}
+
+#MyDocumentsGadget ul li {
+    line-height: 22px; 
+    padding-left: 22px;    
+}
+
+#MyDocumentsGadget ul li:hover {
+    background-color: #E1E1E1;
+    line-height: 22px; 
+}
+
+#MyDocumentsGadget ul li a {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+}
+
+#MyDocumentsGadget ul li a:hover {
+font-weight: bold;
+text-decoration: none;
+}
+
+.arrow {
+  font-weight:normal;
+  color: black;
+}
+
+#showAll {
+ padding-left: 30px;
+ padding-top: 8px;
+ font-size: 9px;
+ text-transform:uppercase; 
+}
+
+#MyDocumentsGadget .default16x16icon {
+ 
+ height: auto;
+ width: 175px;
+  
+}
+
