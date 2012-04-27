@@ -83,15 +83,27 @@
               <div class="FormBox">
                 <div class="BoxContent ClearFix">
     
-                  <form class="UIForm" action="javascript:void(0);"   method="POST" name="cloud-workspaces-profile">
+                  <form class="UIForm" action="javascript:void(0);"   method="POST" name="cloud-workspaces-profile" id="cloud-workspaces-profile">
+										<!-- Marketo input hidden fields -->
+										<input name="Cloud_Workspaces_User__c" id="Cloud_Workspaces_User__c" type='hidden' value="yes" />
+										<input name="LeadSource" id="LeadSource" type='hidden' value="Web - Cloud Workspaces" />
+										<input type="hidden" name="_marketo_comments" value="" />
+										<input type="hidden" name="lpId" value="1047" />
+										<input type="hidden" name="subId" value="46" />
+										<input type="hidden" name="kw" value="" />
+										<input type="hidden" name="cr" value="" />
+										<input type="hidden" name="searchstr" value="" />
+										<input type="hidden" name="lpurl" value="http://learn.cloud-workspaces.com/Cloud-Workspaces-Sign-Up-English.html?cr={creative}&kw={keyword}" />
+										<input type="hidden" name="formid" value="1035" />
+										<input type="hidden" name="returnURL" value="http://cloud-workspaces.com/" />
+										<input type="hidden" name="retURL" value="http://cloud-workspaces.com/" />
+										<input type="hidden" name="_mkt_disp" value="return" />
+										<input type="hidden" name="_mkt_trk" value="" />
+
                     <p class="SignUpInfo">Cloud Workspaces is currently in beta. To participate, register with your work email address. We'll keep you updated when your company's social intranet is ready.</p>
                     <div id="messageString" class="TenantFormMsg"></div>
                     <input class="InputText" type="text" name="email" id="email" value="Enter your professional email" onclick="this.value='';" />
                     <input class="Button" type="submit" id="t_submit"  value="Sign Up" onClick="tenants.doSingupRequest();" />
-                    <input type="hidden" id="formid" name="formid" value="147cd324-b524-4679-bcad-5f5708ad5beb" />
-                    <input type="hidden" id="cid" name="cid" value="LF_df197061" />
-                    <div id="signin"><a class="SignIn" href="/signin.jsp">Already registered? Sign In</a></div>
-                    <iframe id="loopfuseOutput" name="loopfuseOutput" style='display:none; visibility:hidden'></iframe>
                   </form>
                   <div class="SocialBox">
                    
@@ -203,10 +215,11 @@
         </object>
       </div>
     </div>
-
-    <!-- BEGIN: LOOPFUSE TRACKING -->
-    <script type="text/javascript" src="http://lfov.net/webrecorder/js/listen.js"></script>
-    <!-- END: LOOPFUSE TRACKING -->
-    <script type="text/javascript" src="/js/trackers.js"></script>
+    <!--  marketo response container  -->
+		<iframe id="mktOutput" name="mktOutput" style='display:none; visibility:hidden'></iframe>
+    <!-- BEGIN: MARKETO TRACKING -->
+		<script type="text/javascript" src="/js/mktFormSupport.js"></script>	
+		<!-- END: MARKETO TRACKING -->
+		<script type="text/javascript" src="/js/trackers.js"></script>
   </body>
 </html>

@@ -159,43 +159,5 @@
       </init-params>
     </component-plugin>
   </external-component-plugins>
-
-  <!-- temporarily for 1.0.0-Beta2, PLF-2644 -->
-  <external-component-plugins>
-    <target-component>org.exoplatform.portal.config.UserPortalConfigService</target-component>
-    <component-plugin>
-      <name>intranet.portal.config.user.listener</name>
-      <set-method>initListener</set-method>
-      <type>org.exoplatform.portal.config.NewPortalConfigListener</type>
-      <description>this listener init the portal configuration</description>
-      <init-params>
-        <value-param>
-          <name>default.portal</name>
-          <description>The default portal for checking db is empty or not</description>
-          <value>intranet</value>
-        </value-param>
-        <object-param>
-          <name>portal.configuration</name>
-          <description>description</description>
-          <object type="org.exoplatform.portal.config.NewPortalConfig">
-            <field name="predefinedOwner">
-              <collection type="java.util.HashSet">
-                <value>
-                  <string>intranet</string>
-                </value>
-              </collection>
-            </field>
-            <field name="ownerType">
-              <string>portal</string>
-            </field>
-            <field name="templateLocation">
-              <string>war:/conf/cloud-workspaces-extension/portal</string>
-            </field>
-          </object>
-        </object-param>
-      </init-params>
-    </component-plugin>
-  </external-component-plugins>
-
   <remove-configuration>org.exoplatform.platform.gadget.services.GroovyScript2RestLoader.GroovyScript2RestLoaderExt</remove-configuration>
 </configuration>

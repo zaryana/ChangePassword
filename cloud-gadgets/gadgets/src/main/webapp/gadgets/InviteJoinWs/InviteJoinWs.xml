@@ -23,7 +23,7 @@
             var email = inputTxt.value;
             var notifyMsg = document.getElementById("notifyMsg");
             var regex = /^[\w\.-_\+]+@[\w-]+(\.\w{2,4})+$/;  //regular expression for email validation
-            if (email.length == 0 || !regex.test(email)) {
+            if (email.length == 0 || email == "__MSG_inputDefault__" || !regex.test(email)) {
               
               notifyMsg.innerHTML = '<div class="Warning">Please enter a valid email address.</div>';
               notifyMsg.style.display = "block";
@@ -34,36 +34,33 @@
               if (location.port) {
                 hostname += ":" + location.port;
               }
-              
-              notifyMsg.innerHTML = '<div class="Message">Sending...</div>';
-              notifyMsg.style.display = "block";
-              gadgets.window.adjustHeight();
-              
-              
+
               var mainUrl = "/rest/invite-join-ws/send-mail/" + email + "/" + hostname;
               
               $.ajax({
                 url: mainUrl,
                 success: function(status) {
-                  var notifyMsg = document.getElementById("notifyMsg");
-                  if (status.indexOf("Message sent") != -1) {
-                    $('#notifyMsg').html('<div class="Message">Invitation sent</div>');
-                    notifyMsg.style.display = "block";
-                    $('#notifyMsg').fadeOut(5000, function(){
-                      gadgets.window.adjustHeight();
-                    });
-                  }
-                  
-                  gadgets.window.adjustHeight();
-                  
                 },
                 error: function(request, status, error){
+                  $("#notifyMsg").stop(true, true);
                   notifyMsg.innerHTML = '<div class="Warning">' + request.responseText + '</div>';
                   notifyMsg.style.display = "block";
                   gadgets.window.adjustHeight();
                 },
                 dataType: 'text'
               });
+              
+              $('#notifyMsg').html('<div class="Message">Invitation sent</div>');
+              notifyMsg.style.display = "none";
+              
+              $('#notifyMsg').fadeIn(1000, function(){
+                gadgets.window.adjustHeight();
+              });
+
+              $('#notifyMsg').fadeOut(5000, function(){
+                gadgets.window.adjustHeight();
+              });                  
+              
               gadgets.window.adjustHeight();
             }
           });

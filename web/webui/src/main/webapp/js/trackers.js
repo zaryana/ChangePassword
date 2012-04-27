@@ -29,22 +29,11 @@
  */
 
 var targetDomainNameForTracking = "cloud-workspaces.com";
-
-if (testDomainPrefix(targetDomainNameForTracking))
-{
-   sendDataToLoopfuseTracker();
+if (testDomainPrefix(targetDomainNameForTracking)){
    sendDataToGoogleAnalyticsTracker();
-   sendDataToMarketo();
+   sendDataToMarketoTracker();
 }
 
-/**
- *  Send data to LOOPFUSE
- */
-function sendDataToLoopfuseTracker()
-{
-   _lf_cid = "LF_df197061";
-   _lf_remora();
-}
 
 /**
  *  Send data to Google Analytics
@@ -60,19 +49,50 @@ function sendDataToGoogleAnalyticsTracker()
 
 
 /**
- * Send data to Marketo
+ *  Send data to Marketo
  */
- 
-function sendDataToMarketo(){ 
-	$.ajax({
-  		url: document.location.protocol + '//munchkin.marketo.net/munchkin.js',
-  		dataType: 'script',
-  		cache: true,
-  		success: function() {
-    	Munchkin.init('577-PCT-880');
-  		}
-	});
-}	
+function sendDataToMarketoTracker(){
+   if (jQuery){
+      jQuery.ajax({
+         url : document.location.protocol + '//munchkin.marketo.net/munchkin.js',
+         dataType : 'script',
+         cache : true,
+         success : function()
+         {
+            Munchkin.init('577-PCT-880');
+         }
+      });
+   } else {
+      (function(){
+         function initMunchkin()
+         {
+            Munchkin.init('577-PCT-880');
+         }
+         var s = document.createElement('script');
+         s.type = 'text/javascript';
+         s.async = true;
+         s.src = document.location.protocol
+               + '//munchkin.marketo.net/munchkin.js';
+         s.onreadystatechange = function()
+         {
+            if (this.readyState == 'complete' || this.readyState == 'loaded')
+            {
+               initMunchkin();
+            }
+         };
+         s.onload = initMunchkin;
+         document.getElementsByTagName('body')[0].appendChild(s);
+      })();
+   }
+}
+
+function formSubmit(elt) {
+	return Mkto.formSubmit(elt);
+}
+
+function formReset(elt) {
+	return Mkto.formReset(elt);
+}
 
 
 /**
@@ -80,6 +100,7 @@ function sendDataToMarketo(){
  * SYNTAX RULES FOR DOMAIN NAMES: http://www.nic.cl/CL-IDN-policy.html 
  * @param {Object} domainPrefix
  */
+
 function testDomainPrefix(domainPrefix)
 {
    var pattern = new RegExp("^http[s]?:\/\/([a-z0-9]([a-z0-9\-]{0,61}[a-z0-9])[.])*" + domainPrefix + ".*$", "i");

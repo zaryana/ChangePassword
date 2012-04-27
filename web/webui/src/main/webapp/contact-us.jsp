@@ -10,40 +10,54 @@
     <div class="UIPageBody" id="Content" style="display:none;"></div>
     <div class="UIPageBody ContactPages" id="ContactForm" style="margin: 0px auto; min-height: 0px;">
     <div style="position: absolute; left: 0px; top: 0px; width: 100%; height: 100%; background: #000000; opacity: 0.5; filter: alpha(opacity = 20); ZOOM: 1"></div>
-    <form class="UIForm UIFormBox" action="javascript:void(0);"  method="POST" name="" id="mycontactForm" style="top: 66px;">
-    <h1 class="TitleForm">Contact Us</h1>
-    <div id="messageString" class="TenantFormMsg"></div>
-    <table cols="2">
-      <tr>
-       <td class="Field">Your name:</td><td> <input class="required InputText" type="text" name="name" id="name" value="" /></td>
-     </tr>
-     <tr>
-      <td class="Field">Your email:</td><td> <input class="required InputText" type="text" name="email" id="email" value="" /></td>
-     </tr>
-     <tr>
-      <td class="Field">subject:</td><td> <input class="required InputText" type="text" name="subject" id="subject" /></td>
-     </tr>
-     <tr>
-      <td class="Field">Message:</td><td> <textarea class="required" type="text" name="ContactUs_Message__c" id="ContactUs_Message__c"></textarea></td>
-     </tr>
-     <tr>
-      <td class="Field"></td>
-      <td>
-        <input class="Button" type="submit"  id="submitButton" value="Send" onClick="tenants.doContactRequest();" />
-        <input class="Button ButtonGray" type="" id="cancelButton" value="Cancel" onClick="$('#MaskLayer').hide(); hideContactUsForm();" />
-      </td>
-     </tr>
-    </table>
-    <input type="hidden" name="service_source" id="service_source" value="Cloud-Workspaces" />
-    <input type="hidden"  id="formid" name="formid" value="147cd324-b524-4679-bcad-5f5708ad5beb" />
-    <input type="hidden" id="cid" name="cid" value="LF_df197061" />
-    </form>
+		  <form class="UIForm UIFormBox" action="javascript:void(0);"  method="POST" name="" id="mycontactForm" style="top: 66px;">
+				<h1 class="TitleForm">Contact Us</h1>
+				<div id="messageString" class="TenantFormMsg"></div>
+				<table cols="2">
+				  <tr>
+				   <td class="Field">Your name:</td><td> <input class="required InputText" type="text" name="name" id="name" value="" /></td>
+				 </tr>
+				 <tr>
+				  <td class="Field">Your email:</td><td> <input class="required InputText" type="text" name="email" id="email" value="" /></td>
+				 </tr>
+				 <tr>
+				  <td class="Field">subject:</td><td> <input class="required InputText" type="text" name="subject" id="subject" /></td>
+				 </tr>
+				 <tr>
+				  <td class="Field">Message:</td><td> <textarea class="required" type="text" name="ContactUs_Message__c" id="ContactUs_Message__c"></textarea></td>
+				 </tr>
+				 <tr>
+				  <td class="Field"></td>
+				  <td>
+				    <input class="Button" type="submit"  id="submitButton" value="Send" onClick="tenants.doContactRequest();" />
+				    <input class="Button ButtonGray" type="" id="cancelButton" value="Cancel" onClick="$('#MaskLayer').hide(); hideContactUsForm();" />
+				  </td>
+				 </tr>
+				</table>
+				
+				<!-- Marketo input hidden fields -->
+				<input name="LeadSource" id="LeadSource" type='hidden' value="Web - Cloud Workspaces" />
+				<input type="hidden" name="_marketo_comments" value="" />
+				<input type="hidden" name="lpId" value="1028" />
+				<input type="hidden" name="subId" value="46" />
+				<input type="hidden" name="kw" value="" />
+				<input type="hidden" name="cr" value="" />
+				<input type="hidden" name="searchstr" value="" />
+				<input type="hidden" name="lpurl" value="http://learn.cloud-workspaces.com/CloudWorkspaces-Contact-Us-English.html?cr={creative}&kw={keyword}" />
+				<input type="hidden" name="formid" value="1024" />
+				<input type="hidden" name="returnURL" value="http://www.exoplatform.com/company/en/thankyou" />
+				<input type="hidden" name="retURL" value="http://www.exoplatform.com/company/en/thankyou" />
+				<input type="hidden" name="_mkt_disp" value="return" />
+				<input type="hidden" name="_mkt_trk" value="" />
+
+		  </form>
     </div>
 
-    <iframe id="loopfuseOutput" name="loopfuseOutput" style='display:none; visibility:hidden'></iframe>
-    <!-- BEGIN: LOOPFUSE TRACKING -->
-    <script type="text/javascript" src="http://lfov.net/webrecorder/js/listen.js"></script>
-    <!-- END: LOOPFUSE TRACKING -->
+    <!--  marketo response container  -->
+		<iframe id="mktOutput" name="mktOutput" style='display:none; visibility:hidden'></iframe>
+    <!-- BEGIN: MARKETO TRACKING -->
+    <script type="text/javascript" src="/js/mktFormSupport.js"></script>	
+    <!-- END: MARKETO TRACKING -->
     <script type="text/javascript" src="/js/trackers.js"></script>
   </body>
 </html>
