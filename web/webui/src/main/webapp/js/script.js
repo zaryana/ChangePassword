@@ -365,7 +365,7 @@ Tenants.prototype.doLogin = function() {
     errorPlacement: function(error, element)
       {
         error.appendTo(element.next());
-      }
+      },
      });
     var valid = $("#signinForm").valid();
     if (!valid) return;
@@ -430,7 +430,7 @@ Tenants.prototype.doCreationRequest = function() {
     errorPlacement: function(error, element)
       {
         error.appendTo(element.next());
-      }
+      },
      });
      
  
@@ -438,7 +438,7 @@ Tenants.prototype.doCreationRequest = function() {
        rules: {
          password: {
            required: true,
-           minlength: 6
+           minlength: 6,
        },
        password2: {
            required: true,
@@ -468,7 +468,7 @@ Tenants.prototype.doJoinRequest = function() {
     errorPlacement: function(error, element)
       {
         error.appendTo(element.next());
-      }
+      },
      });
      
  
@@ -476,7 +476,7 @@ Tenants.prototype.doJoinRequest = function() {
        rules: {
          password: {
            required: true,
-           minlength: 6
+           minlength: 6,
        },
        password2: {
            required: true,
@@ -519,14 +519,14 @@ Tenants.prototype.doChange = function() {
    errorPlacement: function(error, element)
      {
       error.appendTo(element.next());
-     }
+     },
    });
 
    $("#changeForm").validate({
     rules: {
       password: {
         required: true,
-        minlength: 6
+        minlength: 6,
       },
       password2: {
         required: true,
@@ -565,15 +565,15 @@ Tenants.prototype.doReset = function() {
       errorPlacement: function(error, element)
       {
        error.appendTo(element.next());
-      }
+      },
     });
     
      $("#resetForm").validate({
        rules: {
          email: {
-         required: true
+         required: true,
        }
-      }
+      },
       });
     var valid = $("#resetForm").valid();
     if (!valid){_gel("submitButton").value = "Change my password"; return;}
@@ -748,11 +748,11 @@ Tenants.prototype.splitName = function(name) {
 			return lastName;
 		}
 	}
-}; 
+}
 
 Tenants.prototype.handleContactResponse = function(resp) {
 		var mycontactForm = _gel('mycontactForm');
-		var splitName = Tenants.splitName();
+		var splitName = tenants.splitName(_gel('name').value);
 	  if (resp == "") {
 		  sendDataToMarketo({
 		      "FirstName" : splitName.getFirstName(),
