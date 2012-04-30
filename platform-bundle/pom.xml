@@ -51,6 +51,18 @@
         </dependency>
         <dependency>
           <groupId>com.exoplatform.cloudworkspaces</groupId>
+          <artifactId>cloud-workspaces-wizard-extension-webapp</artifactId>
+          <scope>provided</scope>
+          <type>war</type>
+        </dependency>
+        <dependency>
+          <groupId>com.exoplatform.cloudworkspaces</groupId>
+          <artifactId>cloud-workspaces-wizard-extension-config</artifactId>
+          <scope>provided</scope>
+          <type>jar</type>
+        </dependency>
+        <dependency>
+          <groupId>com.exoplatform.cloudworkspaces</groupId>
           <artifactId>cloud-workspaces-platform-navigation</artifactId>
           <scope>provided</scope>
           <type>war</type>

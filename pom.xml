@@ -131,6 +131,17 @@
       </dependency>
       <dependency>
         <groupId>com.exoplatform.cloudworkspaces</groupId>
+        <artifactId>cloud-workspaces-wizard-extension-webapp</artifactId>
+        <version>${project.version}</version>
+        <type>war</type>
+      </dependency>
+      <dependency>
+        <groupId>com.exoplatform.cloudworkspaces</groupId>
+        <artifactId>cloud-workspaces-wizard-extension-config</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.exoplatform.cloudworkspaces</groupId>
         <artifactId>cloud-workspaces-platform-navigation</artifactId>
         <version>${project.version}</version>
         <type>war</type>
