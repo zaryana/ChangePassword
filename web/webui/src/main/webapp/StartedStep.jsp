@@ -99,14 +99,14 @@
         <a href="#" class="StartedIcon" style="left: 60px;">1</a><a href="#" class="StartedIcon" style="left: 310px;" >2</a><a href="#" class="StepSelectIcon" style="left: 569px;">3</a>
       </div>
       <h3>Step 3:  Join the Welcome Space</h3>
-      <p>Create your own dedicated collaboration spaces for your team or specific projects. We’ve set up your first space to help you get started.</p>
+      <p>Create your own dedicated collaboration spaces for your team or specific projects. We've set up your first space to help you get started.</p>
       <table class="BorderDot" cols="2">
         <tbody>
           <tr>
             <td class="FormInput CheckBox">
               <ul class="ClearFix">
                 <li class="FL">
-                  <input type="checkbox" />Maketting <br/>
+                  <input type="checkbox" />Marketing <br/>
                   <input type="checkbox" />Sales
                 </li>
                 <li class="FL">
@@ -132,7 +132,7 @@
   </div>
   <!--end code body here-->
   
-  <form class="UIFormBox StartedStep" style="display: none;" name="CloudExitForm" id="CloudExitForm" method="POST" action="/<%= CloudLoginServlet.CL_SERVLET_CTX + CloudLoginServlet.CL_SERVLET_URL %>" >
+  <form class="UIFormBox StartedStep" style="display: none;" name="CloudExitForm" id="CloudExitForm" method="POST" action="<%= CloudLoginServlet.CL_SERVLET_CTX + CloudLoginServlet.CL_SERVLET_URL %>" >
     <% if (uri != null) { %>
     <input type="hidden" name="<%= CloudLoginServlet.CLOUD_REQUESTED_URI %>" id="<%= CloudLoginServlet.CLOUD_REQUESTED_URI %>" value="<%= uri %>" />
     <% } %>
