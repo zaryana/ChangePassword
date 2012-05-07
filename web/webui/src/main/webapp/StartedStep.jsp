@@ -54,10 +54,14 @@
       </div-->
       <h3>Invite Coworkers</h3>
       <p><strong>Invite colleagues to join your company's</strong><br/>(note: Only @<%= domain %> email addresses will be invited to your workspace. Other addresses will receive an invitation to discover Cloud Workspaces)</p>
+      
+      <div id="messageString" class="TenantFormMsg"></div>
       <table class="BorderDot">
         <tbody>
           <tr>
-            <td class="FormInput"> <textarea value="Your email" id="email" name="" class="required InputText">Your email</textarea></td>
+            <td class="FormInput">
+              <textarea value="Your email" id="email" name="" class="required InputText">Your email</textarea>
+            </td>
             <td class="FormButton"> <input type="button" onclick="CloudLogin.validateStep1();" value="Skip" id="t_submit" class="Button" /></td>
           </tr>
         </tbody>
