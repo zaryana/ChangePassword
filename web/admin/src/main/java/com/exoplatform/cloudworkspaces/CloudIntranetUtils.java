@@ -25,6 +25,21 @@ import static org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConf
 import static org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration.CLOUD_ADMIN_MAIL_ADMIN_ERROR_SUBJECT;
 import static org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration.CLOUD_ADMIN_MAIL_ADMIN_ERROR_TEMPLATE;
 
+import com.exoplatform.cloudworkspaces.listener.TenantResumeThread;
+
+import org.everrest.core.impl.provider.json.JsonException;
+import org.everrest.core.impl.provider.json.JsonParser;
+import org.everrest.core.impl.provider.json.ObjectValue;
+import org.exoplatform.cloudmanagement.admin.AgentAuthenticator;
+import org.exoplatform.cloudmanagement.admin.CloudAdminException;
+import org.exoplatform.cloudmanagement.admin.WorkspacesMailSender;
+import org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration;
+import org.exoplatform.cloudmanagement.admin.configuration.ConfigurationParameterNotFound;
+import org.exoplatform.cloudmanagement.admin.status.CloudInfoHolder;
+import org.exoplatform.cloudmanagement.status.TenantState;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.File;
@@ -60,28 +75,13 @@ import java.util.regex.Pattern;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
-import org.everrest.core.impl.provider.json.JsonException;
-import org.everrest.core.impl.provider.json.JsonParser;
-import org.everrest.core.impl.provider.json.ObjectValue;
-import org.exoplatform.cloudmanagement.admin.AgentAuthenticator;
-import org.exoplatform.cloudmanagement.admin.CloudAdminException;
-import org.exoplatform.cloudmanagement.admin.WorkspacesMailSender;
-import org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration;
-import org.exoplatform.cloudmanagement.admin.configuration.ConfigurationParameterNotFound;
-import org.exoplatform.cloudmanagement.admin.status.CloudInfoHolder;
-import org.exoplatform.cloudmanagement.status.TenantState;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.exoplatform.cloudworkspaces.listener.TenantResumeThread;
-
 public class CloudIntranetUtils {
 
-  public static final String     CLOUD_ADMIN_TENANT_MAXUSERS = "cloud.admin.tenant.maxusers";
+  public static final String      CLOUD_ADMIN_TENANT_MAXUSERS = "cloud.admin.tenant.maxusers";
 
-  public static final String     CLOUD_ADMIN_HOSTNAME_FILE   = "cloud.admin.hostname.file";
-  
-  public static final char        TENANT_NAME_DELIMITER = '-';
+  public static final String      CLOUD_ADMIN_HOSTNAME_FILE   = "cloud.admin.hostname.file";
+
+  public static final char        TENANT_NAME_DELIMITER       = '-';
 
   private CloudAdminConfiguration cloudAdminConfiguration;
 
@@ -177,22 +177,24 @@ public class CloudIntranetUtils {
           String err = readText(connection.getErrorStream());
           String msg = ("Unable to add user to workspace " + tName + " (" + hostName
               + ") - HTTP status:" + connection.getResponseCode() + (err != null ? ". Server error: \r\n"
-                                                                                    + err + "\r\n" : ""));
+                                                                                    + err + "\r\n"
+                                                                                : ""));
           LOG.error(msg);
-          
+
           // check if it is not a deadlock in MySQL
           if (msg.indexOf("MySQLTransactionRollbackException") >= 0) {
-            // was MySQL deadlock, try to apply a workaround: wait a bit and try again
+            // was MySQL deadlock, try to apply a workaround: wait a bit and try
+            // again
             try {
               Thread.sleep(2000);
-            } catch(InterruptedException e) {
+            } catch (InterruptedException e) {
               // don't care
             }
-            
-            LOG.info("Was MySQL deadlock. Trying add user " + userMail + " one more time.");  
+
+            LOG.info("Was MySQL deadlock. Trying add user " + userMail + " one more time.");
             continue retry;
           }
-          
+
           sendAdminErrorEmail(msg, null);
           throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
         }
@@ -687,7 +689,18 @@ public class CloudIntranetUtils {
       Properties properties = new Properties();
       properties.load(io);
       io.close();
-      return properties.containsKey(tail);
+      String curr = tail;
+      while (!curr.equals("*")) {
+        if (properties.containsKey(curr))
+          return true;
+        if (curr.endsWith(".*"))
+          curr = curr.substring(0, curr.length() - 2);
+        if (curr.indexOf('.') >= 0)
+          curr = curr.substring(0, curr.lastIndexOf('.') + 1) + "*";
+        else
+          curr = "*";
+      }
+      return properties.containsKey(curr);
     } catch (FileNotFoundException e) {
       String tName = tail.substring(0, tail.indexOf("."));
       LOG.info("Black list file not found, allowing tenant " + tName + " from email:" + email);
