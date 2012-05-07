@@ -69,10 +69,18 @@ public class EmailBlacklist implements Startable {
                blacklistFile.getAbsolutePath());
     }
 
-    if (blacklist != null)
-      return blacklist.contains(email.substring(email.indexOf('@') + 1));
-    else
-      return false;
+    if (blacklist != null) {
+      String domain = email.substring(email.indexOf('@') + 1);
+      String[] parts = domain.split("[.]");
+      String prefix = parts[0];
+      for (int i = 1; i < parts.length; i++) {
+        if (blacklist.contains(prefix + ".*"))
+          return true;
+        prefix += "." + parts[i];
+      }
+      return blacklist.contains(prefix);
+    }
+    return false;
   }
 
   private void reload() throws FileNotFoundException {
