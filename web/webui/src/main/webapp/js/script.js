@@ -529,7 +529,7 @@ Tenants.prototype.doChange = function() {
   if (!valid)
     return;
 
-  var fdata = "uuid=" + $("#id").val() + "&password=" + $("#password").val().trim();
+  var fdata = "uuid=" + $("#id").val() + "&password=" + jQuery.trim($("#password").val());
   $.ajax({
         url : url,
         type : 'POST',
