@@ -17,14 +17,14 @@
             <li><a class="Tab OrangeTab" href="http://exoplatform.com" target="_blank">eXoplatform.com</a></li>
             <li class="last"><a class="Tab OrangeTab" href="/contact-us.jsp">Contact us</a></li>
           </ul>
-          <div class="Logo FL"><a href="/cloud"><img src="background/logo.png"/></a></div>
+          <div class="Logo FL"><a href="/<%=request.getContextPath()%>"><img src="background/logo.png"/></a></div>
           <div class="ClouIntranet FR"><h1>Cloud Workspaces</h1><span>The free Social Intranet for your company</span></div>
         </div>
       </div>
       <div class="UIPageBodyContainer">
         <div class="UIPageBody ErrorPages">
           <p><span class="ErrorIcon">Sorry, we are currently unable to process your request due to exceptionally high traffic. Please try again later.</span></p>
-          <center><a class="BackIcon" href="#" onClick="history.go(-1)">Back</a></center>
+          <center><a class="BackIcon" href="/<%=request.getContextPath()%>" onClick="history.go(-1)">Back</a></center>
         </div>
       </div>
         
