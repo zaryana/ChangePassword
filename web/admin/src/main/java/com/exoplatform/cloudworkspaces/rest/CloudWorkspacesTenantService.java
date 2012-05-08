@@ -31,6 +31,7 @@ import com.exoplatform.cloudworkspaces.http.WorkspacesOrganizationRequestPerform
 import com.exoplatform.cloudworkspaces.listener.AsyncTenantStarter;
 import com.exoplatform.cloudworkspaces.users.UserLimitsStorage;
 
+import com.exoplatform.cloudworkspaces.users.UsersManager;
 import org.apache.commons.configuration.Configuration;
 import org.exoplatform.cloudmanagement.admin.CloudAdminException;
 import org.exoplatform.cloudmanagement.admin.TenantAlreadyExistException;
@@ -87,6 +88,8 @@ public class CloudWorkspacesTenantService {
 
   private ChangePasswordManager                  changePasswordManager;
 
+  private UsersManager                           usersManager;
+
   public CloudWorkspacesTenantService(TenantCreator tenantCreator,
                                       TenantInfoDataManager tenantInfoDataManager,
                                       WorkspacesOrganizationRequestPerformer workspacesOrganizationRequestPerformer,
@@ -98,7 +101,8 @@ public class CloudWorkspacesTenantService {
                                       AsyncTenantStarter tenantStarter,
                                       CloudIntranetUtils cloudIntranetUtils,
                                       EmailBlacklist emailBlacklist,
-                                      ChangePasswordManager changePasswordManager) {
+                                      ChangePasswordManager changePasswordManager,
+                                      UsersManager usersManager) {
     this.cloudAdminConfiguration = cloudAdminConfiguration;
     this.tenantInfoDataManager = tenantInfoDataManager;
     this.tenantCreator = tenantCreator;
@@ -111,6 +115,7 @@ public class CloudWorkspacesTenantService {
     this.utils = cloudIntranetUtils;
     this.emailBlacklist = emailBlacklist;
     this.changePasswordManager = changePasswordManager;
+    this.usersManager = usersManager;
   }
 
   /**
@@ -824,6 +829,24 @@ public class CloudWorkspacesTenantService {
   @Produces(MediaType.TEXT_PLAIN)
   public Response tenantname(@PathParam("email") String email) {
     return Response.ok(utils.email2tenantName(email)).build();
+  }
+
+
+  @GET
+  @Path("autojoin")
+  @Produces(MediaType.TEXT_PLAIN)
+  public Response joinAll() throws CloudAdminException {
+    usersManager.joinAll();
+    return Response.ok().build();
+  }
+
+  @GET
+  @Path("autojoin/{tenantname}/{state}")
+  @Produces(MediaType.TEXT_PLAIN)
+  public Response joinall(@PathParam("tenantname") String tName, @PathParam("state") String state) throws  CloudAdminException {
+    RequestState rstate = RequestState.valueOf(state);
+    usersManager.joinAll(tName,rstate);
+    return Response.ok().build();
   }
 
 }
