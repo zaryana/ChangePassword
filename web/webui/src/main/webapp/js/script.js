@@ -538,7 +538,7 @@ Tenants.prototype.doChange = function() {
    var valid = $("#changeForm").valid();
    if (!valid) return;
    
-   var fdata = "uuid="+_gel("id").value + "&password=" +_gel("password").value.trim();
+   var fdata = "uuid="+_gel("id").value + "&password=" +jQuery.trim(_gel("password").value);
    $.ajax({
      url: url,
      type: 'POST',
