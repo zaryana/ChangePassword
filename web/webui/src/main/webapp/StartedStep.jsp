@@ -34,7 +34,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<%=lang%>" lang="<%=lang%>" dir="ltr">
   <head>
     <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-    <% String pageName = "Help eXo Cloud Workspace"; %>
+    <% String pageName = "Welcome to Cloud Workspaces"; %>
     <%@ include file="common/headStyle.jsp"%>
     <link href="<%=request.getContextPath()%>/css/cloudlogin/textext-1.3.0.css" rel="stylesheet" type="text/css" />
     
@@ -54,10 +54,14 @@
       </div-->
       <h3>Invite Coworkers</h3>
       <p><strong>Invite colleagues to join your company's</strong><br/>(note: Only @<%= domain %> email addresses will be invited to your workspace. Other addresses will receive an invitation to discover Cloud Workspaces)</p>
+      
+      <div id="messageString" class="TenantFormMsg"></div>
       <table class="BorderDot">
         <tbody>
           <tr>
-            <td class="FormInput"> <textarea value="Your email" id="email" name="" class="required InputText">Your email</textarea></td>
+            <td class="FormInput">
+              <textarea value="Your email" id="email" name="" class="required InputText">Your email</textarea>
+            </td>
             <td class="FormButton"> <input type="button" onclick="CloudLogin.validateStep1();" value="Skip" id="t_submit" class="Button" /></td>
           </tr>
         </tbody>
