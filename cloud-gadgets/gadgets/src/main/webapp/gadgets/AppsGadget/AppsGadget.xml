@@ -4,28 +4,21 @@
     <Require feature="opensocial-0.8" />
   </ModulePrefs>
   <Content type="html" view="default, home, profile">
-  <![CDATA[  
- 
-  <head>  
+  <![CDATA[
+  <head>
   <link rel="stylesheet" type="text/css" href="style/apps.css" />
   <link type="text/css" rel="stylesheet" href="/exo-gadget-resources/skin/exo-gadget/gadget-common.css" /> 
   </head>
-   
-  <body id="AppsGadget"> 
-    
+  <body id="AppsGadget">
     <div class="UIGadgetThemes">
-              
       <span class="title">Applications</span>
-      
       <ul>
-        <li><a target="_parent" href="/portal/intranet/calendar" ><span class="arrow">»</span>  Calendar</a></li>
-        <li><a target="_parent" href="/portal/intranet/documents" ><span class="arrow">»</span>  Documents</a></li>
-        <li><a target="_parent" href="/portal/intranet/forum" ><span class="arrow">»</span>  Forums</a></li>
-        <li><a target="_parent" href="/portal/intranet/wiki" ><span class="arrow">»</span>  Wiki</a></li>
+        <li><a target="_parent" href="/portal/intranet/calendar" ><span class="arrow">+</span>  Calendar</a></li>
+        <li><a target="_parent" href="/portal/intranet/documents" ><span class="arrow">+</span>  Documents</a></li>
+        <li><a target="_parent" href="/portal/intranet/forum" ><span class="arrow">+</span>  Forums</a></li>
+        <li><a target="_parent" href="/portal/intranet/wiki" ><span class="arrow">+</span>  Wiki</a></li>
       </ul>
-            
     </div>
-    
-  </body> 
+  </body>
   ]]></Content>
 </Module>
