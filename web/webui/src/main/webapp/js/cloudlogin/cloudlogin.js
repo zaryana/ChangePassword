@@ -37,6 +37,31 @@ CloudLogin.initTextExt = function() {
           return item.replace(/@.*$/,"");
         }
       },
+      core: {
+        trigger: function() {
+          // Case of " " or "," caracters with event KeyUp
+          if(arguments != null && arguments[0] === "anyKeyUp" && (arguments[1] === 32 || arguments[1] === 188)) {
+            var textExtTags = this.tags.apply();
+            // delete "," or " " caracter if exist
+            var tag = textExtTags.val();
+            var lastCar = tag.charAt(tag.length-1);
+            if(/,/.test(tag)|| /\s/.test(tag)) {
+              textExtTags.val(tag.slice(0, -1));
+            }
+            // Execute onEnterKeyPress method
+            $.fn.textext.TextExtTags.prototype.onEnterKeyPress.apply(textExtTags, arguments);
+            textExtTags.val("");
+          }
+          else if(arguments != null && arguments[0] === "anyKeyUp" && arguments[1] === 13) {
+            // Case of "ENTER" caracter, we try to submit form
+            CloudLogin.validateStep1();
+          }
+          else {
+            // We keep default behavior
+            $.fn.textext.TextExt.prototype.trigger.apply(this, arguments);
+          }
+        }
+      },
       tags: {
         removeTag: function(tag) {
           // CASE of tag removed
@@ -49,6 +74,9 @@ CloudLogin.initTextExt = function() {
             CloudLogin.incrementNbMails();
             $.fn.textext.TextExtTags.prototype.addTags.apply(this, arguments);
           }
+        },
+        onEnterKeyPress: function(e) {
+          e.preventDefault();
         }
       }
     },
@@ -124,7 +152,7 @@ CloudLogin.sendEmail = function(email) {
  * Called after all mails are sent (or not) to display an error message if one or more mails cannot be sent
  */
 CloudLogin.finalizeSendEmails = function() {
-  if(CloudLogin.NB_EMAILS_OK < CloudLogin.NB_EMAILS) {
+  if(CloudLogin.NB_EMAILS_REQUESTED == CloudLogin.NB_EMAILS &&  CloudLogin.NB_EMAILS_OK < CloudLogin.NB_EMAILS) {
     var message = CloudLogin.EMAILS_NOK.length + " email(s) cannot be sent: [ ";
     // for
     for(var i=0; i<CloudLogin.EMAILS_NOK.length; i++) {
