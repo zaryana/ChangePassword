@@ -39,8 +39,8 @@ CloudLogin.initTextExt = function() {
       },
       core: {
         trigger: function() {
-          // Case of " " or "," caracters with event KeyUp
-          if(arguments != null && arguments[0] === "anyKeyUp" && (arguments[1] === 32 || arguments[1] === 188)) {
+          // Case of caracters with event KeyUp (13=ENTER, 32=SPACE, 188=COMMA)
+          if(arguments != null && arguments[0] === "anyKeyUp" && (arguments[1] === 13 || arguments[1] === 32 || arguments[1] === 188)) {
             var textExtTags = this.tags.apply();
             // delete "," or " " caracter if exist
             var tag = textExtTags.val();
@@ -51,10 +51,6 @@ CloudLogin.initTextExt = function() {
             // Execute onEnterKeyPress method
             $.fn.textext.TextExtTags.prototype.onEnterKeyPress.apply(textExtTags, arguments);
             textExtTags.val("");
-          }
-          else if(arguments != null && arguments[0] === "anyKeyUp" && arguments[1] === 13) {
-            // Case of "ENTER" caracter, we try to submit form
-            CloudLogin.validateStep1();
           }
           else {
             // We keep default behavior
@@ -88,9 +84,10 @@ CloudLogin.initTextExt = function() {
   textExt.bind(
     'isTagAllowed', function(e, data) {
       var dataTag = data.tag.replace(/^\s+|\s+$/g,'');
-      if(!CloudLogin.EMAIL_REGEXP.test(dataTag))
-      {
-        CloudLogin.displayMessage('email is not valid: "' + dataTag + '"');
+      if(!CloudLogin.EMAIL_REGEXP.test(dataTag)) {
+        if(dataTag.length > 0) {
+          CloudLogin.displayMessage('email is not valid: "' + dataTag + '"');
+        }
         data.result = false;
         return;
       }
