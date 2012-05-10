@@ -5,51 +5,37 @@
     <% String pageName = "Sign Up to Cloud Workspaces"; %>
     <%@ include file="common/headStyle.jsp"%>
     <%@ include file="common/headScript.jsp"%>
-    <script type="text/javascript" src="/balupton-jquery-lightbox/scripts/jquery.lightbox.js"></script>
+    <link rel="stylesheet" href="/lightbox/css/lightbox.css" type="text/css" media="screen" />
+    <script type="text/javascript" src="/lightbox/jquery.lightbox.js"></script>
     <script type="text/javascript">
-      $(function(){
-        $.Lightbox.construct({
-         // "show_linkback": false,
-            "download_link": false,
-                  "opacity": 0.7,
-                    "speed": 20, // milliseconds
-                     "text": {
-                   // For translating
-                    "image":    "Image",
-                       "of":    "of",
-                    "close":    "Close X",
-                "closeInfo":   "You can also click anywhere outside the image to close.",
-                 "download":    "Download.",
-                     "help": {
-                    "close": "Click to close",
-                 "interact": ""
-                 },
-  
-                "about": {
-                 "text":  "",
-                "title": "",
-                 "link":  ""
-                }
-            }
-        });
-
-        // preload images to display in lightbox immediately
-        var links = document.getElementsByTagName("a");
-        for (var i in links)
-        {
-          var link = links[i];
-          if (link.rel && link.rel === "lightbox" && link.href)
-          {
-            preload(link.href);
-          }
-        }
-
-        function preload(imageSrc) {
-          var imageObj = new Image();
-          imageObj.src=imageSrc;
-        }
+     $(function()
+      {
+       $('.lightbox').lightbox({
+        fitToScreen : true,
+        imageClickClose : false,
+        fileLoadingImage : '/lightbox/images/loading.gif',
+        fileBottomNavCloseImage : '/lightbox/images/closelabel.gif'
       });
-    </script>
+
+     // preload images to display in lightbox immediately
+     var links = document.getElementsByTagName("a");
+     for ( var i in links)
+      {
+       var link = links[i];
+       if (link.className && link.className === "lightbox" && link.href)
+        {
+         preload(link.href);
+       }
+      }
+
+     function preload(imageSrc)
+     {
+      var imageObj = new Image();
+      imageObj.src = imageSrc;
+     }
+    });
+</script>
+    
     <!-- load ThickBox to display video (http://jquery.com/demo/thickbox/) -->
     <link rel="stylesheet" href="/thickbox/thickbox.css" type="text/css" media="screen" />
     <script src="/thickbox/thickbox.js" type="text/javascript"></script>    
@@ -152,32 +138,32 @@
 			<h3>Features Overview</h3>
 			<div class="LastestItems ClearFix">
 				<div class="Cols LCol FL">
-					<div><a class="lightbox-enabled" rel="lightbox" href="background/social.png" title="Connect with your colleagues for an instant enterprise social network"><img src="background/01_Mini.png" alt=""/></a></div>
+					<div><a class="lightbox" rel="lightbox" href="background/social.png" title="Connect with your colleagues for an instant enterprise social network"><img src="background/01_Mini.png" alt=""/></a></div>
 					<h4 class="SpecialTit">Connect with your colleagues for an instant enterprise social network</h4>
 					<p>Support for OpenSocial allows Cloud Workspaces users to create and connect rich user profiles, share activity streams, and collaborate in real-time. When you sign up with your professional email, we'll create a private domain for your company.</p>
 				</div>
 				
 				<div class="Cols MCol FL">
-					<a class="lightbox-enabled" rel="lightbox" href="background/wiki.png" title="More than a private social network: enterprise wiki, forums, calendars, and more"><img src="background/02_Mini.png" alt=""/></a>
+					<a class="lightbox" rel="lightbox" href="background/wiki.png" title="More than a private social network: enterprise wiki, forums, calendars, and more"><img src="background/02_Mini.png" alt=""/></a>
 					<h4 class="SpecialTit">More than a private social network: enterprise wiki, forums, calendars, and more</h4>
 					<p>Following updates and comments from your coworkers is a great way to stay informed, but it's only the first step towards productive collaboration. Cloud Workspaces combines the benefits of a social network with the tools that support your online work.</p>
 				</div>
 				
 				<div class="Cols RCol FR">
-					<a class="lightbox-enabled" rel="lightbox" href="background/dashboard2.png" title="Personalized dashboards provide a work start page for every user"><img src="background/03_Mini.png" alt=""/></a>
+					<a class="lightbox" rel="lightbox" href="background/dashboard2.png" title="Personalized dashboards provide a work start page for every user"><img src="background/03_Mini.png" alt=""/></a>
 					<h4 class="SpecialTit">Personalized dashboards provide a work start page for every user</h4>
 					<p>Users can easily create their own personalized dashboards with simple drag-and-drop controls, so your Cloud Workspaces start page will display the most relevant, useful information about your work.</p>
 				</div>
 			</div>
 			<div class="ClearFix">
 				<div class="Cols LCol FL">
-					<a class="lightbox-enabled" rel="lightbox" href="background/ide.png" title="Extend and customize your social intranet with the built-in Cloud IDE"><img src="background/04_Mini.png" alt=""/></a>
+					<a class="lightbox" rel="lightbox" href="background/ide.png" title="Extend and customize your social intranet with the built-in Cloud IDE"><img src="background/04_Mini.png" alt=""/></a>
 					<h4 class="SpecialTit">Extend and customize your social intranet with the built-in Cloud IDE</h4>
 					<p>Toggling between your company social network and other sites you regularly use, such as web analytics or project management tools, can be distracting and inefficient. Third party web apps can be integrated directly in your Cloud Workspaces as gadgets. </p>
 				</div>
 				
 				<div class="Cols BigCol FR">
-					<a class="lightbox-enabled" rel="lightbox" href="background/iPad-Gadgets.png" title="Your personal dashboard on-the-go: native mobile apps for Cloud Workspaces"><img src="background/05_Mini.png" alt=""/></a>
+					<a class="lightbox" rel="lightbox" href="background/iPad-Gadgets.png" title="Your personal dashboard on-the-go: native mobile apps for Cloud Workspaces"><img src="background/05_Mini.png" alt=""/></a>
 					<h4 class="SpecialTit">Your personal dashboard on-the-go: native mobile apps for Cloud Workspaces</h4>
 					<p>Native iPhone, iPad, and Android apps let you securely and easily view your personal dashboard, including any of the custom gadgets you've added. Post status updates and share photos, stay updated with your colleagues' activities, access your internal document repository - all the key functions of your social intranet, right in your pocket.</p>
 				</div>
