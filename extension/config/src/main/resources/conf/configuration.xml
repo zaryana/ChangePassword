@@ -2,6 +2,7 @@
 <configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd http://www.exoplatform.org/xml/ns/kernel_1_2.xsd"
   xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
+  
   <external-component-plugins>
     <!-- The full qualified name of the PortalContainerConfig -->
     <target-component>org.exoplatform.container.definition.PortalContainerConfig</target-component>
@@ -19,7 +20,7 @@
         </value-param>
         <object-param>
           <name>change</name>
-          <object type="org.exoplatform.container.definition.PortalContainerDefinitionChange$AddDependencies">
+          <object type="org.exoplatform.container.definition.PortalContainerDefinitionChange$AddDependenciesAfter">
             <!-- The list of name of the dependencies to add -->
             <field name="dependencies">
               <collection type="java.util.ArrayList">
@@ -37,9 +38,13 @@
                 </value>
               </collection>
             </field>
+            <field name="target">
+             <string>platform-extension</string>
+           </field>
           </object>
         </object-param>
       </init-params>
     </component-plugin>
   </external-component-plugins>
+  
 </configuration>
