@@ -25,6 +25,7 @@ function Tenants() {
 
 var prefixUrl = location.protocol + '//' + location.hostname;
 var queryString = location.search;
+var mktURL = "http://learn.cloud-workspaces.com/index.php/leadCapture/save";
 var loopfuseURL = "http://lfov.net/webrecorder/f";
 
 if (location.port) {
@@ -465,18 +466,28 @@ Tenants.prototype.doReset = function() {
 
 /* Handle signup response */
 Tenants.prototype.handleSignupResponse = function(resp) {
-
   if (resp == "") {
-    sendDataToLoopfuse({
-      "email" : $('#email').val(),
-      // hidden LoopFuse fields
-      "formid" : $('#formid').val(),
-      "cid" : $('#cid').val()
+    sendDataToMarketo({
+          "Email" : $('#email').val(),
+          "Cloud_Workspaces_User__c" : "Yes",
+          "lpId": $('#lpId').val(),
+          "subId": $('#subId').val(),
+          "formid": $('#formid').val()
     }, function() {
       window.location = prefixUrl + "/signup-done.jsp";
     });
   } else {
-    $("#messageString").html(resp);
+  sendDataToMarketo({
+    "Email" : $('#email').val(),
+    "Cloud_Workspaces_User__c" : "No",
+    "LeadSource" : $('#LeadSource').val(),
+    "lpId": $('#lpId').val(),
+    "subId": $('#subId').val(),
+    "formid": $('#formid').val()
+    },
+    function() {
+    $("#messageString").html = resp;
+   });
   }
   $("#t_submit").attr('disabled', '');
   $("#t_submit").val("Sign Up");
@@ -484,17 +495,17 @@ Tenants.prototype.handleSignupResponse = function(resp) {
 
 /* Handle creation response */
 Tenants.prototype.handleCreationResponse = function(resp) {
-
   if (resp == "") {
-    sendDataToLoopfuse({
-      "email" : $('#email').val(),
-      "first_name" : $('#first_name').val(),
-      "last_name" : $('#last_name').val(),
-      "company" : $('#company').val(),
-      "phone_work" : $('#phone_work').val(),
-      // hidden LoopFuse fields
-      "formid" : $('#formid').val(),
-      "cid" : $('cid').val()
+    sendDataToMarketo({
+    "Email" : $('#email').val(),
+    "FirstName" : $('#first_name').val(),
+    "LastName" : $('#last_name').val(),
+    "Company" : $('#company').val(),
+    "Phone" : $('#phone_work').val(),
+    "Cloud_Workspaces_User__c" : "Yes",
+    "lpId": $('#lpId').val(),
+    "subId": $('#subId').val(),
+    "formid": $('#formid').val()
     }, function() {
       window.location = prefixUrl + "/registration-done.jsp";
     });
@@ -507,15 +518,15 @@ Tenants.prototype.handleCreationResponse = function(resp) {
 
 /* Handle join response */
 Tenants.prototype.handleJoinResponse = function(resp) {
-
   if (resp == "") {
-    sendDataToLoopfuse({
-      "email" : $('#email').val(),
-      "first_name" : $('#first_name').val(),
-      "last_name" :  $('#last_name').val(),
-      // hidden LoopFuse fields
-      "formid" : $('#formid').val(),
-      "cid" : $('#cid').val()
+   sendDataToMarketo({
+   "Email" : $('#email').val(),
+   "FirstName" : $('#first_name').val(),
+   "LastName" : $('last_name').val(),
+   "Cloud_Workspaces_User__c" : "Yes",
+   "lpId": $('#lpId').val(),
+   "subId": $('#subId').val(),
+   "formid": $('#formid').val()
     }, function() {
       window.location = prefixUrl + "/join-done.jsp#" + $('#email').val();
     });
@@ -529,22 +540,19 @@ Tenants.prototype.handleJoinResponse = function(resp) {
 }
 
 Tenants.prototype.handleContactResponse = function(resp) {
-
+  var splitName = tenants.splitName($('#name').val());
   if (resp == "") {
-    sendDataToLoopfuse({
-      "email" : $('#email').val(),
-      "first_name" : $('#name').val(),
-      "company" : $('#subject').val(),
-      "message" : $('#ContactUs_Message__c').val(),
-      // hidden LoopFuse fields
-      "formid" : $('#formid').val(),
-      "service_source" : $('#service_source').val(),
-      "cid" : $('#cid').val()
-    }, function() {
-      // document.getElementById('Content').innerHTML = "<div
-      // class=\"ThanksPages ClearFix\"><h1>Thank you!</h1><p
-      // style=\"text-align:center\">Your request has been successfully
-      // submitted. We will get back to you soon.</p></div>";
+  sendDataToMarketo({
+  "FirstName" : splitName.getFirstName(),
+  "LastName" : splitName.getLastName(),
+  "Email" : $('#email').val(),
+  "Cloud_Workspaces_Contact_Us_Subject__c" : $('#subject').val(),
+  "Cloud_Workspaces_Contact_Us_Message__c" : $('#ContactUs_Message__c').val(),
+  "Cloud_Workspaces_User__c" : "Yes",
+  "lpId": $('#lpId').val(),
+  "subId": $('#subId').val(),
+  "formid": $('#formid').val()
+  }, function() {
       window.location = "/contact-us-done.jsp";
     });
   } else {
@@ -625,52 +633,121 @@ function onlyNumbers(evt) {
 
 }
 
-function sendDataToLoopfuse(data, afterSubmitCallback) {
+function sendDataToMarketo(data, afterSubmitCallback) {
+  var mktOutputIframeId = "mktOutput";
+  var mktOutputIframeName = "mktOutput";
+  var mktFormId = "mktForm";
+  var mktFormName = "cloud-workspaces-profile";
+  
+  var commonData = {
+   "LeadSource" : "Web - Cloud Workspaces",
+   "marketo_comments": "",
+   "kw": "",
+   "cr": "",
+   "searchstr": "",
+   "lpurl": "http://learn.cloud-workspaces.com/Cloud-Workspaces-Sign-Up-English.html?cr={creative}&kw={keyword}",
+   "returnURL": "",
+   "retURL": "",
+   "_mkt_disp": "return",
+   "_mkt_trk": ""
+ }
 
-  var loopfuseOutputIframeId = "loopfuseOutput";
-  var loopfuseOutputIframeName = "loopfuseOutput";
-  var loopfuseFormId = "loopfuseForm";
-  var loopfuseFormName = "cloud-workspaces-profile";
+  if (jQuery && document.getElementById(mktOutputIframeId)) {
+      jQuery('#' + mktFormId).remove();
+      jQuery('#' + mktOutputIframeId).attr('src', ""); // clear iframe
 
-  if (jQuery && document.getElementById(loopfuseOutputIframeId)) {
-    jQuery('#' + loopfuseFormId).remove();
-    jQuery('#' + loopfuseOutputIframeId).attr('src', ""); // clear iframe
-
-    jQuery('body').append(jQuery('<form/>', {
-      id : loopfuseFormId,
-      name : loopfuseFormName,
-      method : 'POST',
-      action : loopfuseURL,
-      target : loopfuseOutputIframeName
+      jQuery('body').append(jQuery('<form/>', {
+        id : mktFormId,
+      name : mktFormName,
+    method : 'POST',
+    action : mktURL,
+    target : mktOutputIframeName,
+    enctype: 'application/x-www-form-urlencoded'
     }));
 
     for ( var i in data) {
-      jQuery('#' + loopfuseFormId).append(jQuery('<input/>', {
+      jQuery('#' + mktFormId).append(jQuery('<input/>', {
         type : 'hidden',
         name : i,
-        value : data[i]
-      }));
-    }
+       value : data[i]
+    }));
+   }
+   
+   for ( var i in commonData) {
+     jQuery('#' + mktFormId).append(jQuery('<input/>', {
+     type : 'hidden',
+     name : i,
+    value : commonData[i]
+    }));
+   }
+   Mkto.formSubmit(document.getElementById(mktFormId));
 
-    jQuery('#' + loopfuseFormId).submit();
-
-    var i = 200; // set limited iterations - interrupt after the 20
-    // seconds
-    var afterSubmitHandler = window.setInterval(function() {
-      if (!(i--) || isLoopfuseResponseReceived(loopfuseOutputIframeId)) {
+   var i = 200;  // set limited iterations - interrupt after the 20 seconds
+   var afterSubmitHandler = window.setInterval(function() {
+       if (!(i--) || isMarketoResponseReceived(mktOutputIframeId))
+      {
         window.clearInterval(afterSubmitHandler);
-        if (afterSubmitCallback) {
+        if (afterSubmitCallback)
+        {
           afterSubmitCallback();
         }
-
-        jQuery('#' + loopfuseOutputIframeId).attr('src', ""); // clear
-        // iframe
+       jQuery('#' + mktFormId).remove();
+       jQuery('#' + mktOutputIframeId).attr('src', ""); // clear iframe  
       }
-    }, 100);
+   }, 10);
+   }
+ }
+
+  function isMarketoResponseReceived(iframeId) {
+  try {
+    return !document.getElementById(iframeId)
+      || document.getElementById(iframeId).contentWindow.location.href != "about:blank";
+    } catch (e) {
+    // check for permission of
+    return true;
+    }
+  }
+ 
+
+
+Tenants.prototype.splitName = function(name) {
+    
+  // extract firstName and lastName from name
+  var firstName = "";      
+  var lastName = "";
+ 
+ // trim name, remove duplicated spaces, split by spaces
+ var splittedName = jQuery.trim(name).replace(/\s+/g, " ").split(" ");
+ if (splittedName && splittedName.length > 0){
+   if (splittedName.length == 1){   
+     // parse case like "John"
+     firstName = splittedName[0];
+     lastName = "";
+   } else {
+  // parse case like "John  Smith", or "John Entony Smith"
+  lastName = splittedName.pop();
+  firstName = splittedName.join(" ");
+  }
+ }
+ 
+ name = encodeURIComponent(name);
+ 
+ return {
+     getName: function(){
+        return name;
+     },
+     
+     getFirstName: function(){
+       return firstName;
+     },
+
+    getLastName: function(){
+      return lastName;
+   }
   }
 }
-
-function getTenantName(email) {
+  
+  function  getTenantName(email) {
       var checkURL = tenantServicePath + "/tenantname/" + email;
       var result;
       $.ajax({
@@ -687,15 +764,6 @@ function getTenantName(email) {
           return result;
           }
 
-function isLoopfuseResponseReceived(iframeId) {
-  try {
-    return !document.getElementById(iframeId)
-        || document.getElementById(iframeId).contentWindow.location.href != "about:blank";
-  } catch (e) {
-    // check for permission of
-    return true;
-  }
-}
 
 var keyStr = "ABCDEFGHIJKLMNOP" + "QRSTUVWXYZabcdef" + "ghijklmnopqrstuv" + "wxyz0123456789+/" + "=";
 

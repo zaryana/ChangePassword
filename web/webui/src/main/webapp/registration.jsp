@@ -47,9 +47,10 @@
               </tr>
             </table>
             <input type="hidden" name="confirmation-id" id="confirmation-id" />
-            <input type="hidden" id="formid" name="formid" value="147cd324-b524-4679-bcad-5f5708ad5beb" />
-            <input type="hidden" id="cid" name="cid" value="LF_df197061" />
-            <iframe id="loopfuseOutput" name="loopfuseOutput" style='display:none; visibility:hidden'></iframe>
+            <!-- Marketo input hidden fields -->
+            <input type="hidden" name="lpId" value="1027" />
+            <input type="hidden" name="subId" value="46" />
+            <input type="hidden" name="formid" value="1023" />
           </form>
         </div>
       </div>
@@ -58,8 +59,10 @@
       <%@ include file="common/footer.jsp"%>
     </div>
     
-    <!-- BEGIN: LOOPFUSE TRACKING -->
-    <script type="text/javascript" src="http://lfov.net/webrecorder/js/listen.js"></script>
+    <!-- marketo response container -->
+    <iframe id="mktOutput" name="mktOutput" style='display:none; visibility:hidden'></iframe>
+    <!-- BEGIN: MARKETO TRACKING -->
+    <script type="text/javascript" src="/js/mktFormSupport.js"></script>
     <!-- END: LOOPFUSE TRACKING -->
     <script type="text/javascript" src="/js/trackers.js"></script>
   </body>

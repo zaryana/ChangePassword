@@ -69,13 +69,15 @@
               <div class="FormBox">
                 <div class="BoxContent ClearFix">
     
-                  <form class="UIForm" action="javascript:void(0);"   method="POST" name="cloud-workspaces-profile">
+                  <form class="UIForm" action="javascript:void(0);"   method="POST" name="cloud-workspaces-profile" id="signupForm">
+                   <!-- Marketo input hidden fields -->
+                   <input type="hidden" name="lpId" value="1047" />
+                   <input type="hidden" name="subId" value="46" />
+                   <input type="hidden" name="formid" value="1035" />
                     <p class="SignUpInfo">Cloud Workspaces is currently in beta. To participate, register with your work email address. We'll keep you updated when your company's social intranet is ready.</p>
                     <div id="messageString" class="TenantFormMsg"></div>
                     <input class="InputText" type="text" name="email" id="email" value="Enter your professional email" onclick="this.value='';" />
                     <input class="Button" type="submit" id="t_submit"  value="Sign Up" onClick="tenants.doSingupRequest();" />
-                    <input type="hidden" id="formid" name="formid" value="147cd324-b524-4679-bcad-5f5708ad5beb" />
-                    <input type="hidden" id="cid" name="cid" value="LF_df197061" />
                     <div id="signin"><a class="SignIn" href="/signin.jsp">Already registered? Sign In</a></div>
                     <iframe id="loopfuseOutput" name="loopfuseOutput" style='display:none; visibility:hidden'></iframe>
                   </form>
@@ -190,9 +192,10 @@
       </div>
     </div>
 
-    <!-- BEGIN: LOOPFUSE TRACKING -->
-    <script type="text/javascript" src="http://lfov.net/webrecorder/js/listen.js"></script>
-    <!-- END: LOOPFUSE TRACKING -->
+    <!-- marketo response container -->
+    <iframe id="mktOutput" name="mktOutput" style='display:none; visibility:hidden'></iframe>
+    <!-- BEGIN: MARKETO TRACKING -->
+    <script type="text/javascript" src="/js/mktFormSupport.js"></script>
     <script type="text/javascript" src="/js/trackers.js"></script>
   </body>
 </html>
