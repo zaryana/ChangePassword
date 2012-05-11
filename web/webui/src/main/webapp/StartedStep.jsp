@@ -52,15 +52,15 @@
         <span class="StepBG"></span>
         <a href="#" class="StepSelectIcon" style="left: 60px;">1</a><a href="#" class="StepIcon" style="left: 310px;" >2</a><a href="#" class="StepIcon" style="left: 569px;">3</a>
       </div-->
-      <h3>Invite Coworkers</h3>
-      <p><strong>Invite colleagues to join your company's</strong><br/>(note: Only @<%= domain %> email addresses will be invited to your workspace. Other addresses will receive an invitation to discover Cloud Workspaces)</p>
+      <h3>Invite Coworkers in Your Social Intranet</h3>
+      <p><strong>Send email invitations to your coworkers to connect with them in your social intranet.</strong><br/>(note: Only @<%= domain %> email addresses will be invited to your workspace. Other addresses will receive an invitation to discover Cloud Workspaces)</p>
       
       <div id="messageString" class="TenantFormMsg"></div>
       <table class="BorderDot">
         <tbody>
           <tr>
             <td class="FormInput">
-              <textarea value="Your email" id="email" name="" class="required InputText">Your email</textarea>
+              <textarea value="Add email addresses" id="email" name="" class="required InputText">Add email addresses</textarea>
             </td>
             <td class="FormButton"> <input type="button" onclick="CloudLogin.validateStep1();" value="Skip" id="t_submit" class="Button" /></td>
           </tr>
@@ -68,7 +68,7 @@
       </table>
       <div class="ClearFix StartTip">
         <a href="#" class="FR RightStartTip"><img width="264" src="<%=request.getContextPath()%>/background/img_st.png" alt=""/></a>
-        <p class="LeftStartTip"><strong>Tip:</strong> Find and connect with your colleagues to see their latest updates in your activity stream.</p>
+        <p class="LeftStartTip"><strong>Tip:</strong> Connecting with your colleagues will allow you to share documents, calendars, wiki pages and view their latest updates in your activity stream.</p>
       </div>
       <!--div class="Link"><a href="#" onclick="CloudLogin.exit();" class="Link">Skip to homepage >></a></div-->
     </form>
