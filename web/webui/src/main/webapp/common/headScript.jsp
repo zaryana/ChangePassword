@@ -1,4 +1,5 @@
-﻿    <script type="text/javascript" src="<%=request.getContextPath()%>/js/script.js"></script>
+﻿    <script src="http://munchkin.marketo.net/js/munchkin.js"></script>
+    <script type="text/javascript" src="<%=request.getContextPath()%>/js/script.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/js/json2.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/js/jquery-latest.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/js/jquery.validate.js"></script>
