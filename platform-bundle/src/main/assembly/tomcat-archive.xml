@@ -87,6 +87,15 @@
        <fileMode>0644</fileMode>
      </dependencySet>
      <dependencySet>
+       <outputDirectory>app-server-tomcat/webapps</outputDirectory>
+       <includes>
+         <include>com.exoplatform.cloudworkspaces:cloud-workspaces-wizard-extension-webapp:war</include>
+       </includes>
+       <outputFileNameMapping>cloud-workspaces-wizard-extension.war</outputFileNameMapping>
+       <scope>provided</scope>
+       <fileMode>0644</fileMode>
+     </dependencySet>
+     <dependencySet>
        <outputDirectory>app-server-tomcat/lib</outputDirectory>
        <includes>
          <include>mysql:mysql-connector-java</include>
@@ -97,6 +106,7 @@
          <include>com.exoplatform.cloudworkspaces:cloud-workspaces-extension-config</include>
          <include>org.exoplatform.cloud-management:cloud-rest-everrest</include>
          <include>org.everrest:everrest-groovy</include>
+         <include>com.exoplatform.cloudworkspaces:cloud-workspaces-wizard-extension-config</include>
        </includes>
        <scope>provided</scope>
        <fileMode>0644</fileMode>

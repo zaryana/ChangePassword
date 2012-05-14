@@ -23,7 +23,7 @@
 # custom JAVA options
 [ -z "$EXO_JAVA_OPTS" ]  && EXO_JAVA_OPTS="-Xms1g -Xmx4g -XX:MaxPermSize=256m -XX:+UseCompressedOops"
 [ -z "$JMXACC" ] && JMXACC="$CATALINA_HOME/conf/jmxremote.access"
-[ -z "$JMXPAS" ] && JMCPAS="$CATALINA_HOME/conf/jmxremote.password"
+[ -z "$JMXPAS" ] && JMXPAS="$CATALINA_HOME/conf/jmxremote.password"
 
 # master tenant name
 [ -z "$TENANT_MASTERHOST" ]  && TENANT_MASTERHOST="cloud-workspaces.com"

@@ -5,7 +5,7 @@
 # custom JAVA options
 [ -z "$EXO_JAVA_OPTS" ]  && EXO_JAVA_OPTS="-Xms1g -Xmx4g"
 [ -z "$JMXACC" ] && JMXACC="$CATALINA_HOME/conf/jmxremote.access"
-[ -z "$JMXPAS" ] && JMCPAS="$CATALINA_HOME/conf/jmxremote.password"
+[ -z "$JMXPAS" ] && JMXPAS="$CATALINA_HOME/conf/jmxremote.password"
 
 # this host external address
 # HOST_EXTERNAL_ADDR=`ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}'`

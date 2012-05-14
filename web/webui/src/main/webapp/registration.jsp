@@ -10,13 +10,27 @@
     <div class="UIPageContainer">
       <!--begin header-->
       <%@ include file="common/header.jsp"%>
-  
       <!--begin FormPages-->
       <div class="UIPageBodyContainer">
         <div class="UIPageBody FormPages">
           <h1>Create Your Company's Social Intranet</h1>
           <div id="messageString" class="TenantFormMsg"></div>
             <form class="UIForm" action="javascript:void(0);"  method="POST" name="cloud-workspaces-profile" id="registrationForm">
+							<!-- Marketo input hidden fields -->
+							<input name="Cloud_Workspaces_User__c" id="Cloud_Workspaces_User__c" type='hidden' value="yes" />
+							<input name="LeadSource" id="LeadSource" type='hidden' value="Web - Cloud Workspaces" />
+							<input type="hidden" name="_marketo_comments" value="" />
+							<input type="hidden" name="lpId" value="1027" />
+							<input type="hidden" name="subId" value="46" />
+							<input type="hidden" name="kw" value="" />
+							<input type="hidden" name="cr" value="" />
+							<input type="hidden" name="searchstr" value="" />
+							<input type="hidden" name="lpurl" value="http://http://learn.cloud-workspaces.com/CloudWorkspaces-UserProfile-English.html?cr={creative}&kw={keyword}" />
+							<input type="hidden" name="formid" value="1023" />
+							<input type="hidden" name="returnURL" value="" />
+							<input type="hidden" name="retURL" value="" />
+							<input type="hidden" name="_mkt_disp" value="return" />
+							<input type="hidden" name="_mkt_trk" value="" />
             <table cols="2">
               <tr>
                 <td class="Field">Email:</td><td> <input class="required InputText DisabledArea" type="text" name="email" id="email"  disabled value="yourname@yourcompany.com" /></td>
@@ -45,25 +59,17 @@
               <tr>
                 <td class="Field"></td><td> <input class="Button" type="submit" id="t_submit" value="Create" onClick="tenants.doCreationRequest();" /></td>
               </tr>
+              <input type="hidden" name="confirmation-id" id="confirmation-id" />
             </table>
-            <input type="hidden" name="confirmation-id" id="confirmation-id" />
-            <!-- Marketo input hidden fields -->
-            <input type="hidden" name="lpId" value="1027" />
-            <input type="hidden" name="subId" value="46" />
-            <input type="hidden" name="formid" value="1023" />
           </form>
         </div>
       </div>
-        
       <!--begin Footer-->
       <%@ include file="common/footer.jsp"%>
     </div>
-    
-    <!-- marketo response container -->
+    <!--  marketo response container  -->
     <iframe id="mktOutput" name="mktOutput" style='display:none; visibility:hidden'></iframe>
-    <!-- BEGIN: MARKETO TRACKING -->
     <script type="text/javascript" src="/js/mktFormSupport.js"></script>
-    <!-- END: LOOPFUSE TRACKING -->
     <script type="text/javascript" src="/js/trackers.js"></script>
   </body>
 </html>

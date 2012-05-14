@@ -468,26 +468,25 @@ Tenants.prototype.doReset = function() {
 Tenants.prototype.handleSignupResponse = function(resp) {
   if (resp == "") {
     sendDataToMarketo({
-          "Email" : $('#email').val(),
-          "Cloud_Workspaces_User__c" : "Yes",
-          "lpId": $('#lpId').val(),
-          "subId": $('#subId').val(),
-          "formid": $('#formid').val()
+      "Email" : $('#email').val(),
+      "Cloud_Workspaces_User__c" : "Yes",
+      "lpId": $('#lpId').val(),
+      "subId": $('#subId').val(),
+      "formid": $('#formid').val()
     }, function() {
       window.location = prefixUrl + "/signup-done.jsp";
     });
   } else {
-  sendDataToMarketo({
-    "Email" : $('#email').val(),
-    "Cloud_Workspaces_User__c" : "No",
-    "LeadSource" : $('#LeadSource').val(),
-    "lpId": $('#lpId').val(),
-    "subId": $('#subId').val(),
-    "formid": $('#formid').val()
-    },
-    function() {
-    $("#messageString").html = resp;
-   });
+    sendDataToMarketo({
+      "Email" : $('#email').val(),
+      "Cloud_Workspaces_User__c" : "No",
+      "LeadSource" : $('#LeadSource').val(),
+      "lpId": $('#lpId').val(),
+      "subId": $('#subId').val(),
+      "formid": $('#formid').val()
+    }, function() {
+      $("#messageString").html = resp;
+    });
   }
   $("#t_submit").attr('disabled', '');
   $("#t_submit").val("Sign Up");
@@ -497,20 +496,20 @@ Tenants.prototype.handleSignupResponse = function(resp) {
 Tenants.prototype.handleCreationResponse = function(resp) {
   if (resp == "") {
     sendDataToMarketo({
-    "Email" : $('#email').val(),
-    "FirstName" : $('#first_name').val(),
-    "LastName" : $('#last_name').val(),
-    "Company" : $('#company').val(),
-    "Phone" : $('#phone_work').val(),
-    "Cloud_Workspaces_User__c" : "Yes",
-    "lpId": $('#lpId').val(),
-    "subId": $('#subId').val(),
-    "formid": $('#formid').val()
+      "Email" : $('#email').val(),
+      "FirstName" : $('#first_name').val(),
+      "LastName" : $('#last_name').val(),
+      "Company" : $('#company').val(),
+      "Phone" : $('#phone_work').val(),
+      "Cloud_Workspaces_User__c" : "Yes",
+      "lpId": $('#lpId').val(),
+      "subId": $('#subId').val(),
+      "formid": $('#formid').val()
     }, function() {
       window.location = prefixUrl + "/registration-done.jsp";
     });
   } else {
-     $("#messageString").html(resp);
+    $("#messageString").html(resp);
   }
   $("#t_submit").attr('disabled', '');
   $("#t_submit").val("Create");
@@ -519,14 +518,14 @@ Tenants.prototype.handleCreationResponse = function(resp) {
 /* Handle join response */
 Tenants.prototype.handleJoinResponse = function(resp) {
   if (resp == "") {
-   sendDataToMarketo({
-   "Email" : $('#email').val(),
-   "FirstName" : $('#first_name').val(),
-   "LastName" : $('last_name').val(),
-   "Cloud_Workspaces_User__c" : "Yes",
-   "lpId": $('#lpId').val(),
-   "subId": $('#subId').val(),
-   "formid": $('#formid').val()
+    sendDataToMarketo({
+      "Email" : $('#email').val(),
+      "FirstName" : $('#first_name').val(),
+      "LastName" : $('last_name').val(),
+      "Cloud_Workspaces_User__c" : "Yes",
+      "lpId": $('#lpId').val(),
+      "subId": $('#subId').val(),
+      "formid": $('#formid').val()
     }, function() {
       window.location = prefixUrl + "/join-done.jsp#" + $('#email').val();
     });
@@ -536,23 +535,22 @@ Tenants.prototype.handleJoinResponse = function(resp) {
 
   $("#t_submit").attr('disabled', '');
   $("#t_submit").val("Sign In");
-
 }
 
 Tenants.prototype.handleContactResponse = function(resp) {
   var splitName = tenants.splitName($('#name').val());
   if (resp == "") {
-  sendDataToMarketo({
-  "FirstName" : splitName.getFirstName(),
-  "LastName" : splitName.getLastName(),
-  "Email" : $('#email').val(),
-  "Cloud_Workspaces_Contact_Us_Subject__c" : $('#subject').val(),
-  "Cloud_Workspaces_Contact_Us_Message__c" : $('#ContactUs_Message__c').val(),
-  "Cloud_Workspaces_User__c" : "Yes",
-  "lpId": $('#lpId').val(),
-  "subId": $('#subId').val(),
-  "formid": $('#formid').val()
-  }, function() {
+    sendDataToMarketo({
+      "FirstName" : splitName.getFirstName(),
+      "LastName" : splitName.getLastName(),
+      "Email" : $('#email').val(),
+      "Cloud_Workspaces_Contact_Us_Subject__c" : $('#subject').val(),
+      "Cloud_Workspaces_Contact_Us_Message__c" : $('#ContactUs_Message__c').val(),
+      "Cloud_Workspaces_User__c" : "Yes",
+      "lpId": $('#lpId').val(),
+      "subId": $('#subId').val(),
+      "formid": $('#formid').val()
+    }, function() {
       window.location = "/contact-us-done.jsp";
     });
   } else {
@@ -623,14 +621,13 @@ Tenants.prototype.getquerystringContactUs = function() {
 }
 
 function onlyNumbers(evt) {
-  var charCode = (evt.which) ? evt.which : event.keyCode;
+  var charCode = (evt.which) ? evt.which : evt.keyCode;
 
   if (charCode > 31
       && ((charCode < 48 || charCode > 57) && charCode != 45 && charCode != 40 && charCode != 41 && charCode != 43))
     return false;
 
   return true;
-
 }
 
 function sendDataToMarketo(data, afterSubmitCallback) {
@@ -638,7 +635,6 @@ function sendDataToMarketo(data, afterSubmitCallback) {
   var mktOutputIframeName = "mktOutput";
   var mktFormId = "mktForm";
   var mktFormName = "cloud-workspaces-profile";
-  
   var commonData = {
    "LeadSource" : "Web - Cloud Workspaces",
    "marketo_comments": "",
@@ -650,7 +646,7 @@ function sendDataToMarketo(data, afterSubmitCallback) {
    "retURL": "",
    "_mkt_disp": "return",
    "_mkt_trk": ""
- }
+  }
 
   if (jQuery && document.getElementById(mktOutputIframeId)) {
       jQuery('#' + mktFormId).remove();
@@ -672,7 +668,7 @@ function sendDataToMarketo(data, afterSubmitCallback) {
        value : data[i]
     }));
    }
-   
+
    for ( var i in commonData) {
      jQuery('#' + mktFormId).append(jQuery('<input/>', {
      type : 'hidden',
@@ -698,24 +694,21 @@ function sendDataToMarketo(data, afterSubmitCallback) {
    }
  }
 
-  function isMarketoResponseReceived(iframeId) {
+function isMarketoResponseReceived(iframeId) {
   try {
     return !document.getElementById(iframeId)
       || document.getElementById(iframeId).contentWindow.location.href != "about:blank";
-    } catch (e) {
+  } catch (e) {
     // check for permission of
     return true;
-    }
   }
- 
-
+}
 
 Tenants.prototype.splitName = function(name) {
-    
   // extract firstName and lastName from name
-  var firstName = "";      
+  var firstName = "";
   var lastName = "";
- 
+
  // trim name, remove duplicated spaces, split by spaces
  var splittedName = jQuery.trim(name).replace(/\s+/g, " ").split(" ");
  if (splittedName && splittedName.length > 0){
@@ -729,25 +722,23 @@ Tenants.prototype.splitName = function(name) {
   firstName = splittedName.join(" ");
   }
  }
- 
+
  name = encodeURIComponent(name);
- 
+
  return {
      getName: function(){
-        return name;
+       return name;
      },
-     
      getFirstName: function(){
        return firstName;
      },
-
-    getLastName: function(){
-      return lastName;
-   }
+     getLastName: function(){
+       return lastName;
+     }
   }
 }
-  
-  function  getTenantName(email) {
+
+function  getTenantName(email) {
       var checkURL = tenantServicePath + "/tenantname/" + email;
       var result;
       $.ajax({
@@ -762,8 +753,7 @@ Tenants.prototype.splitName = function(name) {
           dataType : 'text'
           });
           return result;
-          }
-
+}
 
 var keyStr = "ABCDEFGHIJKLMNOP" + "QRSTUVWXYZabcdef" + "ghijklmnopqrstuv" + "wxyz0123456789+/" + "=";
 
@@ -950,6 +940,10 @@ function onReceiveShowContactFormResponse(request) {
 
     maskLayer.style.display = "block";
     container.style.display = "block";
+    //Load JS file
+    $.getScript("/js/mktFormSupport.js");
+    //Fill data for Marketo form
+    $.getScript("/js/trackers.js");
   }
 }
 
