@@ -32,7 +32,7 @@
     <key>org.exoplatform.cloudmanagement.multitenancy.CreateNewRepositoryPlugin</key>
     <!-- type>org.exoplatform.cloudmanagement.multitenancy.CreateNewRepositoryPlugin</type -->
     <!-- impl with support of JCR Value storages -->
-    <type>org.exoplatform.platform.cloud.services.multitenancy.CreateNewRepositoryPlugin</type>
+    <type>com.exoplatform.platform.cloud.services.multitenancy.CreateNewRepositoryPlugin</type>
     <description>Create database</description>
     <init-params>
       <value-param>
