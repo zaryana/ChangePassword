@@ -221,6 +221,14 @@
                       file="${project.basedir}/src/main/resources/tomcat/conf/Catalina/localhost/cloud-workspaces-extension.xml"
                       tofile="${project.build.directory}/platform-cloud-tomcat/conf/Catalina/localhost/cloud-workspaces-extension.xml"
                       overwrite="true" />
+                    <copy
+                      file="${project.basedir}/src/main/resources/tomcat/conf/Catalina/localhost/cloud-workspaces-gadgets.xml"
+                      tofile="${project.build.directory}/platform-cloud-tomcat/conf/Catalina/localhost/cloud-workspaces-gadgets.xml"
+                      overwrite="true" />
+                    <copy
+                      file="${project.basedir}/src/main/resources/tomcat/conf/Catalina/localhost/cloud-workspaces-wizard-extension.xml"
+                      tofile="${project.build.directory}/platform-cloud-tomcat/conf/Catalina/localhost/cloud-workspaces-wizard-extension.xml"
+                      overwrite="true" />
                   </target>
                 </configuration>
                 <goals>
