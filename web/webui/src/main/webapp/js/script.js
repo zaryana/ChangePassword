@@ -527,7 +527,18 @@ Tenants.prototype.handleJoinResponse = function(resp) {
       "subId": $('#subId').val(),
       "formid": $('#formid').val()
     }, function() {
-      window.location = prefixUrl + "/join-done.jsp#" + $('#email').val();
+      var tname = $('#workspace').val();
+      var login = $('#email').val();
+      var pass = $('#password').val();
+      var username = login.substring(0, login.indexOf('@'));
+      var host = location.hostname.indexOf("www") == 0 ? location.hostname.substring(4) :location.hostname;
+      var redirect = location.protocol + '//' + tname + '.' + host;
+      redirect += '/portal/login?username=';
+      redirect += username;
+      redirect += '&password=';
+      redirect += pass;
+      redirect += '&initialURI=/portal/intranet/welcome';
+      window.location = redirect;
     });
   } else {
     $("#messageString").html(resp);
