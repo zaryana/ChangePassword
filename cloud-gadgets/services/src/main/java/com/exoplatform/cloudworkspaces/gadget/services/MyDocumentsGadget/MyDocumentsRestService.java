@@ -111,6 +111,36 @@ public class MyDocumentsRestService implements ResourceContainer {
       }
 
   }
+  
+  @GET
+  @Path("/path")
+  public Response getFolders(@Context SecurityContext sc, @Context UriInfo uriInfo) throws Exception {
+    
+    String userId = getUserId(sc, uriInfo);
+    if(userId == null) {
+          return Response.status(HTTPStatus.INTERNAL_ERROR).cacheControl(cacheControl).build();
+    }      
+    try {
+      
+      List<Node> listNodes = new ArrayList<Node>();
+      NodeHierarchyCreator nodeHierarchyCreator = (NodeHierarchyCreator)ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(NodeHierarchyCreator.class);
+      SessionProviderService sessionProviderService = (SessionProviderService)ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(SessionProviderService.class);      
+      Node userNode = nodeHierarchyCreator.getUserNode(sessionProviderService.getSystemSessionProvider(null), userId);
+      Node privateDrive = userNode.getNode("Private");
+      Node publicDrive = userNode.getNode("Public");
+      
+      JSONObject jsonPath = new JSONObject();
+      jsonPath.put("private", privateDrive.getPath());
+      jsonPath.put("public", publicDrive.getPath());
+      
+      return Response.ok(jsonPath.toString(), MediaType.APPLICATION_JSON).cacheControl(cacheControl).build();
+      
+    } catch (Exception e) {
+        log.error("Error in document path rest service: " + e.getMessage(), e);
+        return Response.ok("error " + e).cacheControl(cacheControl).build();
+      }
+
+  }
 
   
   public static String getNodeTypeIcon(Node node, String appended) throws RepositoryException {
