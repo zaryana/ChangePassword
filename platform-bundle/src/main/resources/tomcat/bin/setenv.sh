@@ -79,15 +79,15 @@ EXO_CLOUD_OPTS="-javaagent:../lib/cloud-agent-instrument-1.1-M6.jar=../gatein/co
 EXO_CLOUD_SECURITY_OPTS="-Djava.security.manager=org.exoplatform.cloudmanagement.security.TenantSecurityManager \
     -Djava.security.policy==../conf/catalina.policy"
 
-MAILING_OPTS="-Dgatein.email.smtp.from=$EMAIL_SMTP_FROM \
-              -Dgatein.email.smtp.username=$EMAIL_SMTP_USERNAME \
-              -Dgatein.email.smtp.password=$EMAIL_SMTP_PASSWORD \
-              -Dgatein.email.smtp.host=$EMAIL_SMTP_HOST \
-              -Dgatein.email.smtp.port=$EMAIL_SMTP_PORT \
-              -Dgatein.email.smtp.starttls.enable=$EMAIL_SMTP_STARTTLS_ENABLE \
-              -Dgatein.email.smtp.auth=$EMAIL_SMTP_AUTH \
-              -Dgatein.email.smtp.socketFactory.port=$EMAIL_SMTP_SOCK_FACTORY_PORT \
-              -Dgatein.email.smtp.socketFactory.class=$EMAIL_SMTP_SOCK_FACTORY_CLASS"
+MAILING_OPTS="-Dgatein.mail.smtp.from=$EMAIL_SMTP_FROM \
+              -Dgatein.mail.smtp.username=$EMAIL_SMTP_USERNAME \
+              -Dgatein.mail.smtp.password=$EMAIL_SMTP_PASSWORD \
+              -Dgatein.mail.smtp.host=$EMAIL_SMTP_HOST \
+              -Dgatein.mail.smtp.port=$EMAIL_SMTP_PORT \
+              -Dgatein.mail.smtp.starttls.enable=$EMAIL_SMTP_STARTTLS_ENABLE \
+              -Dgatein.mail.smtp.auth=$EMAIL_SMTP_AUTH \
+              -Dgatein.mail.smtp.socketFactory.port=$EMAIL_SMTP_SOCK_FACTORY_PORT \
+              -Dgatein.mail.smtp.socketFactory.class=$EMAIL_SMTP_SOCK_FACTORY_CLASS"
 
 JMX_OPTS="-Dcom.sun.management.jmxremote=true -Djava.rmi.server.hostname=$HOST_EXTERNAL_ADDR \
     -Dcom.sun.management.jmxremote.authenticate=true \
