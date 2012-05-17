@@ -68,12 +68,12 @@
         
         .UIFormBox .FieldLoginPage {
           float: left;
-          width: 150px;
+          width: 190px;
           text-align: right;
           color: #414141;
           font-size: 18px;
           line-height: 40px;
-          padding-right: 10px;
+          padding-right: 20px;
         }
         
         .UIPageBody a.LoginPage {
@@ -164,11 +164,11 @@
 				          <td><a class="LoginPage" style="margin-left: 10px;" href="<%=masterhostUrl%>/reset-password.jsp">Forgot Password?</a></td>
 			          </tr>
 			          <tr onkeypress="eXo.portal.UIPortalControl.onEnterPress(event);">
-			                  <td class="FieldLoginPage"></td><td><input type="checkbox" name="rememberme" id="rememberme" value="true"/><label for="rememberme" class="LabelLoginPage"><%=res.getString("UILoginForm.label.RememberOnComputer")%></label></td><td></td>
+			                  <td class="FieldLoginPage"></td><td><input type="checkbox" name="rememberme" id="rememberme" value="true"/><label for="rememberme" class="LabelLoginPage">Remember Me</label></td><td></td>
 			          </tr>
 			          <tr>
-				          <td class="FieldLoginPage"></td><td><input type="submit" onclick="login();" value="Login" id="UIPortalLoginFormAction" class="Button"></td>
-				          <td><span style="font-size: 13px; margin-left: 10px;">Don't have an account? </span><a class="LoginPage" href="<%=masterhostUrl%>/">Sign Up</a></td>
+				          <td class="FieldLoginPage"></td><td><input type="submit" onclick="login();" value="Login" id="UIPortalLoginFormAction" class="Button"><div style="margin: 10px 5px;"><span style="font-size: 16px; margin-left: 14px; color: #414141;">or </span><a class="LoginPage" href="<%=masterhostUrl%>/">Join Cloud Workspaces</a></div></td>
+				          <td></td>
 			          </tr>
 		          </tbody>
 	          </table>
