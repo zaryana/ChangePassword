@@ -53,6 +53,10 @@
       <artifactId>cloud-admin-connector-localhost</artifactId>
       <type>jar</type>
     </dependency>
+    <dependency>
+      <groupId>org.exoplatform.cloud-management</groupId>
+      <artifactId>cloud-admin-connector-ec2</artifactId>
+    </dependency>
  
     <!-- add exo-ide-shell dependency for using CLIResourcesService -->
     <dependency>
