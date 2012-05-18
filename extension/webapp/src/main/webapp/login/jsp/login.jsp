@@ -65,6 +65,30 @@
           margin: auto;
           font-family: arial, tahoma, serif;
         }
+        
+        .UIFormBox .FieldLoginPage {
+          float: left;
+          width: 190px;
+          text-align: right;
+          color: #414141;
+          font-size: 18px;
+          line-height: 40px;
+          padding-right: 20px;
+        }
+        
+        .UIPageBody a.LoginPage {
+          font-size: 15px;
+        }
+        
+        .UIPageBody .LabelLoginPage {
+          font-size: 16px;
+          margin-left: 8px;
+          color: #414141;
+        }
+        
+        .UIPageBody a.LoginPage:hover {
+	  text-decoration: underline;
+        }
     </style>
   </head>
   
@@ -133,16 +157,18 @@
 	          <table cols="2">
 		          <tbody>
 			          <tr>
-				          <td class="Field">Username:</td><td><input type="text" id="username" name="username" class="required InputText" value="<%=username%>" /></td><td></td>
+				          <td class="FieldLoginPage">Username:</td><td><input type="text" id="username" name="username" class="required InputText" value="<%=username%>" /></td><td></td>
 			          </tr>
 			          <tr>
-				          <td class="Field">Password:</td><td id="UIPortalLoginFormControl" onkeypress="eXo.portal.UIPortalControl.onEnterPress(event);"><input type="password" id="password" name="password" class="required InputText" value="" /></td><td></td>
+				          <td class="FieldLoginPage">Password:</td><td id="UIPortalLoginFormControl" onkeypress="eXo.portal.UIPortalControl.onEnterPress(event);"><input type="password" id="password" name="password" class="required InputText" value="" /></td>
+				          <td><a class="LoginPage" style="margin-left: 10px;" href="<%=masterhostUrl%>/reset-password.jsp">Forgot Password?</a></td>
+			          </tr>
+			          <tr onkeypress="eXo.portal.UIPortalControl.onEnterPress(event);">
+			                  <td class="FieldLoginPage"></td><td><input type="checkbox" name="rememberme" id="rememberme" value="true"/><label for="rememberme" class="LabelLoginPage">Remember Me</label></td><td></td>
 			          </tr>
 			          <tr>
-			                  <td></td><td><a class="ForgotPass" style="font-size: 16px;" href="<%=masterhostUrl%>/reset-password.jsp">Forgot Password?</a><span style="font-size: 16px;"> &nbsp;&nbsp;|&nbsp;&nbsp; </span><a class="ForgotPass" style="font-size: 16px;" href="<%=masterhostUrl%>/">Register</a></td><td></td>
-			          </tr>
-			          <tr>
-				          <td class="Field"></td><td><input type="submit" onclick="login();" value="Login" id="UIPortalLoginFormAction" class="Button"></td><td></td>
+				          <td class="FieldLoginPage"></td><td><input type="submit" onclick="login();" value="Login" id="UIPortalLoginFormAction" class="Button"><div style="margin: 10px 5px;"><span style="font-size: 16px; margin-left: 14px; color: #414141;">or </span><a class="LoginPage" href="<%=masterhostUrl%>/">Join Cloud Workspaces</a></div></td>
+				          <td></td>
 			          </tr>
 		          </tbody>
 	          </table>
