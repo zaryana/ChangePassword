@@ -10,11 +10,11 @@ DEFAULT_CONNECTOR_PORT=8009
 DEFAULT_PORT=8080
 
 FIRST_SERVER_PORT=8100
-FIRST_RMI_REGISTRY_PORT=6969
-FIRST_RMI_SERVER_PORT=7979
-FIRST_REDIRECT_PORT=8443
+FIRST_RMI_REGISTRY_PORT=6979
+FIRST_RMI_SERVER_PORT=7989
+FIRST_REDIRECT_PORT=8453
 FIRST_CONNECTOR_PORT=8200
-FIRST_PORT=8080
+FIRST_PORT=8090
 
 INSTANCE_ID=$1
 TENANT_MASTERHOST=$2
@@ -43,23 +43,23 @@ rm $TOMCAT_ZIP
 
 # configure setenv.sh
 cd app-server-tomcat/bin
-replace "TENANT_MASTERHOST=\"cloud-workspaces.com\"" "TENANT_MASTERHOST=\"$TENANT_MASTERHOST\"" -- setenv.sh
-replace "EXO_DB_HOST=\"localhost:3306\"" "EXO_DB_HOST=\"$DB_HOST:3306\"" -- setenv.sh
-replace "EXO_DB_USER=\"clouduser\"" "EXO_DB_USER=\"$DB_USER\"" -- setenv.sh
-replace "EXO_DB_PASSWORD=\"cloud12321\"" "EXO_DB_PASSWORD=\"$DB_PASSWORD\"" -- setenv.sh
-replace "TENANT_REPOSITORY=\"repository\"" "TENANT_REPOSITORY=\"$DEFAULT_DATABASE\"" -- setenv.sh
+sed -i s/TENANT_MASTERHOST=\"cloud-workspaces.com\"/TENANT_MASTERHOST=\"$TENANT_MASTERHOST\"/ setenv.sh
+sed -i s/EXO_DB_HOST=\"localhost:3306\"/EXO_DB_HOST=\"$DB_HOST:3306\"/ setenv.sh
+sed -i s/EXO_DB_USER=\"clouduser\"/EXO_DB_USER=\"$DB_USER\"/ setenv.sh
+sed -i s/EXO_DB_PASSWORD=\"cloud12321\"/EXO_DB_PASSWORD=\"$DB_PASSWORD\"/ setenv.sh
+sed -i s/TENANT_REPOSITORY=\"repository\"/TENANT_REPOSITORY=\"$DEFAULT_DATABASE\"/ setenv.sh
 
 # create default database
 mysql -h$DB_HOST -u$DB_USER -p$DB_PASSWORD -e "create database \`$DEFAULT_DATABASE\`"
 
 # configure server.xml
 cd ../conf
-replace "$DEFAULT_SERVER_PORT" "$SERVER_PORT" -- server.xml
-replace "$DEFAULT_RMI_REGISTRY_PORT" "$RMI_REGISTRY_PORT" -- server.xml
-replace "$DEFAULT_RMI_SERVER_PORT" "$RMI_SERVER_PORT" -- server.xml
-replace "$DEFAULT_REDIRECT_PORT" "$REDIRECT_PORT" -- server.xml
-replace "$DEFAULT_CONNECTOR_PORT" "$CONNECTOR_PORT" -- server.xml
-replace "$DEFAULT_PORT" "$PORT" -- server.xml
+sed -i s/$DEFAULT_SERVER_PORT/$SERVER_PORT/ server.xml
+sed -i s/$DEFAULT_RMI_REGISTRY_PORT/$RMI_REGISTRY_PORT/ server.xml
+sed -i s/$DEFAULT_RMI_SERVER_PORT/$RMI_SERVER_PORT/ server.xml
+sed -i s/$DEFAULT_REDIRECT_PORT/$REDIRECT_PORT/ server.xml
+sed -i s/$DEFAULT_CONNECTOR_PORT/$CONNECTOR_PORT/ server.xml
+sed -i s/$DEFAULT_PORT/$PORT/ server.xml
 
 # copy backup
 cd ../gatein
@@ -67,6 +67,9 @@ cp ../../../backup.zip backup.zip
 unzip backup.zip
 rm backup.zip
 
+cd ../..
+echo mysql -h$DB_HOST -u$DB_USER -p$DB_PASSWORD -e \"drop database $DEFAULT_DATABASE\" > free_resources.sh
+
 # start tomcat
-cd ..
+cd app-server-tomcat
 ./run_eXo.sh
