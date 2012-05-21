@@ -117,7 +117,7 @@
            the request and response data received and sent by Tomcat.
            Documentation at: /docs/config/valve.html -->
       <Valve className="org.exoplatform.cloudmanagement.admin.ResumeValve"
-             resumeTimeout="30000"
+             resumeTimeout="600000"
              serversOverloadUrl="http://h1.exoplatform.org/overload.html"
              resumeRestServiceUrl="http://localhost:8080/rest/cloud-admin/tenant-service/resume"/>
 
