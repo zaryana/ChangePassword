@@ -29,4 +29,43 @@
   <msg name="addEvent">
     Add Event/Task
   </msg>
+  <msg name="eventType">
+    Event
+  </msg>
+  <msg name="taskType">
+    Task
+  </msg>
+  <msg name="eventTitle">
+    Title
+  </msg>
+  <msg name="from">
+    From
+  </msg>
+  <msg name="to">
+    To
+  </msg>
+  <msg name="calendar">
+    Calendar
+  </msg>
+  <msg name="confirm">
+    Confirm
+  </msg>
+  <msg name="cancel">
+    Cancel
+  </msg> 
+  <msg name="allday">
+    All Day
+  </msg>
+  <msg name="add">
+    Add
+  </msg>  
+  <msg name="added">
+    added.
+  </msg>
+  <msg name="error">
+    You have to input the title.
+  </msg>
+  <msg name="selectTime">
+    The time value of From must be smaller than that of To.
+  </msg>  
 </messagebundle>
