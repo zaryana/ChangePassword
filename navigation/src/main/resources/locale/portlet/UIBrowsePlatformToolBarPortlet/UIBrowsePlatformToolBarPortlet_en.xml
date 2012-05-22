@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bundle>
+  <UIBrowsePlatformToolBarPortlet>
+    <label>
+      <browse>Browse</browse>
+      <document>Documents</document>
+      <people>People</people>
+      <space>Spaces</space>
+    </label>
+  </UIBrowsePlatformToolBarPortlet>
+</bundle>
