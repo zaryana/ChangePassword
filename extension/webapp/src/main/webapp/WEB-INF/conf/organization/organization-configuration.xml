@@ -284,10 +284,10 @@
 											<string></string>
 										</field>
 										<field name="firstName">
-											<string>Root</string>
+											<string>Support</string>
 										</field>
 										<field name="lastName">
-											<string>Root</string>
+											<string>Bot</string>
 										</field>
 										<field name="email">
 											<string>root@localhost</string>
