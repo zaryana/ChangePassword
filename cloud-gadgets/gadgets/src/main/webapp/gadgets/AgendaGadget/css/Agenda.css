@@ -41,7 +41,7 @@
 }
 
 .addLink {
-        margin: 5px 3px;
+        margin: 6px 3px;
         font-weight: bold;
         text-decoration: none;
         clear: both;
@@ -56,7 +56,7 @@
 }
 
 #CalendarGadget .UIGadgetThemes { 
-        padding: 10px 15px;
+        padding: 10px 5px 10px 10px;
 }
 
 .gadgetTitle {
@@ -68,4 +68,193 @@
         margin-left: 5px;
         color: lightgray;
         font-size: 11px;        
+}
+
+.add-table .Row {
+        margin:5px 0;
+}
+
+.add-table .Row input[type="text"] {
+        border: 1px solid #EEEEEE;
+        font-size: 12px;
+}
+
+.add-table .Button input[type="button"] {
+        border: 1px solid #DDDDDD;
+        border-radius: 4px 4px 4px 4px;
+        cursor: pointer;
+        margin: 10px 1px 2px 1px;
+        font-size: 12px;
+        white-space: nowrap;
+        padding: 1px 2px;
+}
+
+.add-table .Button #cancel {
+        margin: 10px 4px 2px 1px;
+}
+
+.add-table .RowTitle input[type="text"] {
+        width: 100%;
+}
+                     
+.add-table .RowFromTo input[type="text"]{
+        width: 55%;
+}
+
+.add-table {
+        width: 100%;
+}
+
+.add-table label {
+        font-size: 12px;
+        font-weight: bold;
+}                                            
+
+.addLink select {
+        padding: 1px;
+        font-size: 12px;
+        border: 1px solid #EEEEEE;
+        width: 65px;
+        height: 22px;
+}
+
+.addLink .select-calendar select {
+        width: 99%;
+}
+
+.addLink .select-calendar option {
+   padding-left: 10px;
+}
+
+.addLink option:hover {
+   cursor: pointer;
+}
+
+.addLink .select-eventtype select {
+        width: 86px;
+}
+
+.addLink .label-calendar {
+        width: 20%;
+}                               
+        
+.UICalendar {
+        cursor: default;
+        text-align: center;
+}
+
+.UICalendar .MonthYearBox {
+    border: 1px solid #D4D4D4;
+    color: #0960C1;
+    font: bold 11px/18px tahoma;
+}
+
+.UICalendar .MonthYearBox .NextMonth {
+    background: url('background/CalendarDecorator.gif') no-repeat scroll center -41px transparent;
+    display: block;
+}
+
+.UICalendar .MonthYearBox .PreviousMonth {
+    background: url('background/CalendarDecorator.gif') no-repeat scroll center -21px transparent;
+    display: block;
+}
+
+.UICalendar table {
+    border-collapse: collapse;
+    table-layout: fixed;
+    width: 100%;
+}
+
+.UICalendar .MonthYearBox .MonthButton {
+    border: 1px solid #D4D4D4;
+    width: 20px;
+}
+
+.UICalendar .MonthYearBox td {
+    background-color: white;
+    padding: 0;
+}
+
+.UICalendar .MonthYearBox .YearButton {
+    width: 20px;
+}
+
+.UICalendar .MonthYearBox a.NextYear {
+    background: url('background/CalendarDecorator.gif') no-repeat scroll center -81px transparent;
+    display: block;
+}
+
+.UICalendar .MonthYearBox a.NextYear:hover {
+    background: url('background/CalendarDecorator.gif') no-repeat scroll center -81px transparent;
+    display: block;
+}
+
+.UICalendar .MonthYearBox a.PreviousYear {
+    background: url('background/CalendarDecorator.gif') no-repeat scroll center -61px transparent;
+    display: block;
+}
+
+.UICalendar .MonthYearBox a.PreviousYear:hover {
+    background: url('background/CalendarDecorator.gif') no-repeat scroll center -61px transparent;
+    display: block;
+}
+
+.UICalendar .MonthYearBox a {
+    height: 20px;
+    width: 20px;
+}
+
+.UICalendar .MonthYearBox .MonthButton a {
+    background-color: #E1DFDF;
+}
+
+.UICalendar .MonthYearBox td {
+    background-color: white;
+    padding: 0;
+}
+
+.UICalendar .CalendarGrid {
+    background-color: white;
+    border: 1px solid #CFCFCF;
+    padding: 1px;
+}
+
+.UICalendar .CalendarGrid td {
+    background-color: #F4F4F4;
+    border: 1px solid white;
+}
+
+.UICalendar .CalendarGrid td a.Current {
+    background-color: #D9D9D9;
+    color: #058EE6;
+}
+
+.UICalendarComponent {
+    background-color: #FFFFFF;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    width: 172px;
+}
+
+.UICalendar {
+    background: url('background/CalendarDecorator.gif') repeat-x scroll left -122px #E0E5F7;
+    border: 1px solid #CCCED7;
+    cursor: default;
+    font: 12px verdana;
+    padding: 4px 4px;
+    text-align: center;
+}
+
+.MessageError {
+    color: red;
+    font-size: 11px;
+    margin: 5px 8px 10px 4px;
+}
+
+.MessageSuccess {
+    color: #226AB4;
+    font-size: 11px;
+    margin: 10px 8px;
+    text-align: center;
 }
