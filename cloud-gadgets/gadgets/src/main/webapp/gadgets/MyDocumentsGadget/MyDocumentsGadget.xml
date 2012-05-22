@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Module>
-  <ModulePrefs title="MyDocumentsGadget" >
+  <ModulePrefs title="MyDocumentsGadget" height="160" >
     <Require feature="opensocial-0.8" />
     <Require feature="dynamic-height"/>
   </ModulePrefs>
@@ -20,46 +20,15 @@
 
         
         function initDocuments(){
-          $.getJSON("/rest/gadgets/mydocuments/all", function(items){
-             
-                        
-            if (items.length == 0){
-              $("#documentList").append('<li><a target="_parent" href="/portal/intranet/all-spaces"><span class="arrow">+</span>  Upload a document</a></ul>');
-              gadgets.window.adjustHeight();
-            }
-            
-            else {
-              
-              if(items.length > 5){        
-                $("#myDocumentsContainer").append('<div id="showAll"><a href="#" onclick="return false">&darr; Show all</a></div>');
-                $("#showAll").live("click", function(){
-                  $('#showAll').fadeOut(200, function() {
-                    $('#documentList li:hidden').fadeIn(200, function() {
-                      gadgets.window.adjustHeight();
-                    });
-                  });                                                                             
-                });                                    
-              }
-              
-              
-              $.each(items, function(i, item){               
-                
-                var documentItem = "";
-                
-                if(item.title == "Public") {
-                    item.title = "Public Folder";
-                    item.linkImage = " nt_folder16x16Icon";
-                }
-                
-                if (i < 5)
-                  documentItem += '<li class="Icon '+item.linkImage+'"><a target="_parent" href="/portal/intranet/documents?path=Personal Documents'+item.nodePath+'">'+item.title+'</a></ul>';
-                else
-                  documentItem += '<li style="display:none;" class="Icon '+item.linkImage+'"><a target="_parent" href="/portal/intranet/documents?path=Personal Documents'+item.nodePath+'">'+item.title+'</a></ul>';
-                
-                $("#documentList").append(documentItem);  
-                gadgets.window.adjustHeight();
+                     
+          $.getJSON("/rest/gadgets/mydocuments/path", function(result){
+                         
+              $("#documentList > li > a").each(function(index) {
+                $(this).attr('href', '/portal/intranet/documents?path=Personal Documents'+ result.private + $(this).attr('href'));                   
               });
-            }
+            
+              $("#publicFolder > a").attr('href', '/portal/intranet/documents?path=Personal Documents'+ result.public);                    
+            
           }); 
           
         }
@@ -75,7 +44,14 @@
       <div id="MyDocumentsGadget">
       <div class="UIGadgetThemes" id="myDocumentsContainer">
         <span class="title">My Documents</span>
-        <ul id="documentList"></ul>
+        <ul id="documentList">
+          <li class="Icon exo_documentFolder16x16Icon"><a target="_parent" href="/Documents">Documents</a></li>
+          <li class="Icon exo_favoriteFolder16x16Icon"><a target="_parent" href="/Favorites">Favorites</a></li>
+          <li class="Icon exo_musicFolder16x16Icon"><a target="_parent" href="/Music">Music</a></li>
+          <li class="Icon exo_pictureFolder16x16Icon"><a target="_parent" href="/Pictures">Pictures</a></li>
+          <li class="Icon nt_unstructured16x16Icon" id="publicFolder"><a target="_parent" href="">Public Documents</a></li>
+          <li class="Icon exo_videoFolder16x16Icon"><a target="_parent" href="/Videos">Videos</a></li>
+        </ul>
         </div>
       </div>
     </body> 

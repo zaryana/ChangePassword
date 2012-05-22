@@ -1,0 +1,44 @@
+<%
+import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.portal.mop.user.UserNavigation;
+import org.exoplatform.portal.mop.user.UserNode;
+import org.exoplatform.web.application.JavascriptManager;
+import org.exoplatform.platform.component.social.UINavigationComposer;
+import org.exoplatform.platform.webui.NavigationURLUtils;
+
+def rcontext = _ctx.getRequestContext() ;
+JavascriptManager jsmanager = rcontext.getJavascriptManager();
+jsmanager.importJavascript('eXo.portal.UIPortalNavigation') ;
+jsmanager.importJavascript('eXo.portal.UIAdminToolbar') ;
+jsmanager.addCustomizedOnLoadScript('eXo.portal.UIAdminToolbar.onLoad("' + uicomponent.id + '");');
+
+def labelDocument = _ctx.appRes("UIBrowsePlatformToolBarPortlet.label.document");
+def labelBrowse = _ctx.appRes("UIBrowsePlatformToolBarPortlet.label.browse");
+def labelSpace = _ctx.appRes("UIBrowsePlatformToolBarPortlet.label.space");
+def labelPeople = _ctx.appRes("UIBrowsePlatformToolBarPortlet.label.people");
+
+def documentLink = NavigationURLUtils.getURLInCurrentPortal("documents");
+def peopleLink = NavigationURLUtils.getURLInCurrentPortal("people");
+def spaceLink = NavigationURLUtils.getURLInCurrentPortal("all-spaces");
+%>
+
+<ul id="$uicomponent.id" class="UIUserToolBarSitePortlet UIHorizontalTabs">
+    <li class="UITab NormalToolbarTab" style="width: 103px;">
+			  <a href="#" class="ArrowIcon TBIcon">
+			       $labelBrowse
+			  </a>
+				<ul style="position: absolute; display:none" class="MenuItemContainer">
+		        <li class="MenuItem ">
+		            <a class="ItemIcon SiteIcon" href="$documentLink">$labelDocument</a>
+		        </li>
+		        <%if(uicomponent.isSocialPortal()) {%>
+		        <li class="MenuItem ">
+		            <a class="ItemIcon SiteIcon" href="$peopleLink">$labelPeople</a>
+		        </li>
+		        <li class="MenuItem ">
+		            <a class="ItemIcon SiteIcon" href="$spaceLink">$labelSpace</a>
+		        </li>    
+		        <%}%>        
+				</ul>  
+    </li>
+  </ul>

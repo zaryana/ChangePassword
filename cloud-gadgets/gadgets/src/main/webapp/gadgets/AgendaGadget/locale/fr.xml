@@ -29,4 +29,43 @@
   <msg name="addEvent">
     Ajouter événement/tâche
   </msg>
+  <msg name="eventType">
+    Evénement
+  </msg>
+  <msg name="taskType">
+    Tâche
+  </msg>
+  <msg name="eventTitle">
+    Titre
+  </msg>
+  <msg name="from">
+    De
+  </msg>
+  <msg name="to">
+    A
+  </msg>
+  <msg name="calendar">
+    Calendrier
+  </msg>
+  <msg name="confirm">
+    Ajouter
+  </msg>
+  <msg name="cancel">
+    Annuler
+  </msg> 
+  <msg name="allday">
+    Toute journée
+  </msg>
+  <msg name="added">
+    ajouté.
+  </msg>
+  <msg name="add">
+    Ajout
+  </msg>
+  <msg name="error">
+    Vous devez entrer le titre.
+  </msg>
+  <msg name="selectTime">
+    La valeur de temps De doit être inférieur à celle de A.
+  </msg>  
 </messagebundle>

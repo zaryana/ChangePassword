@@ -4,7 +4,7 @@
   <parent>
     <groupId>com.exoplatform.cloudworkspaces</groupId>
     <artifactId>cloud-workspaces-parent</artifactId>
-    <version>1.0.5-SNAPSHOT</version>
+    <version>1.0.5</version>
   </parent>
   <artifactId>cloud-workspaces-platform-navigation</artifactId>
   <packaging>war</packaging>
@@ -16,5 +16,18 @@
       <scope>runtime</scope>
       <type>war</type>
     </dependency>
+
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.webui.portal</artifactId>
+      <scope>provided</scope>
+    </dependency>   
+    
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.webui.eXo</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
   </dependencies>
 </project>
