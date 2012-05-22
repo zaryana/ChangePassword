@@ -258,8 +258,6 @@ public class GetEventRESTService extends CalendarWebservice {
     CalendarService calendarService = (CalendarService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(CalendarService.class);
     CalendarEvent event = new CalendarEvent();
     String[] splitCalId = calId.split(":");
-    System.out.println(splitCalId[0]);
-    System.out.println(splitCalId[1]);
     if (splitCalId[0].equals("0")) isGroupCal = false;
     event.setCalendarId(splitCalId[1]);
     event.setSummary(eTitle);
