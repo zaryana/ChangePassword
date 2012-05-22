@@ -4,7 +4,7 @@
   <parent>
     <groupId>com.exoplatform.cloudworkspaces</groupId>
     <artifactId>cloud-workspaces-wizard-extension</artifactId>
-    <version>1.0.5</version>
+    <version>1.0.6</version>
   </parent>
   <artifactId>cloud-workspaces-wizard-extension-config</artifactId>
   <packaging>jar</packaging>
