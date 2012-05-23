@@ -178,6 +178,18 @@
         <version>${project.version}</version>
         <type>jar</type>
       </dependency>
+      <dependency>
+        <groupId>com.exoplatform.cloudworkspaces</groupId>
+        <artifactId>cloud-workspaces.extension.portlets.social-portlet</artifactId>
+        <version>${project.version}</version>
+        <type>war</type>
+      </dependency>
+      <dependency>
+        <groupId>com.exoplatform.cloudworkspaces</groupId>
+        <artifactId>cloud-workspaces.extension.portlets.cloud-portlets</artifactId>
+        <version>${project.version}</version>
+        <type>war</type>
+      </dependency>
 
       <!-- Cloud Workspaces gadgets -->
       <dependency>

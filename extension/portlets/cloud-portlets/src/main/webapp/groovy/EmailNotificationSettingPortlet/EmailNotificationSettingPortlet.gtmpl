@@ -1,0 +1,129 @@
+<%
+  import org.exoplatform.container.ExoContainerContext;
+  import com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.EmailNotificationRestService;
+  import org.exoplatform.services.security.ConversationState;
+  
+  import org.codehaus.jackson.map.ObjectMapper;
+  import org.codehaus.jackson.JsonGenerationException;
+  import org.codehaus.jackson.map.JsonMappingException;
+
+  import java.io.ByteArrayOutputStream;
+  import java.io.IOException;
+
+  portletId = uicomponent.id + System.currentTimeMillis();
+
+  emailNotificationRestService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(EmailNotificationRestService.class);
+  userId = ConversationState.getCurrent().getIdentity().getUserId();
+
+  ObjectMapper mapper = new ObjectMapper();
+  ByteArrayOutputStream bos = new ByteArrayOutputStream();
+  mapper.writeValue(bos, emailNotificationRestService.getUserPrefs(userId));
+  userPrefs = bos.toString();
+  bos.close();
+%>
+
+<link rel="stylesheet" type="text/css" href="/social-portlet/skin/social/portlet/UIProfilePortlet/DefaultStylesheet-lt.css" />
+
+<style type="text/css">
+  .UIHeaderSection {
+    margin-bottom: 14px;
+  }
+  
+  .PortletContent {
+    padding-top: 0px;
+    padding-left: 8px;
+  }
+  
+  .$portletId-NotifyOption {
+    vertical-align: sub;
+    margin-right: 6px;
+  }
+  
+  #$portletId-btnSave {
+    text-align: left;
+    padding-top: 25px;
+  }
+  
+  #$portletId-btnCancel {
+    font-size: 12px;
+    font-weight: normal;
+    display: none;
+  }
+</style>
+
+<script language="javascript" type="text/javascript" src="/exo-gadget-resources/script/jquery/1.6.2/jquery.min.js"></script>
+
+<div class="UISocApplication UIProfile Container">
+  <div class="UIHeaderSection">
+    <h2 id="headerTitle" class="ClearFix"><%=_ctx.appRes(uicomponent.getId() + ".label.NotificationSettings")%> <a id="$portletId-btnCancel" class="ColorLink" href="#">(<%=_ctx.appRes(uicomponent.getId() + ".label.cancel")%>)</a></h2>
+  </div>
+  
+  <div class="UISocTitleBar">
+    <h5 class="TitleBar ClearFix"><%=_ctx.appRes(uicomponent.getId() + ".label.SendMeEmail")%>:
+      <select id="$portletId-interval">
+        <option value="never"><%=_ctx.appRes(uicomponent.getId() + ".label.Never")%></option>
+        <option value="day"><%=_ctx.appRes(uicomponent.getId() + ".label.Daily")%></option>
+        <option value="week"><%=_ctx.appRes(uicomponent.getId() + ".label.Weekly")%></option>
+        <option value="month"><%=_ctx.appRes(uicomponent.getId() + ".label.Monthly")%></option>
+      </select>
+    </h5>
+  </div>
+  
+  <div class="UISocTitleBar">
+    <h5 class="TitleBar ClearFix"><%=_ctx.appRes(uicomponent.getId() + ".label.NotifyMeWhen")%>:</h5>
+  </div>
+  
+  <div id="$portletId-notifyOptions" class="PortletContent"></div>
+
+  <div id="$portletId-btnSave" class="UIAction">
+    <span class="ActionButton LightBlueStyle">
+      <a href="#" class="AddSpaceIcon"/><%=_ctx.appRes(uicomponent.getId() + ".label.Save")%></a>
+    </span>
+  </div>
+        
+</div>
+
+<script type="text/javascript">
+  jQuery.noConflict();
+  (function(jq){
+    var oldPrefs = <%=userPrefs%>;
+
+    var renderPrefs = function(prefs){
+      jq("#$portletId-interval").val(prefs.interval);
+      jq("#$portletId-notifyOptions").html("");
+      jq.each(prefs.notificationPlugins, function(i, plugin){
+        jq("#$portletId-notifyOptions").append("<div><input type='checkbox' class='$portletId-NotifyOption' value='" + plugin.name + "' " + (plugin.selected?"checked":"") + " />" + plugin.setting + "</div>"); 
+      });
+    };
+
+    renderPrefs(oldPrefs);
+
+    jq("#$portletId-btnSave").click(function(){
+      var notificationPlugins = [];
+      jq("input:checkbox:checked.$portletId-NotifyOption").each(function(){
+        notificationPlugins.push(this.value);
+      });
+      
+      var jqxhr = jq.post("/rest/email-notification/prefs", {interval:jq("#$portletId-interval").val(), notificationPlugins:notificationPlugins.join()});
+      jqxhr.success(function(data) {
+        // update oldPrefs
+        oldPrefs.interval = jq("#$portletId-interval").val();
+        jq.each(oldPrefs.notificationPlugins, function(i, plugin){
+          plugin.selected = jq.inArray(plugin.name, notificationPlugins) != -1;
+        });
+        jq("#$portletId-btnCancel").hide();
+      });
+                
+    });
+    
+    jq("#$portletId-btnCancel").click(function(){
+      renderPrefs(oldPrefs);
+      jq("#$portletId-btnCancel").hide();
+    });
+
+    jq("#$portletId-interval,.$portletId-NotifyOption").live("change", function(){
+      jq("#$portletId-btnCancel").show();
+    });
+
+  })(jQuery);
+</script>
