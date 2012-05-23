@@ -116,7 +116,7 @@
       <!-- The request dumper valve dumps useful debugging information about
            the request and response data received and sent by Tomcat.
            Documentation at: /docs/config/valve.html -->
-      <Valve className="org.exoplatform.cloudmanagement.admin.ResumeValve"
+      <Valve className="com.exoplatform.cloudworkspaces.admin.ResumeValve"
              resumeTimeout="600000"
              serversOverloadUrl="http://h1.exoplatform.org/overload.html"
              resumeRestServiceUrl="http://localhost:8080/rest/cloud-admin/tenant-service/resume"/>
