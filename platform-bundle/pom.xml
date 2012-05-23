@@ -80,6 +80,18 @@
           <scope>provided</scope>
           <type>war</type>
         </dependency>
+        <dependency>
+          <groupId>com.exoplatform.cloudworkspaces</groupId>
+          <artifactId>cloud-workspaces.extension.portlets.social-portlet</artifactId>
+          <scope>provided</scope>
+          <type>war</type>
+        </dependency>
+        <dependency>
+          <groupId>com.exoplatform.cloudworkspaces</groupId>
+          <artifactId>cloud-workspaces.extension.portlets.cloud-portlets</artifactId>
+          <scope>provided</scope>
+          <type>war</type>
+        </dependency>
 
         <!-- Cloud Workspaces gadgets -->
         <dependency>

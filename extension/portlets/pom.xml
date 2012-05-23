@@ -6,18 +6,16 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>com.exoplatform.cloudworkspaces</groupId>
-    <artifactId>cloud-workspaces-parent</artifactId>
-    <version>1.1.0-Beta04-SNAPSHOT</version>
+    <artifactId>cloud-workspaces-extension</artifactId>
+    <version>1.0.6</version>
   </parent>
-
-  <artifactId>cloud-workspaces-extension</artifactId>
+  <artifactId>cloud-workspaces.extension.portlets</artifactId>
   <packaging>pom</packaging>
-  <name>eXo Cloud Workspaces :: Extension</name>
-  <description>Cloud Workspaces extension</description>
+  <name>eXo Cloud Workspaces :: Extension Portlets</name>
+  <description>Cloud Workspaces extension portlets</description>
 
   <modules>
-    <module>config</module>
-    <module>webapp</module>
-    <module>portlets</module>
+    <module>social-portlet</module>
+    <module>cloud-portlets</module>
   </modules>
 </project>
