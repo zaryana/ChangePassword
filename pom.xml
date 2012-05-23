@@ -135,6 +135,12 @@
       </dependency>
       <dependency>
         <groupId>com.exoplatform.cloudworkspaces</groupId>
+        <artifactId>cloud-management-valve-patch</artifactId>
+        <version>${project.version}</version>
+        <type>jar</type>
+      </dependency>
+      <dependency>
+        <groupId>com.exoplatform.cloudworkspaces</groupId>
         <artifactId>cloud-workspaces-extension-webapp</artifactId>
         <version>${project.version}</version>
         <type>war</type>
