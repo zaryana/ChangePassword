@@ -480,6 +480,7 @@
 
   <modules>
     <module>cloud-management-patch</module>
+    <module>cloud-management-valve-patch</module>
     <module>component</module>
     <module>web</module>
     <module>admin-bundle</module>
