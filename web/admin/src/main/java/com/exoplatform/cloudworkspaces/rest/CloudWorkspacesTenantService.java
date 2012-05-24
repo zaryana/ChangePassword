@@ -224,7 +224,8 @@ public class CloudWorkspacesTenantService {
                          .header("Location",
                                  "http://"
                                      + AdminConfigurationUtil.getMasterHost(cloudAdminConfiguration)
-                                     + "/resuming.jsp?email=" + userMail)
+                                     + "/resuming.jsp?email=" + userMail
+                                     + "&action=signup")
                          .build();
         }
         default: {
@@ -491,7 +492,8 @@ public class CloudWorkspacesTenantService {
                        .header("Location",
                                "http://"
                                    + AdminConfigurationUtil.getMasterHost(cloudAdminConfiguration)
-                                   + "/resuming.jsp?email=" + userMail)
+                                   + "/resuming.jsp?email=" + userMail
+                                   + "&action=join")
                        .build();
       }
       default: {
@@ -780,11 +782,13 @@ public class CloudWorkspacesTenantService {
     }
 
     case SUSPENDED: {
+      tenantStarter.startTenant(tName);
       return Response.status(309)
                      .header("Location",
                              "http://"
                                  + AdminConfigurationUtil.getMasterHost(cloudAdminConfiguration)
-                                 + "/resuming.jsp?email=" + email)
+                                 + "/resuming.jsp?email=" + email
+                                 + "&action=reset")
                      .build();
     }
 

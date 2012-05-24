@@ -524,7 +524,7 @@ public class TestCloudWorkspacesTenantService {
                .port((Integer) context.getAttribute(EverrestJetty.JETTY_PORT))
                .expect()
                .statusCode(309)
-               .header("Location", "http://cloud-workspaces:8080/resuming.jsp?email=" + EMAIL)
+               .header("Location", "http://cloud-workspaces:8080/resuming.jsp?email=" + EMAIL + "&action=reset")
                .when()
                .get("/rest/cloud-admin/cloudworkspaces/tenant-service/passrestore/{email}");
 
@@ -808,7 +808,7 @@ public class TestCloudWorkspacesTenantService {
                .port((Integer) context.getAttribute(EverrestJetty.JETTY_PORT))
                .expect()
                .statusCode(309)
-               .header("Location", "http://cloud-workspaces:8080/resuming.jsp?email=" + EMAIL)
+               .header("Location", "http://cloud-workspaces:8080/resuming.jsp?email=" + EMAIL + "&action=join")
                .when()
                .post("/rest/cloud-admin/cloudworkspaces/tenant-service/join");
 
@@ -1373,7 +1373,7 @@ public class TestCloudWorkspacesTenantService {
                .port((Integer) context.getAttribute(EverrestJetty.JETTY_PORT))
                .expect()
                .statusCode(309)
-               .header("Location", "http://cloud-workspaces:8080/resuming.jsp?email=" + EMAIL)
+               .header("Location", "http://cloud-workspaces:8080/resuming.jsp?email=" + EMAIL  + "&action=signup")
                .when()
                .post("/rest/cloud-admin/cloudworkspaces/tenant-service/signup");
 

@@ -42,16 +42,29 @@ Tenants.prototype.init = function() {
   tenantServicePath = accessUrl + "/cloudworkspaces/tenant-service";
   tenantSecureServicePath = accessSecureUrl + "/cloudworkspaces/tenant-service";
   infoServicePath = accessSecureUrl + "/info-service/";
+  $.extend({
+  getUrlVars: function(){
+    var vars = [], hash;
+    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+    for(var i = 0; i < hashes.length; i++)
+    {
+      hash = hashes[i].split('=');
+      vars.push(hash[0]);
+      vars[hash[0]] = hash[1];
+    }
+   return vars;
+   },
+    getUrlVar: function(name){
+       return $.getUrlVars()[name];
+    }
+   });
 }
 
 Tenants.prototype.initRegistrationPage = function() {
   tenants.init();
   if (queryString != null && queryString != "") {
-    var email_start = queryString.indexOf('email=');
-    var uuid_start = queryString.indexOf('id=');
-    var uuid = "";
-    var email; 
-    uuid = (uuid_start != -1) ? queryString.substring(uuid_start + 3) : null;
+    var email;
+    uuid = $.getUrlVar('id');
     var checkURL = tenantServicePath + "/uuid/" + uuid;
     $.ajax({
       url : checkURL,
@@ -80,7 +93,7 @@ Tenants.prototype.initRegistrationPage = function() {
           },
        dataType : 'text',
        error : function(request, status, error) {
-            email = (email_start != -1) ? queryString.substring(email_start + 6, uuid_start - 1) : null;
+            email = $.getUrlVar('email');
             if (email != null && email != "") {
               var split = email.split('@');
               var prefix = split[0];
@@ -153,8 +166,7 @@ Tenants.prototype.initJoinPage = function() {
   tenants.init();
   var email;
   if (queryString != null && queryString != "") {
-    var rfid_start = queryString.indexOf('rfid=');
-    rfid = (rfid_start != -1) ? queryString.substring(rfid_start + 5) : null;
+    rfid = $.getUrlVar('rfid');
     if (rfid == null) {
       $("#joinForm").html("<br><center><a class=\"BackIcon\" href=\"/index.jsp\">Home</a></center>");
       $("#messageString").html("Sorry, your registration link has expired. Please <a class=\"TenantFormMsg\" href=\"index.jsp\"><u>sign up</u></a> again.");
@@ -197,8 +209,7 @@ Tenants.prototype.initJoinPage = function() {
 Tenants.prototype.initSignInPage = function() {
   tenants.init();
   if (queryString != null && queryString != "") {
-    var email_start = queryString.indexOf('email=');
-    email = (email_start != -1) ? queryString.substring(email_start + 6) : null;
+    email = $.getUrlVar('email');
     if (email != null && email != "") {
       $('#email').val(email);
       $('#workspace').val(getTenantName(email));
@@ -209,8 +220,7 @@ Tenants.prototype.initSignInPage = function() {
 Tenants.prototype.initChange = function() {
   tenants.init();
   if (queryString != null && queryString != "") {
-    var id_start = queryString.indexOf('id=');
-    id = (id_start != -1) ? queryString.substring(id_start + 3) : null;
+    id = $.getUrlVar('id');
     if (id != null && id != "") {
       $('#id').val(id);
     } else {
@@ -224,16 +234,50 @@ Tenants.prototype.initChange = function() {
 Tenants.prototype.initResumingPage = function() {
   tenants.init();
   if (queryString != null && queryString != "") {
-    var email_start = queryString.indexOf('email=');
-    email = (email_start != -1) ? queryString.substring(email_start + 6) : null;
-    var split = email.split('@');
-    var workspace = split[1].substring(0, split[1].indexOf('.'));
+    email = $.getUrlVar('email');
+    var workspace = getTenantName(email);
     $("#li1").html("If you are already a member of the " + workspace
-        + " Workspace, please <a href=\"/signin.jsp?email=" + email + "\">try again</a> in few miunutes.");
+        + " Workspace, please <a href=\"/signin.jsp?email=" + email + "\">try again</a> in few minutes.");
     $("#li2").html("If you are trying to join " + workspace
         + " Workspace, check you mail box for an invitation");
   }
-}
+  isOnline();
+
+  }
+
+  function isOnline(){
+    var email = $.getUrlVar('email');
+    var workspace = getTenantName(email);
+    var host = location.hostname.indexOf("www") == 0 ? location.hostname.substring(4) :location.hostname;
+    var login_redirect = location.protocol + '//' + workspace + '.' + host + '/portal/dologin?&initialURI=/portal/intranet/home';
+    var signup_redirect = location.protocol + '//' + host + '/signup-done.jsp';
+    var reset_redirect = location.protocol + '//' + host + '/reset-password.jsp';
+    var checkURL = tenantServicePath + "/status/" + workspace;
+    var search = "ONLINE";
+      $.ajax({
+        url : checkURL,
+        async: false,
+        success : function(data) {
+          if (data.substring(0, search.length) === search){
+             if  ($.getUrlVar('action') == 'signup')
+               window.location = signup_redirect;
+             else if  ($.getUrlVar('action') == 'reset')
+               window.location = reset_redirect;
+             else
+               window.location = login_redirect;
+            }
+          else {
+            setTimeout("isOnline()", 5000);
+            }
+        },
+        error : function(request, status, error) {
+            return;
+        },
+        dataType : 'text'
+      });
+  }
+
+
 
 /* Login redirect */
 Tenants.prototype.doLogin = function() {
@@ -257,7 +301,7 @@ Tenants.prototype.doLogin = function() {
   redirect += username;
   redirect += '&password=';
   redirect += pass;
-  redirect += '&initialURI=/portal/intranet/welcome';
+  redirect += '&initialURI=/portal/intranet/home';
   var checkURL = tenantServicePath + "/status/" + tname;
   var search = "ONLINE";
   $.ajax({
@@ -456,6 +500,11 @@ Tenants.prototype.doReset = function() {
           $("#messageString").html("<span style=\"color:#19BBE7;\">Request completed, check your email for instructions.</span>");
         },
         error : function(request, status, error) {
+          if (request.status == 309) { // Custom status to handle
+            // redirects;
+            window.location = request.getResponseHeader("Location");
+            return;
+          }
           $("#messageString").html(request.responseText);
           $("#submitButton").val("Change my password");
         },
