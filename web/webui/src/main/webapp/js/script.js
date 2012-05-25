@@ -78,8 +78,8 @@ Tenants.prototype.initRegistrationPage = function() {
               $('#username').val(prefix);
               if (prefix.indexOf('.') > -1) {
                 var splittedName = prefix.split('.');
-                $('#first_name').val(splittedName[0]);
-                $('#last_name').val(splittedName[1]);
+                $('#first_name').val(splittedName[0].capitalize());
+                $('#last_name').val(splittedName[1].capitalize());
               } else {
                 $('#first_name').val(prefix);
               }
@@ -104,7 +104,7 @@ Tenants.prototype.initRegistrationPage = function() {
                 $('#first_name').val(splittedName[0]);
                 $('#last_name').val(splittedName[1]);
               } else {
-                $('#first_name').val(prefix);
+                $('#first_name').val(prefix.capitalize());
               }
             } else {
               $("#messageString").html("Warning! You are using broken link to the Registration Page. Please sign up again.");
@@ -186,10 +186,10 @@ Tenants.prototype.initJoinPage = function() {
               $('#username').val(prefix);
               if (prefix.indexOf('.') > -1) {
                 var splittedName = prefix.split('.');
-                $('#first_name').val(splittedName[0]);
-                $('#last_name').val(splittedName[1]);
+                $('#first_name').val(splittedName[0].capitalize());
+                $('#last_name').val(splittedName[1].capitalize());
               } else {
-                $('#first_name').val(prefix);
+                $('#first_name').val(prefix.capitalize());
               }
               $('#workspace').val(getTenantName(email));
               $('#rfid').val(rfid);
@@ -852,6 +852,10 @@ var tenants = new Tenants();
 /**
  * --------------------- ajax library
  */
+ String.prototype.capitalize = function() {
+     return this.charAt(0).toUpperCase() + this.slice(1);
+ }
+
 
 function sendRequest(parameters) {
   if (!parameters.url) {
