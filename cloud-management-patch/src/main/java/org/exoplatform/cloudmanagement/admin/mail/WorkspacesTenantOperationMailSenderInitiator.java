@@ -38,9 +38,9 @@ import java.util.Map;
 /**
  * Send email's after changes in tenant states
  */
-public class TenantOperationMailSenderInitiator extends AbstractTenantStateListener
+public class WorkspacesTenantOperationMailSenderInitiator extends AbstractTenantStateListener
 {
-   private static final Logger LOG = LoggerFactory.getLogger(TenantOperationMailSenderInitiator.class);
+   private static final Logger LOG = LoggerFactory.getLogger(WorkspacesTenantOperationMailSenderInitiator.class);
 
    private final Configuration adminConfiguration;
 
@@ -49,7 +49,7 @@ public class TenantOperationMailSenderInitiator extends AbstractTenantStateListe
    /**
     * @param tenantInfoDataManager
     */
-   public TenantOperationMailSenderInitiator(Configuration adminConfiguration,
+   public WorkspacesTenantOperationMailSenderInitiator(Configuration adminConfiguration,
                                              TenantStateDataManager tenantStateDataManager, TenantInfoDataManager tenantInfoDataManager)
    {
       super(tenantStateDataManager);

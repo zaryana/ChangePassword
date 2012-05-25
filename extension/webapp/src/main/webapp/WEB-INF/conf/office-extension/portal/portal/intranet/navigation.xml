@@ -30,6 +30,7 @@
 			<uri>home</uri>
 			<name>home</name>
 			<label>#{portal.intranet.home}</label>
+			<visibility>HIDDEN</visibility>
 			<page-reference>portal::intranet::homepage</page-reference>
  </node>
 

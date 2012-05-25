@@ -13,10 +13,6 @@
   <name>eXo Cloud Workspaces :: Admin</name>
   <description>eXo Cloud Workspaces Admin web application</description>
 
-  <properties>
-    <archive>${project.build.directory}/${project.artifactId}-${project.version}.war/WEB-INF/lib/cloud-admin-${org.exoplatform.cloud-management.version}.jar</archive>
-  </properties>
-
   <dependencies>
     <dependency>
       <groupId>com.exoplatform.cloudworkspaces</groupId>
@@ -152,46 +148,6 @@
             <goals>
               <goal>run</goal>
             </goals>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>truezip-maven-plugin</artifactId>
-        <version>${version.truezip.plugin}</version>
-        <executions>
-          <execution>
-            <id>remove-a-validator</id>
-            <goals>
-              <goal>remove</goal>
-            </goals>
-            <phase>package</phase>
-            <configuration>
-              <fileset>
-                <!-- note how the archive is treated a normal file directory -->
-                <directory>${archive}/org/exoplatform/cloudmanagement/admin</directory>
-                <includes>
-                  <include>**/TenantMetadataValidator.class</include>
-                </includes>
-              </fileset>
-            </configuration>
-          </execution>
-          <execution>
-            <id>remove-a-listener</id>
-            <goals>
-              <goal>remove</goal>
-            </goals>
-            <phase>package</phase>
-            <configuration>
-              <fileset>
-                <!-- note how the archive is treated a normal file directory -->
-                <directory>${archive}/org/exoplatform/cloudmanagement/admin/mail</directory>
-                <includes>
-                  <include>**/TenantOperationMailSenderInitiator.class</include>
-                </includes>
-              </fileset>
-            </configuration>
           </execution>
         </executions>
       </plugin>
