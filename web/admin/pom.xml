@@ -53,7 +53,13 @@
       <groupId>org.exoplatform.cloud-management</groupId>
       <artifactId>cloud-admin-connector-ec2</artifactId>
     </dependency>
- 
+    <dependency>
+      <groupId>com.exoplatform.cloudworkspaces</groupId>
+      <artifactId>cloud-workspaces-web-statistic</artifactId>
+      <scope>compile</scope>
+      <type>jar</type>
+    </dependency>
+
     <!-- add exo-ide-shell dependency for using CLIResourcesService -->
     <dependency>
       <groupId>org.exoplatform.ide</groupId>

@@ -178,4 +178,10 @@
     "description" : "Shows cloud autoscaling status."   
 },
 
+{
+	"command": ["user number-per-tenant"],
+	"path": "/cloud-admin/statistic/number-of-users",
+	"method": "GET",
+	"description" : "Shows number of users for each tenant."
+},
 ]

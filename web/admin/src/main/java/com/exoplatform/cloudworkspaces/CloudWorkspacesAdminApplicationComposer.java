@@ -46,6 +46,8 @@ import org.picocontainer.MutablePicoContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.exoplatform.cloudworkspaces.StatisticAllTenants;
+
 import javax.servlet.ServletContext;
 
 /**
@@ -104,6 +106,7 @@ public class CloudWorkspacesAdminApplicationComposer extends CloudAdminApplicati
     container.addComponent(CloudWorkspacesTenantService.class);
     container.addComponent(ShellConfigurationService.class);
     container.addComponent(CLIResourcesService.class);
+    container.addComponent(StatisticAllTenants.class);
     /*
      * container.addComponent(TenantCreatorWithEmailAuthorization.class);
      */

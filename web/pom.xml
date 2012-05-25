@@ -18,5 +18,6 @@
   <modules>
     <module>admin</module>
     <module>webui</module>
+    <module>statistic</module>
   </modules>
 </project>

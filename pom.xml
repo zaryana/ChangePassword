@@ -167,6 +167,12 @@
         <version>${project.version}</version>
         <type>war</type>
       </dependency>
+      <dependency>
+        <groupId>com.exoplatform.cloudworkspaces</groupId>
+        <artifactId>cloud-workspaces-web-statistic</artifactId>
+        <version>${project.version}</version>
+        <type>jar</type>
+      </dependency>
 
       <!-- Cloud Workspaces gadgets -->
       <dependency>
