@@ -752,11 +752,10 @@ Tenants.prototype.splitName = function(name) {
 
 Tenants.prototype.handleContactResponse = function(resp) {
 		var mycontactForm = _gel('mycontactForm');
-		var splitName = tenants.splitName(_gel('name').value);
 	  if (resp == "") {
 		  sendDataToMarketo({
-		      "FirstName" : splitName.getFirstName(),
-		      "LastName" : splitName.getLastName(),
+		      "FirstName" : _gel('FirstName').value,
+		      "LastName" : _gel('LastName').value,
 		      "Email" : _gel('email').value,
 		      "Cloud_Workspaces_Contact_Us_Subject__c" : _gel('subject').value,
 		      "Cloud_Workspaces_Contact_Us_Message__c" : _gel('ContactUs_Message__c').value,
@@ -839,7 +838,7 @@ Tenants.prototype.getquerystringCreate = function() {
 
 Tenants.prototype.getquerystringContactUs = function() {
 	  qstr = 'user-mail=' + jQuery.trim(_gel('email').value);
-	  qstr += '&first-name=' + jQuery.trim(_gel('name').value);
+	  qstr += '&first-name=' + jQuery.trim(_gel('FirstName').value) + ' ' + jQuery.trim(_gel('LastName').value);
 	  qstr += '&subject=' + jQuery.trim(_gel('subject').value);
 	  qstr += '&text=' + jQuery.trim(_gel('ContactUs_Message__c').value);
 	  return encodeURI(qstr);
