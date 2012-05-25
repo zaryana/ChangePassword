@@ -19,6 +19,7 @@
 -->
 <portal-config>
   <portal-name>intranet</portal-name>
+  <label>Apps</label>
   <locale>en</locale>
   <!--<factory-id>office</factory-id>-->
   <access-permissions>*:/platform/users</access-permissions>

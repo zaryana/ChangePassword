@@ -14,7 +14,111 @@
     <link rel="stylesheet" href="css/Agenda.css" type="text/css" />
     <link type="text/css" rel="stylesheet" href="/exo-gadget-resources/skin/exo-gadget/gadget-common.css" />
     <script type="text/javascript" src="js/jquery.js"></script>
+    <script type="text/javascript" src="/portal/javascript/merged.js"></script>
+    <script type="text/javascript" src="/csResources/javascript/eXo/cs/UIDateTimePicker.js"></script>    
     <script type="text/javascript" src="js/Agenda.js"></script>
+    
+		<script type="text/javascript">
+		        function showForm(isShow) {
+		                document.getElementById("message").innerHTML = "";
+		        	var frm = document.getElementById("addEventForm");
+	                        var display = "";
+	                        if(isShow) {
+	                                eXoEventGadget.init();
+		                        display = "block";
+		                        document.getElementById("add-link").style.display = "none";
+                                } else {
+                                        display = "none";
+                                        document.getElementById("add-link").style.display = "block";
+                                }
+	                        frm.style.display = display;
+	                        gadgets.window.adjustHeight($("#CalendarGadget").get(0).offsetHeight);
+		        }
+		        
+                        function initCalendar(obj, bool) {
+                                eXo.cs.UIDateTimePicker.init(obj,bool);
+                                document.getElementById("UICalendarControl").style.bottom = "210px";
+                                gadgets.window.adjustHeight($("#CalendarGadget").get(0).offsetHeight);
+                        }
+                        
+                        function showCalendar() {
+                                eXo.cs.UIDateTimePicker.show();
+                                gadgets.window.adjustHeight($("#CalendarGadget").get(0).offsetHeight);
+                        }
+                        
+                        function extract_hour(hourTime){
+                                var hour = 0;
+                                if (hourTime.indexOf("AllDay") == -1) { 
+                                        hour = parseInt(hourTime.substring(0, 2), 10);
+                                        var APM = hourTime.substring(2, hourTime.length);
+                                        if (APM.indexOf("PM") != -1) hour += 12;
+                                }
+                                return hour*3600*1000;
+                        }                        
+
+                        function addEvent() {
+                                var addForm = document.getElementById("addEventForm");
+                                var title = addForm["title"].value;
+                                if (title.length == 0) {
+                                        document.getElementById("message").innerHTML = '<div class="MessageError">__MSG_error__</div>';
+                                } else {
+                                        document.getElementById("message").innerHTML = "";
+                                        var eventType = addForm["eventType"].options[addForm["eventType"].selectedIndex].value;
+                                        var fromString = addForm["from"].value;
+                                        var fromTime = addForm["fromTime"].options[addForm["fromTime"].selectedIndex].value;
+                                        var from = Date.parse(fromString) + extract_hour(fromTime);
+                                        var to = 0;
+                                        if (addForm["to"].disabled) {
+                                                to = from + (24 * 3600 * 1000 - 1);
+                                        } else {
+                                                var toString = addForm["to"].value;
+                                                var toTime = addForm["toTime"].options[addForm["toTime"].selectedIndex].value;
+                                                to = Date.parse(toString) + extract_hour(toTime);
+                                        }
+                                        var calendar = addForm["calendar"].options[addForm["calendar"].selectedIndex].value;
+                                        var dataString = 'calId='+ calendar + '&eventTitle=' + title + '&from=' + from + '&to=' + to + '&eventType=' + eventType;
+          
+                                        $.ajax({  
+                                                type: "POST",  
+                                                url: "/rest/calendar/addevent",  
+                                                data: dataString,  
+                                                success: function() {
+                                                        var listEventType = document.getElementById("eventType");
+                                                        var eventType = listEventType.options[listEventType.selectedIndex].text;
+                                                        eXoEventGadget.getData();
+                                                        showForm(false);
+                                                        document.getElementById("message").innerHTML = '<div class="MessageSuccess">' + eventType + ' __MSG_added__</div>';
+                                                        //$('#message').fadeOut(200, function(){
+                                                        //        gadgets.window.adjustHeight($("#CalendarGadget").get(0).offsetHeight);
+                                                        //});
+                                                },
+                                                error: function(request, status, error){
+                                                    if (request.responseText.indexOf("Selected time") != -1) {
+                                                        document.getElementById("message").innerHTML = '<div class="MessageError">__MSG_selectTime__</div>';
+                                                    } else {
+                                                        document.getElementById("message").innerHTML = '<div class="MessageError">' + request.responseText + '</div>';
+                                                    }
+                                                        gadgets.window.adjustHeight($("#CalendarGadget").get(0).offsetHeight);
+                                                }
+                                        });           
+      
+                                }
+                                gadgets.window.adjustHeight($("#CalendarGadget").get(0).offsetHeight);
+                        }
+                        
+                        function onSelectionChange() {
+                                var listFromTime = document.getElementById("fromTime");
+                                var selectedTime = listFromTime.options[listFromTime.selectedIndex].value;
+                                if (selectedTime.indexOf("AllDay") != -1) {
+                                        document.getElementById("to").disabled = true;
+                                        document.getElementById("toTime").disabled = true;
+                                } else {
+                                        document.getElementById("to").disabled = false;
+                                        document.getElementById("toTime").disabled = false;                                
+                                }
+                        }                        		        
+		</script>    
+    
   <div id="CalendarGadget">
     <div id="Calendar" class="UIGadgetThemes">
 
@@ -25,9 +129,63 @@
            <div class="listEvent" id="eventDiv">
            </div>
            
-           <div class="addLink">+ <a id="addEvent" target="_parent">__MSG_addEvent__</a></div>
-           
-        </div>         
+           <div id="addForm" class="addLink">
+                <a id="add-link" href="#" onclick="showForm(true);">+ __MSG_addEvent__</a>
+	        <form id="addEventForm" action="#" style="display: none;">
+                  <table class="add-table">
+                     <tr>
+                          <td><label for="eventType">__MSG_add__: </label></td>
+                          <td class="select-eventtype">
+                               <select id="eventType">
+                                   <option value="Event">__MSG_eventType__</option>
+                                   <option value="Task">__MSG_taskType__</option>
+                               </select>
+                          </td>                      
+                    </tr>
+
+                    <tr>      
+                          <td><label for="title">__MSG_eventTitle__: </label></td>
+                          <td class="Row RowTitle"><input id="title" type="text" /></td>
+                    </tr>
+
+                    <tr>
+                          <td><label for="from">__MSG_from__: </label></td>
+                          <td class="Row RowFromTo"><input id="from" type="text" size="10" lang="EN" onmousedown="event.cancelBubble = true" onkeyup="showCalendar();" onfocus="initCalendar(this, false);" format="MM/dd/yyyy" />
+                                   <select id="fromTime" onchange="onSelectionChange();">
+                                   </select>
+                                </td>
+                          </tr>                                
+                    <tr>     
+                          <td><label for="to">__MSG_to__: </label></td>
+                          <td class="Row RowFromTo"><input id="to" type="text" size="10" lang="EN" onmousedown="event.cancelBubble = true" onkeyup="showCalendar();" onfocus="initCalendar(this, false);" format="MM/dd/yyyy" />
+                                   <select id="toTime">
+                                   </select>
+                          </td>                          
+                    </tr>
+                </table>   
+
+                <table class="add-table">
+                    <tr>    
+                          <td class="label-calendar"><label for="calendar">__MSG_calendar__: </label></td>
+                          <td class="select-calendar">
+                                <select id="calendar">
+                                </select>
+                          </td>
+                    </tr>
+                    <tr>
+                          <td></td>
+                          <td class="Button">
+                                <input type="button" value="__MSG_confirm__" id="confirm" onclick="addEvent();" />
+                                <input type="button" value="__MSG_cancel__" id="cancel" onclick="showForm(false);" />
+                          </td>
+                    </tr>
+                </table>
+          </form>
+           <div id="message"></div>
+           <div id="calendar-link" style="display: none"></div>               
+           </div>
+        </div>
+      </div>       
     </div>
     ]]>
   </Content>
