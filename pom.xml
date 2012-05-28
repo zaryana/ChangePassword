@@ -507,6 +507,7 @@
     <module>wizard-extension</module>
     <module>navigation</module>
     <module>platform-bundle</module>
+    <module>installer-bundle</module>
   </modules>
 
 </project>
