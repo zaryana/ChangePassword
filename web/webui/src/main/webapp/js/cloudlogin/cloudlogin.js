@@ -11,6 +11,7 @@ CloudLogin.NB_EMAILS_OK = 0;
 CloudLogin.NB_EMAILS_REQUESTED = 0;
 CloudLogin.NB_EMAILS = 0;
 CloudLogin.ERROR_MESSAGES = new Array();
+CloudLogin.DEFAULT_VALUE = "Add email addresses";
 
 CloudLogin.initCloudLogin = function() {
   if (!window.console) console = {};
@@ -18,6 +19,8 @@ CloudLogin.initCloudLogin = function() {
   console.warn = console.warn || function(){};
   console.error = console.error || function(){};
   console.info = console.info || function(){};
+  
+  $("#email").val(CloudLogin.DEFAULT_VALUE);
   
   // Event only for IE
   document.getElementById('email').onclick = function() {document.getElementById('email').value = '';}
@@ -173,11 +176,10 @@ CloudLogin.validateStep1 = function(event) {
   CloudLogin.ERROR_MESSAGES = [];
   
   var emails = eval(document.getElementById("emails").value);
+  var emailNotTagged = document.getElementById("email").value;
   
-  // only if there is no tags
-  if(emails.length === 0) {
-    // Get an email not tagged
-    var emailNotTagged = document.getElementById("email").value;
+  // only if there is no tags and this is not default value
+  if(emails.length === 0 && CloudLogin.DEFAULT_VALUE != emailNotTagged) {
     if(emailNotTagged != undefined && emailNotTagged.length > 0) {
       // trim
       emailNotTagged = emailNotTagged.replace(/^\s+/g,'').replace(/\s+$/g,'')

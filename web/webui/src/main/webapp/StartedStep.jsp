@@ -60,7 +60,7 @@
         <tbody>
           <tr>
             <td class="FormInput">
-              <textarea value="Add email addresses" id="email" name="" class="required InputText">Add email addresses</textarea>
+              <textarea id="email" name="" class="required InputText"></textarea>
             </td>
             <td class="FormButton"> <input type="button" onclick="CloudLogin.validateStep1();" value="Skip" id="t_submit" class="Button" /></td>
           </tr>
@@ -142,8 +142,7 @@
     <% } %>
     <input type="hidden" name="<%= CloudLoginServlet.CLOUD_PROCESS_DISPLAYED %>" id="<%= CloudLoginServlet.CLOUD_PROCESS_DISPLAYED %>" value="true" />
   </form>
-  
-  <script type="text/javascript" src="/js/trackers.js"></script>    
-  
+ 
+     
   </body>
 </html>
