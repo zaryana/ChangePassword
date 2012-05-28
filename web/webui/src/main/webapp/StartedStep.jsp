@@ -55,7 +55,7 @@
       <h3>Invite Coworkers in Your Social Intranet</h3>
       <p><strong>Send email invitations to your coworkers to connect with them in your social intranet.</strong><br/>(note: Only @<%= domain %> email addresses will be invited to your workspace. Other addresses will receive an invitation to discover Cloud Workspaces)</p>
       
-      <div id="messageString" class="TenantFormMsg"></div>
+      <div id="messageString" class="TenantFormMsg" style="display:none"></div>
       <table class="BorderDot">
         <tbody>
           <tr>
@@ -142,8 +142,8 @@
     <% } %>
     <input type="hidden" name="<%= CloudLoginServlet.CLOUD_PROCESS_DISPLAYED %>" id="<%= CloudLoginServlet.CLOUD_PROCESS_DISPLAYED %>" value="true" />
   </form>
-
+  
   <script type="text/javascript" src="/js/trackers.js"></script>    
-     
+  
   </body>
 </html>
