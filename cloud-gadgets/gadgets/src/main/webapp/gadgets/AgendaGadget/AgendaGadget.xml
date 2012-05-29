@@ -137,8 +137,6 @@
                           <td><label for="eventType">__MSG_add__: </label></td>
                           <td class="select-eventtype">
                                <select id="eventType">
-                                   <option value="Event">__MSG_eventType__</option>
-                                   <option value="Task">__MSG_taskType__</option>
                                </select>
                           </td>                      
                     </tr>
@@ -182,7 +180,7 @@
                 </table>
           </form>
            <div id="message"></div>
-           <div id="calendar-link" style="display: none"></div>               
+           <div id="calendarlink" style="display: none"></div>               
            </div>
         </div>
       </div>       

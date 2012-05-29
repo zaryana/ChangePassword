@@ -163,28 +163,34 @@ eXoEventGadget.prototype.render = function(data){
   	var html = '<ul>';
   	for(var i = 0 ; i < data.length; i++){	
     	        var item = data[i];
-		var fromtime = 0;
-		var calendarId = item.calendarId;
-		if (userTimezoneOffset != null) fromtime = parseInt(item.fromDateTime.time) + parseInt(userTimezoneOffset) + (new Date()).getTimezoneOffset()*60*1000;
-		else fromtime = parseInt(item.fromDateTime.time);
-		var fullDate = eXoEventGadget.getFullTime(new Date(fromtime));
-		var calendar_link = document.getElementById("calendar-link").innerHTML;
-                html += '<li class="eventType">» <span><b>' + item.eventType + ':</b></span></li><li class="eventTitle"><a href="' + calendar_link + '" target="_parent">' + item.summary + ' in ' + eXoEventGadget.calendarNames[calendarId] + '</a></li>';
+    	        var calendarId = item.calendarId;
+		var fromtime = parseInt(item.fromDateTime.time);
+		var totime = parseInt(item.toDateTime.time);
+		var dateOfFrom = parseInt(item.fromDateTime.date);
+		var fullDate = eXoEventGadget.getFullTime(fromtime, totime, userTimezoneOffset, dateOfFrom);
+                html += '<li class="eventType">» <span><b>' + item.eventType + ':</b></span></li><li class="eventTitle"><a href="' + $("#calendarlink").html() + '" target="_parent">' + item.summary + ' in ' + eXoEventGadget.calendarNames[calendarId] + '</a></li>';
                 html += '<li class="eventEmpty"></li><li class="eventTime"><span>on ' + fullDate + '</span></li>';
   	}
   	html += '</ul>';
-  	cont.innerHTML = html;
+  	$("#eventDiv").html(html);
 	eXoEventGadget.adjustHeight();
 }
 
-eXoEventGadget.prototype.getFullTime = function(fromDate) {
+eXoEventGadget.prototype.getFullTime = function(fromtime, totime, userTimezoneOffset, dateOfFrom) {
+        var from = 0;
+
+        if (userTimezoneOffset != null) from = fromtime + parseInt(userTimezoneOffset) + (new Date()).getTimezoneOffset()*60*1000;
+        else from = fromtime;
+        var fromDate = new Date(from);
 	var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
         var month = monthNames[fromDate.getMonth()];
         var day = fromDate.getDate();
-        var postfix = "";
+        
         var prefs = new gadgets.Prefs();
-        if (fromDate.getHours() == 0 && fromDate.getMinutes() == 0) {
+        var postfix = "";
+        if (fromtime + (24 * 3600 * 1000 - 1) == totime) {
                 postfix = prefs.getMsg("allday");
+                day = dateOfFrom;
         } else {
                 var hourNum = fromDate.getHours();
                 var hour = (hourNum > 9) ? ("" + hourNum):("0" + hourNum);
@@ -204,9 +210,9 @@ eXoEventGadget.prototype.getFullTime = function(fromDate) {
 eXoEventGadget.prototype.createRequestUrl = function(){
   var limit = "10";
   var subscribeurl = "/rest/calendar/events/personal/" ;
-  var today = new Date();
-  var aWeekAfter = (new Date()).setDate(today.getDate()+7);
-  subscribeurl += today.getTime() + "/" + aWeekAfter + "/" + limit;
+  var today = (new Date()).getTime();
+  var aWeekAfter = today + 7*24*3600*1000;
+  subscribeurl += today + "/" + aWeekAfter + "/" + limit;
   return subscribeurl;
 }
 
@@ -270,7 +276,7 @@ eXoEventGadget.prototype.setCalendarLink = function() {
   $.ajax({
        url: url,
        success: function(data) {
-	var a = document.getElementById("calendar-link");
+	var a = document.getElementById("calendarlink");
 	if (data != null) a.innerHTML = data.toString() + "calendar";
        },
        dataType: 'text'
@@ -289,6 +295,7 @@ eXoEventGadget.prototype.init = function() {
   var hours = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"];
   var APM = ["AM", "PM"];
   var prefs = new gadgets.Prefs();
+  document.getElementById("eventType").innerHTML = '<option value="Event">' + prefs.getMsg("eventType") + '</option><option value="Task">' + prefs.getMsg("taskType") + '</option>';
   var msg = prefs.getMsg("allday");
   var html = '<option value="AllDay">' + msg + '</option>';
   var html1 = '';
