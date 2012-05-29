@@ -40,13 +40,13 @@ import org.exoplatform.cloudmanagement.admin.mail.WorkspacesTenantOperationMailS
 import org.exoplatform.cloudmanagement.admin.rest.CloudAdminApplicationComposer;
 import org.exoplatform.cloudmanagement.admin.rest.TenantCreator;
 import org.exoplatform.cloudmanagement.admin.status.ServerOnlineListenersInvoker;
+import org.exoplatform.cloudmanagement.admin.util.ServerStatusMailer;
+import org.exoplatform.cloudmanagement.admin.util.WorkspacesServerStatusMailer;
 import org.exoplatform.ide.shell.server.CLIResourceFactory;
 import org.exoplatform.ide.shell.server.rest.CLIResourcesService;
 import org.picocontainer.MutablePicoContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.exoplatform.cloudworkspaces.StatisticAllTenants;
 
 import javax.servlet.ServletContext;
 
@@ -98,6 +98,9 @@ public class CloudWorkspacesAdminApplicationComposer extends CloudAdminApplicati
 
     container.removeComponent(UserDataGenerator.class);
     container.addComponent(UserDataGenerator.class, WorkspacesUserDataGenerator.class);
+
+    container.removeComponent(ServerStatusMailer.class);
+    container.addComponent(ServerStatusMailer.class, WorkspacesServerStatusMailer.class);
   }
 
   @Override
