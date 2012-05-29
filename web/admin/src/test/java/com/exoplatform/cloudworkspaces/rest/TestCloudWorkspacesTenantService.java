@@ -574,6 +574,7 @@ public class TestCloudWorkspacesTenantService {
   @Test
   public void testJoinIfEmailNotValid(ITestContext context) throws CloudAdminException {
     Mockito.when(cloudIntranetUtils.validateEmail(EMAIL)).thenReturn(false);
+    Mockito.when(cloudIntranetUtils.validateName(Mockito.anyString())).thenReturn(true);
 
     RestAssured.given()
                .auth()
@@ -598,6 +599,7 @@ public class TestCloudWorkspacesTenantService {
   public void testJoinIfUUIDNotValid(ITestContext context) throws CloudAdminException {
     Mockito.when(cloudIntranetUtils.validateEmail(EMAIL)).thenReturn(true);
     Mockito.when(cloudIntranetUtils.validateUUID(EMAIL, UUID)).thenReturn(false);
+    Mockito.when(cloudIntranetUtils.validateName(Mockito.anyString())).thenReturn(true);
 
     RestAssured.given()
                .auth()
@@ -623,6 +625,7 @@ public class TestCloudWorkspacesTenantService {
   public void testJoinIfTenantOnlineAndUserAllowed(ITestContext context) throws CloudAdminException {
     Mockito.when(cloudIntranetUtils.validateEmail(EMAIL)).thenReturn(true);
     Mockito.when(cloudIntranetUtils.validateUUID(EMAIL, UUID)).thenReturn(true);
+    Mockito.when(cloudIntranetUtils.validateName(Mockito.anyString())).thenReturn(true);
     Mockito.when(cloudIntranetUtils.email2tenantName(EMAIL)).thenReturn(TENANT);
     Mockito.when(tenantInfoDataManager.getValue(TENANT, TenantInfoFieldName.PROPERTY_STATE))
            .thenReturn(TenantState.ONLINE.toString());
@@ -646,6 +649,8 @@ public class TestCloudWorkspacesTenantService {
     Mockito.verify(cloudIntranetUtils).validateEmail(EMAIL);
     Mockito.verify(cloudIntranetUtils).validateUUID(EMAIL, UUID);
     Mockito.verify(cloudIntranetUtils).email2tenantName(EMAIL);
+    Mockito.verify(cloudIntranetUtils).validateName(FIRST_NAME);
+    Mockito.verify(cloudIntranetUtils).validateName(LAST_NAME);
     Mockito.verify(tenantInfoDataManager).getValue(TENANT, TenantInfoFieldName.PROPERTY_STATE);
     Mockito.verify(workspacesOrganizationRequestPerformer).isNewUserAllowed(TENANT, USERNAME);
     Mockito.verify(workspacesOrganizationRequestPerformer).storeUser(TENANT,
@@ -671,6 +676,7 @@ public class TestCloudWorkspacesTenantService {
   public void testJoinIfTenantOnlineAndUserNotAllowed(ITestContext context) throws CloudAdminException {
     Mockito.when(cloudIntranetUtils.validateEmail(EMAIL)).thenReturn(true);
     Mockito.when(cloudIntranetUtils.validateUUID(EMAIL, UUID)).thenReturn(true);
+    Mockito.when(cloudIntranetUtils.validateName(Mockito.anyString())).thenReturn(true);
     Mockito.when(cloudIntranetUtils.email2tenantName(EMAIL)).thenReturn(TENANT);
     Mockito.when(tenantInfoDataManager.getValue(TENANT, TenantInfoFieldName.PROPERTY_STATE))
            .thenReturn(TenantState.ONLINE.toString());
@@ -694,6 +700,8 @@ public class TestCloudWorkspacesTenantService {
     Mockito.verify(cloudIntranetUtils).validateEmail(EMAIL);
     Mockito.verify(cloudIntranetUtils).validateUUID(EMAIL, UUID);
     Mockito.verify(cloudIntranetUtils).email2tenantName(EMAIL);
+    Mockito.verify(cloudIntranetUtils).validateName(FIRST_NAME);
+    Mockito.verify(cloudIntranetUtils).validateName(LAST_NAME);
     Mockito.verify(tenantInfoDataManager).getValue(TENANT, TenantInfoFieldName.PROPERTY_STATE);
     Mockito.verify(workspacesOrganizationRequestPerformer).isNewUserAllowed(TENANT, USERNAME);
     Mockito.verify(requestDao).put(Matchers.any(UserRequest.class));
@@ -714,6 +722,7 @@ public class TestCloudWorkspacesTenantService {
   public void testJoinIfTenantOnlineAndUserAlreadyExists(ITestContext context) throws CloudAdminException {
     Mockito.when(cloudIntranetUtils.validateEmail(EMAIL)).thenReturn(true);
     Mockito.when(cloudIntranetUtils.validateUUID(EMAIL, UUID)).thenReturn(true);
+    Mockito.when(cloudIntranetUtils.validateName(Mockito.anyString())).thenReturn(true);
     Mockito.when(cloudIntranetUtils.email2tenantName(EMAIL)).thenReturn(TENANT);
     Mockito.when(tenantInfoDataManager.getValue(TENANT, TenantInfoFieldName.PROPERTY_STATE))
            .thenReturn(TenantState.ONLINE.toString());
@@ -737,6 +746,8 @@ public class TestCloudWorkspacesTenantService {
     Mockito.verify(cloudIntranetUtils).validateEmail(EMAIL);
     Mockito.verify(cloudIntranetUtils).validateUUID(EMAIL, UUID);
     Mockito.verify(cloudIntranetUtils).email2tenantName(EMAIL);
+    Mockito.verify(cloudIntranetUtils).validateName(FIRST_NAME);
+    Mockito.verify(cloudIntranetUtils).validateName(LAST_NAME);
     Mockito.verify(tenantInfoDataManager).getValue(TENANT, TenantInfoFieldName.PROPERTY_STATE);
     Mockito.verify(workspacesOrganizationRequestPerformer).isNewUserAllowed(TENANT, USERNAME);
 
@@ -751,6 +762,7 @@ public class TestCloudWorkspacesTenantService {
   public void testJoinIfTenantCreation(ITestContext context) throws CloudAdminException {
     Mockito.when(cloudIntranetUtils.validateEmail(EMAIL)).thenReturn(true);
     Mockito.when(cloudIntranetUtils.validateUUID(EMAIL, UUID)).thenReturn(true);
+    Mockito.when(cloudIntranetUtils.validateName(Mockito.anyString())).thenReturn(true);
     Mockito.when(cloudIntranetUtils.email2tenantName(EMAIL)).thenReturn(TENANT);
     Mockito.when(tenantInfoDataManager.getValue(TENANT, TenantInfoFieldName.PROPERTY_STATE))
            .thenReturn(TenantState.WAITING_CREATION.toString());
@@ -772,6 +784,8 @@ public class TestCloudWorkspacesTenantService {
     Mockito.verify(cloudIntranetUtils).validateEmail(EMAIL);
     Mockito.verify(cloudIntranetUtils).validateUUID(EMAIL, UUID);
     Mockito.verify(cloudIntranetUtils).email2tenantName(EMAIL);
+    Mockito.verify(cloudIntranetUtils).validateName(FIRST_NAME);
+    Mockito.verify(cloudIntranetUtils).validateName(LAST_NAME);
     Mockito.verify(tenantInfoDataManager).getValue(TENANT, TenantInfoFieldName.PROPERTY_STATE);
     Mockito.verify(requestDao).put(Matchers.any(UserRequest.class));
     Mockito.verify(referencesManager).removeEmail(EMAIL);
@@ -788,6 +802,7 @@ public class TestCloudWorkspacesTenantService {
   public void testJoinIfTenantSuspended(ITestContext context) throws CloudAdminException {
     Mockito.when(cloudIntranetUtils.validateEmail(EMAIL)).thenReturn(true);
     Mockito.when(cloudIntranetUtils.validateUUID(EMAIL, UUID)).thenReturn(true);
+    Mockito.when(cloudIntranetUtils.validateName(Mockito.anyString())).thenReturn(true);
     Mockito.when(cloudIntranetUtils.email2tenantName(EMAIL)).thenReturn(TENANT);
     Mockito.when(tenantInfoDataManager.getValue(TENANT, TenantInfoFieldName.PROPERTY_STATE))
            .thenReturn(TenantState.SUSPENDED.toString());
@@ -815,6 +830,8 @@ public class TestCloudWorkspacesTenantService {
     Mockito.verify(cloudIntranetUtils).validateEmail(EMAIL);
     Mockito.verify(cloudIntranetUtils).validateUUID(EMAIL, UUID);
     Mockito.verify(cloudIntranetUtils).email2tenantName(EMAIL);
+    Mockito.verify(cloudIntranetUtils).validateName(FIRST_NAME);
+    Mockito.verify(cloudIntranetUtils).validateName(LAST_NAME);
     Mockito.verify(tenantInfoDataManager).getValue(TENANT, TenantInfoFieldName.PROPERTY_STATE);
     Mockito.verify(tenantStarter).startTenant(TENANT);
     Mockito.verify(requestDao).put(Matchers.any(UserRequest.class));
@@ -833,6 +850,7 @@ public class TestCloudWorkspacesTenantService {
   public void testJoinIfTenantUnknown(ITestContext context) throws CloudAdminException {
     Mockito.when(cloudIntranetUtils.validateEmail(EMAIL)).thenReturn(true);
     Mockito.when(cloudIntranetUtils.validateUUID(EMAIL, UUID)).thenReturn(true);
+    Mockito.when(cloudIntranetUtils.validateName(Mockito.anyString())).thenReturn(true);
     Mockito.when(cloudIntranetUtils.email2tenantName(EMAIL)).thenReturn(TENANT);
     Mockito.when(tenantInfoDataManager.getValue(TENANT, TenantInfoFieldName.PROPERTY_STATE))
            .thenReturn(TenantState.UNKNOWN.toString());
@@ -854,6 +872,8 @@ public class TestCloudWorkspacesTenantService {
     Mockito.verify(cloudIntranetUtils).validateEmail(EMAIL);
     Mockito.verify(cloudIntranetUtils).validateUUID(EMAIL, UUID);
     Mockito.verify(cloudIntranetUtils).email2tenantName(EMAIL);
+    Mockito.verify(cloudIntranetUtils).validateName(FIRST_NAME);
+    Mockito.verify(cloudIntranetUtils).validateName(LAST_NAME);
     Mockito.verify(tenantInfoDataManager).getValue(TENANT, TenantInfoFieldName.PROPERTY_STATE);
 
     Mockito.verifyNoMoreInteractions(cloudIntranetUtils,
@@ -866,6 +886,7 @@ public class TestCloudWorkspacesTenantService {
   public void testJoinIfJoinFailed(ITestContext context) throws CloudAdminException {
     Mockito.when(cloudIntranetUtils.validateEmail(EMAIL)).thenReturn(true);
     Mockito.when(cloudIntranetUtils.validateUUID(EMAIL, UUID)).thenThrow(CloudAdminException.class);
+    Mockito.when(cloudIntranetUtils.validateName(Mockito.anyString())).thenReturn(true);
 
     RestAssured.given()
                .auth()
@@ -922,6 +943,7 @@ public class TestCloudWorkspacesTenantService {
   public void testCreateIfUuidNotValid(ITestContext context) throws CloudAdminException {
     Mockito.when(cloudIntranetUtils.validateEmail(EMAIL)).thenReturn(true);
     Mockito.when(cloudIntranetUtils.validateUUID(EMAIL, UUID)).thenReturn(false);
+    Mockito.when(cloudIntranetUtils.validateName(Mockito.anyString())).thenReturn(true);
 
     RestAssured.given()
                .auth()
@@ -941,7 +963,6 @@ public class TestCloudWorkspacesTenantService {
 
     Mockito.verify(cloudIntranetUtils).validateEmail(EMAIL);
     Mockito.verify(cloudIntranetUtils).validateUUID(EMAIL, UUID);
-
     Mockito.verifyNoMoreInteractions(cloudIntranetUtils);
   }
 
@@ -949,6 +970,7 @@ public class TestCloudWorkspacesTenantService {
   public void testCreateIfEmailInBlacklist(ITestContext context) throws CloudAdminException {
     Mockito.when(cloudIntranetUtils.validateEmail(EMAIL)).thenReturn(true);
     Mockito.when(cloudIntranetUtils.validateUUID(EMAIL, UUID)).thenReturn(true);
+    Mockito.when(cloudIntranetUtils.validateName(Mockito.anyString())).thenReturn(true);
     Mockito.when(emailBlacklist.isInBlackList(EMAIL)).thenReturn(true);
 
     RestAssured.given()
@@ -970,6 +992,10 @@ public class TestCloudWorkspacesTenantService {
     Mockito.verify(cloudIntranetUtils).validateEmail(EMAIL);
     Mockito.verify(cloudIntranetUtils).validateUUID(EMAIL, UUID);
     Mockito.verify(emailBlacklist).isInBlackList(EMAIL);
+    Mockito.verify(cloudIntranetUtils).validateName(FIRST_NAME);
+    Mockito.verify(cloudIntranetUtils).validateName(LAST_NAME);
+    Mockito.verify(cloudIntranetUtils).validateName(COMPANY_NAME);
+    Mockito.verify(emailBlacklist).isInBlackList(EMAIL);
 
     Mockito.verifyNoMoreInteractions(cloudIntranetUtils, emailBlacklist);
   }
@@ -978,6 +1004,7 @@ public class TestCloudWorkspacesTenantService {
   public void testCreateIfCreationWasFailed(ITestContext context) throws CloudAdminException {
     Mockito.when(cloudIntranetUtils.validateEmail(EMAIL)).thenReturn(true);
     Mockito.when(cloudIntranetUtils.validateUUID(EMAIL, UUID)).thenReturn(true);
+    Mockito.when(cloudIntranetUtils.validateName(Mockito.anyString())).thenReturn(true);
     Mockito.when(emailBlacklist.isInBlackList(EMAIL)).thenReturn(false);
     Response response = Mockito.mock(Response.class);
     Mockito.when(tenantCreator.createTenantWithConfirmedEmail(UUID)).thenReturn(response);
@@ -1002,6 +1029,10 @@ public class TestCloudWorkspacesTenantService {
     Mockito.verify(cloudIntranetUtils).validateEmail(EMAIL);
     Mockito.verify(cloudIntranetUtils).validateUUID(EMAIL, UUID);
     Mockito.verify(cloudIntranetUtils).email2tenantName(EMAIL);
+    Mockito.verify(cloudIntranetUtils).validateName(FIRST_NAME);
+    Mockito.verify(cloudIntranetUtils).validateName(LAST_NAME);
+    Mockito.verify(cloudIntranetUtils).validateName(COMPANY_NAME);
+    Mockito.verify(emailBlacklist).isInBlackList(EMAIL);
     Mockito.verify(emailBlacklist).isInBlackList(EMAIL);
     Mockito.verify(tenantCreator).createTenantWithConfirmedEmail(UUID);
 
@@ -1012,6 +1043,7 @@ public class TestCloudWorkspacesTenantService {
   public void testCreateIfCreationOk(ITestContext context) throws CloudAdminException {
     Mockito.when(cloudIntranetUtils.validateEmail(EMAIL)).thenReturn(true);
     Mockito.when(cloudIntranetUtils.validateUUID(EMAIL, UUID)).thenReturn(true);
+    Mockito.when(cloudIntranetUtils.validateName(Mockito.anyString())).thenReturn(true);
     Mockito.when(emailBlacklist.isInBlackList(EMAIL)).thenReturn(false);
     Response response = Mockito.mock(Response.class);
     Mockito.when(tenantCreator.createTenantWithConfirmedEmail(UUID)).thenReturn(response);
@@ -1036,6 +1068,9 @@ public class TestCloudWorkspacesTenantService {
     Mockito.verify(cloudIntranetUtils).validateEmail(EMAIL);
     Mockito.verify(cloudIntranetUtils).validateUUID(EMAIL, UUID);
     Mockito.verify(cloudIntranetUtils).email2tenantName(EMAIL);
+    Mockito.verify(cloudIntranetUtils).validateName(FIRST_NAME);
+    Mockito.verify(cloudIntranetUtils).validateName(LAST_NAME);
+    Mockito.verify(cloudIntranetUtils).validateName(COMPANY_NAME);
     Mockito.verify(emailBlacklist).isInBlackList(EMAIL);
     Mockito.verify(tenantCreator).createTenantWithConfirmedEmail(UUID);
     Mockito.verify(requestDao).put(Matchers.any(UserRequest.class));
@@ -1051,6 +1086,7 @@ public class TestCloudWorkspacesTenantService {
   public void testCreateIfTenantAlreadyExists(ITestContext context) throws CloudAdminException {
     Mockito.when(cloudIntranetUtils.validateEmail(EMAIL)).thenReturn(true);
     Mockito.when(cloudIntranetUtils.validateUUID(EMAIL, UUID)).thenReturn(true);
+    Mockito.when(cloudIntranetUtils.validateName(Mockito.anyString())).thenReturn(true);
     Mockito.when(emailBlacklist.isInBlackList(EMAIL)).thenReturn(false);
     Response response = Mockito.mock(Response.class);
     Mockito.when(tenantCreator.createTenantWithConfirmedEmail(UUID)).thenReturn(response);
@@ -1075,6 +1111,10 @@ public class TestCloudWorkspacesTenantService {
     Mockito.verify(cloudIntranetUtils).validateEmail(EMAIL);
     Mockito.verify(cloudIntranetUtils).validateUUID(EMAIL, UUID);
     Mockito.verify(cloudIntranetUtils).email2tenantName(EMAIL);
+    Mockito.verify(cloudIntranetUtils).validateName(FIRST_NAME);
+    Mockito.verify(cloudIntranetUtils).validateName(LAST_NAME);
+    Mockito.verify(cloudIntranetUtils).validateName(COMPANY_NAME);
+    Mockito.verify(emailBlacklist).isInBlackList(EMAIL);
     Mockito.verify(emailBlacklist).isInBlackList(EMAIL);
     Mockito.verify(tenantCreator).createTenantWithConfirmedEmail(UUID);
     Mockito.verify(referencesManager).removeEmail(EMAIL);

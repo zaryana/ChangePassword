@@ -400,6 +400,16 @@ public class CloudWorkspacesTenantService {
                        .entity("Email address provided does not match with hash.")
                        .build();
 
+      if (!utils.validateName(firstName))
+        return Response.status(Status.BAD_REQUEST)
+                       .entity("Sorry, such first-name is not allowed. Please correct it and sign up again.")
+                       .build();
+
+      if (!utils.validateName(lastName))
+        return Response.status(Status.BAD_REQUEST)
+                       .entity("Sorry, such last-name is not allowed. Please correct it and sign up again.")
+                       .build();
+
       username = userMail.substring(0, (userMail.indexOf("@")));
       tName = utils.email2tenantName(userMail);
       // Prepare properties for mailing
@@ -552,6 +562,21 @@ public class CloudWorkspacesTenantService {
     if (!utils.validateUUID(userMail, uuid))
       return Response.status(Status.BAD_REQUEST)
                      .entity("Sorry, your registration link has expired. Please sign up again.")
+                     .build();
+
+    if (!utils.validateName(firstName))
+      return Response.status(Status.BAD_REQUEST)
+                     .entity("Sorry, such first-name is not allowed. Please correct it and sign up again.")
+                     .build();
+
+    if (!utils.validateName(lastName))
+      return Response.status(Status.BAD_REQUEST)
+                     .entity("Sorry, such last-name is not allowed. Please correct it and sign up again.")
+                     .build();
+
+    if (!utils.validateName(companyName))
+      return Response.status(Status.BAD_REQUEST)
+                     .entity("Sorry, such company is not allowed. Please correct it and sign up again.")
                      .build();
 
     if (emailBlacklist.isInBlackList(userMail)) {

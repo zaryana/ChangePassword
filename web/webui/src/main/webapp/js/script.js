@@ -58,6 +58,15 @@ Tenants.prototype.init = function() {
        return $.getUrlVars()[name];
     }
    });
+
+   jQuery.validator.addMethod(
+     'regexp',
+    function(value, element, regexp) {
+    var re = new RegExp(regexp);
+    return this.optional(element) || re.test(value);
+    },
+   "Such name cannot be used."
+   );
 }
 
 Tenants.prototype.initRegistrationPage = function() {
@@ -364,6 +373,18 @@ Tenants.prototype.doCreationRequest = function() {
         required : true,
         minlength : 6,
         equalTo : "#password"
+      },
+      company : {
+        required : true,
+        regexp: "^[A-Za-z][\u0000-\u007F\u0080-\u00FFa-zA-Z0-9 '&-.]*[A-Za-z0-9]$"
+      },
+      first_name : {
+        required : true,
+        regexp: "^[A-Za-z][\u0000-\u007F\u0080-\u00FFa-zA-Z0-9 '&-.]*[A-Za-z0-9]$"
+      },
+      last_name : {
+        required : true,
+        regexp: "^[A-Za-z][\u0000-\u007F\u0080-\u00FFa-zA-Z0-9 '&-.]*[A-Za-z0-9]$"
       }
     }
   });
@@ -398,6 +419,14 @@ Tenants.prototype.doJoinRequest = function() {
         required : true,
         minlength : 6,
         equalTo : "#password"
+      },
+      first_name : {
+        required : true,
+        regexp: "^[A-Za-z][\u0000-\u007F\u0080-\u00FFa-zA-Z0-9 '&-.]*[A-Za-z0-9]$"
+      },
+      last_name : {
+         required : true,
+         regexp: "^[A-Za-z][\u0000-\u007F\u0080-\u00FFa-zA-Z0-9 '&-.]*[A-Za-z0-9]$"
       }
     }
   });

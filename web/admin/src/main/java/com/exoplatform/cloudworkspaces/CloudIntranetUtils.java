@@ -23,18 +23,11 @@ import org.exoplatform.cloudmanagement.admin.CloudAdminException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
+import java.io.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CloudIntranetUtils {
 
@@ -78,6 +71,11 @@ public class CloudIntranetUtils {
     else
       return hash.equals(UUID);
   }
+
+  public boolean validateName(String aName) throws CloudAdminException {
+    String nameRegexp = "^[A-Za-z][\\u0000-\\u007F\\u0080-\\u00FFa-zA-Z0-9 '&-.]*[A-Za-z0-9]$";
+    return  Pattern.matches(nameRegexp, aName);
+   }
 
   /**
    * Read text message from InputStream.
