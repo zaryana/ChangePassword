@@ -24,21 +24,7 @@ import static org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConf
 import static org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration.CLOUD_ADMIN_MAIL_ADMIN_EMAIL;
 import static org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration.CLOUD_ADMIN_MAIL_ADMIN_ERROR_SUBJECT;
 import static org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration.CLOUD_ADMIN_MAIL_ADMIN_ERROR_TEMPLATE;
-
-import com.exoplatform.cloudworkspaces.listener.TenantResumeThread;
-
-import org.everrest.core.impl.provider.json.JsonException;
-import org.everrest.core.impl.provider.json.JsonParser;
-import org.everrest.core.impl.provider.json.ObjectValue;
-import org.exoplatform.cloudmanagement.admin.AgentAuthenticator;
-import org.exoplatform.cloudmanagement.admin.CloudAdminException;
-import org.exoplatform.cloudmanagement.admin.WorkspacesMailSender;
-import org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration;
-import org.exoplatform.cloudmanagement.admin.configuration.ConfigurationParameterNotFound;
-import org.exoplatform.cloudmanagement.admin.status.CloudInfoHolder;
-import org.exoplatform.cloudmanagement.status.TenantState;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration.CLOUD_ADMIN_TENANT_QUEUE_DIR;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
@@ -74,6 +60,28 @@ import java.util.regex.Pattern;
 
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
+
+import org.everrest.core.impl.provider.json.JsonException;
+import org.everrest.core.impl.provider.json.JsonParser;
+import org.everrest.core.impl.provider.json.ObjectValue;
+import org.exoplatform.cloudmanagement.admin.AgentAuthenticator;
+import org.exoplatform.cloudmanagement.admin.CloudAdminException;
+import org.exoplatform.cloudmanagement.admin.WorkspacesMailSender;
+import org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration;
+import org.exoplatform.cloudmanagement.admin.configuration.ConfigurationParameterNotFound;
+import org.exoplatform.cloudmanagement.admin.queue.DataStorage;
+import org.exoplatform.cloudmanagement.admin.queue.TenantDataStorage;
+import org.exoplatform.cloudmanagement.admin.queue.TenantQueueException;
+import org.exoplatform.cloudmanagement.admin.status.CloudInfoHolder;
+import org.exoplatform.cloudmanagement.status.TenantState;
+import org.exoplatform.cloudmanagement.status.TenantStatus;
+import org.exoplatform.cloudmanagement.status.TransientTenantStatus;
+import org.exoplatform.cloudmanagement.status.UnmodifiableTenantStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.exoplatform.cloudworkspaces.listener.TenantResumeThread;
+import com.google.common.io.InputSupplier;
 
 public class CloudIntranetUtils {
 
@@ -669,6 +677,140 @@ public class CloudIntranetUtils {
       sendAdminErrorEmail(msg, ex);
     }
 
+  }
+
+  /**
+   * Coped from CM's TenantDataStorage.
+   * 
+   * @param rawData as transient data.
+   * @return
+   * @throws TenantQueueException
+   */
+  private TenantStatus readTenantStatusFromStream(InputSupplier<InputStream> rawData) throws TenantQueueException {
+    InputStream input = null;
+
+    try {
+      input = rawData.getInput();
+      return UnmodifiableTenantStatus.loadStatusFromStream(input);
+    } catch (IOException e) {
+      throw new TenantQueueException(500,
+                                     "Unable to create tenant. Please contact with administrators.");
+    } finally {
+      if (input != null) {
+        try {
+          input.close();
+        } catch (IOException e) {
+          throw new TenantQueueException(500,
+                                         "Unable to create tenant. Please contact with administrators.");
+        }
+      }
+    }
+  }
+
+  /**
+   * Send custom email to all owners of tenants on validation.
+   * 
+   * @param emailTemplate String 
+   * @param subject String
+   * @param senderEmail String
+   * @param tenantNamePatter Pattern if not null will be used to send only to matching tenant names
+   * @param userMailPattern Pattern if not null will be used to send only to matching emails of matched tenant (or all if tenantNamePatter is null) 
+   * @throws CloudAdminException if cannot read validation storage 
+   */
+  public void sendCustomEmail(String emailTemplate,
+                              String subject,
+                              String senderEmail,
+                              Pattern tenantNamePatter,
+                              Pattern userMailPattern) throws CloudAdminException {
+
+    //String mailTemplate = cloudAdminConfiguration.getProperty(emailTemplate, ""); //MailingProperties.CLOUD_ADMIN_MAIL_PASSWORD_RESTORE_TEMPLATE,
+
+    final File tenantQueueDir = new File(cloudAdminConfiguration.getProperty(CLOUD_ADMIN_TENANT_QUEUE_DIR));
+    if (!tenantQueueDir.exists()) {
+      LOG.error("Queue storage " + tenantQueueDir.getAbsolutePath() + " not found");
+      throw new CloudAdminException(500, "Cannot read queue storage. Contact administrators.");
+    }
+
+    DataStorage validation = new DataStorage(tenantQueueDir,
+                                             TenantDataStorage.TENANT_VALIDATION_QUEUE_DIR);
+    for (String id : validation.list()) {
+      TenantStatus status = null;
+      try {
+        status = readTenantStatusFromStream(validation.getData(id));
+        String tName = status.getTenantName();
+        if (tenantNamePatter != null) {
+          if (!tenantNamePatter.matcher(tName).matches()) {
+            continue;
+          }
+        }
+
+        String email = status.getProperty(TenantStatus.PROPERTY_USER_MAIL);
+        if (userMailPattern != null) {
+          if (!userMailPattern.matcher(email).matches()) {
+            continue;
+          }
+        }
+
+        String uuid = status.getUuid();
+
+        Map<String, String> props = new HashMap<String, String>();
+        props.put("user.mail", email);
+        props.put("uid", uuid);
+        props.put("tenant.masterhost", cloudAdminConfiguration.getMasterHost());
+        props.put("tenant.repository.name", tName);
+
+        mailSender.sendMail(email, subject, emailTemplate, props, false, senderEmail); // "noreply@cloud-workspaces.com"
+      } catch (Exception e) {
+        LOG.error("Cannot send custom email '"
+            + subject
+            + "' to owner of request "
+            + id
+            + (status != null ? " (tenant: " + status.getTenantName() + ", email: "
+                + status.getProperty(TenantStatus.PROPERTY_USER_MAIL) + ")" : "")
+            + ". Skipping it.");
+      }
+    }
+  }
+
+  /**
+   * Update Template Id for all tenants on validation.
+   * 
+   * @param newTemplateId String
+   * @throws CloudAdminException in case if validation storage not found
+   */
+  public void updateTemplateId(String newTemplateId) throws CloudAdminException {
+
+    LOG.info("Updating tenants on validation to a new Template Id " + newTemplateId);
+
+    final File tenantQueueDir = new File(cloudAdminConfiguration.getProperty(CLOUD_ADMIN_TENANT_QUEUE_DIR));
+    if (!tenantQueueDir.exists()) {
+      LOG.error("Queue storage " + tenantQueueDir.getAbsolutePath() + " not found");
+      throw new CloudAdminException(500, "Cannot read queue storage. Contact administrators.");
+    }
+
+    DataStorage validation = new DataStorage(tenantQueueDir,
+                                             TenantDataStorage.TENANT_VALIDATION_QUEUE_DIR);
+
+    for (String id : validation.list()) {
+      TransientTenantStatus currentStatus = null;
+      try {
+        final TransientTenantStatus status = currentStatus = readTenantStatusFromStream(validation.getData(id)).asTransient();
+        status.setProperty(TenantStatus.PROPERTY_TEMPLATE_ID, newTemplateId);
+
+        validation.saveData(status.getUuid() + ".properties", new InputSupplier<InputStream>() {
+          @Override
+          public InputStream getInput() throws IOException {
+            return UnmodifiableTenantStatus.getContentAsStream(status);
+          }
+        }, false);
+      } catch (Exception e) {
+        LOG.error("Cannot update Template Id for request " + id
+            + (currentStatus != null ? " (tenant: " + currentStatus.getTenantName() + ")" : "")
+            + ". Skipping it.");
+      }
+    }
+
+    LOG.info("Update to new Template Id done");
   }
 
   public boolean isInBlackList(String email) {

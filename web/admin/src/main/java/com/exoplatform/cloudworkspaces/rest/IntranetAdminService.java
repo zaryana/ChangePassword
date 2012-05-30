@@ -66,6 +66,7 @@ import org.exoplatform.cloudmanagement.admin.creation.TenantCreationSupervisor;
 import org.exoplatform.cloudmanagement.admin.status.CloudInfoHolder;
 import org.exoplatform.cloudmanagement.status.TenantState;
 import org.exoplatform.cloudmanagement.status.TenantStatus;
+import org.exoplatform.cloudmanagement.status.TransientTenantStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -363,6 +364,27 @@ public class IntranetAdminService extends TenantCreator {
     }
   }
 
+  /**
+   * Repeat a Sign-up procedure. Result is an email with instructions on creation or
+   * joining a tenant.
+   * 
+   * @param String mailTemplate mail tempalte to be send to given users
+   * @return Response OK with details message or an error.
+   * @throws CloudAdminException if error occurs
+   */
+  @POST
+  @Path("/sendmail/{scope}/{username}")
+  public Response sendMail(@FormParam("mail-template") String mailTemplate) throws CloudAdminException {
+    
+    //String mailTemplate = cloudAdminConfiguration.getProperty(emailTemplate, ""); //MailingProperties.CLOUD_ADMIN_MAIL_PASSWORD_RESTORE_TEMPLATE,
+    
+    //utils.sendCustomEmail(emailTemplate, subject, senderEmail, tenantNamePatter, userMailPattern)
+    
+    //String validationStorage = adminConfiguration.getProperty("");
+    
+    return Response.ok().build();
+  }
+  
   /**
    * Join to workspace service.
    * 
