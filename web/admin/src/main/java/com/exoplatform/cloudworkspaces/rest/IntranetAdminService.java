@@ -28,6 +28,7 @@ import com.exoplatform.cloudworkspaces.ChangePasswordManager;
 import com.exoplatform.cloudworkspaces.ReferencesManager;
 
 import com.exoplatform.cloudworkspaces.listener.TenantCreatedListenerThread;
+import com.exoplatform.cloudworkspaces.MailingProperties;
 import com.exoplatform.cloudworkspaces.UserRequest;
 import com.exoplatform.cloudworkspaces.UserRequestDAO;
 import com.exoplatform.cloudworkspaces.RequestState;
@@ -365,22 +366,32 @@ public class IntranetAdminService extends TenantCreator {
   }
 
   /**
-   * Repeat a Sign-up procedure. Result is an email with instructions on creation or
-   * joining a tenant.
+   * Send custom mail to owners of tenants on validation.
    * 
-   * @param String mailTemplate mail tempalte to be send to given users
+   * TODO
+   * <pre>
+   * possible use of "scope" parameter, /sendmail/{scope}:
+   * * validation - send to users of tenants on validation
+   * * suspended - send to users of suspended tenants
+   * * online - send to users of online tenants
+   * * error - send to users of tenants in error
+   * * all - to all users
+   * ....
+   * </pre>
+   * 
+   * @param String mailTemplate mail template to be send to given users
+   * @param String mailSubject subject for a mail message
    * @return Response OK with details message or an error.
    * @throws CloudAdminException if error occurs
    */
   @POST
-  @Path("/sendmail/{scope}/{username}")
-  public Response sendMail(@FormParam("mail-template") String mailTemplate) throws CloudAdminException {
+  @Path("/sendmail")
+  public Response sendMail(@FormParam("template") String mailTemplate, 
+                           @FormParam("subject") String mailSubject) throws CloudAdminException {
     
     //String mailTemplate = cloudAdminConfiguration.getProperty(emailTemplate, ""); //MailingProperties.CLOUD_ADMIN_MAIL_PASSWORD_RESTORE_TEMPLATE,
     
-    //utils.sendCustomEmail(emailTemplate, subject, senderEmail, tenantNamePatter, userMailPattern)
-    
-    //String validationStorage = adminConfiguration.getProperty("");
+    utils.sendCustomEmail(mailTemplate, mailSubject, null, null);
     
     return Response.ok().build();
   }

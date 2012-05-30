@@ -710,20 +710,22 @@ public class CloudIntranetUtils {
   /**
    * Send custom email to all owners of tenants on validation.
    * 
-   * @param emailTemplate String 
+   * @param emailTemplate String
    * @param subject String
-   * @param senderEmail String
-   * @param tenantNamePatter Pattern if not null will be used to send only to matching tenant names
-   * @param userMailPattern Pattern if not null will be used to send only to matching emails of matched tenant (or all if tenantNamePatter is null) 
-   * @throws CloudAdminException if cannot read validation storage 
+   * @param tenantNamePatter Pattern if not null will be used to send only to
+   *          matching tenant names
+   * @param userMailPattern Pattern if not null will be used to send only to
+   *          matching email addresses of matched tenant (or all if tenantNamePatter is
+   *          null)
+   * @throws CloudAdminException if cannot read validation storage
    */
   public void sendCustomEmail(String emailTemplate,
                               String subject,
-                              String senderEmail,
                               Pattern tenantNamePatter,
                               Pattern userMailPattern) throws CloudAdminException {
 
-    //String mailTemplate = cloudAdminConfiguration.getProperty(emailTemplate, ""); //MailingProperties.CLOUD_ADMIN_MAIL_PASSWORD_RESTORE_TEMPLATE,
+    // String mailTemplate = cloudAdminConfiguration.getProperty(emailTemplate,
+    // ""); //MailingProperties.CLOUD_ADMIN_MAIL_PASSWORD_RESTORE_TEMPLATE,
 
     final File tenantQueueDir = new File(cloudAdminConfiguration.getProperty(CLOUD_ADMIN_TENANT_QUEUE_DIR));
     if (!tenantQueueDir.exists()) {
@@ -759,7 +761,13 @@ public class CloudIntranetUtils {
         props.put("tenant.masterhost", cloudAdminConfiguration.getMasterHost());
         props.put("tenant.repository.name", tName);
 
-        mailSender.sendMail(email, subject, emailTemplate, props, false, senderEmail); // "noreply@cloud-workspaces.com"
+        mailSender.sendMail(email,
+                            subject,
+                            emailTemplate,
+                            props,
+                            false,
+                            cloudAdminConfiguration.getProperty(MailingProperties.CLOUD_ADMIN_MAIL_SUPPOR_EMAIL,
+                                                                "noreply@cloud-workspaces.com"));
       } catch (Exception e) {
         LOG.error("Cannot send custom email '"
             + subject
