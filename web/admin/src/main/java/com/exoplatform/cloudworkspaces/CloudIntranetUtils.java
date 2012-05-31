@@ -25,6 +25,7 @@ import static org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConf
 import static org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration.CLOUD_ADMIN_MAIL_ADMIN_ERROR_SUBJECT;
 import static org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration.CLOUD_ADMIN_MAIL_ADMIN_ERROR_TEMPLATE;
 import static org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration.CLOUD_ADMIN_TENANT_QUEUE_DIR;
+import static org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration.CLOUD_ADMIN_TENANT_BACKUP_ID;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
@@ -724,7 +725,7 @@ public class CloudIntranetUtils {
       LOG.error("Configuration property cloud.admin.configuration.dir not found");
       throw new CloudAdminException(500, "Configuration error. Contact administrators.");
     }
-    
+
     final File tenantQueueDir = new File(cloudAdminConfiguration.getProperty(CLOUD_ADMIN_TENANT_QUEUE_DIR));
     if (!tenantQueueDir.exists()) {
       LOG.error("Queue storage " + tenantQueueDir.getAbsolutePath() + " not found");
@@ -735,7 +736,7 @@ public class CloudIntranetUtils {
     final DataStorage validation = new DataStorage(tenantQueueDir,
                                                    TenantDataStorage.TENANT_VALIDATION_QUEUE_DIR);
     final ReferencesManager refs = new ReferencesManager(cloudAdminConfiguration);
-    
+
     TenantFilter filter = new TenantFilter() {
 
       @Override
@@ -743,11 +744,13 @@ public class CloudIntranetUtils {
         // checking by tenant name, doing this verbose
         try {
           TenantStatus status = holder.getTenantStatus(tenant.getTenantName());
-          LOG.warn("Tenant " + tenant.getTenantName() + " exists with status " + status.getState().name() + ". Skipping it.");
-        } catch(DataRetrievingException e) {
+          LOG.warn("Tenant " + tenant.getTenantName() + " exists with status "
+              + status.getState().name() + ". Skipping it.");
+        } catch (DataRetrievingException e) {
           if (tenants.dataExists(tenant.getTenantName() + ".properties")) {
             // it was IO error in DataRetrievingException
-            LOG.error("Cannot read tenant " + tenant.getTenantName() + " status from queue. Skipping it.", e);
+            LOG.error("Cannot read tenant " + tenant.getTenantName()
+                + " status from queue. Skipping it.", e);
           } else {
             // if file not exists, the tenant wasn't created
             String email = tenant.getProperty(TenantStatus.PROPERTY_USER_MAIL);
@@ -758,11 +761,12 @@ public class CloudIntranetUtils {
                 return true;
               }
             } catch (CloudAdminException e1) {
-              LOG.error("Cannot read reference for user " + email + ". Skipping it.", e);  
+              LOG.error("Cannot read reference for user " + email + ". Skipping it.", e);
             }
           }
         } catch (TenantQueueException e) {
-          LOG.error("Error of tenant status " + tenant.getTenantName() + " load from queue. Skipping it.", e);
+          LOG.error("Error of tenant status " + tenant.getTenantName()
+              + " load from queue. Skipping it.", e);
         }
         return false;
       }
@@ -780,7 +784,7 @@ public class CloudIntranetUtils {
     };
 
     String result = sendCustomEmail(template, validation, filter);
-    LOG.info("Custom messages sent to tenats on validation. " + result);
+    LOG.info("Custom message sent to tenats on validation. " + result);
   }
 
   /**
@@ -811,6 +815,7 @@ public class CloudIntranetUtils {
           props.put("uid", uuid);
           props.put("tenant.masterhost", cloudAdminConfiguration.getMasterHost());
           props.put("tenant.repository.name", tName);
+          props.put("tenant.name", tName);
 
           // adding specific mappings for current tenant
           props.putAll(template.mapping(status));
@@ -837,19 +842,21 @@ public class CloudIntranetUtils {
       }
     }
 
-    return "Email '" + template.getSubject() + "' sent to " + counter + " users: "
-        + info.toString();
+    return "Email '" + template.getSubject() + "' sent to " + counter + " users"
+        + (counter > 0 ? ": " + info.toString() : "");
   }
 
   /**
-   * Update Template Id for all tenants on validation.
+   * Update Template Id for all tenants on validation to a currently used by the cloud, 
+   * see parameter <i>cloud.admin.tenant.backup.id</i> in admin configuration.
    * 
-   * @param newTemplateId String
    * @throws CloudAdminException in case if validation storage not found
    */
-  public void updateTemplateId(String newTemplateId) throws CloudAdminException {
+  public void updateTemplateId() throws CloudAdminException {
 
-    LOG.info("Updating tenants on validation to a new Template Id " + newTemplateId);
+    String newTemplateId = cloudAdminConfiguration.getProperty(CLOUD_ADMIN_TENANT_BACKUP_ID);
+    
+    LOG.info("Updating tenants on validation to current Template Id " + newTemplateId);
 
     final File tenantQueueDir = new File(cloudAdminConfiguration.getProperty(CLOUD_ADMIN_TENANT_QUEUE_DIR));
     if (!tenantQueueDir.exists()) {

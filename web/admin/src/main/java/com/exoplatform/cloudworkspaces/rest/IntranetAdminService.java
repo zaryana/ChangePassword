@@ -394,6 +394,15 @@ public class IntranetAdminService extends TenantCreator {
     return Response.ok().build();
   }
   
+  @POST
+  @Path("/update/templateid")
+  public Response updateTempalateId() throws CloudAdminException {
+    
+    utils.updateTemplateId();
+    
+    return Response.ok().build();
+  }
+  
   /**
    * Join to workspace service.
    * 
