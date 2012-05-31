@@ -385,6 +385,7 @@ public class IntranetAdminService extends TenantCreator {
    * @throws CloudAdminException if error occurs
    */
   @POST
+  @RolesAllowed({"cloud-admin", "cloud-manager"})
   @Path("/sendmail")
   public Response sendMail(@FormParam("template") String mailTemplate, 
                            @FormParam("subject") String mailSubject) throws CloudAdminException {
@@ -395,6 +396,7 @@ public class IntranetAdminService extends TenantCreator {
   }
   
   @POST
+  @RolesAllowed("cloud-admin")
   @Path("/update/templateid")
   public Response updateTempalateId() throws CloudAdminException {
     

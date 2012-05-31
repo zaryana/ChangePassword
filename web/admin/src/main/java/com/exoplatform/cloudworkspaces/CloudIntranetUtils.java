@@ -830,6 +830,12 @@ public class CloudIntranetUtils {
           counter++;
           info.append(email);
           info.append(' ');
+          
+          try {
+            Thread.sleep(1100); // don't be aggresive sender
+          } catch (Throwable e) {
+            LOG.warn("Error of thread sleep in sendCustomEmail: " + e);
+          }
         }
       } catch (Exception e) {
         LOG.error("Cannot send custom email '"
