@@ -719,7 +719,7 @@ public class CloudIntranetUtils {
 
     LOG.info("Sending custom email '" + subject + "' to users from validation queue.");
 
-    final String confDir = cloudAdminConfiguration.getProperty("cloud.admin.configuration.dir");
+    final String confDir = System.getProperty("cloud.admin.configuration.dir");
     if (confDir == null) {
       LOG.error("Configuration property cloud.admin.configuration.dir not found");
       throw new CloudAdminException(500, "Configuration error. Contact administrators.");
@@ -740,10 +740,10 @@ public class CloudIntranetUtils {
 
       @Override
       public boolean accept(TenantStatus tenant) {
-        // checking by tenant name, doing this informative
+        // checking by tenant name, doing this verbose
         try {
           TenantStatus status = holder.getTenantStatus(tenant.getTenantName());
-          LOG.info("Tenant " + tenant.getTenantName() + " exists with status " + status.getState().name() + ". Skipping it.");
+          LOG.warn("Tenant " + tenant.getTenantName() + " exists with status " + status.getState().name() + ". Skipping it.");
         } catch(DataRetrievingException e) {
           if (tenants.dataExists(tenant.getTenantName() + ".properties")) {
             // it was IO error in DataRetrievingException
