@@ -24,6 +24,7 @@ import static org.exoplatform.cloudmanagement.admin.configuration.MailConfigurat
 
 import org.apache.commons.configuration.Configuration;
 import org.exoplatform.cloudmanagement.admin.CloudAdminException;
+import org.exoplatform.cloudmanagement.admin.configuration.ApplicationRecoveryConfiguration;
 import org.exoplatform.cloudmanagement.admin.status.ApplicationServerStatus;
 import org.exoplatform.cloudmanagement.admin.status.ApplicationServerStatusManager;
 import org.slf4j.Logger;
@@ -32,10 +33,19 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.WeakHashMap;
 
 public class WorkspacesServerStatusMailer extends ServerStatusMailer
 {
    private static final Logger LOG = LoggerFactory.getLogger(ServerStatusMailer.class);
+
+   /*
+    * This is stub: to sending emails about server which starts long time, needs to save flag "mail was sent"/"or not sent"
+    * 1 - one mail was sent (50%)
+    * 2 - two mails was sent (75%)
+    */
+   private static final WeakHashMap<ApplicationServerStatus, Integer> startingMails =
+      new WeakHashMap<ApplicationServerStatus, Integer>();
 
    private final MailSender mailSender;
 
@@ -67,12 +77,34 @@ public class WorkspacesServerStatusMailer extends ServerStatusMailer
          {
             ApplicationServerStatus status =
                applicationServerStatusManager.getApplicationServerStatus(applicationServerAlias);
-            if (status.isStarted())
+            if (!status.isStarted())
+            {
                props.put("problem.with", "Application server " + applicationServerAlias);
+               long maxStarting =
+                  adminConfiguration
+                     .getLong(ApplicationRecoveryConfiguration.CLOUD_ADMIN_APPLICATION_SERVER_STARTING_MAX_TIME);
+               long currentStarting = System.currentTimeMillis() - status.getStarted();
+               if (currentStarting > 0.5 * maxStarting && !startingMails.containsKey(status))
+               {
+                  props.put("what.happend", "starts more than 50% of starting limit time.");
+                  startingMails.put(status, 1);
+               }
+               else if (currentStarting > 0.75 * maxStarting && startingMails.containsKey(status)
+                  && startingMails.get(status) < 2)
+               {
+                  props.put("what.happend", "starts more than 75% of starting limit time.");
+                  startingMails.put(status, 2);
+               }
+               else
+               {
+                  return;
+               }
+            }
             else
-               props.put("problem.with", "Application server " + applicationServerAlias + " (start server during "
-                  + (System.currentTimeMillis() - status.getStarted()) / 1000 / 60 + " minutes)");
-            props.put("what.happend", "does not respond.");
+            {
+               props.put("problem.with", "Application server " + applicationServerAlias);
+               props.put("what.happend", "does not respond.");
+            }
             props.put("what.should.we.do", "Crash suspected, check it.");
          }
          else
