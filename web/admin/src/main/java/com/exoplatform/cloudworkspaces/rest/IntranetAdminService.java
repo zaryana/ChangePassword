@@ -389,9 +389,7 @@ public class IntranetAdminService extends TenantCreator {
   public Response sendMail(@FormParam("template") String mailTemplate, 
                            @FormParam("subject") String mailSubject) throws CloudAdminException {
     
-    //String mailTemplate = cloudAdminConfiguration.getProperty(emailTemplate, ""); //MailingProperties.CLOUD_ADMIN_MAIL_PASSWORD_RESTORE_TEMPLATE,
-    
-    utils.sendCustomEmail(mailTemplate, mailSubject, null, null);
+    utils.sendEmailToValidation(mailTemplate, mailSubject);
     
     return Response.ok().build();
   }

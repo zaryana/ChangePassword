@@ -69,6 +69,7 @@ import org.exoplatform.cloudmanagement.admin.CloudAdminException;
 import org.exoplatform.cloudmanagement.admin.WorkspacesMailSender;
 import org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration;
 import org.exoplatform.cloudmanagement.admin.configuration.ConfigurationParameterNotFound;
+import org.exoplatform.cloudmanagement.admin.queue.DataRetrievingException;
 import org.exoplatform.cloudmanagement.admin.queue.DataStorage;
 import org.exoplatform.cloudmanagement.admin.queue.TenantDataStorage;
 import org.exoplatform.cloudmanagement.admin.queue.TenantQueueException;
@@ -712,65 +713,122 @@ public class CloudIntranetUtils {
    * 
    * @param emailTemplate String
    * @param subject String
-   * @param tenantNamePatter Pattern if not null will be used to send only to
-   *          matching tenant names
-   * @param userMailPattern Pattern if not null will be used to send only to
-   *          matching email addresses of matched tenant (or all if tenantNamePatter is
-   *          null)
    * @throws CloudAdminException if cannot read validation storage
    */
-  public void sendCustomEmail(String emailTemplate,
-                              String subject,
-                              Pattern tenantNamePatter,
-                              Pattern userMailPattern) throws CloudAdminException {
+  public void sendEmailToValidation(String emailTemplate, String subject) throws CloudAdminException {
 
-    // String mailTemplate = cloudAdminConfiguration.getProperty(emailTemplate,
-    // ""); //MailingProperties.CLOUD_ADMIN_MAIL_PASSWORD_RESTORE_TEMPLATE,
+    LOG.info("Sending custom email '" + subject + "' to users from validation queue.");
 
+    final String confDir = cloudAdminConfiguration.getProperty("cloud.admin.configuration.dir");
+    if (confDir == null) {
+      LOG.error("Configuration property cloud.admin.configuration.dir not found");
+      throw new CloudAdminException(500, "Configuration error. Contact administrators.");
+    }
+    
     final File tenantQueueDir = new File(cloudAdminConfiguration.getProperty(CLOUD_ADMIN_TENANT_QUEUE_DIR));
     if (!tenantQueueDir.exists()) {
       LOG.error("Queue storage " + tenantQueueDir.getAbsolutePath() + " not found");
       throw new CloudAdminException(500, "Cannot read queue storage. Contact administrators.");
     }
 
-    DataStorage validation = new DataStorage(tenantQueueDir,
-                                             TenantDataStorage.TENANT_VALIDATION_QUEUE_DIR);
-    for (String id : validation.list()) {
+    final DataStorage tenants = new DataStorage(tenantQueueDir, TenantDataStorage.TENANT_STATE_DIR);
+    final DataStorage validation = new DataStorage(tenantQueueDir,
+                                                   TenantDataStorage.TENANT_VALIDATION_QUEUE_DIR);
+    final ReferencesManager refs = new ReferencesManager(cloudAdminConfiguration);
+    
+    TenantFilter filter = new TenantFilter() {
+
+      @Override
+      public boolean accept(TenantStatus tenant) {
+        // checking by tenant name, doing this informative
+        try {
+          TenantStatus status = holder.getTenantStatus(tenant.getTenantName());
+          LOG.info("Tenant " + tenant.getTenantName() + " exists with status " + status.getState().name() + ". Skipping it.");
+        } catch(DataRetrievingException e) {
+          if (tenants.dataExists(tenant.getTenantName() + ".properties")) {
+            // it was IO error in DataRetrievingException
+            LOG.error("Cannot read tenant " + tenant.getTenantName() + " status from queue. Skipping it.", e);
+          } else {
+            // if file not exists, the tenant wasn't created
+            String email = tenant.getProperty(TenantStatus.PROPERTY_USER_MAIL);
+            try {
+              String id = refs.getHash(email);
+              if (id.equals(tenant.getUuid())) {
+                // id and tenant uuid matche - accept it
+                return true;
+              }
+            } catch (CloudAdminException e1) {
+              LOG.error("Cannot read reference for user " + email + ". Skipping it.", e);  
+            }
+          }
+        } catch (TenantQueueException e) {
+          LOG.error("Error of tenant status " + tenant.getTenantName() + " load from queue. Skipping it.", e);
+        }
+        return false;
+      }
+    };
+
+    MailTemplate template = new MailTemplate(subject, confDir + "/" + emailTemplate) {
+
+      @Override
+      public Map<String, String> mapping(TenantStatus tenant) throws CloudAdminException {
+        Map<String, String> props = new HashMap<String, String>();
+        props.put("id", tenant.getUuid());
+
+        return props;
+      }
+    };
+
+    String result = sendCustomEmail(template, validation, filter);
+    LOG.info("Custom messages sent to tenats on validation. " + result);
+  }
+
+  /**
+   * Send custom email to all owners of tenants on validation.
+   * 
+   * @param emailTemplate String
+   * @param subject String
+   * @param tenants DataStorage tenants list owners of whose will receive the mail (using filtering)
+   * @param filter TenantFilter filter for tenants list, if not null only accepted tenants will be used for mail sending 
+   * @return String with result description
+   * @throws CloudAdminException if cannot read validation storage
+   */
+  protected String sendCustomEmail(MailTemplate template, DataStorage tenants, TenantFilter filter) throws CloudAdminException {
+
+    int counter = 0;
+    StringBuilder info = new StringBuilder();
+    for (String id : tenants.list()) {
       TenantStatus status = null;
       try {
-        status = readTenantStatusFromStream(validation.getData(id));
-        String tName = status.getTenantName();
-        if (tenantNamePatter != null) {
-          if (!tenantNamePatter.matcher(tName).matches()) {
-            continue;
-          }
+        status = readTenantStatusFromStream(tenants.getData(id));
+        if (filter != null && filter.accept(status)) {
+          String tName = status.getTenantName();
+          String email = status.getProperty(TenantStatus.PROPERTY_USER_MAIL);
+          String uuid = status.getUuid();
+
+          Map<String, String> props = new HashMap<String, String>();
+          props.put("user.mail", email);
+          props.put("uid", uuid);
+          props.put("tenant.masterhost", cloudAdminConfiguration.getMasterHost());
+          props.put("tenant.repository.name", tName);
+
+          // adding specific mappings for current tenant
+          props.putAll(template.mapping(status));
+
+          mailSender.sendMail(email,
+                              template.getSubject(),
+                              template.getName(),
+                              props,
+                              false,
+                              cloudAdminConfiguration.getProperty(MailingProperties.CLOUD_ADMIN_MAIL_SUPPOR_EMAIL,
+                                                                  "noreply@cloud-workspaces.com"));
+          counter++;
+          info.append(email);
+          info.append(' ');
         }
-
-        String email = status.getProperty(TenantStatus.PROPERTY_USER_MAIL);
-        if (userMailPattern != null) {
-          if (!userMailPattern.matcher(email).matches()) {
-            continue;
-          }
-        }
-
-        String uuid = status.getUuid();
-
-        Map<String, String> props = new HashMap<String, String>();
-        props.put("user.mail", email);
-        props.put("uid", uuid);
-        props.put("tenant.masterhost", cloudAdminConfiguration.getMasterHost());
-        props.put("tenant.repository.name", tName);
-
-        mailSender.sendMail(email,
-                            subject,
-                            emailTemplate,
-                            props,
-                            false,
-                            cloudAdminConfiguration.getProperty(MailingProperties.CLOUD_ADMIN_MAIL_SUPPOR_EMAIL,
-                                                                "noreply@cloud-workspaces.com"));
       } catch (Exception e) {
         LOG.error("Cannot send custom email '"
-            + subject
+            + template.getSubject()
             + "' to owner of request "
             + id
             + (status != null ? " (tenant: " + status.getTenantName() + ", email: "
@@ -778,6 +836,9 @@ public class CloudIntranetUtils {
             + ". Skipping it.");
       }
     }
+
+    return "Email '" + template.getSubject() + "' sent to " + counter + " users: "
+        + info.toString();
   }
 
   /**
