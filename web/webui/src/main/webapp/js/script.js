@@ -564,7 +564,7 @@ Tenants.prototype.handleSignupResponse = function(resp) {
       "formid": $('#formid').val()
     }, function() {
      });
-     $("#messageString").html = resp;
+     $("#messageString").html(resp);
   }
   $("#t_submit").attr('disabled', '');
   $("#t_submit").val("Sign Up");
