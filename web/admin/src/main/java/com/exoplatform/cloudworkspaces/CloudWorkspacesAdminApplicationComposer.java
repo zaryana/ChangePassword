@@ -40,6 +40,8 @@ import org.exoplatform.cloudmanagement.admin.mail.WorkspacesTenantOperationMailS
 import org.exoplatform.cloudmanagement.admin.rest.CloudAdminApplicationComposer;
 import org.exoplatform.cloudmanagement.admin.rest.TenantCreator;
 import org.exoplatform.cloudmanagement.admin.status.ServerOnlineListenersInvoker;
+import org.exoplatform.cloudmanagement.admin.tenant.TenantSuspender;
+import org.exoplatform.cloudmanagement.admin.tenant.WorkspacesTenantSuspender;
 import org.exoplatform.cloudmanagement.admin.util.ServerStatusMailer;
 import org.exoplatform.cloudmanagement.admin.util.WorkspacesServerStatusMailer;
 import org.exoplatform.ide.shell.server.CLIResourceFactory;
@@ -101,6 +103,9 @@ public class CloudWorkspacesAdminApplicationComposer extends CloudAdminApplicati
 
     container.removeComponent(ServerStatusMailer.class);
     container.addComponent(ServerStatusMailer.class, WorkspacesServerStatusMailer.class);
+
+    container.removeComponent(TenantSuspender.class);
+    container.addComponent(TenantSuspender.class, WorkspacesTenantSuspender.class);
   }
 
   @Override
