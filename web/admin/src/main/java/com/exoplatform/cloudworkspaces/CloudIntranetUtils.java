@@ -784,7 +784,7 @@ public class CloudIntranetUtils {
     };
 
     String result = sendCustomEmail(template, validation, filter);
-    LOG.info("Custom message sent to tenats on validation. " + result);
+    LOG.info("Custom message sent to tenants on validation. " + result);
   }
 
   /**
@@ -844,7 +844,7 @@ public class CloudIntranetUtils {
             + id
             + (status != null ? " (tenant: " + status.getTenantName() + ", email: "
                 + status.getProperty(TenantStatus.PROPERTY_USER_MAIL) + ")" : "")
-            + ". Skipping it.");
+            + ". Skipping it.", e);
       }
     }
 
