@@ -1,5 +1,8 @@
 package com.exoplatform.cloudworkspaces.cloudlogin.impl;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
@@ -7,12 +10,18 @@ import javax.jcr.Session;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.NodeType;
+import javax.ws.rs.core.CacheControl;
 
+import org.exoplatform.commons.utils.ListAccess;
+import org.exoplatform.container.PortalContainer;
+import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.jcr.core.ManageableRepository;
 import org.exoplatform.services.jcr.ext.common.SessionProvider;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.services.organization.OrganizationService;
+import org.exoplatform.services.organization.User;
 
 import com.exoplatform.cloudworkspaces.cloudlogin.CloudLoginService;
 import com.exoplatform.cloudworkspaces.cloudlogin.data.CloudLoginStatus;
@@ -27,10 +36,12 @@ public class CloudLoginServiceImpl implements CloudLoginService {
 
   private static Log logger = ExoLogger.getLogger(CloudLoginServiceImpl.class);
   private RepositoryService repositoryService;
+  private OrganizationService organizationService;
 
   private static final String LOGIN_HISTORY_HOME = "exo:LoginHistoryHome";
   private static final String CL_MIXIN_TYPE = "exo:cloudlogin";
   private static final String CL_MIXIN_STATUS = "exo:cloudLoginStatus";
+  private static final Pattern emailPattern = Pattern.compile("^([a-zA-Z0-9_\\.\\-])+\\@((([a-zA-Z0-9\\-])+\\.)+([a-zA-Z0-9]{2,4})+)$", Pattern.CASE_INSENSITIVE);
 
   
   /*=======================================================================
@@ -49,8 +60,9 @@ public class CloudLoginServiceImpl implements CloudLoginService {
     return sessionProvider.getSession(currentRepo.getConfiguration().getDefaultWorkspaceName(), currentRepo);
   }
 
-  public CloudLoginServiceImpl(RepositoryService repositoryService) {
+  public CloudLoginServiceImpl(RepositoryService repositoryService, OrganizationService organizationService) {
     this.repositoryService = repositoryService;
+    this.organizationService = organizationService;
   }
 
   
@@ -117,6 +129,55 @@ public class CloudLoginServiceImpl implements CloudLoginService {
     }
     
     return null;
+  }
+  
+  @Override
+  public String getCloudTenantDomain() {
+    
+    String domain = "";
+
+    RequestLifeCycle.begin(PortalContainer.getInstance());
+    CacheControl cacheControl = new CacheControl();
+    cacheControl.setNoCache(true);
+    cacheControl.setNoStore(true);
+    
+    try {
+      ListAccess<User> list = organizationService.getUserHandler().findUsersByGroupId("/platform/administrators");
+      
+      if(list != null && list.getSize() > 0) {
+        User[] users = list.load(0, 1);
+        if(users != null && users.length > 0) {
+          User tenantOwner = users[0];
+          if(tenantOwner != null) {
+            if(logger.isDebugEnabled()) {
+              logger.debug("We found the tenant owner: " + tenantOwner + " with mail: " + tenantOwner.getEmail());
+            }
+            domain = extractDomainFromEmail(tenantOwner.getEmail());
+          }
+          else {
+            logger.info("There is no tenant owner into group /platform/administrators");
+          }
+        }
+        else {
+          logger.info("There is no users into group /platform/administrators");
+        }
+      }
+      else {
+        logger.info("List of users into group /platform/administrators is empty");
+      }
+    }
+    catch(Exception e) {
+      logger.error("CloudLogin: Cannot get domain from tenant", e);
+    }
+    finally {
+      try {
+        RequestLifeCycle.end();
+      } catch (Exception e) {
+        logger.warn("An exception has occurred while proceed RequestLifeCycle.end() : " + e.getMessage());
+      }
+    }
+    
+    return domain;
   }
   
   
@@ -239,5 +300,29 @@ public class CloudLoginServiceImpl implements CloudLoginService {
     }
     
     return isExists;
+  }
+  
+  /**
+   * With an email, returns his domain
+   * <p>
+   * If email is not valid, return empty string
+   * 
+   * @param email
+   * @return
+   */
+  protected String extractDomainFromEmail(String email) {
+    String domain = "";
+    
+    if(email != null) {
+      Matcher m = emailPattern.matcher(email);
+      if(m.matches()) {
+        String extDomain = m.group(2);
+        if(extDomain != null) {
+          domain = extDomain;
+        }
+      }
+    }
+    
+    return domain;
   }
 }
