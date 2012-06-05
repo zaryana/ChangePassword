@@ -16,11 +16,11 @@
 
   <dependencies>
     <dependency>
-	  <groupId>org.exoplatform.cloud-management</groupId>
-	  <artifactId>cloud-admin</artifactId>
-	  <scope>compile</scope>
-	  <type>jar</type>
-	</dependency>
+      <groupId>org.exoplatform.cloud-management</groupId>
+      <artifactId>cloud-admin</artifactId>
+      <scope>compile</scope>
+      <type>jar</type>
+    </dependency>
 
     <!-- TEST deps -->
     <dependency>
