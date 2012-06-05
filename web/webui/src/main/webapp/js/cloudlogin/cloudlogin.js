@@ -10,16 +10,17 @@ CloudLogin.EMAIL_REGEXP = /^([a-zA-Z0-9_\.\-])+\@((([a-zA-Z0-9\-])+\.)+([a-zA-Z0
 CloudLogin.NB_EMAILS_OK = 0;
 CloudLogin.NB_EMAILS_REQUESTED = 0;
 CloudLogin.NB_EMAILS = 0;
-CloudLogin.EMAILS_NOK = new Array();
+CloudLogin.ERROR_MESSAGES = new Array();
+CloudLogin.DEFAULT_VALUE = "Add email addresses";
 
 CloudLogin.initCloudLogin = function() {
-  // tenants.init();
-  
   if (!window.console) console = {};
   console.log = console.log || function(){};
   console.warn = console.warn || function(){};
   console.error = console.error || function(){};
   console.info = console.info || function(){};
+  
+  $("#email").val(CloudLogin.DEFAULT_VALUE);
   
   // Event only for IE
   document.getElementById('email').onclick = function() {document.getElementById('email').value = '';}
@@ -84,13 +85,12 @@ CloudLogin.initTextExt = function() {
   textExt.bind(
     'isTagAllowed', function(e, data) {
       var dataTag = data.tag.replace(/^\s+|\s+$/g,'');
-      if(!CloudLogin.EMAIL_REGEXP.test(dataTag)) {
-        if(dataTag.length > 0) {
-          CloudLogin.displayMessage('email is not valid: "' + dataTag + '"');
-        }
-        data.result = false;
-        return;
+      var isValidEmail = CloudLogin.isValidEmail(dataTag);
+      if(!isValidEmail && dataTag.length > 0) {
+        CloudLogin.displayMessage('email is not valid: "' + dataTag + '"');
       }
+      data.result = isValidEmail;
+      return;
     }
   );
 }
@@ -105,7 +105,7 @@ CloudLogin.showStep = function(n) {
 /**
  * Ajax call to WS invite-join-ws/send-mail/
  */
-CloudLogin.sendEmail = function(email) {
+CloudLogin.sendEmail = function(email, noEmail) {
   
   var hostname = CloudLogin.getDomainFromEmail(email);
   var mainUrl = CloudLogin.WS_SENDMAIL_URL + email + "/" + hostname;
@@ -124,21 +124,20 @@ CloudLogin.sendEmail = function(email) {
           }
         }
         else {
-          // reactivate button
-          document.getElementById("t_submit").disabled = false;
           console.log("Invitation cannot be sent to [" + email + "], [Status=" + status + "]");
-          //CloudLogin.displayMessage("Invitation cannot be sent to [" + email + "], [Status=" + status + "]");
-          CloudLogin.EMAILS_NOK.push(email);
+          CloudLogin.ERROR_MESSAGES[noEmail] = "[" + email + "] " + status;
         }
         CloudLogin.finalizeSendEmails();
       },
       error: function(request, status, error) {
         CloudLogin.NB_EMAILS_REQUESTED++;
-        // reactivate button
-        document.getElementById("t_submit").disabled = false;
-        console.log("Invitation cannot be sent to [" + email + "], [Status=" + status + "], [Error=" + error + "]");
-        //CloudLogin.displayMessage("Invitation cannot be sent to [" + email + "], [Status=" + status + "], [Error=" + error + "]");
-        CloudLogin.EMAILS_NOK.push(email);
+        console.log("Invitation cannot be sent to [" + email + "], [Status=" + request.status + ": " + request.statusText + "], [Message=" + request.responseText + "]");
+        if(request.status === 404) {
+          CloudLogin.ERROR_MESSAGES[noEmail] = "[" + email + "] Cannot contact server";
+        }
+        else {
+          CloudLogin.ERROR_MESSAGES[noEmail] = "[" + email + "] " + request.responseText;
+        }
         CloudLogin.finalizeSendEmails();
       },
       dataType: 'text'
@@ -149,24 +148,54 @@ CloudLogin.sendEmail = function(email) {
  * Called after all mails are sent (or not) to display an error message if one or more mails cannot be sent
  */
 CloudLogin.finalizeSendEmails = function() {
+
   if(CloudLogin.NB_EMAILS_REQUESTED == CloudLogin.NB_EMAILS &&  CloudLogin.NB_EMAILS_OK < CloudLogin.NB_EMAILS) {
-    var message = CloudLogin.EMAILS_NOK.length + " email(s) cannot be sent: [ ";
+    var message = CloudLogin.ERROR_MESSAGES.length + " email(s) cannot be sent:<ul>";
     // for
-    for(var i=0; i<CloudLogin.EMAILS_NOK.length; i++) {
-      message = message.concat(CloudLogin.EMAILS_NOK[i]).concat(" ");
+    for(var i=0; i<CloudLogin.ERROR_MESSAGES.length; i++) {
+      message = message.concat("<li>").concat(CloudLogin.ERROR_MESSAGES[i]).concat("</li>");
     }
-    message = message.concat("]");
+    message = message.concat("</ul>");
     CloudLogin.displayMessage(message);
+    
+    // Clear email not tagged
+    document.getElementById("email").value = "";
+    
+    //CloudLogin.updateSendButton();
+  }
+  else if(CloudLogin.NB_EMAILS === 0) {
+    // Case of one email not tagged but sent, we exit wizard
+    CloudLogin.exit();
   }
 } 
 
-CloudLogin.validateStep1 = function() {
-  
-  var emails = eval(document.getElementById("emails").value);
+CloudLogin.validateStep1 = function(event) {
   
   CloudLogin.NB_EMAILS_OK = 0;
   CloudLogin.NB_EMAILS_REQUESTED = 0;
-  CloudLogin.EMAILS_NOK = new Array();
+  CloudLogin.ERROR_MESSAGES = [];
+  
+  var emails = eval(document.getElementById("emails").value);
+  var emailNotTagged = document.getElementById("email").value;
+  
+  // only if there is no tags and this is not default value
+  if(emails.length === 0 && CloudLogin.DEFAULT_VALUE != emailNotTagged) {
+    if(emailNotTagged != undefined && emailNotTagged.length > 0) {
+      // trim
+      emailNotTagged = emailNotTagged.replace(/^\s+/g,'').replace(/\s+$/g,'')
+      if(CloudLogin.isValidEmail(emailNotTagged)) {
+        var list = $('#email').textext();
+        var textExtTags = list[0].tags.apply();
+        textExtTags.addTags([emailNotTagged]);
+        emails.push(emailNotTagged);
+      }
+      else {
+        CloudLogin.displayMessage('email is not valid: "' + emailNotTagged + '"');
+      }
+      document.getElementById("email").value = "";
+      return;
+    }
+  }
   
   // deactivate button
   document.getElementById("t_submit").disabled = true;
@@ -177,22 +206,16 @@ CloudLogin.validateStep1 = function() {
   }
   
   for(var i=0; i<emails.length; i++) {
-    CloudLogin.sendEmail(emails[i]);
+    CloudLogin.sendEmail(emails[i], i);
   }
-
-  //tenants.doLogin();
 }
 
 CloudLogin.validateStep2 = function() {
   CloudLogin.showStep(3);
-  
-  //tenants.doLogin();
 }
 
 CloudLogin.validateStep3 = function() {
   CloudLogin.exit();
-  
-  //tenants.doLogin();
 }
 
 CloudLogin.exit = function() {
@@ -203,13 +226,15 @@ CloudLogin.exit = function() {
  * Display red message up to input
  */
 CloudLogin.displayMessage = function(message) {
-  $("#messageString").text(message);
+  $("#messageString").show();
+  $("#messageString").html(message);
 }
 
 /**
  * Clear red message up to input
  */
 CloudLogin.clearMessage = function() {
+  $("#messageString").hide();
   $("#messageString").text("");
 }
 
@@ -223,6 +248,9 @@ CloudLogin.updateSendButton = function() {
   else {
     $("#t_submit").val("Skip");
   }
+  
+  // reactivate button
+  document.getElementById("t_submit").disabled = false;
 }
 
 CloudLogin.decrementNbMails = function() {
@@ -250,7 +278,18 @@ CloudLogin.getDomainFromEmail = function(email) {
    }
  }
  else {
-    console.log("CloudLogin: " + email + "is not valid mail");
+    console.log("CloudLogin: " + email + " is not valid mail");
  }
  return domain;
+}
+
+/**
+ * Returns true if email inparameter is valid
+ */
+CloudLogin.isValidEmail = function(email) {
+  var isValidEmail = false;
+  if(email != undefined && CloudLogin.EMAIL_REGEXP.test(email)) {
+    isValidEmail = true;
+  }
+  return isValidEmail;
 }
