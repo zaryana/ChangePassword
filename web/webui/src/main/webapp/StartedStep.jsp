@@ -20,15 +20,14 @@
 --%>
 <%@ page import="com.exoplatform.cloudworkspaces.cloudlogin.CloudLoginServlet"%>
 <%@ page import="com.exoplatform.cloudworkspaces.cloudlogin.CloudLoginService"%>
+<%@ page import="org.exoplatform.container.PortalContainer"%>
 <%@ page language="java" %>
 <%
   String contextPath = request.getContextPath() ;
   String lang = request.getLocale().getLanguage();
 
   String uri = (String)request.getAttribute(CloudLoginServlet.INITIAL_URI_ATTRIBUTE);
-  String domain = request.getServerName();
   
-  // Get domain name of the owner of the tenant
   CloudLoginService cloudLoginService = (CloudLoginService) PortalContainer.getCurrentInstance(session.getServletContext()).getComponentInstanceOfType(CloudLoginService.class);
   String tenantDomain = cloudLoginService.getCloudTenantDomain();
   
