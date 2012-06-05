@@ -500,6 +500,7 @@
     <module>cloud-management-patch</module>
     <module>cloud-management-valve-patch</module>
     <module>component</module>
+    <module>local-cloud</module>
     <module>web</module>
     <module>admin-bundle</module>
     <module>cloud-gadgets</module>
