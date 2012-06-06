@@ -51,20 +51,20 @@
               <div class="col5 FL">
                 <h3><a href="#spaces">Spaces</a></h3>
                  <ul >
-                  <li><a href="spaces1">What is a Space?</a></li>
-                  <li><a href="spaces2">What features or apps are available within a Space?</a></li>
-                  <li><a href="spaces3">Who can create a Space? Can administrator rights be changed?</a></li>
-                  <li><a href="spaces4">Can I control the privacy settings of a Space that I’ve created?</a></li>
-                  <li><a href="spaces5">How do I find and join existing Spaces?</a></li>
+                  <li><a href="#spaces1">What is a Space?</a></li>
+                  <li><a href="#spaces2">What features or apps are available within a Space?</a></li>
+                  <li><a href="#spaces3">Who can create a Space? Can administrator rights be changed?</a></li>
+                  <li><a href="#spaces4">Can I control the privacy settings of a Space that I’ve created?</a></li>
+                  <li><a href="#spaces5">How do I find and join existing Spaces?</a></li>
                 </ul>
               </div>
     
               <div class="col5 FL">
                 <h3><a href="#documents">Documents</a></h3>
                  <ul>                
-                 <li><a href="documents1">What can I do with the eXo mobile apps?</a></li>
-                  <li><a href="documents2">Who can view my documents?</a></li>
-                  <li><a href="documents3">What type of document can I upload?</a></li>
+                 <li><a href="#documents1">What can I do with the eXo mobile apps?</a></li>
+                  <li><a href="#documents2">Who can view my documents?</a></li>
+                  <li><a href="#documents3">What type of document can I upload?</a></li>
                 </ul>
               </div>
             </div>
@@ -73,8 +73,8 @@
               <div class="col5 FL">
                 <h3><a href="#mobile">Mobile</a></h3>
                  <ul >
-                  <li><a href="mobile1">How do I download the mobile app?</a></li>
-                  <li><a href="mobile2">How do I connect my device to my company’s social intranet?</a></li>
+                  <li><a href="#mobile1">How do I download the mobile app?</a></li>
+                  <li><a href="#mobile2">How do I connect my device to my company’s social intranet?</a></li>
                 </ul>
               </div>
             </div>

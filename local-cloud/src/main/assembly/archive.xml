@@ -5,15 +5,35 @@
      <format>zip</format>
    </formats>
    <includeBaseDirectory>false</includeBaseDirectory>
+   <dependencySets>
+       <dependencySet>
+        <includes>
+         <include>com.exoplatform.cloudworkspaces:cloud-workspaces-admin-bundle</include>
+        </includes>
+         <unpack>true</unpack>
+         <outputDirectory>/</outputDirectory>
+       </dependencySet>
+      <dependencySet>
+      <includes>
+         <include>com.exoplatform.cloudworkspaces:cloud-workspaces-platform-bundle</include>
+      </includes>
+      <unpack>false</unpack>
+      <outputDirectory>local-cloud</outputDirectory>
+      <outputFileNameMapping>${artifact.artifactId}${dashClassifier?}.${artifact.extension}</outputFileNameMapping>
+      <fileMode>0644</fileMode>
+      </dependencySet>
+     </dependencySets>
    <fileSets>
       <!-- Default files -->
       <fileSet>
          <directory>src/main/resources</directory>
          <outputDirectory>local-cloud</outputDirectory>
+         <fileMode>0755</fileMode>
       </fileSet>
       <fileSet>
        <directory>src/main/starter</directory>
        <outputDirectory>/</outputDirectory>
+       <fileMode>0755</fileMode>
       </fileSet>
    </fileSets>
 </assembly>

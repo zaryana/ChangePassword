@@ -39,6 +39,8 @@ import org.exoplatform.cloudmanagement.admin.mail.TenantOperationMailSenderIniti
 import org.exoplatform.cloudmanagement.admin.mail.WorkspacesTenantOperationMailSenderInitiator;
 import org.exoplatform.cloudmanagement.admin.rest.CloudAdminApplicationComposer;
 import org.exoplatform.cloudmanagement.admin.rest.TenantCreator;
+import org.exoplatform.cloudmanagement.admin.rest.TenantService;
+import org.exoplatform.cloudmanagement.admin.rest.WorkspacesTenantService;
 import org.exoplatform.cloudmanagement.admin.status.ServerOnlineListenersInvoker;
 import org.exoplatform.cloudmanagement.admin.tenant.TenantSuspender;
 import org.exoplatform.cloudmanagement.admin.tenant.WorkspacesTenantSuspender;
@@ -115,6 +117,9 @@ public class CloudWorkspacesAdminApplicationComposer extends CloudAdminApplicati
     container.addComponent(ShellConfigurationService.class);
     container.addComponent(CLIResourcesService.class);
     container.addComponent(StatisticAllTenants.class);
+
+    container.removeComponent(TenantService.class);
+    container.addComponent(WorkspacesTenantService.class);
     /*
      * container.addComponent(TenantCreatorWithEmailAuthorization.class);
      */
