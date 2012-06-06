@@ -128,7 +128,7 @@
 				    <li><a class="Tab OrangeTab" href="http://www.exoplatform.com" target="_parent">eXoplatform.com</a></li>
 				    <li class="last"><a href="#" class="Tab OrangeTab" onclick="showContactUsForm('<%=hostName%>/contact-us.jsp');">Contact us</a></li>
 				  </ul>
-				  <div class="Logo FL"><a href="http://www.exoplatform.com"><img src="/background/logo.png"/></a></div>
+				  <div class="Logo FL"><a href="http://cloud-workspaces.com"><img src="/background/logo.png"/></a></div>
 				  <div class="ClouIntranet FR"><h1>Cloud Workspaces</h1><span>The Free Social Intranet for Your Company</span></div>
 			  </div>
 		  </div>
