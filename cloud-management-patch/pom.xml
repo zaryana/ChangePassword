@@ -9,6 +9,7 @@
     <artifactId>cloud-workspaces-parent</artifactId>
     <version>1.1.0-Beta01-SNAPSHOT</version>
   </parent>
+
   <artifactId>cloud-management-patch</artifactId>
   <packaging>jar</packaging>
   <name>eXo Cloud Workspaces :: Cloud Management Patch</name>

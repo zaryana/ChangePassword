@@ -6,6 +6,7 @@
     <artifactId>cloud-workspaces-wizard-extension</artifactId>
     <version>1.1.0-Beta01-SNAPSHOT</version>
   </parent>
+
   <artifactId>cloud-workspaces-wizard-extension-config</artifactId>
   <packaging>jar</packaging>
   <name>eXo Cloud Workspaces :: Wizard Extension Config</name>

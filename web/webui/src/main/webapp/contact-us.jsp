@@ -15,13 +15,16 @@
 				<div id="messageString" class="TenantFormMsg"></div>
 				<table cols="2">
 				  <tr>
-				   <td class="Field">Your name:</td><td> <input class="required InputText" type="text" name="name" id="name" value="" /></td>
+				   <td class="Field">First Name:</td><td> <input class="required InputText" type="text" name="FirstName" id="FirstName" value="" /></td>
+				 </tr>
+				  <tr>
+				   <td class="Field">Last Name:</td><td> <input class="required InputText" type="text" name="LastName" id="LastName" value="" /></td>
 				 </tr>
 				 <tr>
 				  <td class="Field">Your email:</td><td> <input class="required InputText" type="text" name="email" id="email" value="" /></td>
 				 </tr>
 				 <tr>
-				  <td class="Field">subject:</td><td> <input class="required InputText" type="text" name="subject" id="subject" /></td>
+				  <td class="Field">Subject:</td><td> <input class="required InputText" type="text" name="subject" id="subject" /></td>
 				 </tr>
 				 <tr>
 				  <td class="Field">Message:</td><td> <textarea class="required" type="text" name="ContactUs_Message__c" id="ContactUs_Message__c"></textarea></td>

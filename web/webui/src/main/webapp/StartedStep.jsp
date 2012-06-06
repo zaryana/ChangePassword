@@ -55,12 +55,12 @@
       <h3>Invite Coworkers in Your Social Intranet</h3>
       <p><strong>Send email invitations to your coworkers to connect with them in your social intranet.</strong><br/>(note: Only @<%= domain %> email addresses will be invited to your workspace. Other addresses will receive an invitation to discover Cloud Workspaces)</p>
       
-      <div id="messageString" class="TenantFormMsg"></div>
+      <div id="messageString" class="TenantFormMsg" style="display:none"></div>
       <table class="BorderDot">
         <tbody>
           <tr>
             <td class="FormInput">
-              <textarea value="Add email addresses" id="email" name="" class="required InputText">Add email addresses</textarea>
+              <textarea id="email" name="" class="required InputText"></textarea>
             </td>
             <td class="FormButton"> <input type="button" onclick="CloudLogin.validateStep1();" value="Skip" id="t_submit" class="Button" /></td>
           </tr>
@@ -142,8 +142,8 @@
     <% } %>
     <input type="hidden" name="<%= CloudLoginServlet.CLOUD_PROCESS_DISPLAYED %>" id="<%= CloudLoginServlet.CLOUD_PROCESS_DISPLAYED %>" value="true" />
   </form>
-
-  <script type="text/javascript" src="/js/trackers.js"></script>    
+ 
+  <script type="text/javascript" src="/js/trackers.js"></script>
      
   </body>
 </html>
