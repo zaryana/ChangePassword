@@ -1,6 +1,6 @@
 #!/bin/bash
 
-TOMCAT_ZIP="cloud-workspaces-platform-1.1.0-Alpha4-SNAPSHOT-tomcat.zip"
+TOMCAT_ZIP="cloud-workspaces-platform-bundle-tomcat.zip"
 
 DEFAULT_SERVER_PORT=8005
 DEFAULT_RMI_REGISTRY_PORT=6969
