@@ -42,7 +42,9 @@ import org.exoplatform.cloudmanagement.admin.rest.TenantCreator;
 import org.exoplatform.cloudmanagement.admin.rest.TenantService;
 import org.exoplatform.cloudmanagement.admin.rest.WorkspacesTenantService;
 import org.exoplatform.cloudmanagement.admin.status.ServerOnlineListenersInvoker;
+import org.exoplatform.cloudmanagement.admin.tenant.ServerSelectionAlgorithm;
 import org.exoplatform.cloudmanagement.admin.tenant.TenantSuspender;
+import org.exoplatform.cloudmanagement.admin.tenant.WorkspacesLowestLoadFactorServerSelectionAlgorithm;
 import org.exoplatform.cloudmanagement.admin.tenant.WorkspacesTenantSuspender;
 import org.exoplatform.cloudmanagement.admin.util.ServerStatusMailer;
 import org.exoplatform.cloudmanagement.admin.util.WorkspacesServerStatusMailer;
@@ -108,6 +110,10 @@ public class CloudWorkspacesAdminApplicationComposer extends CloudAdminApplicati
 
     container.removeComponent(TenantSuspender.class);
     container.addComponent(TenantSuspender.class, WorkspacesTenantSuspender.class);
+
+    container.removeComponent(ServerSelectionAlgorithm.class);
+    container.addComponent(ServerSelectionAlgorithm.class,
+                           WorkspacesLowestLoadFactorServerSelectionAlgorithm.class);
   }
 
   @Override
