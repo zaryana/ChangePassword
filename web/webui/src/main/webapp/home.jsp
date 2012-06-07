@@ -66,19 +66,23 @@
         <!--begin banner-->
         <div class="UIBanner">
           <div class="MainContent" >
-            <h2>Sign up for your free social intranet</h2>
+            <h2>Sign Up for Your Free Social Intranet</h2>
             <div class="FormContainer ClearFix">
               <div class="FR BoxText">
                 <h3>Features</h3>
                 <ul>
-                  <li><a href="#Connect-Collaborate">Connect and collaborate in a private enterprise social network</a> </li>
-                  <li><a href="#Status-Update">More than status updates: built-in wiki, forum and content management tools</a></li>
-                  <li><a href="#Customize-Social">Build gadgets with eXo Cloud IDE to customize your dashboards</a></li>
+                  <li><a href="#social">Enterprise Social Network</a> </li>
+                  <li><a href="#apps">Wiki, Forums and Document Management</a></li>
+                  <li><a href="#dashboard">Customizable Dashboards</a></li>
                 </ul>
                 <h3>Resources</h3>
-                <p><a href="http://www.exoplatform.com/company/en/resource-center" target="_blank">Take a video tour, try some tutorials or browse the documentation.</a></p>
-                <h3>Get Help</h3>
-                <p><a href="http://community.exoplatform.org" target="_blank">Ask a question in the forum, submit your feedback, or contact our sales team.  </a></p>
+                <ul>
+                  <li><a href="#video">Video Tour</a> </li>
+                  <li><a href="/help.jsp">FAQ</a></li>
+                  <li><a href="http://community.exoplatform.org" target="_blank">Forum</a></li>
+                  <li><a href="/about.jsp">About</a></li>
+                </ul>
+                
               </div>
               <div class="FormBox">
                 <div class="BoxContent ClearFix">
@@ -99,7 +103,6 @@
 										<input type="hidden" name="retURL" value="" />
 										<input type="hidden" name="_mkt_disp" value="return" />
 										<input type="hidden" name="_mkt_trk" value="" />
-                    <p class="SignUpInfo">Cloud Workspaces is currently in beta. To participate, register with your work email address. We'll keep you updated when your company's social intranet is ready.</p>
                     <div id="messageString" class="TenantFormMsg"></div>
                     <input class="InputText" type="text" name="email" id="email" value="Enter your professional email" onclick="this.value='';" />
                     <input class="Button" type="submit" id="t_submit"  value="Sign Up" onClick="tenants.doSingupRequest();" />
@@ -141,7 +144,7 @@
               <a href="/about.jsp" class="Readmore">Learn more</a>
             </div>
             <div class="Cols MCol FL">
-              <h3>What Can You Do with Cloud Workspaces?</h3>
+              <h3 id="video">What Can You Do with Cloud Workspaces?</h3>
               <a href="#TB_inline?height=420&width=670&inlineId=videoLeft" class="thickbox">
               <img src="/background/img_video.png" alt=""/>
               </a>
@@ -161,19 +164,19 @@
 			<div class="LastestItems ClearFix">
 				<div class="Cols LCol FL">
 					<div><a class="lightbox-enabled" rel="lightbox" href="background/social.png" title="Connect with your colleagues for an instant enterprise social network"><img src="background/01_Mini.png" alt=""/></a></div>
-					<h4 class="SpecialTit">Connect with your colleagues for an instant enterprise social network</h4>
+					<h4 class="SpecialTit" id="social">Connect with your colleagues for an instant enterprise social network</h4>
 					<p>Support for OpenSocial allows Cloud Workspaces users to create and connect rich user profiles, share activity streams, and collaborate in real-time. When you sign up with your professional email, we'll create a private domain for your company.</p>
 				</div>
 				
 				<div class="Cols MCol FL">
 					<a class="lightbox-enabled" rel="lightbox" href="background/wiki.png" title="More than a private social network: enterprise wiki, forums, calendars, and more"><img src="background/02_Mini.png" alt=""/></a>
-					<h4 class="SpecialTit">More than a private social network: enterprise wiki, forums, calendars, and more</h4>
+					<h4 class="SpecialTit" id="apps">More than a private social network: enterprise wiki, forums, calendars, and more</h4>
 					<p>Following updates and comments from your coworkers is a great way to stay informed, but it's only the first step towards productive collaboration. Cloud Workspaces combines the benefits of a social network with the tools that support your online work.</p>
 				</div>
 				
 				<div class="Cols RCol FR">
 					<a class="lightbox-enabled" rel="lightbox" href="background/dashboard2.png" title="Personalized dashboards provide a work start page for every user"><img src="background/03_Mini.png" alt=""/></a>
-					<h4 class="SpecialTit">Personalized dashboards provide a work start page for every user</h4>
+					<h4 class="SpecialTit" id="dashboard">Personalized dashboards provide a work start page for every user</h4>
 					<p>Users can easily create their own personalized dashboards with simple drag-and-drop controls, so your Cloud Workspaces start page will display the most relevant, useful information about your work.</p>
 				</div>
 			</div>

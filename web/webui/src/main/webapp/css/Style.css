@@ -1,19 +1,12 @@
 @font-face {
-    font-family: 'MyriadProSemibold';
-    src: url('../fonts/myriadpro-semibold-webfont.eot');
-    src: url('../fonts/myriadpro-semibold-webfont.eot?#iefix') format('embedded-opentype'),
-         url('../fonts/myriadpro-semibold-webfont.woff') format('woff'),
-         url('../fonts/myriadpro-semibold-webfont.ttf') format('truetype'),
-         url('../fonts/myriadpro-semibold-webfont.svg#MyriadProSemibold') format('svg');
+    font-family: 'Helvetica';
     font-weight: normal;
     font-style: normal;
 
 }
 
 @font-face {
-    font-family: 'MyriadPro';
-    src: url('../fonts/MyriadPro-Regular.otf');
-    src: url('../fonts/MyriadPro-Regular.ttf') format('truetype'),
+    font-family: 'Helvetica';
     font-weight: normal;
     font-style: normal;
 
@@ -31,6 +24,7 @@ body {
 	font-size: 12px;
 	color:#666666;
 	height:100%;
+	-webkit-font-smoothing: antialiased;
 }
 
 div, table, tr, td, img, form, p,h1, h2, h3, h4, h5, h6,ul ,fieldset{
@@ -67,12 +61,12 @@ label.error {
 } 
 
 h1{
-	font-family: MyriadProSemibold, arial, tahoma;
+	font-family: Helvetica, arial, tahoma;
 	font-size: 48px;
 }
 
 h2{
-  font-family: MyriadProSemibold, arial, tahoma;
+  font-family: Helvetica, arial, tahoma;
   font-size: 42px;
 
 }
@@ -206,7 +200,7 @@ p {
 
 .ClouIntranet h1 {  
   margin: 15px 0 0 0;
-  font-family: 'Myriad Pro', arial, tahoma;
+  font-family: 'Helvetica', arial, tahoma;
   font-size: 36px;
   font-weight: bold;
   color: white;
@@ -215,7 +209,7 @@ p {
 
 .ClouIntranet span {
   font-size: 16px;
-  font-family: MyriadProSemibold, arial, tahoma;
+  font-family: Helvetica, arial, tahoma;
   display: block;
   margin-top: 4px;
 }
@@ -223,26 +217,27 @@ p {
 /*UIBanner*/
 .UIBanner {
   background: url("../background/bg_banner.png") repeat-x left top;
-  min-height: 460px;
+  min-height: 385px;
 }
 
 .UIBanner h2 {
   color:#fff;
-  margin: 0 0 25px 0;
-  padding: 15px 0 0 0;
-  font-size: 42px;
+  margin: 0 0 15px 0;
+  padding: 25px 0 0 0;
+  font-size: 36px;
+  font-weight: bold;
 }
 
 /*Form box*/
 .UIBanner .FormBox .BoxContent {
   width: 665px;
-  min-height: 315px;
+  min-height: 245px;
   background:#fff ;
 }
 
 .UIBanner .FormBox .BoxContent form {
   margin: 0 auto;
-  padding: 20px 35px;
+  padding: 25px 35px 10px 35px;
   text-align: center;
 }
 
@@ -263,7 +258,7 @@ p {
   margin: 25px auto 20px;
   width: 170px;
   height: 40px;
-  font-family: MyriadProSemibold, arial, tahoma;
+  font-family: Helvetica, arial, tahoma;
   font-size: 24px;
 }
 
@@ -311,17 +306,17 @@ p {
 }
 
 .FormContainer .BoxText h3 {
-  margin: 0;
+  margin: 0 0 10px 0;
   color:#fff;
 }
 
 .FormContainer .BoxText ul {
-  margin: 0 0 25px 0;
+  margin: 0 0 15px 0;
 }
 
 .FormContainer .BoxText ul li {
   list-style: disc inside none;
-  margin: 5px 0 10px;
+  margin: 5px 0 5px;
 }
 
 .FormContainer .BoxText ul  li:hover {
@@ -329,7 +324,7 @@ p {
 }
 
 .FormContainer .BoxText p {
-  margin: 5px 0 25px 0;
+  margin: 5px 0 15px 0;
 }
 
 .FormContainer .BoxText  a {
@@ -387,7 +382,7 @@ p {
 .UI-Intro {
   background: #f8f8f8;
   border-bottom: 1px solid #f1f1f1;
-  min-height: 360px;
+  min-height: 330px;
   color: #464646;
 }
 
@@ -439,7 +434,7 @@ input.Button {
   margin: 0;
   padding: 0;
   color: #fff;
-  font-family: 'Myriad Pro', Arial, Helvetica, Tahoma, sans-serif;
+  font-family: 'Helvetica', Arial, Helvetica, Tahoma, sans-serif;
   font-size: 18px;
   border-radius: 3px;
   text-shadow: 0px 1px 0px #1d7aae;
@@ -963,8 +958,20 @@ input.Button {
 
 .HelpPage .MainContent h1 {
     border-bottom: 1px solid #DBE7EC;   
-    padding: 0 0 10px;
+    padding-bottom: 5px;
+    margin: 20px 0 10px 0;
 }
+
+.HelpPage .QuestionTit {
+	margin: 20px 0 0px;
+}
+
+.HelpPage h3 {
+	font-weight: bold;
+	margin: 5px;
+    padding-top: 10px;
+}
+
 .col5 {
   width: 50%;
 }
@@ -989,7 +996,7 @@ hr {
 }
 
 .UIBanner .SocialBox {
-  padding: 10px 62px 0;
+  padding: 10px 56px 0 87px;
   margin: 0;
 }
 
@@ -1070,7 +1077,7 @@ hr {
 	border-radius: 8px 8px 0 0;
 	border-radius: 8px 8px 0 0;
 	color: white;
-    font-family: 'Myriad Pro', Arial, Helvetica, Tahoma, sans-serif;
+    font-family: 'Helvetica', Arial, Helvetica, Tahoma, sans-serif;
     font-size: 22px;
     font-weight: normal;
     line-height: 94px;
@@ -1174,7 +1181,7 @@ hr {
 }
 
 .StartedStep .RightStartTip{
-	margin: 0px 82px 8px 0px;
+	margin: 0px 57px 8px 0px;
 }
 
 .StartedStep .StartTip{
