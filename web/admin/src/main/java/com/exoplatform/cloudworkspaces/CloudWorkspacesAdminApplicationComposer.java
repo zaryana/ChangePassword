@@ -25,6 +25,7 @@ import com.exoplatform.cloudworkspaces.listener.JoinAllInOnlineServerListener;
 import com.exoplatform.cloudworkspaces.listener.TenantCreatedListener;
 import com.exoplatform.cloudworkspaces.listener.UserLimitSupervisor;
 import com.exoplatform.cloudworkspaces.listener.WorkspacesServerOnlineListenersInvoker;
+import com.exoplatform.cloudworkspaces.patch.WorkspacesErrorMailSenderImpl;
 import com.exoplatform.cloudworkspaces.rest.CloudWorkspacesTenantService;
 import com.exoplatform.cloudworkspaces.shell.ShellConfigurationService;
 import com.exoplatform.cloudworkspaces.users.UserLimitsStorage;
@@ -37,6 +38,8 @@ import org.exoplatform.cloudmanagement.admin.instance.autoscaling.AutoscalingAlg
 import org.exoplatform.cloudmanagement.admin.instance.autoscaling.WorkspacesFreeSpaceRatioAutoscalingAlgorithm;
 import org.exoplatform.cloudmanagement.admin.mail.TenantOperationMailSenderInitiator;
 import org.exoplatform.cloudmanagement.admin.mail.WorkspacesTenantOperationMailSenderInitiator;
+import org.exoplatform.cloudmanagement.admin.proxy.ProxyLoadBalancerConfigurator;
+import org.exoplatform.cloudmanagement.admin.proxy.WorkspacesProxyLoadBalancerConfigurator;
 import org.exoplatform.cloudmanagement.admin.rest.CloudAdminApplicationComposer;
 import org.exoplatform.cloudmanagement.admin.rest.TenantCreator;
 import org.exoplatform.cloudmanagement.admin.rest.TenantService;
@@ -114,6 +117,14 @@ public class CloudWorkspacesAdminApplicationComposer extends CloudAdminApplicati
     container.removeComponent(ServerSelectionAlgorithm.class);
     container.addComponent(ServerSelectionAlgorithm.class,
                            WorkspacesLowestLoadFactorServerSelectionAlgorithm.class);
+
+    // configure CM patch utils
+    container.addComponent(WorkspacesErrorMailSenderImpl.class);
+
+    // CLDINT-618
+    container.removeComponent(ProxyLoadBalancerConfigurator.class);
+    container.addComponent(ProxyLoadBalancerConfigurator.class,
+                           WorkspacesProxyLoadBalancerConfigurator.class);
   }
 
   @Override
