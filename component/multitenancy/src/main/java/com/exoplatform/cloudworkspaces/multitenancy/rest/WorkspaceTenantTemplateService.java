@@ -19,6 +19,7 @@ import java.util.List;
 
 import javax.annotation.security.RolesAllowed;
 import javax.jcr.RepositoryException;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -28,8 +29,6 @@ import javax.ws.rs.core.Response.Status;
 
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.jcr.config.RepositoryConfigurationException;
-import org.exoplatform.services.jcr.ext.backup.BackupChain;
-import org.exoplatform.services.jcr.ext.backup.BackupConfig;
 import org.exoplatform.services.jcr.ext.backup.BackupConfigurationException;
 import org.exoplatform.services.jcr.ext.backup.BackupManager;
 import org.exoplatform.services.jcr.ext.backup.BackupOperationException;
@@ -71,6 +70,7 @@ public class WorkspaceTenantTemplateService {
   @RolesAllowed("cloud-admin")
   @Path("/create-template")
   public Response createTemplate() {
+    LOG.info("Tenant template creation initiated.");
     String repository = "";
     try {
       File backupDir = jcrBackup.getBackupDirectory();
@@ -98,24 +98,22 @@ public class WorkspaceTenantTemplateService {
       
       String templateId = chain.getBackupId();
       LOG.info("Tenant template creation issued with Id " + templateId);
-      List<String> templateList = new ArrayList<String>();
-      templateList.add(templateId);
       
-      return Response.ok().entity(templateList) .build(); 
+      return Response.ok().entity(templateId).build();
     } catch (BackupOperationException e) {
-      String error = "Cannot backup repository '" + repository + "': " + e.getMessage();
+      String error = "ERROR: Cannot backup repository '" + repository + "': " + e.getMessage();
       LOG.error(error, e);
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
     } catch (BackupConfigurationException e) {
-      String error = "Backup configuration error for repository '" + repository + "': " + e.getMessage();
+      String error = "ERROR: Backup configuration error for repository '" + repository + "': " + e.getMessage();
       LOG.error(error, e);
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
     } catch (RepositoryConfigurationException e) {
-      String error = "Repository '" + repository + "' configuration error: " + e.getMessage();
+      String error = "ERROR: Repository '" + repository + "' configuration error: " + e.getMessage();
       LOG.error(error, e);
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
     } catch(RepositoryException e) {
-      String error = "Repository '" + repository + "' error: " + e.getMessage();
+      String error = "ERROR: Repository '" + repository + "' error: " + e.getMessage();
       LOG.error(error, e);
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
     }
