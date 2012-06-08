@@ -19,9 +19,11 @@ import java.util.List;
 
 import javax.annotation.security.RolesAllowed;
 import javax.jcr.RepositoryException;
-import javax.ws.rs.HeaderParam;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -33,6 +35,7 @@ import org.exoplatform.services.jcr.ext.backup.BackupConfigurationException;
 import org.exoplatform.services.jcr.ext.backup.BackupManager;
 import org.exoplatform.services.jcr.ext.backup.BackupOperationException;
 import org.exoplatform.services.jcr.ext.backup.RepositoryBackupChain;
+import org.exoplatform.services.jcr.ext.backup.RepositoryBackupChainLog;
 import org.exoplatform.services.jcr.ext.backup.RepositoryBackupConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,7 +71,7 @@ public class WorkspaceTenantTemplateService {
   @POST
   @Produces(MediaType.APPLICATION_JSON)
   @RolesAllowed("cloud-admin")
-  @Path("/create-template")
+  @Path("/template")
   public Response createTemplate() {
     LOG.info("Tenant template creation initiated.");
     String repository = "";
@@ -117,6 +120,43 @@ public class WorkspaceTenantTemplateService {
       LOG.error(error, e);
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
     }
+  }
+  
+  /**
+   * Not implemented. JCR Backup does support backup removal. 
+   * 
+   * @return Response 400 with "Not implemented" message.  
+   */
+  @DELETE
+  @RolesAllowed("cloud-admin")
+  @Path("/template/{id}")
+  public Response deleteTemplate(@PathParam("id") String templateId) {
+    
+    return Response.status(Status.BAD_REQUEST).entity("Not implemented").build();
+  }
+  
+  /**
+   * Return current JCR backups available on this app server. It's simplified version of HTTPBackupAgent dedicated for cloud goal. 
+   * It returns list of Ids of JCR backups.
+   * 
+   * @return Response with list of Ids.  
+   */
+  @GET
+  @Produces(MediaType.APPLICATION_JSON)
+  @RolesAllowed("cloud-admin")
+  @Path("/template")
+  public Response getTemplatesList() {
+    List<String> templateList = new ArrayList<String>();
+    RepositoryBackupChainLog[] logs = jcrBackup.getRepositoryBackupsLogs();
+    if (logs != null && logs.length > 0)
+    {
+       for (RepositoryBackupChainLog backup : logs)
+       {
+          templateList.add(backup.getBackupId());
+       }
+    }
+    LOG.info("Tenant templates list asked: " + templateList);
+    return Response.ok().entity(templateList).build();
   }
   
   
