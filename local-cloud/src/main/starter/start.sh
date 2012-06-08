@@ -13,7 +13,7 @@ sleep 60s
 curl --connect-timeout 900  http://localhost:8080/portal/intranet/home
 
 # Asking to create template
-ID="`curl -X POST -u cloudadmin:cloudadmin http://localhost:8080/cloud-agent/rest/cloud-agent/template-service/create-template`"
+ID="`curl -X POST -u cloudadmin:cloudadmin http://localhost:8080/cloud-agent/rest/cloud-agent/template-service/template`"
 
 # Check template OK (by length)
 LEN=$(echo ${#ID})
