@@ -21,7 +21,7 @@
 # production script to set environment variables for eXo Platform
 
 # custom JAVA options
-[ -z "$EXO_JAVA_OPTS" ]  && EXO_JAVA_OPTS="-Xms1g -Xmx4g -XX:MaxPermSize=256m -XX:+UseCompressedOops"
+[ -z "$EXO_JAVA_OPTS" ]  && EXO_JAVA_OPTS="-Xms1024m -Xmx1400m -XX:MaxPermSize=256m -XX:+UseCompressedOops"
 [ -z "$JMXACC" ] && JMXACC="$CATALINA_HOME/conf/jmxremote.access"
 [ -z "$JMXPAS" ] && JMXPAS="$CATALINA_HOME/conf/jmxremote.password"
 
