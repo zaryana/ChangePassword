@@ -35,54 +35,61 @@
      }
     });
 </script>
-    
     <!-- load ThickBox to display video (http://jquery.com/demo/thickbox/) -->
     <link rel="stylesheet" href="/thickbox/thickbox.css" type="text/css" media="screen" />
     <script src="/thickbox/thickbox.js" type="text/javascript"></script>    
     <script type="text/javascript">var tb_pathToImage = "/background/img_video.png";</script>
     <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
   </head>
-
   <body onLoad="tenants.init();">
     <div class="UIPageContainer">
       <!--begin header-->
       <%@ include file="common/header.jsp"%>
-  
+
       <div class="UIPageBodyContainer">
         <!--begin banner-->
         <div class="UIBanner">
           <div class="MainContent" >
-            <h2>Sign up for your free social intranet</h2>
+            <h2>Sign Up for Your Free Social Intranet</h2>
             <div class="FormContainer ClearFix">
               <div class="FR BoxText">
                 <h3>Features</h3>
                 <ul>
-                  <li><a href="#Connect-Collaborate">Connect and collaborate in a private enterprise social network</a> </li>
-                  <li><a href="#Status-Update">More than status updates: built-in wiki, forum and content management tools</a></li>
-                  <li><a href="#Customize-Social">Build gadgets with eXo Cloud IDE to customize your dashboards</a></li>
+                  <li><a href="#social">Enterprise Social Network</a> </li>
+                  <li><a href="#apps">Wiki, Forums and Document Management</a></li>
+                  <li><a href="#dashboard">Customizable Dashboards</a></li>
                 </ul>
                 <h3>Resources</h3>
-                <p><a href="http://www.exoplatform.com/company/en/resource-center" target="_blank">Take a video tour, try some tutorials or browse the documentation.</a></p>
-                <h3>Get Help</h3>
-                <p><a href="http://community.exoplatform.org" target="_blank">Ask a question in the forum, submit your feedback, or contact our sales team.  </a></p>
+                <ul>
+                  <li><a href="#video">Video Tour</a> </li>
+                  <li><a href="/help.jsp">FAQ</a></li>
+                  <li><a href="http://community.exoplatform.org" target="_blank">Forum</a></li>
+                  <li><a href="/about.jsp">About</a></li>
+                </ul>
               </div>
               <div class="FormBox">
                 <div class="BoxContent ClearFix">
-    
                   <form class="UIForm" action="javascript:void(0);"   method="POST" name="cloud-workspaces-profile" id="signupForm">
-                   <!-- Marketo input hidden fields -->
-                   <input type="hidden" name="lpId" value="1047" />
-                   <input type="hidden" name="subId" value="46" />
-                   <input type="hidden" name="formid" value="1035" />
-                    <p class="SignUpInfo">Cloud Workspaces is currently in beta. To participate, register with your work email address. We'll keep you updated when your company's social intranet is ready.</p>
+										<!-- Marketo input hidden fields -->
+										<input name="Cloud_Workspaces_User__c" id="Cloud_Workspaces_User__c" type='hidden' value="yes" />
+										<input name="LeadSource" id="LeadSource" type='hidden' value="Web - Cloud Workspaces" />
+										<input type="hidden" name="_marketo_comments" value="" />
+										<input type="hidden" name="lpId" value="1047" />
+										<input type="hidden" name="subId" value="46" />
+										<input type="hidden" name="kw" value="" />
+										<input type="hidden" name="cr" value="" />
+										<input type="hidden" name="searchstr" value="" />
+										<input type="hidden" name="lpurl" value="http://learn.cloud-workspaces.com/Cloud-Workspaces-Sign-Up-English.html?cr={creative}&kw={keyword}" />
+										<input type="hidden" name="formid" value="1035" />
+										<input type="hidden" name="returnURL" value="" />
+										<input type="hidden" name="retURL" value="" />
+										<input type="hidden" name="_mkt_disp" value="return" />
+										<input type="hidden" name="_mkt_trk" value="" />
                     <div id="messageString" class="TenantFormMsg"></div>
                     <input class="InputText" type="text" name="email" id="email" value="Enter your professional email" onclick="this.value='';" />
                     <input class="Button" type="submit" id="t_submit"  value="Sign Up" onClick="tenants.doSingupRequest();" />
-                    <div id="signin"><a class="SignIn" href="/signin.jsp">Already registered? Sign In</a></div>
-                    <iframe id="loopfuseOutput" name="loopfuseOutput" style='display:none; visibility:hidden'></iframe>
                   </form>
                   <div class="SocialBox">
-                   
                     <div id="fb-root"></div>
                     <script>(function(d, s, id) {
                         var js, fjs = d.getElementsByTagName(s)[0];
@@ -93,14 +100,12 @@
                       }(document, 'script', 'facebook-jssdk'));
                     </script>
                     <div class="FL">
-                    	 
                         <div class="fb-like" data-href="http://www.facebook.com/eXoPlatform" data-send="true" data-layout="button_count" data-show-faces="false">
                         </div>
                      </div>
                      <div class="FR"> 
-                           <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://cloud-workspaces.com" data-text="Cloud-Workspaces: The Free Social Intranet for Your Company" data-via="eXoPlatform" data-count="none">Tweet</a>
-<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-   
+                       <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://cloud-workspaces.com" data-text="Cloud-Workspaces: The Free Social Intranet for Your Company" data-via="eXoPlatform" data-count="none">Tweet</a>
+                       <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
                         <!-- Place this tag where you want the +1 button to render -->
                         <g:plusone size="medium"></g:plusone>
                      </div>
@@ -110,7 +115,7 @@
             </div>
           </div>
         </div>
-    
+
         <!--begin IntroBox-->
         <div class="UI-Intro">
           <div class="MainContent ClearFix" >
@@ -121,7 +126,7 @@
               <a href="/about.jsp" class="Readmore">Learn more</a>
             </div>
             <div class="Cols MCol FL">
-              <h3>What Can You Do with Cloud Workspaces?</h3>
+              <h3 id="video">What Can You Do with Cloud Workspaces?</h3>
               <a href="#TB_inline?height=420&width=670&inlineId=videoLeft" class="thickbox">
               <img src="/background/img_video.png" alt=""/>
               </a>
@@ -134,26 +139,25 @@
             </div>
           </div>
         </div>
-    
         <!--IndexPage-->
          <div class="UIPageBody IndexPage">
 			<h3>Features Overview</h3>
 			<div class="LastestItems ClearFix">
 				<div class="Cols LCol FL">
-					<div><a class="lightbox" rel="lightbox" href="background/social.png" title="Connect with your colleagues for an instant enterprise social network"><img src="background/01_Mini.png" alt=""/></a></div>
-					<h4 class="SpecialTit">Connect with your colleagues for an instant enterprise social network</h4>
+					<div><a class="lightbox-enabled" rel="lightbox" href="background/social.png" title="Connect with your colleagues for an instant enterprise social network"><img src="background/01_Mini.png" alt=""/></a></div>
+					<h4 class="SpecialTit" id="social">Connect with your colleagues for an instant enterprise social network</h4>
 					<p>Support for OpenSocial allows Cloud Workspaces users to create and connect rich user profiles, share activity streams, and collaborate in real-time. When you sign up with your professional email, we'll create a private domain for your company.</p>
 				</div>
 				
 				<div class="Cols MCol FL">
-					<a class="lightbox" rel="lightbox" href="background/wiki.png" title="More than a private social network: enterprise wiki, forums, calendars, and more"><img src="background/02_Mini.png" alt=""/></a>
-					<h4 class="SpecialTit">More than a private social network: enterprise wiki, forums, calendars, and more</h4>
+					<a class="lightbox-enabled" rel="lightbox" href="background/wiki.png" title="More than a private social network: enterprise wiki, forums, calendars, and more"><img src="background/02_Mini.png" alt=""/></a>
+					<h4 class="SpecialTit" id="apps">More than a private social network: enterprise wiki, forums, calendars, and more</h4>
 					<p>Following updates and comments from your coworkers is a great way to stay informed, but it's only the first step towards productive collaboration. Cloud Workspaces combines the benefits of a social network with the tools that support your online work.</p>
 				</div>
 				
 				<div class="Cols RCol FR">
-					<a class="lightbox" rel="lightbox" href="background/dashboard2.png" title="Personalized dashboards provide a work start page for every user"><img src="background/03_Mini.png" alt=""/></a>
-					<h4 class="SpecialTit">Personalized dashboards provide a work start page for every user</h4>
+					<a class="lightbox-enabled" rel="lightbox" href="background/dashboard2.png" title="Personalized dashboards provide a work start page for every user"><img src="background/03_Mini.png" alt=""/></a>
+					<h4 class="SpecialTit" id="dashboard">Personalized dashboards provide a work start page for every user</h4>
 					<p>Users can easily create their own personalized dashboards with simple drag-and-drop controls, so your Cloud Workspaces start page will display the most relevant, useful information about your work.</p>
 				</div>
 			</div>
@@ -172,10 +176,8 @@
 			</div>
         </div>
       </div>
-        
       <!--begin footer-->
       <%@ include file="common/footer.jsp"%>
-  
       <!-- Video panel -->
       <div class="video_display" id="videoLeft" name="videoLeft" style="display: none;">
         <object width="640" height="350">

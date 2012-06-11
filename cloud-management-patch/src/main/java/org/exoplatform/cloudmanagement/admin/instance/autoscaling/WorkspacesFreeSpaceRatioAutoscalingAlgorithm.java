@@ -60,7 +60,8 @@ import java.util.Map;
  * command list command to stop application server with min active tenants
  * count.
  */
-public class WorkspacesFreeSpaceRatioAutoscalingAlgorithm implements AutoscalingAlgorithm, ApplicationRecoveryConfiguration
+public class WorkspacesFreeSpaceRatioAutoscalingAlgorithm implements AutoscalingAlgorithm,
+   ApplicationRecoveryConfiguration
 {
 
    private static final String STOP_EXPLANATION = "free space for tenants more than max";
@@ -197,13 +198,44 @@ public class WorkspacesFreeSpaceRatioAutoscalingAlgorithm implements Autoscaling
       return builder.toString();
    }
 
+   public int getActiveTenantSizeIncludeRecentlySuspended() throws TenantDataManagerException
+   {
+      int activeTenantNumber = 0;
+      for (String as : applicationServerManager.getApplicationServerStatusMap().keySet())
+         activeTenantNumber += tenantInfoDataManager.getSize(TenantInfoFieldName.PROPERTY_APSERVER_ALIAS, as);
+
+      long minLastAccessTime =
+         System.currentTimeMillis()
+            - cloudAdminConfiguration
+               .getLong(ApplicationRecoveryConfiguration.CLOUD_ADMIN_APPLICATION_AUTOSCALING_MAX_UNACTIVE_TIME);
+
+      for (String tenantName : tenantInfoDataManager.getNames(TenantInfoFieldName.PROPERTY_STATE,
+         TenantState.SUSPENDED.toString()))
+      {
+         long lastAccessTime = 0;
+         String lastAccessTimeString =
+            tenantInfoDataManager.getValue(tenantName, TenantInfoFieldName.PROPERTY_LAST_ACCESS_TIME);
+         if (lastAccessTimeString != null)
+         {
+            lastAccessTime = Long.valueOf(lastAccessTimeString);
+         }
+         if (lastAccessTime > minLastAccessTime)
+         {
+            activeTenantNumber++;
+         }
+      }
+
+      return activeTenantNumber;
+   }
+
    @Override
    public FreeSpaceRatioAutoscalingState getCurrentState() throws CloudAdminException
    {
       FreeSpaceRatioAutoscalingState result = new FreeSpaceRatioAutoscalingState();
 
       int totalSpace = serverConfigurationManager.getTotalSpaceSize();
-      int tenantNumber = applicationServerManager.getActiveTenantSize(true);
+      //int tenantNumber = applicationServerManager.getActiveTenantSize(true);
+      int tenantNumber = getActiveTenantSizeIncludeRecentlySuspended();
 
       double minRatio =
          cloudAdminConfiguration
@@ -363,7 +395,9 @@ public class WorkspacesFreeSpaceRatioAutoscalingAlgorithm implements Autoscaling
                Integer result = activeTenantNumberMap.get(applicationServerAlias);
                if (result == null)
                {
-                  result = applicationServerManager.getActiveTenantSize(applicationServerAlias);
+                  result =
+                     tenantInfoDataManager
+                        .getNames(TenantInfoFieldName.PROPERTY_APSERVER_ALIAS, applicationServerAlias).size();
                   activeTenantNumberMap.put(applicationServerAlias, result);
                }
                return result;

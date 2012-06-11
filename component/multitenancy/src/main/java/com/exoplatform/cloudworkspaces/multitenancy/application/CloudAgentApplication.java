@@ -18,15 +18,16 @@
  */
 package com.exoplatform.cloudworkspaces.multitenancy.application;
 
-import com.exoplatform.cloudworkspaces.multitenancy.rest.WorkspacesCloudAgentInfoService;
-import com.exoplatform.cloudworkspaces.organization.rest.WorkspacesRESTOrganizationServiceImpl;
-
-import org.exoplatform.cloudmanagement.rest.TenantService;
-
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.ws.rs.core.Application;
+
+import org.exoplatform.cloudmanagement.rest.TenantService;
+
+import com.exoplatform.cloudworkspaces.multitenancy.rest.WorkspaceTenantTemplateService;
+import com.exoplatform.cloudworkspaces.multitenancy.rest.WorkspacesCloudAgentInfoService;
+import com.exoplatform.cloudworkspaces.organization.rest.WorkspacesRESTOrganizationServiceImpl;
 
 public class CloudAgentApplication extends Application {
 
@@ -37,6 +38,7 @@ public class CloudAgentApplication extends Application {
     cls.add(WorkspacesCloudAgentInfoService.class);
     cls.add(TenantService.class);
     cls.add(WorkspacesRESTOrganizationServiceImpl.class);
+    cls.add(WorkspaceTenantTemplateService.class);
     return cls;
   }
 

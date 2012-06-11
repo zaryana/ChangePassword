@@ -25,6 +25,7 @@ import com.exoplatform.cloudworkspaces.listener.JoinAllInOnlineServerListener;
 import com.exoplatform.cloudworkspaces.listener.TenantCreatedListener;
 import com.exoplatform.cloudworkspaces.listener.UserLimitSupervisor;
 import com.exoplatform.cloudworkspaces.listener.WorkspacesServerOnlineListenersInvoker;
+import com.exoplatform.cloudworkspaces.patch.WorkspacesErrorMailSenderImpl;
 import com.exoplatform.cloudworkspaces.rest.CloudWorkspacesTenantService;
 import com.exoplatform.cloudworkspaces.shell.ShellConfigurationService;
 import com.exoplatform.cloudworkspaces.users.UserLimitsStorage;
@@ -37,12 +38,16 @@ import org.exoplatform.cloudmanagement.admin.instance.autoscaling.AutoscalingAlg
 import org.exoplatform.cloudmanagement.admin.instance.autoscaling.WorkspacesFreeSpaceRatioAutoscalingAlgorithm;
 import org.exoplatform.cloudmanagement.admin.mail.TenantOperationMailSenderInitiator;
 import org.exoplatform.cloudmanagement.admin.mail.WorkspacesTenantOperationMailSenderInitiator;
+import org.exoplatform.cloudmanagement.admin.proxy.ProxyLoadBalancerConfigurator;
+import org.exoplatform.cloudmanagement.admin.proxy.WorkspacesProxyLoadBalancerConfigurator;
 import org.exoplatform.cloudmanagement.admin.rest.CloudAdminApplicationComposer;
 import org.exoplatform.cloudmanagement.admin.rest.TenantCreator;
 import org.exoplatform.cloudmanagement.admin.rest.TenantService;
 import org.exoplatform.cloudmanagement.admin.rest.WorkspacesTenantService;
 import org.exoplatform.cloudmanagement.admin.status.ServerOnlineListenersInvoker;
+import org.exoplatform.cloudmanagement.admin.tenant.ServerSelectionAlgorithm;
 import org.exoplatform.cloudmanagement.admin.tenant.TenantSuspender;
+import org.exoplatform.cloudmanagement.admin.tenant.WorkspacesLowestLoadFactorServerSelectionAlgorithm;
 import org.exoplatform.cloudmanagement.admin.tenant.WorkspacesTenantSuspender;
 import org.exoplatform.cloudmanagement.admin.util.ServerStatusMailer;
 import org.exoplatform.cloudmanagement.admin.util.WorkspacesServerStatusMailer;
@@ -108,6 +113,18 @@ public class CloudWorkspacesAdminApplicationComposer extends CloudAdminApplicati
 
     container.removeComponent(TenantSuspender.class);
     container.addComponent(TenantSuspender.class, WorkspacesTenantSuspender.class);
+
+    container.removeComponent(ServerSelectionAlgorithm.class);
+    container.addComponent(ServerSelectionAlgorithm.class,
+                           WorkspacesLowestLoadFactorServerSelectionAlgorithm.class);
+
+    // configure CM patch utils
+    container.addComponent(WorkspacesErrorMailSenderImpl.class);
+
+    // CLDINT-618
+    container.removeComponent(ProxyLoadBalancerConfigurator.class);
+    container.addComponent(ProxyLoadBalancerConfigurator.class,
+                           WorkspacesProxyLoadBalancerConfigurator.class);
   }
 
   @Override
