@@ -138,7 +138,7 @@ public class WorkspacesProxyDirectionSelector
                   + " has not valid state! Tenants with SUSPENDING state must have apServerStatus property.");
                WorkspacesErrorMailSenderProvider
                   .sendErrorToAdminIfNew(
-                     "CLDINT-618",
+                     "CLDINT-618 " + tenantState.toString(),
                      "Tenant " + tenantState.toString() + " is broken. Needs help of administrator.",
                      "Tenant "
                         + tenantState.toString()
