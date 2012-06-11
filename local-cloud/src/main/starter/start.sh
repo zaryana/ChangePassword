@@ -5,7 +5,7 @@ AS_ZIP="cloud-workspaces-platform-bundle-tomcat.zip"
 unzip ./local-cloud/$AS_ZIP -d ./local-cloud/
 
 # create default database - need host name
-# mysql -h$EXO_DB_HOST -u$EXO_DB_USER -p$EXO_DB_PASSWORD -e "create database \`repository\`"
+mysql -hlocalhost -u$EXO_DB_USER -p$EXO_DB_PASSWORD -e "create database \`repository\`"
 
 # Starting PLF
 cd ./local-cloud/app-server-tomcat
