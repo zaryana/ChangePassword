@@ -18,19 +18,27 @@
  */
 package com.exoplatform.cloudworkspaces;
 
-import com.exoplatform.cloudworkspaces.http.WorkspacesOrganizationRequestPerformer;
+import static org.exoplatform.cloudmanagement.admin.configuration.AdminConfiguration.CLOUD_ADMIN_TENANT_QUEUE_DIR;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import org.apache.commons.configuration.Configuration;
 import org.exoplatform.cloudmanagement.admin.CloudAdminException;
+import org.exoplatform.cloudmanagement.admin.TenantRegistrationException;
 import org.exoplatform.cloudmanagement.admin.WorkspacesMailSender;
 import org.exoplatform.cloudmanagement.admin.configuration.MailConfiguration;
+import org.exoplatform.cloudmanagement.admin.configuration.TenantInfoFieldName;
+import org.exoplatform.cloudmanagement.admin.dao.EmailValidationStorage;
+import org.exoplatform.cloudmanagement.admin.tenant.TenantNameValidator;
+import org.exoplatform.cloudmanagement.admin.tenant.UserMailValidator;
 import org.exoplatform.cloudmanagement.admin.util.AdminConfigurationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import com.exoplatform.cloudworkspaces.http.WorkspacesOrganizationRequestPerformer;
 
 public class NotificationMailSender {
 
@@ -41,13 +49,25 @@ public class NotificationMailSender {
   private final WorkspacesMailSender                   mailSender;
 
   private final WorkspacesOrganizationRequestPerformer workspacesOrganizationRequestPerformer;
+  
+  private final EmailValidationStorage emailValidationStorage;
+  
+  private final TenantNameValidator tenantNameValidator;
+  
+  private final UserMailValidator userMailValidator;
 
   public NotificationMailSender(Configuration cloudAdminConfiguration,
                                 WorkspacesMailSender mailSender,
-                                WorkspacesOrganizationRequestPerformer workspacesOrganizationRequestPerformer) {
+                                WorkspacesOrganizationRequestPerformer workspacesOrganizationRequestPerformer,
+                                EmailValidationStorage emailValidationStorage,
+                                TenantNameValidator tenantNameValidator,
+                                UserMailValidator userMailValidator) {
     this.cloudAdminConfiguration = cloudAdminConfiguration;
     this.mailSender = mailSender;
     this.workspacesOrganizationRequestPerformer = workspacesOrganizationRequestPerformer;
+    this.emailValidationStorage = emailValidationStorage;
+    this.tenantNameValidator = tenantNameValidator;
+    this.userMailValidator = userMailValidator;
   }
 
   public void sendOkToJoinEmail(String userMail, Map<String, String> props) throws CloudAdminException {
@@ -298,5 +318,81 @@ public class NotificationMailSender {
     }
 
   }
+  
+  /**
+   * Send custom email to all owners of tenants on validation.
+   * 
+   * @param emailTemplate String
+   * @param subject String
+   * @throws CloudAdminException if cannot read validation storage
+   */
+  public void sendEmailToValidation(String emailTemplate, String subject) throws CloudAdminException {
 
+    int counter = 0;
+    StringBuilder info = new StringBuilder();
+
+    final String confDir = System.getProperty("cloud.admin.configuration.dir");
+
+    LOG.info("Sending custom email '" + subject + "' to users from validation queue.");
+
+    final File tenantQueueDir = new File(cloudAdminConfiguration.getString(CLOUD_ADMIN_TENANT_QUEUE_DIR),
+                                         "validation");
+    if (!tenantQueueDir.exists()) {
+      LOG.error("Queue storage " + tenantQueueDir.getAbsolutePath() + " not found");
+      throw new CloudAdminException(500, "Cannot read queue storage. Contact administrators.");
+    }
+
+    String listForTenantQueueDir[] = tenantQueueDir.list();
+    for (String id : listForTenantQueueDir) {
+
+      String uuid = id.substring(0, id.indexOf('.'));
+
+      Map<String, String> validationData = emailValidationStorage.getValidationData(uuid);
+
+      String tenantName = validationData.get(TenantInfoFieldName.PROPERTY_TENANT_NAME);
+      String userMail = validationData.get(TenantInfoFieldName.PROPERTY_USER_MAIL);
+
+      try {
+        tenantNameValidator.validateTenantName(tenantName);
+        userMailValidator.validateUserMail(userMail);
+
+        // send email
+        String mailTemplate = confDir + "/" + emailTemplate;
+        if (mailTemplate == null) {
+          throw new TenantRegistrationException(500,
+                                                "Mail template configuration not found. Please contact support.");
+        }
+
+        Map<String, String> props = new HashMap<String, String>();
+        props.put("tenant.masterhost",
+                  AdminConfigurationUtil.getMasterHost(cloudAdminConfiguration));
+        props.put("tenant.name", tenantName);
+        props.put("tenant.repository.name", tenantName);
+        props.put("user.mail", userMail);
+        props.put("id", uuid);
+
+        mailSender.sendMail(userMail, subject, mailTemplate, props, false);
+
+        counter++;
+        info.append(userMail);
+        info.append(' ');
+
+        try {
+          Thread.sleep(1100);
+        } catch (Throwable e) {
+          LOG.warn("Error of thread sleep in sendCustomEmail: " + e);
+        }
+
+      } catch (Exception e) {
+        LOG.error("Cannot send custom email '"
+            + subject
+            + "' to owner of request "
+            + id
+            + (validationData != null ? " (tenant: " + tenantName + ", email: " + userMail + ")"
+                                     : "") + ". Skipping it.", e);
+      }
+    }
+    LOG.info("Custom message sent to tenants on validation. " + "Email '" + subject + "' sent to "
+        + counter + " users" + (counter > 0 ? ": " + info.toString() : ""));
+  }
 }
