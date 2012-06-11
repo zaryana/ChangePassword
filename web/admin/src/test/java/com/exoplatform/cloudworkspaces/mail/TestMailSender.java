@@ -12,6 +12,9 @@ import org.everrest.assured.AvailablePortFinder;
 import org.exoplatform.cloudmanagement.admin.CloudAdminException;
 import org.exoplatform.cloudmanagement.admin.WorkspacesMailSender;
 import org.exoplatform.cloudmanagement.admin.configuration.MailConfiguration;
+import org.exoplatform.cloudmanagement.admin.dao.EmailValidationStorage;
+import org.exoplatform.cloudmanagement.admin.tenant.TenantNameValidator;
+import org.exoplatform.cloudmanagement.admin.tenant.UserMailValidator;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 import org.testng.Assert;
@@ -37,6 +40,9 @@ public class TestMailSender {
   NotificationMailSender sender;
   Configuration cloudAdminConfiguration;
   WorkspacesOrganizationRequestPerformer requestPerformer;
+  EmailValidationStorage emailValidationStorage;
+  TenantNameValidator tenantNameValidator;
+  UserMailValidator userMailValidator;
 
   @BeforeMethod
   public void initMocks(){
@@ -52,7 +58,7 @@ public class TestMailSender {
     requestPerformer = Mockito.mock(WorkspacesOrganizationRequestPerformer.class);
 
     WorkspacesMailSender wks_sender = new WorkspacesMailSender(cloudAdminConfiguration);
-    sender = new NotificationMailSender(cloudAdminConfiguration, wks_sender, requestPerformer);
+    sender = new NotificationMailSender(cloudAdminConfiguration, wks_sender, requestPerformer, emailValidationStorage, tenantNameValidator, userMailValidator);
     cleanUpMails();
   }
 

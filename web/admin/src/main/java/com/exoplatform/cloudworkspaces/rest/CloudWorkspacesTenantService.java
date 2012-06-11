@@ -18,20 +18,22 @@
  */
 package com.exoplatform.cloudworkspaces.rest;
 
-import com.exoplatform.cloudworkspaces.ChangePasswordManager;
-import com.exoplatform.cloudworkspaces.CloudIntranetUtils;
-import com.exoplatform.cloudworkspaces.EmailBlacklist;
-import com.exoplatform.cloudworkspaces.NotificationMailSender;
-import com.exoplatform.cloudworkspaces.ReferencesManager;
-import com.exoplatform.cloudworkspaces.RequestState;
-import com.exoplatform.cloudworkspaces.UserAlreadyExistsException;
-import com.exoplatform.cloudworkspaces.UserRequest;
-import com.exoplatform.cloudworkspaces.UserRequestDAO;
-import com.exoplatform.cloudworkspaces.http.WorkspacesOrganizationRequestPerformer;
-import com.exoplatform.cloudworkspaces.listener.AsyncTenantStarter;
-import com.exoplatform.cloudworkspaces.users.UserLimitsStorage;
+import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
-import com.exoplatform.cloudworkspaces.users.UsersManager;
+import javax.annotation.security.RolesAllowed;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
 import org.apache.commons.configuration.Configuration;
 import org.exoplatform.cloudmanagement.admin.CloudAdminException;
 import org.exoplatform.cloudmanagement.admin.TenantAlreadyExistException;
@@ -44,20 +46,19 @@ import org.exoplatform.cloudmanagement.status.TenantState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
-import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
+import com.exoplatform.cloudworkspaces.ChangePasswordManager;
+import com.exoplatform.cloudworkspaces.CloudIntranetUtils;
+import com.exoplatform.cloudworkspaces.EmailBlacklist;
+import com.exoplatform.cloudworkspaces.NotificationMailSender;
+import com.exoplatform.cloudworkspaces.ReferencesManager;
+import com.exoplatform.cloudworkspaces.RequestState;
+import com.exoplatform.cloudworkspaces.UserAlreadyExistsException;
+import com.exoplatform.cloudworkspaces.UserRequest;
+import com.exoplatform.cloudworkspaces.UserRequestDAO;
+import com.exoplatform.cloudworkspaces.http.WorkspacesOrganizationRequestPerformer;
+import com.exoplatform.cloudworkspaces.listener.AsyncTenantStarter;
+import com.exoplatform.cloudworkspaces.users.UserLimitsStorage;
+import com.exoplatform.cloudworkspaces.users.UsersManager;
 
 @Path("/cloud-admin/cloudworkspaces/tenant-service")
 public class CloudWorkspacesTenantService {
@@ -878,4 +879,33 @@ public class CloudWorkspacesTenantService {
     return Response.ok().build();
   }
 
+  /**
+   * Send custom mail to owners of tenants on validation. TODO
+   * 
+   * <pre>
+   * possible use of "scope" parameter, /sendmail/{scope}:
+   * * validation - send to users of tenants on validation
+   * * suspended - send to users of suspended tenants
+   * * online - send to users of online tenants
+   * * error - send to users of tenants in error
+   * * all - to all users
+   * ....
+   * </pre>
+   * 
+   * @param String mailTemplate mail template to be send to given users
+   * @param String mailSubject subject for a mail message
+   * @return Response OK with details message or an error.
+   * @throws CloudAdminException if error occurs
+   */
+  @POST
+  @RolesAllowed({ "cloud-admin", "cloud-manager" })
+  @Path("/sendmail")
+  public Response sendMail(@FormParam("template")
+  String mailTemplate, @FormParam("subject")
+  String mailSubject) throws CloudAdminException {
+
+    notificationMailSender.sendEmailToValidation(mailTemplate, mailSubject);
+
+    return Response.ok().build();
+  }
 }
