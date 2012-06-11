@@ -4,6 +4,9 @@
 AS_ZIP="cloud-workspaces-platform-bundle-tomcat.zip"
 unzip ./local-cloud/$AS_ZIP -d ./local-cloud/
 
+# create default database - need host name
+# mysql -h$EXO_DB_HOST -u$EXO_DB_USER -p$EXO_DB_PASSWORD -e "create database \`repository\`"
+
 # Starting PLF
 cd ./local-cloud/app-server-tomcat
 ./start_eXo.sh
@@ -26,7 +29,7 @@ fi
 ./stop_eXo.sh -force
 
 # Zip a template
-zip -r -8   ../backup.zip  ./gatein/backup
+cd ./gatein && zip -r -8   ../../backup.zip  ./backup && cd ..
 
 # Back to home
 cd ../..

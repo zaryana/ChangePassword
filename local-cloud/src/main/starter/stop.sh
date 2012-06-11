@@ -6,3 +6,6 @@ curl -s -u cloudadmin:cloudadmin 'http://localhost:8080/rest/private/cloud-admin
 cd admin-tomcat/bin
 ./catalina.sh stop -force
 
+# drop default database
+# mysql -h$EXO_DB_HOST -u$EXO_DB_USER -p$EXO_DB_PASSWORD -e "drop database \`repository\`"
+
