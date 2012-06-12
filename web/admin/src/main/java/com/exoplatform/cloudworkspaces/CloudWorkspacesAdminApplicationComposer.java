@@ -30,9 +30,11 @@ import com.exoplatform.cloudworkspaces.rest.CloudWorkspacesTenantService;
 import com.exoplatform.cloudworkspaces.shell.ShellConfigurationService;
 import com.exoplatform.cloudworkspaces.users.UserLimitsStorage;
 import com.exoplatform.cloudworkspaces.users.UsersManager;
+import com.exoplatform.cloudworkspaces.dao.PropertiesModifiableEmailValidationStorage;
 
 import org.everrest.core.ResourceBinder;
 import org.exoplatform.cloudmanagement.admin.WorkspacesMailSender;
+import org.exoplatform.cloudmanagement.admin.dao.EmailValidationStorage;
 import org.exoplatform.cloudmanagement.admin.instance.UserDataGenerator;
 import org.exoplatform.cloudmanagement.admin.instance.autoscaling.AutoscalingAlgorithm;
 import org.exoplatform.cloudmanagement.admin.instance.autoscaling.WorkspacesFreeSpaceRatioAutoscalingAlgorithm;
@@ -81,6 +83,11 @@ public class CloudWorkspacesAdminApplicationComposer extends CloudAdminApplicati
     container.addComponent(ReferencesManager.class);
     container.addComponent(CloudIntranetUtils.class);
     container.addComponent(UserRequestDAO.class);
+    container.addComponent(TemplateManagement.class);
+
+    container.removeComponent(EmailValidationStorage.class);
+    container.addComponent(EmailValidationStorage.class,
+                           PropertiesModifiableEmailValidationStorage.class);
 
     container.addComponent(TenantCreatedListener.class);
 

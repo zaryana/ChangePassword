@@ -50,6 +50,7 @@ import com.exoplatform.cloudworkspaces.ChangePasswordManager;
 import com.exoplatform.cloudworkspaces.CloudIntranetUtils;
 import com.exoplatform.cloudworkspaces.EmailBlacklist;
 import com.exoplatform.cloudworkspaces.NotificationMailSender;
+import com.exoplatform.cloudworkspaces.TemplateManagement;
 import com.exoplatform.cloudworkspaces.ReferencesManager;
 import com.exoplatform.cloudworkspaces.RequestState;
 import com.exoplatform.cloudworkspaces.UserAlreadyExistsException;
@@ -90,6 +91,8 @@ public class CloudWorkspacesTenantService {
   private ChangePasswordManager                  changePasswordManager;
 
   private UsersManager                           usersManager;
+  
+  private TemplateManagement                     templateManagement; 
 
   public CloudWorkspacesTenantService(TenantCreator tenantCreator,
                                       TenantInfoDataManager tenantInfoDataManager,
@@ -103,7 +106,8 @@ public class CloudWorkspacesTenantService {
                                       CloudIntranetUtils cloudIntranetUtils,
                                       EmailBlacklist emailBlacklist,
                                       ChangePasswordManager changePasswordManager,
-                                      UsersManager usersManager) {
+                                      UsersManager usersManager,
+                                      TemplateManagement templateManagement) {
     this.cloudAdminConfiguration = cloudAdminConfiguration;
     this.tenantInfoDataManager = tenantInfoDataManager;
     this.tenantCreator = tenantCreator;
@@ -117,6 +121,7 @@ public class CloudWorkspacesTenantService {
     this.emailBlacklist = emailBlacklist;
     this.changePasswordManager = changePasswordManager;
     this.usersManager = usersManager;
+    this.templateManagement = templateManagement;
   }
 
   /**
@@ -906,6 +911,16 @@ public class CloudWorkspacesTenantService {
 
     notificationMailSender.sendEmailToValidation(mailTemplate, mailSubject);
 
+    return Response.ok().build();
+  }
+  
+  @POST
+  @RolesAllowed("cloud-admin")
+  @Path("/update/templateid")
+  public Response updateTempalateId() throws CloudAdminException {
+    
+    templateManagement.updateTemplateId();
+    
     return Response.ok().build();
   }
 }

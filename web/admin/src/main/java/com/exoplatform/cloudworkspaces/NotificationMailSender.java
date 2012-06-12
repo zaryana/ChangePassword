@@ -49,12 +49,12 @@ public class NotificationMailSender {
   private final WorkspacesMailSender                   mailSender;
 
   private final WorkspacesOrganizationRequestPerformer workspacesOrganizationRequestPerformer;
-  
-  private final EmailValidationStorage emailValidationStorage;
-  
-  private final TenantNameValidator tenantNameValidator;
-  
-  private final UserMailValidator userMailValidator;
+
+  private final EmailValidationStorage                 emailValidationStorage;
+
+  private final TenantNameValidator                    tenantNameValidator;
+
+  private final UserMailValidator                      userMailValidator;
 
   public NotificationMailSender(Configuration cloudAdminConfiguration,
                                 WorkspacesMailSender mailSender,
@@ -86,48 +86,35 @@ public class NotificationMailSender {
   }
 
   /*
-  public void sendCreationQueuedEmails(String tName, String userMail, Map<String, String> props) throws CloudAdminException {
-
-    String userTemplate = cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_REQUEST_QUEUED_TEMPLATE,
-                                                            null);
-    String devTemplate = cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_REQUEST_QUEUED_DEVELOPERS_TEMPLATE,
-                                                           null);
-    try {
-      String email = cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_SUPPOR_EMAIL);
-      mailSender.sendMail(userMail,
-                          cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_REQUEST_QUEUED_SUBJECT),
-                          userTemplate,
-                          props,
-                          false);
-      mailSender.sendMail(email,
-                          cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_REQUEST_QUEUED_DEVELOPERS_SUBJECT)
-                                                 .replace("${workspace}", tName),
-                          devTemplate,
-                          props,
-                          false);
-    } catch (CloudAdminException e) {
-      sendAdminErrorEmail("Configuration error - creation queued emails is not send", e);
-      LOG.error("Configuration error - creation queued emails is not send", e);
-    }
-  }
-
-  public void sendCreationRejectedEmail(String tName, String userMail, Map<String, String> props) throws CloudAdminException {
-
-    String userTemplate = cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_REQUEST_REJECTED_TEMPLATE,
-                                                            null);
-    try {
-      mailSender.sendMail(userMail,
-                          cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_REQUEST_REJECTED_SUBJECT),
-                          userTemplate,
-                          props,
-                          false);
-    } catch (CloudAdminException e) {
-      sendAdminErrorEmail("Configuration error - creation rejected emails is not send", e);
-      LOG.error("Configuration error - creation rejected emails is not send", e);
-    }
-
-  }
-  */
+   * public void sendCreationQueuedEmails(String tName, String userMail,
+   * Map<String, String> props) throws CloudAdminException { String userTemplate
+   * = cloudAdminConfiguration.getString(MailingProperties.
+   * CLOUD_ADMIN_MAIL_REQUEST_QUEUED_TEMPLATE, null); String devTemplate =
+   * cloudAdminConfiguration.getString(MailingProperties.
+   * CLOUD_ADMIN_MAIL_REQUEST_QUEUED_DEVELOPERS_TEMPLATE, null); try { String
+   * email = cloudAdminConfiguration.getString(MailingProperties.
+   * CLOUD_ADMIN_MAIL_SUPPOR_EMAIL); mailSender.sendMail(userMail,
+   * cloudAdminConfiguration
+   * .getString(MailingProperties.CLOUD_ADMIN_MAIL_REQUEST_QUEUED_SUBJECT),
+   * userTemplate, props, false); mailSender.sendMail(email,
+   * cloudAdminConfiguration
+   * .getString(MailingProperties.CLOUD_ADMIN_MAIL_REQUEST_QUEUED_DEVELOPERS_SUBJECT
+   * ) .replace("${workspace}", tName), devTemplate, props, false); } catch
+   * (CloudAdminException e) {
+   * sendAdminErrorEmail("Configuration error - creation queued emails is not send"
+   * , e); LOG.error("Configuration error - creation queued emails is not send",
+   * e); } } public void sendCreationRejectedEmail(String tName, String
+   * userMail, Map<String, String> props) throws CloudAdminException { String
+   * userTemplate = cloudAdminConfiguration.getString(MailingProperties.
+   * CLOUD_ADMIN_MAIL_REQUEST_REJECTED_TEMPLATE, null); try {
+   * mailSender.sendMail(userMail,
+   * cloudAdminConfiguration.getString(MailingProperties
+   * .CLOUD_ADMIN_MAIL_REQUEST_REJECTED_SUBJECT), userTemplate, props, false); }
+   * catch (CloudAdminException e) { sendAdminErrorEmail(
+   * "Configuration error - creation rejected emails is not send", e);
+   * LOG.error("Configuration error - creation rejected emails is not send", e);
+   * } }
+   */
   public void sendJoinRejectedEmails(String tName, String userMail, Map<String, String> props) throws CloudAdminException {
     String userTemplate = cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_JOIN_CLOSED_USER_TEMPLATE,
                                                             null);
@@ -174,7 +161,7 @@ public class NotificationMailSender {
       LOG.error("Configuration error - join rejected emails is not send", e);
     }
   }
-  
+
   public void sendUserJoinedEmails(String tName,
                                    String firstName,
                                    String userMail,
@@ -259,7 +246,7 @@ public class NotificationMailSender {
     }
     try {
       for (String email : cloudAdminConfiguration.getStringArray(MailConfiguration.CLOUD_ADMIN_MAIL_ADMIN_EMAIL))
-                                                 //.split(","))
+      // .split(","))
       {
         mailSender.sendMail(email.trim(), mailSubject, mailTemplate, props, true);
       }
@@ -318,7 +305,7 @@ public class NotificationMailSender {
     }
 
   }
-  
+
   /**
    * Send custom email to all owners of tenants on validation.
    * 
