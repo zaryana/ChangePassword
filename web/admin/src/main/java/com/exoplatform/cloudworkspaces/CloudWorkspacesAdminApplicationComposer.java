@@ -18,6 +18,7 @@
  */
 package com.exoplatform.cloudworkspaces;
 
+import com.exoplatform.cloudworkspaces.dao.PropertiesModifiableEmailValidationStorage;
 import com.exoplatform.cloudworkspaces.http.WorkspacesOrganizationRequestPerformer;
 import com.exoplatform.cloudworkspaces.instance.WorkspacesUserDataGenerator;
 import com.exoplatform.cloudworkspaces.listener.AsyncTenantStarter;
@@ -30,7 +31,6 @@ import com.exoplatform.cloudworkspaces.rest.CloudWorkspacesTenantService;
 import com.exoplatform.cloudworkspaces.shell.ShellConfigurationService;
 import com.exoplatform.cloudworkspaces.users.UserLimitsStorage;
 import com.exoplatform.cloudworkspaces.users.UsersManager;
-import com.exoplatform.cloudworkspaces.dao.PropertiesModifiableEmailValidationStorage;
 
 import org.everrest.core.ResourceBinder;
 import org.exoplatform.cloudmanagement.admin.WorkspacesMailSender;
@@ -41,7 +41,9 @@ import org.exoplatform.cloudmanagement.admin.instance.autoscaling.WorkspacesFree
 import org.exoplatform.cloudmanagement.admin.mail.TenantOperationMailSenderInitiator;
 import org.exoplatform.cloudmanagement.admin.mail.WorkspacesTenantOperationMailSenderInitiator;
 import org.exoplatform.cloudmanagement.admin.proxy.ProxyLoadBalancerConfigurator;
+import org.exoplatform.cloudmanagement.admin.proxy.ServerStateChangesProxyReconfigurationInitiator;
 import org.exoplatform.cloudmanagement.admin.proxy.WorkspacesProxyLoadBalancerConfigurator;
+import org.exoplatform.cloudmanagement.admin.proxy.WorkspacesServerStateChangesProxyReconfigurationInitiator;
 import org.exoplatform.cloudmanagement.admin.rest.CloudAdminApplicationComposer;
 import org.exoplatform.cloudmanagement.admin.rest.TenantCreator;
 import org.exoplatform.cloudmanagement.admin.rest.TenantService;
@@ -132,6 +134,11 @@ public class CloudWorkspacesAdminApplicationComposer extends CloudAdminApplicati
     container.removeComponent(ProxyLoadBalancerConfigurator.class);
     container.addComponent(ProxyLoadBalancerConfigurator.class,
                            WorkspacesProxyLoadBalancerConfigurator.class);
+
+    // CLDINT-614
+    container.removeComponent(ServerStateChangesProxyReconfigurationInitiator.class);
+    container.addComponent(ServerStateChangesProxyReconfigurationInitiator.class,
+                           WorkspacesServerStateChangesProxyReconfigurationInitiator.class);
   }
 
   @Override
