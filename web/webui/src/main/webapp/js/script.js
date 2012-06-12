@@ -240,6 +240,36 @@ Tenants.prototype.initChange = function() {
   }
 }
 
+Tenants.prototype.initResumingHidePage = function() {
+  tenants.init();
+  var workspace = $("#tenantname").text();
+  $("#li1").html("If you are already a member of the " + workspace
+      + " Workspace, please <a onClick=\"window.location.reload()\">try again</a> in few minutes.");
+  $("#li2").html("If you are trying to join " + workspace
+      + " Workspace, check you mail box for an invitation");
+  tryResume(workspace);
+}
+
+function tryResume(workspace) {
+  $.ajax({
+    url : accessUrl + "/tenant-service/resume?tenant=" + workspace,
+    async : false,
+    success : function(data) {
+      window.location = document.URL;
+    },
+    error : function(response, status, error) {
+      if (response.responseText.indexOf("Starting failed... not available space on application servers") != -1) {
+        setTimeout(function() {
+          tryResume(workspace);
+        }, 5 * 60 * 1000);
+      }
+      else {
+        $("#messageString").html("Your tenant cannot be resumed in time. This was reported to administrators. Try again later.");
+      }
+    }
+  });
+}
+
 Tenants.prototype.initResumingPage = function() {
   tenants.init();
   if (queryString != null && queryString != "") {
