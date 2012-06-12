@@ -45,7 +45,7 @@ import javax.servlet.ServletException;
 public class ResumeValve extends ValveBase {
   private static final Logger LOG          = LoggerFactory.getLogger(ResumeValve.class);
 
-  private String              resumingPage = "http://koster.exoplatform.com.ua/resuming-hide.jsp";
+  private String              resumingPage = "http://${tenant.masterhost}/resuming-hide.jsp";
 
   public String getResumingPage() {
     return resumingPage;

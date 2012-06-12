@@ -117,9 +117,7 @@
            the request and response data received and sent by Tomcat.
            Documentation at: /docs/config/valve.html -->
       <Valve className="com.exoplatform.cloudworkspaces.admin.ResumeValve"
-             resumeTimeout="600000"
-             serversOverloadUrl="http://${tenant.masterhost}/resuming.jsp?workspace=${tenant}"
-             resumeRestServiceUrl="http://localhost:8080/rest/cloud-admin/tenant-service/resume"/>
+             resumingPage="http://${tenant.masterhost}/resuming-hide.jsp"/>
 
       <!-- This Realm uses the UserDatabase configured in the global JNDI
            resources under the key "UserDatabase".  Any edits
