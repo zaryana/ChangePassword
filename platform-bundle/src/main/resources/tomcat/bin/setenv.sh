@@ -50,7 +50,7 @@
 [ -z "$EXO_PROFILES" ]  && EXO_PROFILES="-Dexo.profiles=default,cloud"
 
 # exo Mailing
-[ -z "$EMAIL_SMTP_FROM" ] && EMAIL_SMTP_FROM="noreply@exoplatform.com"
+[ -z "$EMAIL_SMTP_FROM" ] && EMAIL_SMTP_FROM="noreply@cloud-workspaces.com"
 [ -z "$EMAIL_SMTP_USERNAME" ] && EMAIL_SMTP_USERNAME=""
 [ -z "$EMAIL_SMTP_PASSWORD" ] && EMAIL_SMTP_PASSWORD=""
 [ -z "$EMAIL_SMTP_HOST" ] && EMAIL_SMTP_HOST="smtp.gmail.com"
@@ -81,14 +81,14 @@ EXO_CLOUD_SECURITY_OPTS="-Djava.security.manager=org.exoplatform.cloudmanagement
     -Djava.security.policy==../conf/catalina.policy"
 
 MAILING_OPTS="-Dgatein.mail.smtp.from=$EMAIL_SMTP_FROM \
-              -Dgatein.mail.smtp.username=$EMAIL_SMTP_USERNAME \
-              -Dgatein.mail.smtp.password=$EMAIL_SMTP_PASSWORD \
-              -Dgatein.mail.smtp.host=$EMAIL_SMTP_HOST \
-              -Dgatein.mail.smtp.port=$EMAIL_SMTP_PORT \
-              -Dgatein.mail.smtp.starttls.enable=$EMAIL_SMTP_STARTTLS_ENABLE \
-              -Dgatein.mail.smtp.auth=$EMAIL_SMTP_AUTH \
-              -Dgatein.mail.smtp.socketFactory.port=$EMAIL_SMTP_SOCK_FACTORY_PORT \
-              -Dgatein.mail.smtp.socketFactory.class=$EMAIL_SMTP_SOCK_FACTORY_CLASS"
+    -Dgatein.mail.smtp.username=$EMAIL_SMTP_USERNAME \
+    -Dgatein.mail.smtp.password=$EMAIL_SMTP_PASSWORD \
+    -Dgatein.mail.smtp.host=$EMAIL_SMTP_HOST \
+    -Dgatein.mail.smtp.port=$EMAIL_SMTP_PORT \
+    -Dgatein.mail.smtp.starttls.enable=$EMAIL_SMTP_STARTTLS_ENABLE \
+    -Dgatein.mail.smtp.auth=$EMAIL_SMTP_AUTH \
+    -Dgatein.mail.smtp.socketFactory.port=$EMAIL_SMTP_SOCK_FACTORY_PORT \
+    -Dgatein.mail.smtp.socketFactory.class=$EMAIL_SMTP_SOCK_FACTORY_CLASS"
 
 JMX_OPTS="-Dcom.sun.management.jmxremote=true -Djava.rmi.server.hostname=$HOST_EXTERNAL_ADDR \
     -Dcom.sun.management.jmxremote.authenticate=true \

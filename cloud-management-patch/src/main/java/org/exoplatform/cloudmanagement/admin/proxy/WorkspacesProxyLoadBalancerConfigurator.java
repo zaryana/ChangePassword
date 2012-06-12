@@ -44,6 +44,8 @@ public class WorkspacesProxyLoadBalancerConfigurator extends ProxyLoadBalancerCo
 
    private final Configuration adminConfiguration;
 
+   private boolean reloadingAllowed = false;
+
    public WorkspacesProxyLoadBalancerConfigurator(Configuration adminConfiguration,
       TenantInfoDataManager infoDataManager, ApplicationServerConfigurationManager serverConfigurationManager,
       ApplicationServerStatusManager applicationServerManager, ManagementConnection managementConnection)
@@ -75,4 +77,17 @@ public class WorkspacesProxyLoadBalancerConfigurator extends ProxyLoadBalancerCo
       return result;
 
    }
+
+   @Override
+   public void updateLoadBalancerConfigurationWithCurrentCloudTopology()
+   {
+      if (reloadingAllowed)
+         super.updateLoadBalancerConfigurationWithCurrentCloudTopology();
+   }
+
+   public void allowReloading()
+   {
+      reloadingAllowed = true;
+   }
+
 }

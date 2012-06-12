@@ -153,12 +153,18 @@ public class InviteJoinWsRESTService implements ResourceContainer {
       
       String prefixUrl = "http://" + hostname;
       
-      String masterhost = "";
+      String masterhost = "", senderLabel = "";
       try {
     	  masterhost = System.getProperty("tenant.masterhost");
       } catch(NullPointerException e){
     	  log.warn("Property tenant.masterhost not found.");
       }
+      
+      try {
+    	  senderLabel = System.getProperty("gatein.mail.smtp.from");
+      } catch(NullPointerException e){
+    	  log.warn("Property gatein.mail.smtp.from not found.");
+      }      
       
       String tail = mail.substring(mail.indexOf("@") + 1);
       String domainName = tail.substring(0,tail.indexOf("."));
@@ -242,8 +248,11 @@ public class InviteJoinWsRESTService implements ResourceContainer {
             //props.put("users.list", param2);
             props.put("registration.link", registration.trim());
             mailContent = getBody("/html/invite-join-ws.html", props);
-                 
-            subject += sender + " has invited you to join the " + currentTenant + " social intranet";
+            subject = new StringBuilder().append(sender)
+                                         .append(" has invited you to join the ")
+                                         .append(currentTenant)
+                                         .append(" social intranet")
+                                         .toString();
             
             } else {
             	
@@ -254,11 +263,17 @@ public class InviteJoinWsRESTService implements ResourceContainer {
                 props.put("registration.link", registration.trim());
                 mailContent = getBody("/html/invite-try-cw.html", props);
             	
-                subject += sender + " has invited you to try Cloud Workspace";
+                subject = new StringBuilder().append(sender)
+                                             .append(" has invited you to try Cloud Workspace")
+                                             .toString();
             } 
        
 		  try{
-			  String from = sender + " <noreply@exoplatform.com>";
+			  String from = new StringBuilder().append(sender)
+			                                   .append(" <")
+			                                   .append(senderLabel)
+			                                   .append(">")
+			                                   .toString();
 			  MailService mailService = (MailService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(MailService.class);
 			  Message message = new Message();
 			  message.setFrom(from);
