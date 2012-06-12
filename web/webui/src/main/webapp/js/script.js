@@ -244,7 +244,7 @@ Tenants.prototype.initResumingHidePage = function() {
   tenants.init();
   var workspace = $("#tenantname").text();
   $("#li1").html("If you are already a member of the " + workspace
-      + " Workspace, please <a onClick=\"window.location.reload()\">try again</a> in few minutes.");
+      + " Workspace, please <a href=\"javascript:void(0);\" onClick=\"window.location.reload()\">try again</a> in few minutes.");
   $("#li2").html("If you are trying to join " + workspace
       + " Workspace, check you mail box for an invitation");
   tryResume(workspace);
@@ -253,7 +253,7 @@ Tenants.prototype.initResumingHidePage = function() {
 function tryResume(workspace) {
   $.ajax({
     url : accessUrl + "/tenant-service/resume?tenant=" + workspace,
-    async : false,
+    async : true,
     success : function(data) {
       window.location = document.URL;
     },
