@@ -31,7 +31,7 @@
   asPid="`pwd`/temp/catalina.tmp"
   if [ -e $asPid ] && [ -n "`ps -A | grep \`cat $asPid\``" ] ; then
      # already started - exit with error
-     echo "ERROR: App server already running. Stop it and this script again."
+     echo "ERROR: App server already running. Stop it and run this script again."
      exit 1
   fi
 
