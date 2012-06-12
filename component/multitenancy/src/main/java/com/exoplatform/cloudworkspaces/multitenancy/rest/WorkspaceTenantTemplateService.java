@@ -37,6 +37,7 @@ import org.exoplatform.services.jcr.ext.backup.BackupOperationException;
 import org.exoplatform.services.jcr.ext.backup.RepositoryBackupChain;
 import org.exoplatform.services.jcr.ext.backup.RepositoryBackupChainLog;
 import org.exoplatform.services.jcr.ext.backup.RepositoryBackupConfig;
+import org.exoplatform.services.jcr.ext.backup.server.bean.response.ShortInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -123,7 +124,7 @@ public class WorkspaceTenantTemplateService {
   }
   
   /**
-   * Not implemented. JCR Backup does support backup removal. 
+   * Not implemented. JCR Backup doesn't support backup removal. 
    * 
    * @return Response 400 with "Not implemented" message.  
    */
@@ -152,7 +153,10 @@ public class WorkspaceTenantTemplateService {
     {
        for (RepositoryBackupChainLog backup : logs)
        {
-          templateList.add(backup.getBackupId());
+         if (jcrBackup.findBackup(backup.getBackupId()) == null) {
+           // if (backup.isFinilized()) {
+           templateList.add(backup.getBackupId());
+         }
        }
     }
     LOG.info("Tenant templates list asked: " + templateList);
