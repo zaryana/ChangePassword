@@ -161,9 +161,9 @@ public class InviteJoinWsRESTService implements ResourceContainer {
       }
       
       try {
-    	  senderLabel = System.getProperty("cloud.mail.smtp.from");
+    	  senderLabel = System.getProperty("gatein.mail.smtp.from");
       } catch(NullPointerException e){
-    	  log.warn("Property cloud.mail.smtp.from not found.");
+    	  log.warn("Property gatein.mail.smtp.from not found.");
       }      
       
       String tail = mail.substring(mail.indexOf("@") + 1);
