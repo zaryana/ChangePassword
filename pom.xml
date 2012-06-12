@@ -19,8 +19,8 @@
   <description>Parent POM for Cloud Workspaces projects.</description>
 
   <scm>
-    <connection>scm:git:https://git.exoplatform.org/private/products/cloud-workspaces/</connection>
-    <developerConnection>scm:git:https://git.exoplatform.org/private/products/cloud-workspaces/</developerConnection>
+    <connection>https://github.com/exoplatform/cloud-workspaces/</connection>
+    <developerConnection>https://github.com/exoplatform/cloud-workspaces/</developerConnection>
     <url>http://fisheye.exoplatform.org/browse/cloud-workspaces/</url>
   </scm>
 
