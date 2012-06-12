@@ -25,9 +25,11 @@ import org.exoplatform.cloudmanagement.multitenancy.TenantNameResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.SocketTimeoutException;
 import java.net.URL;
 
 import javax.servlet.ServletException;
@@ -39,107 +41,80 @@ import javax.servlet.ServletException;
  * serversOverloadUrl="http://h1.exoplatform.org/overloaded.html"
  * resumeRestServiceUrl
  * ="http://localhost:8080/rest/cloud-admin/tenant-service/resume/"/>
- * 
  */
-public class ResumeValve extends ValveBase
-{
-   private static final Logger LOG = LoggerFactory.getLogger(ResumeValve.class);
+public class ResumeValve extends ValveBase {
+  private static final Logger LOG          = LoggerFactory.getLogger(ResumeValve.class);
 
-   private int resumeTimeout = 30 * 1000;
+  private String              resumingPage = "http://koster.exoplatform.com.ua/resuming-hide.jsp";
 
-   private String serversOverloadUrl = "http://h1.exoplatform.org/overloaded.html";
+  public String getResumingPage() {
+    return resumingPage;
+  }
 
-   private String resumeRestServiceUrl = "http://localhost:8080/rest/cloud-admin/tenant-service/resume";
+  public void setResumingPage(String resumingPage) {
+    this.resumingPage = resumingPage;
+  }
 
-   public int getResumeTimeout()
-   {
-      return resumeTimeout;
-   }
+  @Override
+  public void invoke(Request request, Response response) throws IOException, ServletException {
+    String url = request.getRequestURL().toString();
+    if (url.contains("/rest/cloud-admin") || url.contains("/rest/private/cloud-admin")) {
+      getNext().invoke(request, response);
+    } else {
+      String tenant = TenantNameResolver.getTenantName(url);
 
-   public void setResumeTimeout(int resumeTimeout)
-   {
-      this.resumeTimeout = resumeTimeout;
-   }
+      if (tenant != null) {
+        // resume tenant
+        HttpURLConnection connection = null;
+        URL resuming = new URL(resumingPage.replace("${tenant.masterhost}",
+                                                    System.getProperty("tenant.masterhost")));
+        connection = (HttpURLConnection) resuming.openConnection();
+        connection.setRequestMethod("GET");
 
-   public String getServersOverloadUrl()
-   {
-      return serversOverloadUrl;
-   }
+        connection.connect();
 
-   public void setServersOverloadUrl(String serversOverloadUrl)
-   {
-      this.serversOverloadUrl = serversOverloadUrl;
-   }
-
-   public String getResumeRestServiceUrl()
-   {
-      return resumeRestServiceUrl;
-   }
-
-   public void setResumeRestServiceUrl(String resumeRestServiceUrl)
-   {
-      this.resumeRestServiceUrl = resumeRestServiceUrl;
-   }
-
-   @Override
-   public void invoke(Request request, Response response) throws IOException, ServletException
-   {
-      String url = request.getRequestURL().toString();
-      if (url.contains("/rest/cloud-admin") || url.contains("/rest/private/cloud-admin"))
-      {
-         getNext().invoke(request, response);
-      }
-      else
-      {
-         String tenant = TenantNameResolver.getTenantName(url);
-
-         if (tenant != null)
-         {
-            // resume tenant
-            String strUrl = resumeRestServiceUrl + "?tenant=" + tenant;
-            URL restUrl;
-            HttpURLConnection connection = null;
-
-            restUrl = new URL(strUrl.toString());
-
-            try
-            {
-               connection = (HttpURLConnection)restUrl.openConnection();
-               connection.setConnectTimeout(resumeTimeout);
-               connection.setReadTimeout(resumeTimeout);
-               connection.setRequestMethod("GET");
-
-               connection.connect();
-
-               // read Response
-               if (connection.getResponseCode() == 200)
-               {
-                  // tenant resumed successfully
-                  StringBuilder urlBuilder = new StringBuilder();
-                  urlBuilder.append("http://");
-                  urlBuilder.append(request.getHeader("HOST"));
-                  urlBuilder.append(request.getRequestURI());
-
-                  response.sendRedirect(url);
-               }
-               else
-               {
-                  LOG.warn("Tenant {} resuming failed with status {} by path {}",
-                     new String[]{tenant, Integer.toString(connection.getResponseCode()), strUrl});
-                  response.sendRedirect(serversOverloadUrl);
-               }
+        if (connection.getResponseCode() == 200) {
+          InputStream content = (InputStream) connection.getContent();
+          ByteArrayOutputStream bout = new ByteArrayOutputStream();
+          try {
+            int length = 0;
+            byte[] buf = new byte[10 * 1024];
+            while (length >= 0) {
+              bout.write(buf, 0, length);
+              length = content.read(buf);
             }
-            catch (SocketTimeoutException e)
-            {
-               LOG.error(e.getLocalizedMessage(), e);
-               response.sendRedirect(serversOverloadUrl);
-            }
-         }
-         else
-         {
-            getNext().invoke(request, response);
-         }
+          } finally {
+            content.close();
+            bout.close();
+          }
+          String html = new String(bout.toByteArray());
+          String headTemplate = "<head>";
+          String baseTag = "<base href=\"http://" + System.getProperty("tenant.masterhost")
+              + "\"></base>";
+          String tenantTag = "<span id='tenantname' style='visibility:hidden'>" + tenant
+              + "</span>";
+          String contactUsFrom = "onclick=\"showContactUsForm('/contact-us.jsp');\"";
+          String contactUsTo = "target=\"blank\" href=\"/index.jsp\"";
+
+          OutputStream stream = response.getOutputStream();
+          try {
+            int head = html.indexOf(headTemplate);
+            stream.write(html.substring(0, head + headTemplate.length()).getBytes());
+            stream.write(baseTag.getBytes());
+            stream.write(tenantTag.getBytes());
+            int contactUs = html.indexOf(contactUsFrom);
+            stream.write(html.substring(head + headTemplate.length(), contactUs).getBytes());
+            stream.write(contactUsTo.getBytes());
+            stream.write(html.substring(contactUs + contactUsFrom.length()).getBytes());
+          } finally {
+            stream.close();
+          }
+        }
+
+      } else {
+        getNext().invoke(request, response);
       }
-   }
+    }
+  }
 
 }
