@@ -23,21 +23,19 @@ import static org.exoplatform.cloudmanagement.admin.configuration.AdminConfigura
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.commons.configuration.Configuration;
 import org.exoplatform.cloudmanagement.admin.CloudAdminException;
-import org.exoplatform.cloudmanagement.admin.dao.file.PropertiesEmailValidationStorage;
 import org.exoplatform.cloudmanagement.admin.dao.file.PropertiesStorage;
 
-public class PropertiesModifiableEmailValidationStorage extends PropertiesEmailValidationStorage
-    implements ModifiableEmailValidationStorage {
+public class PropertiesModifiableEmailValidationStorage implements ModifiableEmailValidationStorage {
 
-  public final static String FOLDER_NAME_IN_QUEUE_DIR = "validation";
+  protected final PropertiesStorage storage;
 
-  private PropertiesStorage  storage;
+  public final static String        FOLDER_NAME_IN_QUEUE_DIR = "validation";
 
   public PropertiesModifiableEmailValidationStorage(Configuration adminConfiguration) throws IOException {
-    super(adminConfiguration);
     this.storage = new PropertiesStorage(new File(adminConfiguration.getString(CLOUD_ADMIN_TENANT_QUEUE_DIR)),
                                          FOLDER_NAME_IN_QUEUE_DIR);
   }
@@ -54,6 +52,56 @@ public class PropertiesModifiableEmailValidationStorage extends PropertiesEmailV
     }
     return true;
 
+  }
+
+  /**
+   * @see org.exoplatform.cloudmanagement.admin.dao.EmailValidationStorage#setValidationData(java.util.Map)
+   */
+  @Override
+  public String setValidationData(Map<String, String> validationData) throws CloudAdminException {
+    String uuid = UUID.randomUUID().toString();
+    try {
+      storage.set(uuid, validationData);
+    } catch (IOException e) {
+      throw new CloudAdminException(e.getLocalizedMessage(), e);
+    }
+    return uuid;
+  }
+
+  /**
+   * @see org.exoplatform.cloudmanagement.admin.dao.EmailValidationStorage#getValidationData(java.lang.String)
+   */
+  @Override
+  public Map<String, String> getValidationData(String uuid) throws CloudAdminException {
+    try {
+      return storage.get(uuid);
+    } catch (IOException e) {
+      throw new CloudAdminException(e.getLocalizedMessage(), e);
+    }
+  }
+
+  /**
+   * @see org.exoplatform.cloudmanagement.admin.dao.EmailValidationStorage#isValid(java.lang.String)
+   */
+  @Override
+  public boolean isValid(String uuid) {
+    return storage.isExists(uuid);
+  }
+
+  /**
+   * @see org.exoplatform.cloudmanagement.admin.dao.EmailValidationStorage#remove(java.lang.String)
+   */
+  @Override
+  public boolean remove(String uuid) throws CloudAdminException {
+    return storage.remove(uuid);
+  }
+
+  /**
+   * @see org.exoplatform.cloudmanagement.admin.dao.EmailValidationStorage#getStorageSize()
+   */
+  @Override
+  public int getStorageSize() {
+    return storage.getStorageSize();
   }
 
 }
