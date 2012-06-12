@@ -69,6 +69,28 @@ public class WorkspacesErrorMailSenderProvider
          LOG.error("WorkspacesErrorMailSender not initialized yet!");
    }
 
+   public static synchronized void sendErrorToAdmin(String subject, String body)
+   {
+      collecterrors();
+      if (instance != null)
+      {
+         instance.sendErrorToAdmin(subject, body);
+      }
+      else
+         LOG.error("WorkspacesErrorMailSender not initialized yet!");
+   }
+
+   public static synchronized void sendErrorToAdmin(String message, Exception cause)
+   {
+      collecterrors();
+      if (instance != null)
+      {
+         instance.sendErrorToAdmin(message, cause);
+      }
+      else
+         LOG.error("WorkspacesErrorMailSender not initialized yet!");
+   }
+
    private static boolean isNeedToSend(String errorUID)
    {
       if (lastTimeMap.containsKey(errorUID))

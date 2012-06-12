@@ -29,6 +29,7 @@ import org.exoplatform.cloudmanagement.admin.tenant.TenantDisabler;
 import org.exoplatform.cloudmanagement.admin.tenant.TenantRemover;
 import org.exoplatform.cloudmanagement.admin.tenant.TenantStarter;
 import org.exoplatform.cloudmanagement.admin.tenant.TenantSuspender;
+import org.exoplatform.cloudworkspaces.patch.utils.WorkspacesErrorMailSenderProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -141,11 +142,13 @@ public class WorkspacesTenantService
       catch (CloudAdminException e)
       {
          LOG.error(e.getMessage(), e);
+         WorkspacesErrorMailSenderProvider.sendErrorToAdmin("Error while resuming tenant.", e);
          throw e;
       }
       catch (RuntimeException e)
       {
          LOG.error(e.getMessage(), e);
+         WorkspacesErrorMailSenderProvider.sendErrorToAdmin("Error while resuming tenant.", e);
          throw e;
       }
    }
