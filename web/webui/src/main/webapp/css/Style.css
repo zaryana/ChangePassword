@@ -337,6 +337,39 @@ p {
 }
 
 
+/** Ribbon **/
+
+.ribbon {
+	background: #7f9db9;
+	height: 20px;
+	width: 62px;
+	position: relative;
+	left:-10px;
+	top: 15px;
+	float: left;
+	box-shadow:0px 0px 4px rgba(0,0,0,0.55);
+	-moz-box-shadow: 0px 0px 4px rgba(0,0,0,0.55);
+  	-khtml-box-shadow: 0px 0px 4px rgba(0,0,0,0.55);
+  	-webkit-box-shadow: 0px 0px 4px rgba(0,0,0,0.55);
+	z-index: 100; /* the stack order: foreground */	
+	padding: 3px 0px 5px 20px;
+	color: white;
+	font-size: 17px;
+	font-weight: bold;	
+	
+}
+
+.ribbon-triangle {
+	border-color: transparent #7D90A3 transparent transparent;
+    border-style: solid;
+    border-width: 10px;
+    left: -20px;
+    position: relative;
+    top: 33px;
+    width: 0;
+}
+
+
 /*UIFooter*/
 .UIFooterPortlet {
   background: url("../background/bg-footer.png") repeat-x left bottom;
@@ -996,7 +1029,7 @@ hr {
 }
 
 .UIBanner .SocialBox {
-  padding: 10px 56px 0 87px;
+  padding: 0px 56px 0 87px;
   margin: 0;
 }
 

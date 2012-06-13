@@ -22,4 +22,10 @@ public interface CloudLoginService {
    * @return
    */
   public CloudLoginStatus setStatus(String userName, CloudLoginStatus status);
+  
+  /**
+   * Returns domain name of the current tenant
+   * @return
+   */
+  public String getCloudTenantDomain();
 }
