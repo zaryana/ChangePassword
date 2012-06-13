@@ -24,6 +24,7 @@ import org.exoplatform.cloudmanagement.determinant.TenantDeterminant;
 import org.exoplatform.cloudmanagement.multitenancy.TemporaryTenantStateHolder;
 import org.exoplatform.cloudmanagement.rest.CloudAgentInfoService;
 import org.exoplatform.cloudmanagement.status.TenantInfo;
+import org.exoplatform.cloudmanagement.status.TenantState;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.jcr.config.RepositoryEntry;
 import org.exoplatform.services.jcr.ext.backup.BackupManager;
@@ -36,6 +37,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
@@ -83,9 +85,30 @@ public class WorkspacesCloudAgentInfoService extends CloudAgentInfoService {
   @RolesAllowed("cloud-admin")
   public Collection<TenantInfo> getTenantStatistic() {
     Map<String, TenantInfo> result = new HashMap<String, TenantInfo>();
-    result.putAll(temporaryTenantStateHolder.getCreatingTenants());
-    result.putAll(temporaryTenantStateHolder.getStartingTenantState());
-    result.putAll(temporaryTenantStateHolder.getStoppingTenants());
+
+    Map<String, TenantInfo> creatingTenants = temporaryTenantStateHolder.getCreatingTenants();
+    for (Entry<String, TenantInfo> entry : creatingTenants.entrySet()) {
+      String tenantName = entry.getKey();
+      TenantInfo tenantInfo = entry.getValue();
+      tenantInfo.setState(TenantState.CREATION);
+      result.put(tenantName, tenantInfo);
+    }
+
+    Map<String, TenantInfo> startingTenants = temporaryTenantStateHolder.getStartingTenantState();
+    for (Entry<String, TenantInfo> entry : startingTenants.entrySet()) {
+      String tenantName = entry.getKey();
+      TenantInfo tenantInfo = entry.getValue();
+      tenantInfo.setState(TenantState.RESUMING);
+      result.put(tenantName, tenantInfo);
+    }
+
+    Map<String, TenantInfo> stoppingTenants = temporaryTenantStateHolder.getStoppingTenants();
+    for (Entry<String, TenantInfo> entry : stoppingTenants.entrySet()) {
+      String tenantName = entry.getKey();
+      TenantInfo tenantInfo = entry.getValue();
+      tenantInfo.setState(TenantState.SUSPENDING);
+      result.put(tenantName, tenantInfo);
+    }
 
     TenantAccessTimeStatisticCollector accessCollector = TenantAccessTimeStatisticCollector.getInstance();
     String defaultRepoName = repositoryService.getConfig().getDefaultRepositoryName();
