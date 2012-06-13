@@ -2,7 +2,7 @@
 
 # Unzipping platform to create template
 AS_ZIP="cloud-workspaces-platform-bundle-tomcat.zip"
-unzip ./local-cloud/$AS_ZIP -d ./local-cloud/
+unzip -q ./local-cloud/$AS_ZIP -d ./local-cloud/
 
 # create default database - need host name
 mysql -hlocalhost -u$EXO_DB_USER -p$EXO_DB_PASSWORD -e "create database \`repository\`"
@@ -17,7 +17,7 @@ curl --connect-timeout 900  http://localhost:8080/portal/intranet/home
 
 # Asking to create template
 echo "Creating Tenant Template (JCR backup)"
-ID=`curl -s -S -X POST -u $CLOUD_AGENT_USERNAME:$CLOUD_AGENT_PASSWORD http://localhost:8080/cloud-agent/rest/cloud-agent/template-service/template`
+ID=`curl --connect-timeout 900 -s -S -X POST -u $CLOUD_AGENT_USERNAME:$CLOUD_AGENT_PASSWORD http://localhost:8080/cloud-agent/rest/cloud-agent/template-service/template`
 echo "Issued Tenant Template: $ID"
 sleep 15s
 
@@ -33,7 +33,7 @@ i=0
 timeout=240
 # wait no more 20min for a backup
 while [ -z $hasID ] && [ $i -lt $timeout ] ; do
-  IDS=`curl -s -S -X GET -u $CLOUD_AGENT_USERNAME:$CLOUD_AGENT_PASSWORD http://localhost:8080/cloud-agent/rest/cloud-agent/template-service/template`                                  
+  IDS=`curl --connect-timeout 900 -s -S -X GET -u $CLOUD_AGENT_USERNAME:$CLOUD_AGENT_PASSWORD http://localhost:8080/cloud-agent/rest/cloud-agent/template-service/template`
   hasID=`expr match "$IDS" ".*\"\($ID\)\".*"`
   i=$((i + 1))
 sleep 5s
@@ -50,6 +50,7 @@ fi
 rm -rf ./logs/*
 rm -rf ./work/*
 rm -rf ./temp/*
+rm -rf ./gatein/data/jcr/repository
 
 # Back to home
 cd ../..
@@ -66,7 +67,7 @@ cd admin-tomcat/bin
 sleep 30s
 
 # Starting first AS
-curl -X POST -u cloudadmin:cloudadmin http://localhost:8080/rest/private/cloud-admin/application-service/start-server?type=local-cloud-agent
+curl --connect-timeout 900  -X POST -u cloudadmin:cloudadmin http://localhost:8080/rest/private/cloud-admin/application-service/start-server?type=local-cloud-agent
 
 
 #That's it!
