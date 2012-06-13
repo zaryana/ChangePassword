@@ -86,6 +86,9 @@
               </div>
               <div class="FormBox">
                 <div class="BoxContent ClearFix">
+                
+                <div class="ribbon">Beta</div>
+				<div class="ribbon-triangle"></div>
     
                   <form class="UIForm" action="javascript:void(0);"   method="POST" name="cloud-workspaces-profile" id="signupForm">
 										<!-- Marketo input hidden fields -->
