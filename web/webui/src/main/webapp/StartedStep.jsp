@@ -19,14 +19,18 @@
 
 --%>
 <%@ page import="com.exoplatform.cloudworkspaces.cloudlogin.CloudLoginServlet"%>
+<%@ page import="com.exoplatform.cloudworkspaces.cloudlogin.CloudLoginService"%>
+<%@ page import="org.exoplatform.container.PortalContainer"%>
 <%@ page language="java" %>
 <%
   String contextPath = request.getContextPath() ;
   String lang = request.getLocale().getLanguage();
 
   String uri = (String)request.getAttribute(CloudLoginServlet.INITIAL_URI_ATTRIBUTE);
-  String domain = request.getServerName();
-
+  
+  CloudLoginService cloudLoginService = (CloudLoginService) PortalContainer.getCurrentInstance(session.getServletContext()).getComponentInstanceOfType(CloudLoginService.class);
+  String tenantDomain = cloudLoginService.getCloudTenantDomain();
+  
   response.setCharacterEncoding("UTF-8"); 
   response.setContentType("text/html; charset=UTF-8");
 %>
@@ -45,6 +49,7 @@
     
   </head>
   <body onLoad="CloudLogin.initCloudLogin();">
+  
   <div class="GetStartedPage">
     <form class="UIFormBox StartedStep" style="display: block;" name="" id="StartedStep1" method="POST" action="javascript:void(0);" >
       <h1 class="StartedBarBG">Welcome to Cloud Workspaces</h1>
@@ -53,7 +58,7 @@
         <a href="#" class="StepSelectIcon" style="left: 60px;">1</a><a href="#" class="StepIcon" style="left: 310px;" >2</a><a href="#" class="StepIcon" style="left: 569px;">3</a>
       </div-->
       <h3>Invite Coworkers in Your Social Intranet</h3>
-      <p><strong>Send email invitations to your coworkers to connect with them in your social intranet.</strong><br/>(note: Only @<%= domain %> email addresses will be invited to your workspace. Other addresses will receive an invitation to discover Cloud Workspaces)</p>
+      <p><strong>Send email invitations to your coworkers to connect with them in your social intranet.</strong><br/>(note: Only @<%= tenantDomain %> email addresses will be invited to your workspace. Other addresses will receive an invitation to discover Cloud Workspaces)</p>
       
       <div id="messageString" class="TenantFormMsg" style="display:none"></div>
       <table class="BorderDot">
