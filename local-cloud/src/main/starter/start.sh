@@ -3,6 +3,7 @@
 # Unzipping platform to create template
 AS_ZIP="cloud-workspaces-platform-bundle-tomcat.zip"
 unzip -q ./local-cloud/$AS_ZIP -d ./local-cloud/
+rm ./local-cloud/$AS_ZIP
 
 # create default database - need host name
 mysql -hlocalhost -u$EXO_DB_USER -p$EXO_DB_PASSWORD -e "create database \`repository\`"
