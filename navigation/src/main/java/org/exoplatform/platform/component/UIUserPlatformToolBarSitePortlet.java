@@ -23,14 +23,17 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.TreeMap;
 
+import org.exoplatform.platform.common.service.MenuConfiguratorService;
+import org.exoplatform.platform.webui.NavigationURLUtils;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.DataStorage;
 import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.portal.config.UserPortalConfig;
 import org.exoplatform.portal.config.UserPortalConfigService;
+import org.exoplatform.portal.config.model.Page;
+import org.exoplatform.portal.config.model.PageNode;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.mop.SiteKey;
 import org.exoplatform.portal.mop.Visibility;
@@ -42,6 +45,9 @@ import org.exoplatform.portal.mop.user.UserPortal;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.services.security.ConversationState;
+import org.exoplatform.services.security.Identity;
+import org.exoplatform.services.security.MembershipEntry;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
@@ -52,12 +58,16 @@ public class UIUserPlatformToolBarSitePortlet extends UIPortletApplication {
 
   private UserACL userACL = null;
   private UserNodeFilterConfig userFilterConfig;
+  private MenuConfiguratorService menuConfiguratorService;
+  private UserPortalConfigService dataStorage;
 
   public UIUserPlatformToolBarSitePortlet() throws Exception {
     UserNodeFilterConfig.Builder builder = UserNodeFilterConfig.builder();
     builder.withReadWriteCheck().withVisibility(Visibility.DISPLAYED, Visibility.TEMPORAL).withTemporalCheck();
     userFilterConfig = builder.build();
     userACL = getApplicationComponent(UserACL.class);
+    menuConfiguratorService = getApplicationComponent(MenuConfiguratorService.class);
+    dataStorage = getApplicationComponent(UserPortalConfigService.class);    
   }
 
   public boolean hasEditOrCreatePortalPermission() throws Exception {
@@ -67,8 +77,6 @@ public class UIUserPlatformToolBarSitePortlet extends UIPortletApplication {
 
   private List<String> getAllowedToEditPortalNames() throws Exception {
     List<String> allowedPortalList = new ArrayList<String>();
-
-    UserPortalConfigService dataStorage = getApplicationComponent(UserPortalConfigService.class);
 
     List<String> portals = dataStorage.getAllPortalNames();
     for (String portalName : portals) {
@@ -91,8 +99,6 @@ public class UIUserPlatformToolBarSitePortlet extends UIPortletApplication {
 
   public List<String> getAllPortalNames() throws Exception {
     List<String> allowedPortalList = new ArrayList<String>();
-
-    UserPortalConfigService dataStorage = getApplicationComponent(UserPortalConfigService.class);
 
     List<String> portals = dataStorage.getAllPortalNames();
     for (String portalName : portals) {
@@ -173,5 +179,35 @@ public class UIUserPlatformToolBarSitePortlet extends UIPortletApplication {
     }
     Collection<UserNode> colection = userNodeTreeMap.values();
     return colection;
+  }
+
+  public boolean hasPermissionOnIDENode() throws Exception {
+    Identity identity = ConversationState.getCurrent().getIdentity();
+    Collection<MembershipEntry> memberships = identity.getMemberships();
+    //Get page's access permissions
+    Page page = dataStorage.getPage("group::/developers::ide");
+    String[] accessPermissions = page.getAccessPermissions();
+    //Check if user has access rights to ide page
+    for(String permis : accessPermissions) {
+      for (MembershipEntry membership: memberships){
+        String[] permisSplit = permis.split(":");
+        if (permisSplit[1].equals(membership.getGroup())) {
+          if (permisSplit[0].contains("*") || membership.getMembershipType().contains("*") || permisSplit[0].equals(membership.getMembershipType())) {
+    	    return true;  
+    	  }
+        }
+      }
+    }
+    return false;
+  }
+
+  public String getIDENode() throws Exception {
+    List<UserNode> setupMenuUserNodes = menuConfiguratorService.getSetupMenuItems(getUserPortal());
+    for (UserNode userNode : setupMenuUserNodes) {
+      if (userNode.getPageRef().equals("group::/developers::ide")) {
+        return NavigationURLUtils.getURL(userNode);
+      }
+	}
+    return null;
   }
 }
