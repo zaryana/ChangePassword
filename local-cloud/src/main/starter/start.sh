@@ -16,28 +16,43 @@ sleep 60s
 curl --connect-timeout 900  http://localhost:8080/portal/intranet/home
 
 # Asking to create template
-ID="`curl -X POST -u cloudadmin:cloudadmin http://localhost:8080/cloud-agent/rest/cloud-agent/template-service/template`"
+echo "Creating Tenant Template (JCR backup)"
+ID=`curl -s -S -X POST -u $CLOUD_AGENT_USERNAME:$CLOUD_AGENT_PASSWORD http://localhost:8080/cloud-agent/rest/cloud-agent/template-service/template`
+echo "Issued Tenant Template: $ID"
+sleep 15s
 
 # Check template OK (by length)
-LEN=$(echo ${#ID})
-if [$LEN -ne 32 ]; then
-  echo "Invalid backup ID received, exiting"
+IDlen=$(echo ${#ID})
+if [ $IDlen -ne 32 ] ; then
+  echo "ERROR: Invalid Template ID received, exiting."
   exit 1
+fi
+
+hasID=""
+i=0
+timeout=240
+# wait no more 20min for a backup
+while [ -z $hasID ] && [ $i -lt $timeout ] ; do
+  IDS=`curl -s -S -X GET -u $CLOUD_AGENT_USERNAME:$CLOUD_AGENT_PASSWORD http://localhost:8080/cloud-agent/rest/cloud-agent/template-service/template`                                  
+  hasID=`expr match "$IDS" ".*\"\($ID\)\".*"`
+  i=$((i + 1))
+sleep 5s
+done
+
+if [ $i -eq $timeout ] ; then
+ echo "WARNING! Template $ID creation was not finished in time. See app server logs for details."
 fi
 
 # Ok, now we can stop it
 ./stop_eXo.sh -force
 
-# Zip a template
-cd ./gatein && zip -r -8   ../../backup.zip  ./backup && cd ..
+# Cleanup the app server
+rm -rf ./logs/*
+rm -rf ./work/*
+rm -rf ./temp/*
 
 # Back to home
 cd ../..
-
-
-# Delete temporary bundle
-rm -rf ./local-cloud/app-server-tomcat
-
 
 # Set backup ID in admin conf
 cd admin-tomcat/exo-admin-conf
