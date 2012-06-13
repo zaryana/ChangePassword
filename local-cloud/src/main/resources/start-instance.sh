@@ -1,6 +1,6 @@
 #!/bin/bash
 
-TOMCAT_ZIP="cloud-workspaces-platform-bundle-tomcat.zip"
+TOMCAT_DIR="app-server-tomcat"
 
 DEFAULT_SERVER_PORT=8005
 DEFAULT_RMI_REGISTRY_PORT=6969
@@ -30,16 +30,13 @@ PORT=$(($FIRST_PORT + $6))
 
 DEFAULT_DATABASE="repository_$INSTANCE_ID"
 
-
 # create instance directory
 mkdir $INSTANCE_ID
 
 cd $INSTANCE_ID
 
 # unzip tomcat
-cp ../$TOMCAT_ZIP $TOMCAT_ZIP
-unzip $TOMCAT_ZIP
-rm $TOMCAT_ZIP
+cp -R ../$TOMCAT_DIR $TOMCAT_DIR
 
 # configure setenv.sh
 cd app-server-tomcat/bin
@@ -60,12 +57,6 @@ sed -i s/$DEFAULT_RMI_SERVER_PORT/$RMI_SERVER_PORT/ server.xml
 sed -i s/$DEFAULT_REDIRECT_PORT/$REDIRECT_PORT/ server.xml
 sed -i s/$DEFAULT_CONNECTOR_PORT/$CONNECTOR_PORT/ server.xml
 sed -i s/$DEFAULT_PORT/$PORT/ server.xml
-
-# copy backup
-cd ../gatein
-cp ../../../backup.zip backup.zip
-unzip backup.zip
-rm backup.zip
 
 cd ../..
 echo mysql -h$DB_HOST -u$DB_USER -p$DB_PASSWORD -e \"drop database $DEFAULT_DATABASE\" > free_resources.sh
