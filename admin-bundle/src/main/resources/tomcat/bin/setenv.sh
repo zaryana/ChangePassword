@@ -52,16 +52,16 @@
 [ -z "$CLOUD_AGENT_DB_SCHEMES_DIR" ]  && CLOUD_AGENT_DB_SCHEMES_DIR="../../cloud/databases"
 
 # DB connection send to agent
-[ -z "$CLOUD_AGENT_DB_URL" ] && CLOUD_AGENT_DB_URL="localhost:3306"
-[ -z "$CLOUD_AGENT_DB_USERNAME" ] && CLOUD_AGENT_DB_USERNAME="dbuser"
-[ -z "$CLOUD_AGENT_DB_PASSWORD" ] && CLOUD_AGENT_DB_PASSWORD="dbpass"
+[ -z "$EXO_DB_HOST" ] && EXO_DB_HOST="localhost:3306"
+[ -z "$EXO_DB_USER" ] && EXO_DB_USER="dbuser"
+[ -z "$EXO_DB_PASSWORD" ] && EXO_DB_PASSWORD="dbpass"
 
 # admin variables
 EXO_CLOUD_ADMIN_OPTS="-Dadmin.agent.auth.username=$CLOUD_AGENT_USERNAME \
                       -Dadmin.agent.auth.password=$CLOUD_AGENT_PASSWORD \
-                      -Dadmin.agent.db.url=$CLOUD_AGENT_DB_URL \
-                      -Dadmin.agent.db.username=$CLOUD_AGENT_DB_USERNAME \
-                      -Dadmin.agent.db.password=$CLOUD_AGENT_DB_PASSWORD \
+                      -Dadmin.agent.db.url=$EXO_DB_HOST \
+                      -Dadmin.agent.db.username=$EXO_DB_USER \
+                      -Dadmin.agent.db.password=$EXO_DB_PASSWORD \
                       -Dadmin.agent.db.schemes.dir=$CLOUD_AGENT_DB_SCHEMES_DIR \
                       -Dcloud.admin.log.dir=$EXO_ADMIN_LOGS_DIR \
                       -Dcloud.admin.mail.host=$CLOUD_MAIL_HOST \
