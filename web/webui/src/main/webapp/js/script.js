@@ -258,13 +258,15 @@ function tryResume(workspace) {
       window.location = document.URL;
     },
     error : function(response, status, error) {
-      if (response.responseText.indexOf("Starting failed... not available space on application servers") != -1) {
-        setTimeout(function() {
-          tryResume(workspace);
-        }, 5 * 60 * 1000);
-      }
-      else {
-        $("#messageString").html("Your tenant cannot be resumed in time. This was reported to administrators. Try again later.");
+      if (response.status != 0) {
+        if (response.responseText.indexOf("Starting failed... not available space on application servers") != -1) {
+          setTimeout(function() {
+            tryResume(workspace);
+          }, 5 * 60 * 1000);
+        }
+        else {
+          $("#messageString").html("Your tenant cannot be resumed in time. This was reported to administrators. Try again later.");
+        }
       }
     }
   });
