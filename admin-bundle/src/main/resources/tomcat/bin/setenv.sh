@@ -15,9 +15,6 @@
 # master tenant name
 [ -z "$TENANT_MASTERHOST" ]  && TENANT_MASTERHOST="cloud-workspaces.com"
 
-# default app server
-[ -z "$TENANT_DEFAULT_HOST" ]  && TENANT_DEFAULT_HOST="as1:8080"
-
 # dir for admin data
 [ -z "$EXO_ADMIN_DATA_DIR" ]  && EXO_ADMIN_DATA_DIR="$CATALINA_HOME/data"
 
@@ -56,6 +53,12 @@
 [ -z "$EXO_DB_USER" ] && EXO_DB_USER="dbuser"
 [ -z "$EXO_DB_PASSWORD" ] && EXO_DB_PASSWORD="dbpass"
 
+# Cloud service configuration
+[ -z "$CLOUD_CLIENT_NAME" ] && CLOUD_CLIENT_NAME="localhost"
+[ -z "$CLOUD_AWS_VERSION" ] && CLOUD_AWS_VERSION="2011-05-15"
+[ -z "$CLOUD_AWS_IDENTITY" ] && CLOUD_AWS_IDENTITY="NO_IDENTITY"
+[ -z "$CLOUD_AWS_CREDENTIALS" ] && CLOUD_AWS_CREDENTIALS="NO_CREDENTIALS"
+
 # admin variables
 EXO_CLOUD_ADMIN_OPTS="-Dadmin.agent.auth.username=$CLOUD_AGENT_USERNAME \
                       -Dadmin.agent.auth.password=$CLOUD_AGENT_PASSWORD \
@@ -63,6 +66,10 @@ EXO_CLOUD_ADMIN_OPTS="-Dadmin.agent.auth.username=$CLOUD_AGENT_USERNAME \
                       -Dadmin.agent.db.username=$EXO_DB_USER \
                       -Dadmin.agent.db.password=$EXO_DB_PASSWORD \
                       -Dadmin.agent.db.schemes.dir=$CLOUD_AGENT_DB_SCHEMES_DIR \
+                      -Dcloud.client.name=$CLOUD_CLIENT_NAME \
+                      -Dcloud.aws.version=$CLOUD_AWS_VERSION \
+                      -Dcloud.aws.idendity=$CLOUD_AWS_IDENDITY \
+                      -Dcloud.aws.credentials=$CLOUD_AWS_CREDENTIALS \
                       -Dcloud.admin.log.dir=$EXO_ADMIN_LOGS_DIR \
                       -Dcloud.admin.mail.host=$CLOUD_MAIL_HOST \
                       -Dcloud.admin.mail.port=$CLOUD_MAIL_PORT \
@@ -80,7 +87,6 @@ EXO_CLOUD_ADMIN_OPTS="-Dadmin.agent.auth.username=$CLOUD_AGENT_USERNAME \
                       -Dcloud.admin.mail.sales.email=$CLOUD_SALES_EMAIL \
                       -Dcloud.admin.data.dir=$EXO_ADMIN_DATA_DIR \
                       -Dtenant.masterhost=$TENANT_MASTERHOST \
-                      -Dcloud.admin.haproxy.default.host=$TENANT_DEFAULT_HOST \
                       -Dcloud.admin.configuration.dir=$EXO_ADMIN_CONF_DIR \
                       -Dcloud.admin.userlimit=$EXO_ADMIN_CONF_DIR/user-limits.properties \
                       -Dcloud.admin.hostname.file=$EXO_ADMIN_CONF_DIR/hostname.cfg \
