@@ -109,9 +109,9 @@
   rm -rf ./logs/(*,.*}
   rm -rf ./work/{*,.*}
   rm -rf ./temp/{*,.*}
-  rm -rf ./gatein/gadgets/{*,.*}
   rm -rf ./gatein/data/jta/{*,.*}
   rm -rf ./gatein/data/jcr/repository
+  rm -rf ./gatein/gadgets/key.txt
 
   echo ""
   echo "***** App server prepared *****"
