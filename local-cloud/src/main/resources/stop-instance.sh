@@ -9,5 +9,4 @@ cd ..
 eval `cat free_resources.sh`
 
 cd ..
-cd ..
 rm -R ./$INSTANCE_ID
