@@ -106,7 +106,7 @@
   ./stop_eXo.sh -force
 
   # Cleanup the app server
-  rm -rf ./logs/(*,.*}
+  rm -rf ./logs/{*,.*}
   rm -rf ./work/{*,.*}
   rm -rf ./temp/{*,.*}
   rm -rf ./gatein/data/jta/{*,.*}
