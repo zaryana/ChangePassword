@@ -62,7 +62,7 @@
      exit 1
   fi
 
-  SQL='drop database repository; create database repository default charset latin1 collate latin1_general_cs;'
+  SQL='drop database if exists repository; create database repository default charset latin1 collate latin1_general_cs;'
   mysql --user=$EXO_DB_USER --password=$EXO_DB_PASSWORD --host=localhost -B -N -e "$SQL" -w > mysql.log 2>&1
 
   # Starting PLF
@@ -106,11 +106,11 @@
   ./stop_eXo.sh -force
 
   # Cleanup the app server
-  rm -rf ./logs/*
-  rm -rf ./work/*
-  rm -rf ./temp/*
-  rm -rf ./gatein/gadgets/*
-  rm -rf ./gatein/data/jta/*
+  rm -rf ./logs/(*,.*}
+  rm -rf ./work/{*,.*}
+  rm -rf ./temp/{*,.*}
+  rm -rf ./gatein/gadgets/{*,.*}
+  rm -rf ./gatein/data/jta/{*,.*}
   rm -rf ./gatein/data/jcr/repository
 
   echo ""
