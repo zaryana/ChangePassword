@@ -121,6 +121,65 @@ export EC2_HOME JAVA_HOME EC2_PRIVATE_KEY EC2_CERT PATH
 	  echo "DB User password: defined" >> $SCR_Log
 	}
 
+# Get agent user name
+	AgentUName=$(cut -f 6 -d\& $ResFile | grep -E '[[:print:]]{6,}' )
+	[ -z "$AgentUName" ] && {
+	  echo "Agent username is empty" >> $SCR_Log
+	  exit 2
+	} || {
+	  echo "Agent User name : $AgentUName" >> $SCR_Log
+	}
+# Get agent user name pass
+	AgentUPass=$(cut -f 7 -d\& $ResFile | grep -E '[[:print:]]{6,}' )
+	[ -z "$AgentUPass" ] && {
+	  echo "Agent user password is empty" >> $SCR_Log
+	  exit 2
+	} || {
+	  echo "Agent User password: defined" >> $SCR_Log
+	}
+
+# Get mail from
+	MailFrom=$(cut -f 8 -d\& $ResFile | grep -E '[[:print:]]{6,}' )
+	[ -z "$MailFrom" ] && {
+	  echo "Mail from is empty" >> $SCR_Log
+	  exit 2
+	} || {
+	  echo "Mail from: $MailFrom" >> $SCR_Log
+	}
+# Get mail host
+	MailHost=$(cut -f 9 -d\& $ResFile | grep -E '[[:print:]]{6,}' )
+	[ -z "$MailHost" ] && {
+	  echo "Mail host is empty" >> $SCR_Log
+	  exit 2
+	} || {
+	  echo "Mail host: $MailHost" >> $SCR_Log
+	}
+
+# Get mail port
+	MailPort=$(cut -f 10 -d\& $ResFile | grep -E '[[:xdigit:]]{2,}' )
+	[ -z "$MailPort" ] && {
+	  echo "Mail port is empty" >> $SCR_Log
+	  exit 2
+	} || {
+	  echo "Mail port: $MailPort" >> $SCR_Log
+	}
+# Get mail user name
+	MailUName=$(cut -f 11 -d\& $ResFile | grep -E '[[:print:]]{6,}' )
+	[ -z "$MailUName" ] && {
+	  echo "Mail user name is empty" >> $SCR_Log
+	  exit 2
+	} || {
+	  echo "Mail user name: $MailUName" >> $SCR_Log
+	}
+# Get mail user password
+	MailUPass=$(cut -f 12 -d\& $ResFile | grep -E '[[:print:]]{6,}' )
+	[ -z "$MailUPass" ] && {
+	  echo "Mail user password is empty" >> $SCR_Log
+	  exit 2
+	} || {
+	  echo "Mail user password: defined" >> $SCR_Log
+	}
+
 # Attache EBS volume for data
 	ec2-attach-volume -i $InstID -d "/dev/sdd" $VolID 2>>$SCR_Log && {
 	  StartTime=`date +'%s'`
@@ -173,15 +232,6 @@ export EC2_HOME JAVA_HOME EC2_PRIVATE_KEY EC2_CERT PATH
 	  echo "FAIL" >> $SCR_Log
 	  exit 2
 	} 
-
-# Unpack zipped bundle
-	echo -n "Unpacking bundle " >>$SCR_Log
-	unzip -qq "${APP_DIR}/${SRC_DIR}/*.zip" -d $APP_DIR 2>>$SCR_Log && {
-	  echo "OK" >> $SCR_Log
-	} || {
-	  echo "FAIL" >> $SCR_Log 
-	  exit 2
-	}
 
 # Set ownership for unpacked app.server directory
 	echo -n "Set ownership for app.server directory " >> $SCR_Log
@@ -276,6 +326,15 @@ export EC2_HOME JAVA_HOME EC2_PRIVATE_KEY EC2_CERT PATH
 	sed -r -i -e "s/^EXO_DB_PASSWORD=(.*)$/EXO_DB_PASSWORD=${DBUPass}/g" "${APP_DIR}/.bashrc"
 	sed -r -i -e "s/^TENANT_MASTERHOST=(.*)$/TENANT_MASTERHOST=${TMHost}/g" "${APP_DIR}/.bashrc"
 	sed -r -i -e "s/^TENANT_REPOSITORY=(.*)$/TENANT_REPOSITORY=${InstID}/g" "${APP_DIR}/.bashrc"
+
+	sed -r -i -e "s/^EMAIL_SMTP_FROM=(.*)$/EMAIL_SMTP_FROM=${MailFrom}/g" "${APP_DIR}/.bashrc"
+	sed -r -i -e "s/^EMAIL_SMTP_USERNAME=(.*)$/EMAIL_SMTP_USERNAME=${MailUName}/g" "${APP_DIR}/.bashrc"
+	sed -r -i -e "s/^EMAIL_SMTP_PASSWORD=(.*)$/EMAIL_SMTP_PASSWORD=${MailUPass}/g" "${APP_DIR}/.bashrc"
+	sed -r -i -e "s/^EMAIL_SMTP_HOST=(.*)$/EMAIL_SMTP_HOST=${MailHost}/g" "${APP_DIR}/.bashrc"
+	sed -r -i -e "s/^EMAIL_SMTP_PORT=(.*)$/EMAIL_SMTP_PORT=${MailPort}/g" "${APP_DIR}/.bashrc"
+
+# Update tomcat users
+	sed -r -i -e "s/<user username=\"cloudadmin\" password=\"cloudadmin\"/<user username=\"$AgentUName\" password=\"$AgentUPass\"/g" "${APP_DIR}/app-server-tomcat/conf/tomcat-users.xml"
 
 # Create database for default repository
 	while true; do
