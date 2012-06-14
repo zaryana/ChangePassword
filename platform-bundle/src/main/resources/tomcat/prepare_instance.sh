@@ -19,13 +19,40 @@
 
 # Prepare Cloud Workspaces Application Server instance for use in production.
 # This script 
-# * starts local MySQL server and creates database 'repository' with user clouduser/cloud12321
+# * creates database 'repository'
 # * starts the Platform with sessions of EXO_DB_HOST EXO_DB_USER and EXO_DB_PASSWORD pointing to local MySQL
 # * waits for Platform start and 
 # * call agent's template service to create a tenant template backup (JCR backup)
 # * wait for backup done and 
 # * stops the Platform server
-# * stops the MySQL server
+
+  # database address and credentials
+  EXO_DB_HOST="localhost:3306"
+  EXO_DB_USER="root"
+  EXO_DB_PASSWORD="root"
+
+  # admin credentials
+  [ -z "$CLOUD_AGENT_USERNAME" ]  && CLOUD_AGENT_USERNAME="cloudadmin"
+  [ -z "$CLOUD_AGENT_PASSWORD" ]  && CLOUD_AGENT_PASSWORD="cloudadmin"
+
+  # unset cloud variables to use defaults
+  unset EXO_TENANT_DATA_DIR EXO_BACKUP_DIR TENANT_REPOSITORY TENANT_MASTERHOST
+  TENANT_MASTERHOST=localhost
+  export EXO_DB_HOST EXO_DB_USER EXO_DB_PASSWORD EXO_TENANT_DATA_DIR EXO_BACKUP_DIR TENANT_REPOSITORY TENANT_MASTERHOST
+
+  # cURL helpers, first parameter it's URL of REST service
+  function rest() {
+    local lpath=`pwd`
+    local curl_res="$lpath/curl.res"
+    local status=`curl -s -S -X $1 --output $curl_res --write-out %{http_code} -u $CLOUD_AGENT_USERNAME:$CLOUD_AGENT_PASSWORD $2`
+    local res=`cat $curl_res`
+    if [ $status='200'  ] ; then
+      echo $res
+    else
+      echo "ERROR: service $1 $2 returns status $status: $res"
+      exit 1
+    fi
+  }
 
   # Check if App server Platform isn't already running
   asPid="`pwd`/temp/catalina.tmp"
@@ -35,17 +62,8 @@
      exit 1
   fi
 
-
-  # Starting local mysql
-  EXO_DB_HOST="localhost:3306"
-  EXO_DB_USER="root"
-  EXO_DB_PASSWORD="root"
-  # yum install mysql
-  sudo service mysqld start
-  # /usr/bin/mysqladmin -u password '$EXO_DB_PASSWORD'
-
   SQL='drop database repository; create database repository default charset latin1 collate latin1_general_cs;'
-  mysql --user=$EXO_DB_USER --password=$EXO_DB_PASSWORD --host=localhost -B -N -e "$SQL" -w >> mysql.log
+  mysql --user=$EXO_DB_USER --password=$EXO_DB_PASSWORD --host=localhost -B -N -e "$SQL" -w > mysql.log 2>&1
 
   # Starting PLF
   echo "Starting App server Platform"
@@ -58,7 +76,7 @@
 
   # Asking to create template
   echo "Creating Tenant Template (JCR backup)"
-  ID=`curl -s -S -X POST -u $CLOUD_AGENT_USERNAME:$CLOUD_AGENT_PASSWORD http://localhost:8080/cloud-agent/rest/cloud-agent/template-service/template`
+  ID=$(rest 'POST' 'http://localhost:8080/cloud-agent/rest/cloud-agent/template-service/template')
   echo "Issued Tenant Template: $ID"
   sleep 15s
 
@@ -74,7 +92,7 @@
   timeout=240
   # wait no more 20min for a backup
   while [ -z $hasID ] && [ $i -lt $timeout ] ; do
-    IDS=`curl -s -S -X GET -u $CLOUD_AGENT_USERNAME:$CLOUD_AGENT_PASSWORD http://localhost:8080/cloud-agent/rest/cloud-agent/template-service/template`
+    IDS=$(rest 'GET' 'http://localhost:8080/cloud-agent/rest/cloud-agent/template-service/template')
     hasID=`expr match "$IDS" ".*\"\($ID\)\".*"`
     i=$((i + 1))
     sleep 5s
@@ -94,10 +112,6 @@
   rm -rf ./gatein/gadgets/*
   rm -rf ./gatein/data/jta/*
   rm -rf ./gatein/data/jcr/repository
-
-  # stop mysql
-  sudo service mysqld stop
-  # yum erase mysql
 
   echo ""
   echo "***** App server prepared *****"
