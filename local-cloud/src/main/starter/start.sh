@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 # Unzipping platform to create template
 AS_ZIP="cloud-workspaces-platform-bundle-tomcat.zip"
 unzip -q ./local-cloud/$AS_ZIP -d ./local-cloud/
@@ -14,7 +15,7 @@ cd ./local-cloud/app-server-tomcat
 
 # Waiting for full start
 sleep 60s
-curl --connect-timeout 900  http://localhost:8080/portal/intranet/home
+curl --connect-timeout 900 -s  http://localhost:8080/portal/intranet/home
 
 # Asking to create template
 echo "Creating Tenant Template (JCR backup)"
@@ -68,7 +69,7 @@ cd admin-tomcat/bin
 sleep 30s
 
 # Starting first AS
-curl --connect-timeout 900  -X POST -u cloudadmin:cloudadmin http://localhost:8080/rest/private/cloud-admin/application-service/start-server?type=local-cloud-agent
+curl --connect-timeout 900 -s  -X POST -u cloudadmin:cloudadmin http://localhost:8080/rest/private/cloud-admin/application-service/start-server?type=local-cloud-agent
 
 
 #That's it!

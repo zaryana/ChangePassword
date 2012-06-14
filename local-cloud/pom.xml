@@ -52,6 +52,30 @@
          </execution>
       </executions>
      </plugin>
+     <plugin>
+       <artifactId>maven-antrun-plugin</artifactId>
+       <executions>
+         <execution>
+         <id>copy-deploy-script</id>
+         <phase>process-resources</phase>
+         <configuration>
+         <tasks>
+           <copy todir="${project.build.directory}">
+           <fileset dir="${project.basedir}/src/main">
+             <include name="**/deploy_start_acc.sh"/>
+             <include name="**/stop_acc.sh"/>
+           </fileset>
+          </copy>
+          <chmod file="${project.build.directory}/deploy_start_acc.sh" perm="755"/>
+          <chmod file="${project.build.directory}/stop_acc.sh" perm="755"/>
+         </tasks>
+        </configuration>
+        <goals>
+           <goal>run</goal>
+        </goals>
+        </execution>
+      </executions>
+    </plugin>
    </plugins>
  </build>
 </project>
