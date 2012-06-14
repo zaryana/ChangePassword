@@ -66,6 +66,22 @@ public class WorkspacesUserDataGenerator extends ConfigurationUserDataGenerator 
       userdataBuilder.append('&');
       userdataBuilder.append(password);
 
+      userdataBuilder.append('&');
+      userdataBuilder.append(System.getProperty("admin.agent.auth.username"));
+      userdataBuilder.append('&');
+      userdataBuilder.append(System.getProperty("admin.agent.auth.password"));
+
+      userdataBuilder.append('&');
+      userdataBuilder.append(System.getProperty("cloud.admin.mail.admin.email"));
+      userdataBuilder.append('&');
+      userdataBuilder.append(System.getProperty("cloud.admin.mail.host"));
+      userdataBuilder.append('&');
+      userdataBuilder.append(System.getProperty("cloud.admin.mail.port"));
+      userdataBuilder.append('&');
+      userdataBuilder.append(System.getProperty("cloud.admin.mail.user"));
+      userdataBuilder.append('&');
+      userdataBuilder.append(System.getProperty("cloud.admin.mail.password"));
+
       return userdataBuilder.toString();
     } catch (CloudAdminException e) {
       LOG.error("User data generation failed.", e);
