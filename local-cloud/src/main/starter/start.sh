@@ -15,7 +15,7 @@ cd ./local-cloud/app-server-tomcat
 
 # Waiting for full start
 sleep 60s
-curl --connect-timeout 900 -s  http://localhost:8080/portal/intranet/home
+curl --connect-timeout 1800 -s  http://localhost:8080/portal/intranet/home
 
 # Asking to create template
 echo "Creating Tenant Template (JCR backup)"
