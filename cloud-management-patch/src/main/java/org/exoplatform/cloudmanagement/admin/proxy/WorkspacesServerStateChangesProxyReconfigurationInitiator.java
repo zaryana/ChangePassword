@@ -109,6 +109,7 @@ public class WorkspacesServerStateChangesProxyReconfigurationInitiator extends
          if (proxyLoadBalancerConfigurator instanceof WorkspacesProxyLoadBalancerConfigurator)
             ((WorkspacesProxyLoadBalancerConfigurator)proxyLoadBalancerConfigurator).allowReloading();
          isStarted = true;
+         proxyLoadBalancerConfigurator.updateLoadBalancerConfigurationWithCurrentCloudTopology();
       }
    }
 
