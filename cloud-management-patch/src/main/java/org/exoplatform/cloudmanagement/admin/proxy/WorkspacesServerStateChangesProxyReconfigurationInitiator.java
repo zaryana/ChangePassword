@@ -104,6 +104,12 @@ public class WorkspacesServerStateChangesProxyReconfigurationInitiator extends
    public void start()
    {
       serversOnStart.addAll(applicationServerStatusManager.getApplicationServerStatusMap().keySet());
+      if (serversOnStart.isEmpty())
+      {
+         if (proxyLoadBalancerConfigurator instanceof WorkspacesProxyLoadBalancerConfigurator)
+            ((WorkspacesProxyLoadBalancerConfigurator)proxyLoadBalancerConfigurator).allowReloading();
+         isStarted = true;
+      }
    }
 
    @Override
