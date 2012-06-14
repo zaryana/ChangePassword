@@ -156,7 +156,7 @@ export EC2_HOME JAVA_HOME EC2_PRIVATE_KEY EC2_CERT PATH
 	}
 
 # Get mail port
-	MailPort=$(cut -f 10 -d\& $ResFile | grep -E '[[:xdigit:]]{2,}' )
+	MailPort=$(cut -f 10 -d\& $ResFile | grep -E '[[:digit:]]{2,}' )
 	[ -z "$MailPort" ] && {
 	  echo "Mail port is empty" >> $SCR_Log
 	  exit 2
