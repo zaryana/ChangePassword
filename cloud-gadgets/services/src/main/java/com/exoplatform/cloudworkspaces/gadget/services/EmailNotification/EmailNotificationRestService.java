@@ -14,6 +14,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.RuntimeDelegate;
 
 import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.jcr.ext.common.SessionProvider;
 import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
 import org.exoplatform.services.log.ExoLogger;
@@ -39,7 +40,13 @@ public class EmailNotificationRestService implements ResourceContainer {
 	}
 
 	public EmailNotificationPrefsBean getUserPrefs(String userId) throws Exception {
-		SessionProvider sProvider = SessionProvider.createSystemProvider();
+	  
+    RepositoryService repoService = (RepositoryService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(RepositoryService.class);
+    String currentRepoName = repoService.getCurrentRepository().getConfiguration().getName();
+    EmailNotificationService emailNotificationService = (EmailNotificationService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(EmailNotificationService.class);
+    emailNotificationService.initResourceBundle(currentRepoName);
+    
+    SessionProvider sProvider = SessionProvider.createSystemProvider();
 		try {
 			NodeHierarchyCreator nodeCreator = (NodeHierarchyCreator) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(NodeHierarchyCreator.class);
 			OrganizationService organizationService = (OrganizationService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(OrganizationService.class);
@@ -51,7 +58,6 @@ public class EmailNotificationRestService implements ResourceContainer {
 			ArrayList<EmailNotificationPluginBean> pluginBeans = new ArrayList<EmailNotificationPluginBean>();
 
 			if(!userPrivateNode.hasNode(EmailNotificationService.PREFS)){
-				EmailNotificationService emailNotificationService = (EmailNotificationService)ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(EmailNotificationService.class);
 				for(EmailNotificationPlugin plugin:emailNotificationService.getPlugins()) {
 					MessagesCache pluginMessages = new MessagesCache(EmailNotificationService.PLUGINS + "/" + plugin.getName());
 					String settingMessage = pluginMessages.get(userLocale).getProperty("setting");
@@ -63,7 +69,6 @@ public class EmailNotificationRestService implements ResourceContainer {
 				interval = emailNotificationPrefsNode.getProperty("Interval").getString();
 				String pluginsProp = emailNotificationPrefsNode.getProperty("NotificationPlugins").getString();
 
-				EmailNotificationService emailNotificationService = (EmailNotificationService)ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(EmailNotificationService.class);
 				for(EmailNotificationPlugin plugin:emailNotificationService.getPlugins()) {
 					MessagesCache pluginMessages = new MessagesCache(EmailNotificationService.PLUGINS + "/" + plugin.getName());
 					String settingMessage = pluginMessages.get(userLocale).getProperty("setting");
@@ -126,4 +131,5 @@ public class EmailNotificationRestService implements ResourceContainer {
 			sProvider.close();
 		}
 	}
+	
 }

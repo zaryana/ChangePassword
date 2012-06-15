@@ -78,20 +78,9 @@
   
   
   <!-- EMAIL NOTIFICATION -->
-  <component>
-    <type>com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.EmailNotificationPlugin</type>
-  </component>
   
   <component>
     <type>com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.EmailNotificationService</type>
-  </component>
-  
-  <component>
-    <type>com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.plugins.ConnectionNotificationPlugin</type>
-  </component>
-  
-  <component>
-    <type>com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.plugins.SpaceNotificationPlugin</type>
   </component>
   
   <component>
@@ -99,15 +88,7 @@
   </component>
   
   <component>
-    <type>com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.plugins.UserJoinTenant.UserJoinTenantNotificationPlugin</type>
-  </component>
-
-  <component>
     <type>com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.EmailNotificationRestService</type>
-  </component>
-  
-  <component>
-    <type>com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.EmailNotificationJob</type>
   </component>
        
 </configuration>
