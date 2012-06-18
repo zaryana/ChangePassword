@@ -57,7 +57,7 @@
                 gadgets.window.adjustHeight();
               });
 
-              $('#notifyMsg').fadeOut(5000, function(){
+              $('#notifyMsg').fadeOut(2000, function(){
                 gadgets.window.adjustHeight();
               });                  
               
