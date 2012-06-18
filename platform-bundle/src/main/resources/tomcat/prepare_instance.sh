@@ -26,20 +26,31 @@
 # * wait for backup done and 
 # * stops the Platform server
 
-  # database address and credentials
-  EXO_DB_HOST="localhost:3306"
-  EXO_DB_USER="root"
-  EXO_DB_PASSWORD="root"
+  USE_PROFILE_SETTINGS=false
+  for ARG in "$@"
+  do
+     if [ "$ARG" = "-use_profile_settings" ]; then
+       USE_PROFILE_SETTINGS=true
+     fi
+  done
 
-  # admin credentials
-  [ -z "$CLOUD_AGENT_USERNAME" ]  && CLOUD_AGENT_USERNAME="cloudadmin"
-  [ -z "$CLOUD_AGENT_PASSWORD" ]  && CLOUD_AGENT_PASSWORD="cloudadmin"
+  if  ! $USE_PROFILE_SETTINGS; then
+    # database address and credentials
+    EXO_DB_HOST="localhost:3306"
+    EXO_DB_USER="root"
+    EXO_DB_PASSWORD="admin"
+    export EXO_DB_HOST EXO_DB_USER EXO_DB_PASSWORD
+  
+    # admin credentials
+    [ -z "$CLOUD_AGENT_USERNAME" ]  && CLOUD_AGENT_USERNAME="cloudadmin"
+    [ -z "$CLOUD_AGENT_PASSWORD" ]  && CLOUD_AGENT_PASSWORD="cloudadmin"
 
-  # unset cloud variables to use defaults
-  unset EXO_TENANT_DATA_DIR EXO_BACKUP_DIR TENANT_REPOSITORY TENANT_MASTERHOST
-  TENANT_MASTERHOST=localhost
-  export EXO_DB_HOST EXO_DB_USER EXO_DB_PASSWORD EXO_TENANT_DATA_DIR EXO_BACKUP_DIR TENANT_REPOSITORY TENANT_MASTERHOST
-
+    # unset cloud variables to use defaults
+    unset EXO_TENANT_DATA_DIR EXO_BACKUP_DIR TENANT_REPOSITORY TENANT_MASTERHOST
+    TENANT_MASTERHOST=localhost
+    export EXO_TENANT_DATA_DIR EXO_BACKUP_DIR TENANT_REPOSITORY TENANT_MASTERHOST
+  fi
+  
   # cURL helpers, first parameter it's URL of REST service
   function rest() {
     local lpath=`pwd`
@@ -67,12 +78,11 @@
 
   # Starting PLF
   echo "Starting App server Platform"
-  export EXO_DB_HOST EXO_DB_USER EXO_DB_PASSWORD
   ./start_eXo.sh
 
   # Waiting for full start
   sleep 90s
-  curl --connect-timeout 900  http://localhost:8080/portal/intranet/home
+  curl --connect-timeout 900 -s http://localhost:8080/portal/intranet/home
 
   # Asking to create template
   echo "Creating Tenant Template (JCR backup)"
@@ -119,3 +129,4 @@
   echo ""
   echo "Configure Admin server respectively in admin.properties file:"
   echo "cloud.admin.tenant.backup.id=$ID"
+  echo $ID > ./template_id.txt

@@ -16,7 +16,7 @@ getHTTPCode () {
 code=0
 timeout=30
 i=0
-while [ $code -ne 302 ] && [ $i -lt $timeout]; do
+while [ $code -ne 302 ] && [ $i -lt $timeout ]; do
    code=$(getHTTPCode 'http://wks-acc.exoplatform.org/portal/intranet/home')
    sleep 60s
    i=$((i + 1))
