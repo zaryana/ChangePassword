@@ -26,10 +26,11 @@
 # * wait for backup done and 
 # * stops the Platform server
 
+  CONNECT_TIMEOUT=900
   USE_PROFILE_SETTINGS=false
   for ARG in "$@"
   do
-     if [ "$ARG" = "-use_profile_settings" ]; then
+     if [ "$ARG" = "-use_profile_settings" ] ; then
        USE_PROFILE_SETTINGS=true
      fi
   done
@@ -38,9 +39,9 @@
     # database address and credentials
     EXO_DB_HOST="localhost:3306"
     EXO_DB_USER="root"
-    EXO_DB_PASSWORD="admin"
+    EXO_DB_PASSWORD="root"
     export EXO_DB_HOST EXO_DB_USER EXO_DB_PASSWORD
-  
+
     # admin credentials
     [ -z "$CLOUD_AGENT_USERNAME" ]  && CLOUD_AGENT_USERNAME="cloudadmin"
     [ -z "$CLOUD_AGENT_PASSWORD" ]  && CLOUD_AGENT_PASSWORD="cloudadmin"
@@ -50,12 +51,12 @@
     TENANT_MASTERHOST=localhost
     export EXO_TENANT_DATA_DIR EXO_BACKUP_DIR TENANT_REPOSITORY TENANT_MASTERHOST
   fi
-  
+
   # cURL helpers, first parameter it's URL of REST service
   function rest() {
     local lpath=`pwd`
     local curl_res="$lpath/curl.res"
-    local status=`curl -s -S -X $1 --output $curl_res --write-out %{http_code} -u $CLOUD_AGENT_USERNAME:$CLOUD_AGENT_PASSWORD $2`
+    local status=`curl -s -S --connect-timeout $CONNECT_TIMEOUT -X $1 --output $curl_res --write-out %{http_code} -u $CLOUD_AGENT_USERNAME:$CLOUD_AGENT_PASSWORD $2`
     local res=`cat $curl_res`
     if [ $status='200'  ] ; then
       echo $res
@@ -82,7 +83,7 @@
 
   # Waiting for full start
   sleep 90s
-  curl --connect-timeout 900 -s http://localhost:8080/portal/intranet/home
+  curl --connect-timeout $CONNECT_TIMEOUT http://localhost:8080/portal/intranet/home
 
   # Asking to create template
   echo "Creating Tenant Template (JCR backup)"
