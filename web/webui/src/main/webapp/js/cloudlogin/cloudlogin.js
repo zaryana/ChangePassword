@@ -161,7 +161,8 @@ CloudLogin.finalizeSendEmails = function() {
     // Clear email not tagged
     document.getElementById("email").value = "";
     
-    //CloudLogin.updateSendButton();
+    // Update Send button to return to initial state and activate button
+    CloudLogin.updateSendButton();
   }
   else if(CloudLogin.NB_EMAILS === 0) {
     // Case of one email not tagged but sent, we exit wizard
@@ -198,7 +199,7 @@ CloudLogin.validateStep1 = function(event) {
   }
   
   // deactivate button
-  document.getElementById("t_submit").disabled = true;
+  CloudLogin.setButtonToSendState();
   
   // lets pass if there isn't emails
   if(emails.length == 0) {
@@ -251,6 +252,14 @@ CloudLogin.updateSendButton = function() {
   
   // reactivate button
   document.getElementById("t_submit").disabled = false;
+}
+
+/**
+ * Update button Send. At the first button is "Skip", after it is "Send (x)" x is number of mails
+ */
+CloudLogin.setButtonToSendState = function() {
+  document.getElementById("t_submit").disabled = true;
+  $("#t_submit").val("Sending...");
 }
 
 CloudLogin.decrementNbMails = function() {
