@@ -26,6 +26,7 @@ import com.exoplatform.cloudworkspaces.CloudIntranetUtils;
 import com.exoplatform.cloudworkspaces.EmailBlacklist;
 import com.exoplatform.cloudworkspaces.NotificationMailSender;
 import com.exoplatform.cloudworkspaces.ReferencesManager;
+import com.exoplatform.cloudworkspaces.TemplateManagement;
 import com.exoplatform.cloudworkspaces.UserAlreadyExistsException;
 import com.exoplatform.cloudworkspaces.UserRequest;
 import com.exoplatform.cloudworkspaces.UserRequestDAO;
@@ -120,6 +121,9 @@ public class TestCloudWorkspacesTenantService {
 
   @Mock
   private ChangePasswordManager                  changePasswordManager;
+  
+  @Mock
+  private TemplateManagement                     templateManagement;
 
   @SuppressWarnings("unused")
   @InjectMocks
@@ -1432,6 +1436,69 @@ public class TestCloudWorkspacesTenantService {
                                      referencesManager,
                                      tenantInfoDataManager,
                                      workspacesOrganizationRequestPerformer);
+  }
+  
+  @Test
+  public void testSendEmailToValidation(ITestContext context) throws CloudAdminException {
+    final String SUBJECT = "subject";
+    final String TEMPLATE = "template";
+    final String STATE = "validation";
+
+    RestAssured.given()
+               .auth()
+               .basic(AUTH_USERNAME, AUTH_PASSWORD)
+               .formParam("template", TEMPLATE)
+               .formParam("subject", SUBJECT)
+               .pathParam("state", STATE)
+               .port((Integer) context.getAttribute(EverrestJetty.JETTY_PORT))
+               .expect()
+               .statusCode(Status.OK.getStatusCode())
+               .when()
+               .post("/rest/cloud-admin/cloudworkspaces/tenant-service/sendmail/{state}");
+
+    Mockito.verify(notificationMailSender).sendEmailToValidation(TEMPLATE, SUBJECT);
+
+    Mockito.verifyNoMoreInteractions(notificationMailSender);
+  }
+  
+  @Test
+  public void testSendEmailForTenantsWithParameter(ITestContext context) throws CloudAdminException {
+    final String SUBJECT = "subject";
+    final String TEMPLATE = "template";
+    final String STATE = "all";
+
+    RestAssured.given()
+               .auth()
+               .basic(AUTH_USERNAME, AUTH_PASSWORD)
+               .formParam("template", TEMPLATE)
+               .formParam("subject", SUBJECT)
+               .pathParam("state", STATE)
+               .port((Integer) context.getAttribute(EverrestJetty.JETTY_PORT))
+               .expect()
+               .statusCode(Status.OK.getStatusCode())
+               .when()
+               .post("/rest/cloud-admin/cloudworkspaces/tenant-service/sendmail/{state}");
+
+    Mockito.verify(notificationMailSender).sendEmailForTenantsWithParameter(TEMPLATE, SUBJECT, STATE);
+
+    Mockito.verifyNoMoreInteractions(notificationMailSender);
+  }
+
+  @Test
+  public void testUpdateTemplateId(ITestContext context) throws CloudAdminException {
+
+    RestAssured.given()
+               .auth()
+               .basic(AUTH_USERNAME, AUTH_PASSWORD)
+               .port((Integer) context.getAttribute(EverrestJetty.JETTY_PORT))
+               .expect()
+               .statusCode(Status.OK.getStatusCode())
+               .when()
+               .post("/rest/cloud-admin/cloudworkspaces/tenant-service/update/templateid");
+
+    Mockito.verify(templateManagement).updateTemplateId();
+
+    Mockito.verifyNoMoreInteractions(templateManagement);
   }
 
 }

@@ -13,6 +13,7 @@ import org.exoplatform.cloudmanagement.admin.CloudAdminException;
 import org.exoplatform.cloudmanagement.admin.WorkspacesMailSender;
 import org.exoplatform.cloudmanagement.admin.configuration.MailConfiguration;
 import org.exoplatform.cloudmanagement.admin.dao.EmailValidationStorage;
+import org.exoplatform.cloudmanagement.admin.dao.TenantInfoDataManager;
 import org.exoplatform.cloudmanagement.admin.tenant.TenantNameValidator;
 import org.exoplatform.cloudmanagement.admin.tenant.UserMailValidator;
 import org.mockito.Matchers;
@@ -43,6 +44,7 @@ public class TestMailSender {
   EmailValidationStorage emailValidationStorage;
   TenantNameValidator tenantNameValidator;
   UserMailValidator userMailValidator;
+  TenantInfoDataManager tenantInfoDataManager;
 
   @BeforeMethod
   public void initMocks(){
@@ -50,15 +52,23 @@ public class TestMailSender {
     server = SimpleSmtpServer.start(smtpPort);
     cloudAdminConfiguration = new CompositeConfiguration();
     cloudAdminConfiguration.setProperty(MailConfiguration.CLOUD_ADMIN_MAIL_HOST, "localhost");
-    cloudAdminConfiguration.setProperty(MailConfiguration.CLOUD_ADMIN_MAIL_PORT, Integer.toString(smtpPort));
-    cloudAdminConfiguration.setProperty(MailConfiguration.CLOUD_ADMIN_MAIL_TRANSPORT_PROTOCOL, "smtp");
+    cloudAdminConfiguration.setProperty(MailConfiguration.CLOUD_ADMIN_MAIL_PORT,
+                                        Integer.toString(smtpPort));
+    cloudAdminConfiguration.setProperty(MailConfiguration.CLOUD_ADMIN_MAIL_TRANSPORT_PROTOCOL,
+                                        "smtp");
     cloudAdminConfiguration.setProperty(MailConfiguration.CLOUD_ADMIN_MAIL_AUTH, "false");
     cloudAdminConfiguration.setProperty(CLOUD_ADMIN_MAIL_SENDER, "admin@cw.com");
     cloudAdminConfiguration.setProperty("cloud.admin.mail.support.sender", "support@cw.com");
     requestPerformer = Mockito.mock(WorkspacesOrganizationRequestPerformer.class);
 
     WorkspacesMailSender wks_sender = new WorkspacesMailSender(cloudAdminConfiguration);
-    sender = new NotificationMailSender(cloudAdminConfiguration, wks_sender, requestPerformer, emailValidationStorage, tenantNameValidator, userMailValidator);
+    sender = new NotificationMailSender(cloudAdminConfiguration,
+                                        wks_sender,
+                                        requestPerformer,
+                                        emailValidationStorage,
+                                        tenantNameValidator,
+                                        userMailValidator,
+                                        tenantInfoDataManager);
     cleanUpMails();
   }
 
@@ -246,19 +256,37 @@ public class TestMailSender {
     Assert.assertTrue(mailbody.contains("Test Message"));
     Assert.assertTrue(mailbody.contains("Test Exception"));
     Assert.assertTrue(oneEmail.getHeaderValue("Subject").contains("AdminErrorSubject"));
-    Assert.assertTrue(oneEmail.getHeaderValue("From").contains("admin")); //its an admin email
+    Assert.assertTrue(oneEmail.getHeaderValue("From").contains("admin")); // its
+                                                                          // an
+                                                                          // admin
+                                                                          // email
   }
 
+  @Test
+  public void testSendMailToValidation() throws CloudAdminException {
+
+    sender.sendCustomEmail("userMail",
+                           "tenantName",
+                           "uuid",
+                           "target/test-classes/template/ValidationEmail.html",
+                           "subject");
+
+    Assert.assertEquals(server.getReceivedEmailSize(), 1);
+    Iterator emails = server.getReceivedEmail();
+    SmtpMessage oneEmail = (SmtpMessage) emails.next();
+    Assert.assertNotNull(oneEmail);
+    String mailbody = oneEmail.getBody();
+    Assert.assertNotNull(mailbody);
+    Assert.assertTrue(mailbody.contains("uuid"));
+    Assert.assertTrue(oneEmail.getHeaderValue("From").contains("support"));
+  }
 
   @AfterMethod
-  public void cleanUpMails()
-  {
+  public void cleanUpMails() {
     Assert.assertNotNull(server);
-    if (server.getReceivedEmailSize() > 0)
-    {
+    if (server.getReceivedEmailSize() > 0) {
       Iterator it = server.getReceivedEmail();
-      while (it.hasNext())
-      {
+      while (it.hasNext()) {
         it.next();
         it.remove();
       }
