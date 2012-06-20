@@ -204,7 +204,7 @@ public class UIUserPlatformToolBarSitePortlet extends UIPortletApplication {
   public String getIDENode() throws Exception {
     List<UserNode> setupMenuUserNodes = menuConfiguratorService.getSetupMenuItems(getUserPortal());
     for (UserNode userNode : setupMenuUserNodes) {
-      if (userNode.getPageRef().equals("group::/developers::ide")) {
+      if ("group::/developers::ide".equals(userNode.getPageRef())) {
         return NavigationURLUtils.getURL(userNode);
       }
 	}

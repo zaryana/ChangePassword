@@ -3,11 +3,6 @@
 }
 
 #UIToolbarContainer .UITableColumnContainer .PinToolbarContainerTDContainer {
-  height: 25px;
-  margin: 4px 0 0 12px;
-  width: 31px;
-  float: right;
-  float: left;
   display: none;
 }
 
