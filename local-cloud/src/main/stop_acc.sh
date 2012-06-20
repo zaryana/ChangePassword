@@ -1,3 +1,8 @@
 #!/bin/bash
 
-ssh -i ~/.ssh/wks-acc.key cl-admin@wks-acc.exoplatform.org "cd /home/cl-admin/acceptance/  && ./stop.sh"
+./stop_cloud.sh cloud@wks-acc.exoplatform.org
+
+RETVAL=$?
+if [ ! $RETVAL -eq 0 ] ; then
+  echo "Deploy cloud script failed, exiting now.."
+fi 
