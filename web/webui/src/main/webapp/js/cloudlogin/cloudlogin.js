@@ -4,15 +4,11 @@
  */
 var CloudLogin = {};
 
-CloudLogin.WS_SENDMAIL_URL = "/rest/invite-join-ws/send-mail/";
-CloudLogin.WS_STATUS_RESPONSE_OK = "Message sent";
-CloudLogin.EMAIL_REGEXP = /^([a-zA-Z0-9_\.\-])+\@((([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+)$/;
-CloudLogin.NB_EMAILS_OK = 0;
-CloudLogin.NB_EMAILS_REQUESTED = 0;
-CloudLogin.NB_EMAILS = 0;
-CloudLogin.ERROR_MESSAGES = new Array();
-CloudLogin.DEFAULT_VALUE = "Add email addresses";
 
+/*===========================================================================================================*
+ *        FRAMEWORK METHODS
+ *===========================================================================================================*/
+ 
 CloudLogin.initCloudLogin = function() {
   if (!window.console) console = {};
   console.log = console.log || function(){};
@@ -24,12 +20,54 @@ CloudLogin.initCloudLogin = function() {
   
   // Event only for IE
   document.getElementById('email').onclick = function() {document.getElementById('email').value = '';}
-
-  CloudLogin.initTextExt();
 }
 
+CloudLogin.exit = function() {
+  $("#CloudExitForm").submit();
+}
+
+/**
+ * Display red message up to input
+ */
+CloudLogin.displayMessage = function(message) {
+  $("#messageString").show();
+  $("#messageString").html(message);
+}
+
+/**
+ * Clear red message up to input
+ */
+CloudLogin.clearMessage = function() {
+  $("#messageString").hide();
+  $("#messageString").text("");
+}
+
+/**
+ * Do nothing
+ */
+CloudLogin.doNothing = function() {
+  return;
+}
+
+
+/*===========================================================================================================*
+ *        STEP EMAIL
+ *===========================================================================================================*/
+
+CloudLogin.WS_SENDMAIL_URL = "/rest/invite-join-ws/send-mail/";
+CloudLogin.WS_STATUS_RESPONSE_OK = "Message sent";
+CloudLogin.EMAIL_REGEXP = /^([a-zA-Z0-9_\.\-])+\@((([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+)$/;
+CloudLogin.NB_EMAILS_OK = 0;
+CloudLogin.NB_EMAILS_REQUESTED = 0;
+CloudLogin.NB_EMAILS = 0;
+CloudLogin.ERROR_MESSAGES = new Array();
+CloudLogin.DEFAULT_VALUE = "Add email addresses";
+
+
+/**
+ * Initialize jquery module textext (http://textextjs.com)
+ */
 CloudLogin.initTextExt = function() {
-  // http://textextjs.com
   var textExt = $('#email').textext({ 
     plugins: 'tags',
     ext : {
@@ -95,11 +133,64 @@ CloudLogin.initTextExt = function() {
   );
 }
 
-CloudLogin.showStep = function(n) {
-  $('#StartedStep1').hide();
-  $('#StartedStep2').hide();
-  $('#StartedStep3').hide();
-  $('#StartedStep' + n).show();
+/**
+ * Show step Email
+ */
+CloudLogin.showStepEmail = function() {
+  
+  $('#StepProfile').hide();
+  $('#StepSpace').hide();
+  $('#StepEmail').show();
+  
+  // Init textExt just before displaying
+  CloudLogin.initTextExt();
+}
+
+/**
+ * Validate datas from step Email
+ */
+CloudLogin.validateStepEmail = function(event) {
+  
+  CloudLogin.NB_EMAILS_OK = 0;
+  CloudLogin.NB_EMAILS_REQUESTED = 0;
+  CloudLogin.ERROR_MESSAGES = [];
+  
+  var emails = eval(document.getElementById("emails").value);
+  var emailNotTagged = document.getElementById("email").value;
+  
+  // only if there is no tags and this is not default value
+  if(emails.length === 0 && CloudLogin.DEFAULT_VALUE != emailNotTagged) {
+    if(emailNotTagged != undefined && emailNotTagged.length > 0) {
+      // trim
+      emailNotTagged = emailNotTagged.replace(/^\s+/g,'').replace(/\s+$/g,'')
+      if(CloudLogin.isValidEmail(emailNotTagged)) {
+        var list = $('#email').textext();
+        var textExtTags = list[0].tags.apply();
+        textExtTags.addTags([emailNotTagged]);
+        emails.push(emailNotTagged);
+      }
+      else {
+        CloudLogin.displayMessage('email is not valid: "' + emailNotTagged + '"');
+      }
+      document.getElementById("email").value = "";
+      return;
+    }
+  }
+  else {
+    $("#t_submit_email").val("Sending...");
+  }
+  
+  // deactivate button
+  document.getElementById("t_submit_email").disabled = true;
+  
+  // lets pass if there isn't emails
+  if(emails.length == 0) {
+    CloudLogin.exit();
+  }
+  
+  for(var i=0; i<emails.length; i++) {
+    CloudLogin.sendEmail(emails[i], i);
+  }
 }
 
 /**
@@ -168,93 +259,22 @@ CloudLogin.finalizeSendEmails = function() {
     // Case of one email not tagged but sent, we exit wizard
     CloudLogin.exit();
   }
-} 
-
-CloudLogin.validateStep1 = function(event) {
-  
-  CloudLogin.NB_EMAILS_OK = 0;
-  CloudLogin.NB_EMAILS_REQUESTED = 0;
-  CloudLogin.ERROR_MESSAGES = [];
-  
-  var emails = eval(document.getElementById("emails").value);
-  var emailNotTagged = document.getElementById("email").value;
-  
-  // only if there is no tags and this is not default value
-  if(emails.length === 0 && CloudLogin.DEFAULT_VALUE != emailNotTagged) {
-    if(emailNotTagged != undefined && emailNotTagged.length > 0) {
-      // trim
-      emailNotTagged = emailNotTagged.replace(/^\s+/g,'').replace(/\s+$/g,'')
-      if(CloudLogin.isValidEmail(emailNotTagged)) {
-        var list = $('#email').textext();
-        var textExtTags = list[0].tags.apply();
-        textExtTags.addTags([emailNotTagged]);
-        emails.push(emailNotTagged);
-      }
-      else {
-        CloudLogin.displayMessage('email is not valid: "' + emailNotTagged + '"');
-      }
-      document.getElementById("email").value = "";
-      return;
-    }
-  }
-  else {
-    $("#t_submit").val("Sending...");
-  }
-  
-  // deactivate button
-  document.getElementById("t_submit").disabled = true;
-  
-  // lets pass if there isn't emails
-  if(emails.length == 0) {
-    CloudLogin.exit();
-  }
-  
-  for(var i=0; i<emails.length; i++) {
-    CloudLogin.sendEmail(emails[i], i);
-  }
-}
-
-CloudLogin.validateStep2 = function() {
-  CloudLogin.showStep(3);
-}
-
-CloudLogin.validateStep3 = function() {
-  CloudLogin.exit();
-}
-
-CloudLogin.exit = function() {
-  $("#CloudExitForm").submit();
-}
-
-/**
- * Display red message up to input
- */
-CloudLogin.displayMessage = function(message) {
-  $("#messageString").show();
-  $("#messageString").html(message);
-}
-
-/**
- * Clear red message up to input
- */
-CloudLogin.clearMessage = function() {
-  $("#messageString").hide();
-  $("#messageString").text("");
 }
 
 /**
  * Update button Send. At the first button is "Skip", after it is "Send (x)" x is number of mails
  */
 CloudLogin.updateSendButton = function() {
+  console.log(CloudLogin.NB_EMAILS);
   if(CloudLogin.NB_EMAILS > 0) {
-    $("#t_submit").val("Send (" + CloudLogin.NB_EMAILS + ")");
+    $("#t_submit_email").val("Send (" + CloudLogin.NB_EMAILS + ")");
   }
   else {
-    $("#t_submit").val("Skip");
+    $("#t_submit_email").val("Skip");
   }
   
   // reactivate button
-  document.getElementById("t_submit").disabled = false;
+  document.getElementById("t_submit_email").disabled = false;
 }
 
 CloudLogin.decrementNbMails = function() {
@@ -269,6 +289,44 @@ CloudLogin.incrementNbMails = function() {
   CloudLogin.updateSendButton();
 }
 
+
+
+/*===========================================================================================================*
+ *        STEP PROFILE
+ *===========================================================================================================*/
+
+CloudLogin.showStepProfile = function() {
+  $('#StepSpace').hide();
+  $('#StepEmail').hide();
+  $('#StepProfile').show();
+}
+
+CloudLogin.validateStepProfile = function() {
+  CloudLogin.showStepSpace();
+}
+
+
+
+/*===========================================================================================================*
+ *        STEP SPACES
+ *===========================================================================================================*/
+ 
+CloudLogin.showStepSpace = function() {
+  $('#StepProfile').hide();
+  $('#StepEmail').hide();
+  $('#StepSpace').show();
+}
+
+CloudLogin.validateStepSpace = function() {
+  CloudLogin.showStepEmail();
+}
+
+
+
+/*===========================================================================================================*
+ *        UNITARY METHODS
+ *===========================================================================================================*/
+ 
 /**
  * Returns a domain from an email. If email is not correct, returns all email
  */
