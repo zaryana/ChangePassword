@@ -49,10 +49,12 @@
       <artifactId>cloud-admin-connector-localhost</artifactId>
       <type>jar</type>
     </dependency>
-    <dependency>
+
+    <!-- used own patch of ec2 connector from cloud-management-patch -->
+    <!--dependency>
       <groupId>org.exoplatform.cloud-management</groupId>
       <artifactId>cloud-admin-connector-ec2</artifactId>
-    </dependency>
+    </dependency-->
     <dependency>
       <groupId>com.exoplatform.cloudworkspaces</groupId>
       <artifactId>cloud-workspaces-web-statistic</artifactId>

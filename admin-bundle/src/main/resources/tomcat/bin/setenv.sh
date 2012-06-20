@@ -48,6 +48,9 @@
 [ -z "$CLOUD_AGENT_PASSWORD" ]  && CLOUD_AGENT_PASSWORD="cloudadmin"
 [ -z "$CLOUD_AGENT_DB_SCHEMES_DIR" ]  && CLOUD_AGENT_DB_SCHEMES_DIR="../../cloud/databases"
 
+# needs for showing logs of application servers through apache
+[ -z "$APPLICATION_SERVER_LOGS_PORT" ] && APPLICATION_SERVER_LOGS_PORT="8079"
+
 # DB connection send to agent
 [ -z "$EXO_DB_HOST" ] && EXO_DB_HOST="localhost:3306"
 [ -z "$EXO_DB_USER" ] && EXO_DB_USER="dbuser"
@@ -64,6 +67,7 @@
 # admin variables
 EXO_CLOUD_ADMIN_OPTS="-Dadmin.agent.auth.username=$CLOUD_AGENT_USERNAME \
                       -Dadmin.agent.auth.password=$CLOUD_AGENT_PASSWORD \
+                      -Dapplication.server.logs.port=$APPLICATION_SERVER_LOGS_PORT \
                       -Dadmin.agent.db.url=$EXO_DB_HOST \
                       -Dadmin.agent.db.username=$EXO_DB_USER \
                       -Dadmin.agent.db.password=$EXO_DB_PASSWORD \
