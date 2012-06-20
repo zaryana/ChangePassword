@@ -211,6 +211,8 @@ public class CloudWorkspacesTenantService {
             return Response.ok().build();
           }
         }
+        case RESUMING:
+        case SUSPENDING:
         case SUSPENDED: {
           LOG.info("User " + userMail
               + " was put in waiting state after singup - tenant suspended.");
@@ -331,6 +333,8 @@ public class CloudWorkspacesTenantService {
         switch (tState) {
         case CREATION:
         case WAITING_CREATION:
+        case RESUMING:
+        case SUSPENDING:
         case SUSPENDED: {
           final String uuid = UUID.randomUUID().toString();
           referencesManager.putEmail(userMail, uuid);
@@ -490,6 +494,8 @@ public class CloudWorkspacesTenantService {
             + " join was put in waiting state after join - tenant state WAITING_CREATION.");
         break;
       }
+      case RESUMING:
+      case SUSPENDING:
       case SUSPENDED: {
         tenantStarter.startTenant(tName);
         LOG.info("User " + userMail + " was put in waiting state after join - tenant suspended.");
@@ -820,6 +826,8 @@ public class CloudWorkspacesTenantService {
       return Response.ok().build();
     }
 
+    case RESUMING:
+    case SUSPENDING:
     case SUSPENDED: {
       tenantStarter.startTenant(tName);
       return Response.status(309)
