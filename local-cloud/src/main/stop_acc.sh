@@ -4,5 +4,5 @@
 
 RETVAL=$?
 if [ ! $RETVAL -eq 0 ] ; then
-  echo "Deploy cloud script failed, exiting now.."
+  echo "Stop cloud script failed, exiting now.."
 fi 
