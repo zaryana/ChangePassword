@@ -197,9 +197,12 @@ CloudLogin.validateStep1 = function(event) {
       return;
     }
   }
+  else {
+    $("#t_submit").val("Sending...");
+  }
   
   // deactivate button
-  CloudLogin.setButtonToSendState();
+  document.getElementById("t_submit").disabled = true;
   
   // lets pass if there isn't emails
   if(emails.length == 0) {
@@ -252,14 +255,6 @@ CloudLogin.updateSendButton = function() {
   
   // reactivate button
   document.getElementById("t_submit").disabled = false;
-}
-
-/**
- * Update button Send. At the first button is "Skip", after it is "Send (x)" x is number of mails
- */
-CloudLogin.setButtonToSendState = function() {
-  document.getElementById("t_submit").disabled = true;
-  $("#t_submit").val("Sending...");
 }
 
 CloudLogin.decrementNbMails = function() {
