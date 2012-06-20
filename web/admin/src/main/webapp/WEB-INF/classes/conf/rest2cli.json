@@ -117,6 +117,12 @@
     "description" : "Get list of all registered application servers and their states."   
 },
 {
+    "command": ["server logs"],
+    "path": "/cloud-admin/cloudworkspaces/info-service/server-logs",
+    "method": "GET",
+    "description" : "Get list of all registered application servers and links to their logs."   
+},
+{
     "command": ["user online"],
     "path": "/cloud-admin/info-service/users-list",
     "method": "GET",
