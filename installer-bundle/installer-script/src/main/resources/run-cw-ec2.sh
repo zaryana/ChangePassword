@@ -29,6 +29,8 @@ CMDSQL="/usr/bin/mysql"
 URL="http://169.254.169.254"				# Base URL for retrieve instance metadata
 URI_InstID="/latest/meta-data/instance-id"		# Instance ID , used as name for default repo for app.server
 URI_ExtIP="/latest/meta-data/public-ipv4"		# External IP , used for JMX access
+URI_ExtHNm="/latest/meta-data/public-hostname"		# external DNS name, needed for update hostname to this name ( Apache SSL )
+
 URI_UData="/latest/user-data"				# Additional EBS drive, used as storage for tomcat ( indexes )
 
 EC2_HOME="/usr/local/ec2/api-tools-1.5.3.1"
@@ -40,32 +42,35 @@ PATH=$EC2_HOME/bin:$JAVA_HOME/bin:$PATH:$HOME/bin
 export EC2_HOME JAVA_HOME EC2_PRIVATE_KEY EC2_CERT PATH
 
 #Begin main program
-	if [ ! -f $INIT ]; then
-	  touch $INIT
-	else
+	[ -f "${INIT}" ] && {
 	  echo "Run not at first time" >> $SCR_Log
-	  exit 0
-	fi
+	  exit 1
+	} || {
+	  touch "${INIT}"
+	}
+	echo "Started" >> $SCR_Log
+	StartTime=`date +'%s'`
 
 # Get instance ID
-	date +'%s' >> $SCR_Log
-
-	while true; do
-	  ping -c 1 -W 1 -q proxys-cldint-stg.exoplatform.org && break  || sleep 5
+	B=0
+	while [[ "${B}" -lt "20" ]]; do
+	  wget -c ${URL}${URI_InstID} -O $ResFile --no-clobber --wait=15 --retry-connrefused --tries=20 -o ${WGET_Log}
+	  InstID=$(grep -E '^i-[[:xdigit:]]{8}$' $ResFile)
+	  [ -n "${InstID}" ] && {
+	    B=21
+	  } || {
+	    ((B++))
+	    sleep 5
+	  }
+	  [ -f "$ResFile" ] && rm -rf $ResFile || true
 	done
-
-	date +'%s' >> $SCR_Log
-
-	wget -c ${URL}${URI_InstID} -O $ResFile --no-clobber --wait=15 --retry-connrefused --tries=20 -o ${WGET_Log}
-	date +'%s' >> $SCR_Log
-
-	InstID=$(grep -E '^i-[[:xdigit:]]{8}$' $ResFile)
-	[ -n "${InstID}" ] && {
-	  rm -rf $ResFile
-	  echo "Instance ID : ${InstID}" >> $SCR_Log
-	} || {
-	  echo "Error retrieving Instance ID" >> $SCR_Log
+	CurTime=`date +'%s'`
+	CurTime=$((CurTime-$StartTime))	
+	[[ "${B}" -ne "21" ]] && {
+	  echo "Error retrieving Instance ID (${CurTime}s)" >> $SCR_Log
 	  exit 2
+	} || {
+	  echo "Instance ID : ${InstID} (${CurTime}s)" >> $SCR_Log
 	}
 # Get External IP
 	wget -c ${URL}${URI_ExtIP} -O $ResFile --no-clobber --retry-connrefused --tries=10 -o ${WGET_Log}
@@ -75,6 +80,16 @@ export EC2_HOME JAVA_HOME EC2_PRIVATE_KEY EC2_CERT PATH
 	  echo "External IP : ${ExtIP}" >> $SCR_Log
 	} || {
 	  echo "Error retrieving External IP" >> $SCR_Log
+	  exit 2
+	}
+# Get External hostname
+	wget -c ${URL}${URI_ExtHNm} -O $ResFile --no-clobber --retry-connrefused --tries=10 -o ${WGET_Log}
+	ExtHNm=$(grep -E '^ec2-((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\-){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?).compute-1.amazonaws.com$' $ResFile)
+	[ -n "$ExtHNm" ] && {
+	  rm -rf $ResFile
+	  echo "External hostname : ${ExtHNm}" >> $SCR_Log
+	} || {
+	  echo "Error retrieving External hostname" >> $SCR_Log
 	  exit 2
 	}
 # Get User data
@@ -103,7 +118,6 @@ export EC2_HOME JAVA_HOME EC2_PRIVATE_KEY EC2_CERT PATH
 	} || {
 	  echo "DBHost : $DBHost" >> $SCR_Log
 	}
-	
 # Get DB user name
 	DBUName=$(cut -f 4 -d\& $ResFile | grep -E '[[:alnum:]]{3,}' )
 	[ -z "$DBUName" ] && {
@@ -120,7 +134,6 @@ export EC2_HOME JAVA_HOME EC2_PRIVATE_KEY EC2_CERT PATH
 	} || {
 	  echo "DB User password: defined" >> $SCR_Log
 	}
-
 # Get agent user name
 	AgentUName=$(cut -f 6 -d\& $ResFile | grep -E '[[:print:]]{6,}' )
 	[ -z "$AgentUName" ] && {
@@ -137,7 +150,6 @@ export EC2_HOME JAVA_HOME EC2_PRIVATE_KEY EC2_CERT PATH
 	} || {
 	  echo "Agent User password: defined" >> $SCR_Log
 	}
-
 # Get mail from
 	MailFrom=$(cut -f 8 -d\& $ResFile | grep -E '[[:print:]]{6,}' )
 	[ -z "$MailFrom" ] && {
@@ -154,7 +166,6 @@ export EC2_HOME JAVA_HOME EC2_PRIVATE_KEY EC2_CERT PATH
 	} || {
 	  echo "Mail host: $MailHost" >> $SCR_Log
 	}
-
 # Get mail port
 	MailPort=$(cut -f 10 -d\& $ResFile | grep -E '[[:digit:]]{2,}' )
 	[ -z "$MailPort" ] && {
@@ -179,7 +190,6 @@ export EC2_HOME JAVA_HOME EC2_PRIVATE_KEY EC2_CERT PATH
 	} || {
 	  echo "Mail user password: defined" >> $SCR_Log
 	}
-
 # Attache EBS volume for data
 	ec2-attach-volume -i $InstID -d "/dev/sdd" $VolID 2>>$SCR_Log && {
 	  StartTime=`date +'%s'`
@@ -232,6 +242,15 @@ export EC2_HOME JAVA_HOME EC2_PRIVATE_KEY EC2_CERT PATH
 	  echo "FAIL" >> $SCR_Log
 	  exit 2
 	} 
+
+# Unpack zipped bundle
+#	echo -n "Unpacking bundle " >>$SCR_Log
+#	unzip -qq "${APP_DIR}/${SRC_DIR}/*.zip" -d $APP_DIR 2>>$SCR_Log && {
+#	  echo "OK" >> $SCR_Log
+#	} || {
+#	  echo "FAIL" >> $SCR_Log 
+#	  exit 2
+#	}
 
 # Set ownership for unpacked app.server directory
 	echo -n "Set ownership for app.server directory " >> $SCR_Log
@@ -349,8 +368,28 @@ export EC2_HOME JAVA_HOME EC2_PRIVATE_KEY EC2_CERT PATH
 	  echo "FAIL" >> $SCR_Log
 	  exit 2
 	}
+# Set hostname to an AWS external hostname 
+	/bin/hostname proba.exoplatform.org $ExtHNm
+	CurHostName=`/bin/hostname`
+	[[ "${CurHostName}" -eq "${ExtHNm}" ]] && {
+	  echo "Hostname updated to : $CurHostName" >> $SCR_Log
+	} || {
+	  echo "Hostname wasn't updated. Perhaps, access to log files will not available"
+	}
+# Need to launch Apache HTTPD for log access
+	/etc/init.d/httpd start && {
+	  echo "HTTP daemon successfully started" >> $SCR_Log
+	} || {
+	  echo "HTTP daemon not started :(" >> $SCR_Log
+	}	
 
+# Starting app.server
+	echo "Starting app.server (tomcat)" >> $SCR_Log
 	su - ${SUSER} -c "$APP_DIR/app-server-tomcat/start_eXo.sh"
 #	/etc/init.d/monit start
+
+	CurTime=`date +'%s'`
+	CurTime=$((CurTime-$StartTime))
+	echo "Preparations launch time : $CurTime" >> $SCR_Log
 
 exit 0
