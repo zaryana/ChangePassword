@@ -42,7 +42,7 @@ while [ $code -ne 302 ] && [ $code -ne 200 ] && [ $t -lt $timeout ] ; do
   fi
   sleep $tstep
   t=$((t + tstep))
-  echo "waiting $t seconds from $timeout, $code"
+  echo -ne "\rwaiting $t seconds from $timeout, http status: $code     "
 done
 
 if [ $t -ge $timeout ] ; then
@@ -50,6 +50,6 @@ if [ $t -ge $timeout ] ; then
   exit 1
 fi
 
-echo "Local Cloud started succesfully at $remote_cwks"
+echo "Local Cloud started succesfully at $remote_cwks                " # need spaces to rewrite waiting text
 exit 0
 
