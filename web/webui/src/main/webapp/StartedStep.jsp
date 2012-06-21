@@ -86,21 +86,12 @@
       <table class="BorderDot" cols="2">
         <tbody>
           <tr>
-            <td class="FormInput CheckBox">
-              <ul class="ClearFix">
-                <li class="FL">
-                  <input type="checkbox" />Marketing <br/>
-                  <input type="checkbox" />Sales
-                </li>
-                <li class="FL">
-                  <input type="checkbox" />Finance<br/>
-                  <input type="checkbox" />IT 
-                </li>
-                <li class="FL">
-                  <input type="checkbox" />Accountant<br/>
-                  <input type="checkbox" />Design
-                </li>
+            <td class="FormInput CheckBox" id="SpacesContainer" style="display: none;">
+              <ul id="SpacesContent" class="ClearFix">
               </ul>
+            </td>
+            <td class="FormInput CheckBox" id="SpacesLoader">
+              <img src="http://www.i-move.chicco.com/images/loader.gif" />
             </td>
             <td class="FormButton"> <input type="button" onclick="CloudLogin.validateStepSpace();" value="Next" id="t_submit_space" class="Button" /></td>
           </tr>

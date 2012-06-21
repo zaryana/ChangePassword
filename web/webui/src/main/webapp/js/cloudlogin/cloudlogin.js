@@ -20,6 +20,9 @@ CloudLogin.initCloudLogin = function() {
   
   // Event only for IE
   document.getElementById('email').onclick = function() {document.getElementById('email').value = '';}
+  
+  // Get Spaces
+  CloudLogin.initSpaces();
 }
 
 CloudLogin.exit = function() {
@@ -311,6 +314,8 @@ CloudLogin.validateStepProfile = function() {
  *        STEP SPACES
  *===========================================================================================================*/
  
+CloudLogin.WS_SPACES_URL = "rest/gadgets/spaces/public",
+ 
 CloudLogin.showStepSpace = function() {
   $('#StepProfile').hide();
   $('#StepEmail').hide();
@@ -321,6 +326,55 @@ CloudLogin.validateStepSpace = function() {
   CloudLogin.showStepEmail();
 }
 
+CloudLogin.initSpaces = function() {
+  var mainUrl = CloudLogin.WS_SPACES_URL;
+  
+  CloudLogin.lockSpaces();
+  
+  $.ajax({
+    url: mainUrl,
+    success: function(spaces) {
+      var listSpaces = $('#SpacesContent');
+      var liSpace = undefined;
+    
+      // Fetch all steps to create list
+      $.each(spaces, function(i, space) {
+        
+        if(i % 2 === 0) {
+          liSpace = $(document.createElement('li')).addClass('FL');
+          liSpace.append('<input type="checkbox" />' + space.displayName + ' <br />');
+        }
+        else {
+          liSpace.append('<input type="checkbox" />' + space.displayName);
+        }
+        listSpaces.append(liSpace);
+      });
+      
+      CloudLogin.unlockSpaces();
+    },
+    error: function(request, status, error) {
+      console.log("NOK [Status=" + status + "], [Error=" + error + "]");
+      CloudLogin.unlockSpaces();
+    },
+    dataType: 'json'
+  });
+}
+
+CloudLogin.lockSpaces = function() {
+  
+  // lock button Next
+  document.getElementById("t_submit_space").disabled = true;
+}
+
+CloudLogin.unlockSpaces = function() {
+  
+  // delete Load image
+  $('#SpacesLoader').hide();
+  $('#SpacesContainer').show();
+
+  // Unlock button Next
+  document.getElementById("t_submit_space").disabled = false;
+}
 
 
 /*===========================================================================================================*
