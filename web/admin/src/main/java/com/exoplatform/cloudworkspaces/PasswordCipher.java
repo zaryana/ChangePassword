@@ -27,7 +27,8 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
- * A simple text cipher to encrypt/decrypt a string.
+ * Advanced Encryption Standard (AES). A simple text cipher to encrypt/decrypt a
+ * password.
  */
 public class PasswordCipher {
   private static byte[]       linebreak = {};
@@ -66,6 +67,8 @@ public class PasswordCipher {
 
   public synchronized String decrypt(String codedText) {
     String decrypt = "";
+    if (!System.getProperty("cloud.admin.crypto.password").equals("TRUE"))
+      return codedText;
     try {
       byte[] encypted = coder.decode(codedText.getBytes());
       cipher.init(Cipher.DECRYPT_MODE, key);

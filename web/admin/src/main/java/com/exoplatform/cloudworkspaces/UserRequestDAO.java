@@ -91,7 +91,6 @@ public class UserRequestDAO {
           Properties newprops = new Properties();
           newprops.load(io);
           io.close();
-
           if (stateFilter == null
               || newprops.getProperty("action").equalsIgnoreCase(stateFilter.toString())) {
 
