@@ -20,9 +20,9 @@ public class UserRequestDAO {
 
   private static final Logger LOG = LoggerFactory.getLogger(UserRequestDAO.class);
 
-  public UserRequestDAO(Configuration cloudAdminConfiguration) {
+  public UserRequestDAO(Configuration cloudAdminConfiguration, PasswordCipher passwordCipher) {
     this.cloudAdminConfiguration = cloudAdminConfiguration;
-    this.passwordCipher = new PasswordCipher();
+    this.passwordCipher = passwordCipher;
   }
 
   public void put(UserRequest req) throws CloudAdminException {

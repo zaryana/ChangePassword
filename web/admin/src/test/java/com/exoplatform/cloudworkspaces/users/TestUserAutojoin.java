@@ -59,7 +59,7 @@ public class TestUserAutojoin {
     notificationMailSender = Mockito.mock(NotificationMailSender.class);
     tenantInfoDataManager =  Mockito.mock(TenantInfoDataManager.class);
     passwordCipher = Mockito.mock(PasswordCipher.class);
-    UserRequestDAO   userRequestDao  = new UserRequestDAO(cloudAdminConfiguration);
+    UserRequestDAO   userRequestDao  = new UserRequestDAO(cloudAdminConfiguration, passwordCipher);
 
     this.manager = new UsersManager(cloudAdminConfiguration,
                                             requestPerformer,
@@ -70,7 +70,7 @@ public class TestUserAutojoin {
                                             referencesManager);
   }
 
-  /*@Test
+  @Test
   public void testManagerCommon() throws CloudAdminException{
     Set<String> tenantSet = new HashSet<String>();
     tenantSet.add("aaa");
@@ -90,7 +90,7 @@ public class TestUserAutojoin {
 
   }
 
-  /*@Test
+  @Test
   public void testNotEnoughFreeSpace() throws CloudAdminException{
     Set<String> tenantSet = new HashSet<String>();
     tenantSet.add("aaa");
@@ -100,6 +100,7 @@ public class TestUserAutojoin {
     Mockito.when(tenantInfoDataManager.getValue(Matchers.anyString(), Matchers.anyString())).thenReturn("ONLINE");
     Mockito.when(requestPerformer.isNewUserAllowed(Matchers.anyString(), Matchers.anyString())).thenReturn(true);
     Mockito.when(requestPerformer.isNewUserAllowed(Matchers.eq("ccc"), Matchers.anyString())).thenReturn(false);
+    Mockito.when(passwordCipher.decrypt(Matchers.anyString())).thenReturn("password");
     manager.joinAll();
     Mockito.verify(requestPerformer, Mockito.times(2)).storeUser(Matchers.anyString(), // 2 of 3 users joined
                                                                  Matchers.anyString(),
@@ -120,6 +121,7 @@ public class TestUserAutojoin {
     Mockito.when(tenantInfoDataManager.getValue(Matchers.anyString(), Matchers.anyString())).thenReturn("ONLINE");
     Mockito.when(tenantInfoDataManager.getValue(Matchers.eq("ccc"), Matchers.anyString())).thenReturn("WAITING_CREATION");
     Mockito.when(requestPerformer.isNewUserAllowed(Matchers.anyString(), Matchers.anyString())).thenReturn(true);
+    Mockito.when(passwordCipher.decrypt(Matchers.anyString())).thenReturn("password");
     manager.joinAll();
     Mockito.verify(requestPerformer, Mockito.times(2)).storeUser(Matchers.anyString(), // 2 of 3 users joined
                                                                  Matchers.anyString(),
@@ -128,7 +130,7 @@ public class TestUserAutojoin {
                                                                  Matchers.anyString(),
                                                                  Matchers.anyBoolean());
 
-  }*/
+  }
 
   @Test
   public void testUserRegistrationNotComplete() throws CloudAdminException{
@@ -138,6 +140,7 @@ public class TestUserAutojoin {
     Mockito.when(tenantInfoDataManager.getValue(Matchers.anyString(), Matchers.anyString())).thenReturn("ONLINE");
     Mockito.when(requestPerformer.isNewUserAllowed(Matchers.anyString(), Matchers.anyString())).thenReturn(true);
     Mockito.when(referencesManager.putEmail(Matchers.anyString(), Matchers.anyString())).thenReturn("123123123");
+    Mockito.when(passwordCipher.decrypt(Matchers.anyString())).thenReturn("");
     manager.joinAll();
     Mockito.verify(requestPerformer, Mockito.times(0)).storeUser(Matchers.anyString(), //User not joined
                                                                  Matchers.anyString(),

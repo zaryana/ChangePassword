@@ -78,6 +78,7 @@ public class CloudWorkspacesAdminApplicationComposer extends CloudAdminApplicati
     container.addComponent(ResourceBinder.class,
                            servletContext.getAttribute(ResourceBinder.class.getName()));
 
+
     container.addComponent(WorkspacesMailSender.class);
 
     container.addComponent(UserLimitsStorage.class);
@@ -85,6 +86,7 @@ public class CloudWorkspacesAdminApplicationComposer extends CloudAdminApplicati
     container.addComponent(NotificationMailSender.class);
     container.addComponent(ReferencesManager.class);
     container.addComponent(CloudIntranetUtils.class);
+    container.addComponent(PasswordCipher.class);
     container.addComponent(UserRequestDAO.class);
     container.addComponent(TemplateManagement.class);
 

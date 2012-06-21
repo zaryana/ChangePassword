@@ -18,14 +18,7 @@
  */
 package com.exoplatform.cloudworkspaces;
 
-import static org.exoplatform.cloudmanagement.admin.configuration.AdminConfiguration.CLOUD_ADMIN_TENANT_QUEUE_DIR;
-
-import java.io.File;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-
+import com.exoplatform.cloudworkspaces.http.WorkspacesOrganizationRequestPerformer;
 import org.apache.commons.configuration.Configuration;
 import org.exoplatform.cloudmanagement.admin.CloudAdminException;
 import org.exoplatform.cloudmanagement.admin.TenantRegistrationException;
@@ -41,7 +34,13 @@ import org.exoplatform.cloudmanagement.status.TenantState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.exoplatform.cloudworkspaces.http.WorkspacesOrganizationRequestPerformer;
+import java.io.File;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
+import static org.exoplatform.cloudmanagement.admin.configuration.AdminConfiguration.CLOUD_ADMIN_TENANT_QUEUE_DIR;
 
 public class NotificationMailSender {
 
@@ -92,36 +91,7 @@ public class NotificationMailSender {
     }
   }
 
-  /*
-   * public void sendCreationQueuedEmails(String tName, String userMail,
-   * Map<String, String> props) throws CloudAdminException { String userTemplate
-   * = cloudAdminConfiguration.getString(MailingProperties.
-   * CLOUD_ADMIN_MAIL_REQUEST_QUEUED_TEMPLATE, null); String devTemplate =
-   * cloudAdminConfiguration.getString(MailingProperties.
-   * CLOUD_ADMIN_MAIL_REQUEST_QUEUED_DEVELOPERS_TEMPLATE, null); try { String
-   * email = cloudAdminConfiguration.getString(MailingProperties.
-   * CLOUD_ADMIN_MAIL_SUPPOR_EMAIL); mailSender.sendMail(userMail,
-   * cloudAdminConfiguration
-   * .getString(MailingProperties.CLOUD_ADMIN_MAIL_REQUEST_QUEUED_SUBJECT),
-   * userTemplate, props, false); mailSender.sendMail(email,
-   * cloudAdminConfiguration
-   * .getString(MailingProperties.CLOUD_ADMIN_MAIL_REQUEST_QUEUED_DEVELOPERS_SUBJECT
-   * ) .replace("${workspace}", tName), devTemplate, props, false); } catch
-   * (CloudAdminException e) {
-   * sendAdminErrorEmail("Configuration error - creation queued emails is not send"
-   * , e); LOG.error("Configuration error - creation queued emails is not send",
-   * e); } } public void sendCreationRejectedEmail(String tName, String
-   * userMail, Map<String, String> props) throws CloudAdminException { String
-   * userTemplate = cloudAdminConfiguration.getString(MailingProperties.
-   * CLOUD_ADMIN_MAIL_REQUEST_REJECTED_TEMPLATE, null); try {
-   * mailSender.sendMail(userMail,
-   * cloudAdminConfiguration.getString(MailingProperties
-   * .CLOUD_ADMIN_MAIL_REQUEST_REJECTED_SUBJECT), userTemplate, props, false); }
-   * catch (CloudAdminException e) { sendAdminErrorEmail(
-   * "Configuration error - creation rejected emails is not send", e);
-   * LOG.error("Configuration error - creation rejected emails is not send", e);
-   * } }
-   */
+
   public void sendJoinRejectedEmails(String tName, String userMail, Map<String, String> props) throws CloudAdminException {
     String userTemplate = cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_JOIN_CLOSED_USER_TEMPLATE,
                                                             null);
