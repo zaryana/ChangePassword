@@ -49,7 +49,7 @@
 [ -z "$CLOUD_AGENT_DB_SCHEMES_DIR" ]  && CLOUD_AGENT_DB_SCHEMES_DIR="../../cloud/databases"
 
 # needs for showing logs of application servers through apache
-[ -z "$APPLICATION_SERVER_LOGS_PORT" ] && APPLICATION_SERVER_LOGS_PORT="8079"
+[ -z "$APPLICATION_SERVER_LOGS_PORT" ] && APPLICATION_SERVER_LOGS_PORT="8085"
 
 # DB connection send to agent
 [ -z "$EXO_DB_HOST" ] && EXO_DB_HOST="localhost:3306"
