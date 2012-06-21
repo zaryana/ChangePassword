@@ -49,7 +49,7 @@
 [ -z "$CLOUD_AGENT_DB_SCHEMES_DIR" ]  && CLOUD_AGENT_DB_SCHEMES_DIR="../../cloud/databases"
 
 # needs for showing logs of application servers through apache
-[ -z "$APPLICATION_SERVER_LOGS_PORT" ] && APPLICATION_SERVER_LOGS_PORT="8079"
+[ -z "$APPLICATION_SERVER_LOGS_PORT" ] && APPLICATION_SERVER_LOGS_PORT="8085"
 
 # DB connection send to agent
 [ -z "$EXO_DB_HOST" ] && EXO_DB_HOST="localhost:3306"
@@ -63,6 +63,9 @@
 [ -z "$CLOUD_AWS_VERSION" ] && CLOUD_AWS_VERSION="2011-05-15"
 [ -z "$CLOUD_AWS_IDENTITY" ] && CLOUD_AWS_IDENTITY="NO_IDENTITY"
 [ -z "$CLOUD_AWS_CREDENTIALS" ] && CLOUD_AWS_CREDENTIALS="NO_CREDENTIALS"
+
+# Graphite options
+[ -z "$GRAPHITE_PORT" ] && GRAPHITE_PORT="2003"
 
 # admin variables
 EXO_CLOUD_ADMIN_OPTS="-Dadmin.agent.auth.username=$CLOUD_AGENT_USERNAME \
@@ -101,6 +104,8 @@ EXO_CLOUD_ADMIN_OPTS="-Dadmin.agent.auth.username=$CLOUD_AGENT_USERNAME \
                       -Dcloud.admin.hostname.file=$EXO_ADMIN_CONF_DIR/hostname.cfg \
                       -Dcloud.admin.configuration.file=$EXO_ADMIN_CONF_DIR/admin.properties \
                       -Dcloud.admin.hostname.file=$EXO_ADMIN_CONF_DIR/hostname.cfg \
+                      -Dgraphite.host=$HOST_EXTERNAL_ADDR \
+                      -Dgraphite.port=$GRAPHITE_PORT \
                       -Dlogback.configurationFile=$CATALINA_HOME/conf/logback.xml \
                       -Dlogback.smtp.appender.conf.file=${EXO_LOGBACK_SMTP_CONF}"
 

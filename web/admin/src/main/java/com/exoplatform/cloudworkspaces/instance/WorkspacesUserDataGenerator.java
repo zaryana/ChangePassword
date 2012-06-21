@@ -81,6 +81,10 @@ public class WorkspacesUserDataGenerator extends ConfigurationUserDataGenerator 
       userdataBuilder.append(System.getProperty("cloud.admin.mail.user"));
       userdataBuilder.append('&');
       userdataBuilder.append(System.getProperty("cloud.admin.mail.password"));
+      userdataBuilder.append('&');
+      userdataBuilder.append(System.getProperty("graphite.host"));
+      userdataBuilder.append('&');
+      userdataBuilder.append(System.getProperty("graphite.port"));
 
       return userdataBuilder.toString();
     } catch (CloudAdminException e) {
