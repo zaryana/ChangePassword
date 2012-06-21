@@ -91,7 +91,7 @@ EXO_CLOUD_ADMIN_OPTS="-Dadmin.agent.auth.username=$CLOUD_AGENT_USERNAME \
                       -Dcloud.admin.mail.admin.email=$CLOUD_ADMIN_EMAIL \
                       -Dcloud.admin.mail.logger.email=$CLOUD_LOGGER_EMAIL \
                       -Dcloud.admin.mail.support.email=$CLOUD_SUPPORT_EMAIL \
-                      -Dcloud.admin.mail.support.sender=$CLOUD_SUPPORT_SENDER \
+                      -Dcloud.admin.mail.support.from=$CLOUD_SUPPORT_SENDER \
                       -Dcloud.admin.mail.sales.email=$CLOUD_SALES_EMAIL \
                       -Dcloud.admin.data.dir=$EXO_ADMIN_DATA_DIR \
                       -Dtenant.masterhost=$TENANT_MASTERHOST \
