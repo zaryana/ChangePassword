@@ -64,6 +64,9 @@
 [ -z "$CLOUD_AWS_IDENTITY" ] && CLOUD_AWS_IDENTITY="NO_IDENTITY"
 [ -z "$CLOUD_AWS_CREDENTIALS" ] && CLOUD_AWS_CREDENTIALS="NO_CREDENTIALS"
 
+# Graphite options
+[ -z "$GRAPHITE_PORT" ] && GRAPHITE_PORT="2003"
+
 # admin variables
 EXO_CLOUD_ADMIN_OPTS="-Dadmin.agent.auth.username=$CLOUD_AGENT_USERNAME \
                       -Dadmin.agent.auth.password=$CLOUD_AGENT_PASSWORD \
@@ -100,6 +103,8 @@ EXO_CLOUD_ADMIN_OPTS="-Dadmin.agent.auth.username=$CLOUD_AGENT_USERNAME \
                       -Dcloud.admin.hostname.file=$EXO_ADMIN_CONF_DIR/hostname.cfg \
                       -Dcloud.admin.configuration.file=$EXO_ADMIN_CONF_DIR/admin.properties \
                       -Dcloud.admin.hostname.file=$EXO_ADMIN_CONF_DIR/hostname.cfg \
+                      -Dgraphite.host=$HOST_EXTERNAL_ADDR \
+                      -Dgraphite.port=$GRAPHITE_PORT \
                       -Dlogback.configurationFile=$CATALINA_HOME/conf/logback.xml \
                       -Dlogback.smtp.appender.conf.file=${EXO_LOGBACK_SMTP_CONF}"
 
