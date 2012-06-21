@@ -4,9 +4,9 @@
 # Unzipping platform to create template
 AS_ZIP="cloud-workspaces-platform-bundle-tomcat.zip"
 
-if [ ! -f ./local-cloud/$AS_ZIP ]
+if [ -d ./local-cloud/app-server-tomcat ]
 then
-    echo "Error: application server .zip not found. Seems it's not a first script run, try re-deploy again."
+    echo "Error: Application server folder found. Seems it's not a first script run, try re-deploy again."
     exit 1
 fi
 
