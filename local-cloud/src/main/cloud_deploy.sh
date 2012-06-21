@@ -50,6 +50,6 @@ if [ $t -ge $timeout ] ; then
   exit 1
 fi
 
-echo "Local Cloud started succesfully at $remote_host"
+echo "Local Cloud started succesfully at $remote_cwks"
 exit 0
 
