@@ -12,8 +12,8 @@ if [ -z "$PACKAGE_NAME" ]; then
   exit 1
 fi
 
-url=$(echo $1 | tr "@" "\n")
-remote_host=${url[1]}
+url=($(echo $1 | tr "@" "\n"))
+remote_cwks=${url[1]}
 
 ssh -l cloud -i ~/.ssh/wks-cloud.key $1 "rm -rf /home/cloud/cloud-workspaces/*"
 scp -i ~/.ssh/wks-cloud.key $PACKAGE_NAME $1:/home/cloud/cloud-workspaces/
@@ -34,7 +34,7 @@ timeout=$((30 * 60))
 tstep=5
 t=0
 while [ $code -ne 302 ] && [ $code -ne 200 ] && [ $t -lt $timeout ] ; do
-  code=$(get "http://$remote_host/portal/intranet/home")
+  code=$(get "http://$remote_cwks/portal/intranet/home")
   if [ $code -ge 500  ] ; then
     echo "Cannot start app server. Internal error: "
     cat $curl_res
