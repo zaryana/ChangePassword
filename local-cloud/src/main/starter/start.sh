@@ -44,8 +44,8 @@ cd admin-tomcat/bin
 sleep 30s
 
 # Starting first AS
-curl --connect-timeout 900 -s  -X POST -u cloudadmin:cloudadmin http://localhost:8080/rest/private/cloud-admin/application-service/start-server?type=local-cloud-agent
-
+as_name=$(curl --connect-timeout 900 -s  -X POST -u cloudadmin:cloudadmin http://localhost:8080/rest/private/cloud-admin/application-service/start-server?type=local-cloud-agent)
+echo "Started app server $as_name"
 
 #That's it!
 exit 0

@@ -5,4 +5,4 @@ if [ -e $1 ] ; then
   exit 1
 fi
 
-ssh -i ~/.ssh/wks-cloud.key $1 "cd /home/cloud/cloud-worskpaces/  && ./stop.sh"
+ssh -l cloud -i ~/.ssh/wks-cloud.key $1 "cd /home/cloud/cloud-workspaces/  && ./stop.sh"
