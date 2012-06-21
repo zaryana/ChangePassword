@@ -62,10 +62,7 @@
          <tasks>
            <copy todir="${project.build.directory}">
            <fileset dir="${project.basedir}/src/main">
-             <include name="**/deploy_start_acc.sh"/>
-             <include name="**/stop_acc.sh"/>
-             <include name="**/deploy_cloud.sh"/>
-             <include name="**/stop_cloud.sh"/>
+             <include name="*.sh"/>
            </fileset>
           </copy>
           <chmod file="${project.build.directory}/*.sh" perm="755"/> 
