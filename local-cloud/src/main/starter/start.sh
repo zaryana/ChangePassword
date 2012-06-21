@@ -6,7 +6,7 @@ AS_ZIP="cloud-workspaces-platform-bundle-tomcat.zip"
 
 if [ -d ./local-cloud/app-server-tomcat ]
 then
-    echo "Error: Application server folder found. Seems it's not a first script run, try re-deploy again."
+    echo "Error: Application server folder found. Seems it's not a first run, try re-deploy again."
     exit 1
 fi
 
