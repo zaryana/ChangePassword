@@ -15,5 +15,5 @@ cd admin-tomcat/bin
 ./catalina.sh stop -force
 
 # drop default database
-mysql -hlocalhost -u$EXO_DB_USER -p$EXO_DB_PASSWORD -e "drop database if exists 'repository'; drop database if exists 'repository_as1'; drop database if exists 'repository_as2'; drop database if exists 'repository_as3;'"
+mysql -hlocalhost -u$EXO_DB_USER -p$EXO_DB_PASSWORD -e "drop database if exists repository; drop database if exists repository_as1; drop database if exists repository_as2; drop database if exists repository_as3;"
 
