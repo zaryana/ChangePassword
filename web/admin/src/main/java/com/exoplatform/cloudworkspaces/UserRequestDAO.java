@@ -50,10 +50,11 @@ public class UserRequestDAO {
     properties.setProperty("last-name", req.getLastName());
     properties.setProperty("company-name", req.getCompanyName());
     properties.setProperty("phone", req.getPhone());
-    if (passwordCipher != null)
+    if (passwordCipher != null) {
       properties.setProperty("password", passwordCipher.encrypt(req.getPassword()));
-    else
+    } else {
       properties.setProperty("password", req.getPassword());
+    }
     properties.setProperty("confirmation-id", req.getConfirmationId());
     properties.setProperty("isadministrator", Boolean.toString(req.isAdministrator()));
 

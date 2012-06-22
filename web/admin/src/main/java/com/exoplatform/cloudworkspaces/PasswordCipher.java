@@ -18,11 +18,16 @@
  */
 package com.exoplatform.cloudworkspaces;
 
+import java.security.InvalidKeyException;
+
 import org.apache.commons.codec.binary.Base64;
+import org.exoplatform.cloudmanagement.admin.CloudAdminException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -53,29 +58,36 @@ public class PasswordCipher {
     }
   }
 
-  public synchronized String encrypt(String plainText) {
-
+  public synchronized String encrypt(String plainText) throws CloudAdminException {
     String encrypt = "";
     try {
       cipher.init(Cipher.ENCRYPT_MODE, key);
       byte[] cipherText = cipher.doFinal(plainText.getBytes());
       encrypt = new String(coder.encode(cipherText));
-    } catch (Exception e) {
-      LOG.error(e.getMessage(), e);
+    } catch (InvalidKeyException e) {
+      throw new CloudAdminException("Cannot encrypt password", e);
+    } catch (IllegalBlockSizeException e) {
+      throw new CloudAdminException("Cannot encrypt password", e);
+    } catch (BadPaddingException e) {
+      throw new CloudAdminException("Cannot encrypt password", e);
     }
-    return encrypt;
 
+    return encrypt;
   }
 
-  public synchronized String decrypt(String codedText) {
+  public synchronized String decrypt(String codedText) throws CloudAdminException {
     String decrypt = "";
     try {
       byte[] encypted = coder.decode(codedText.getBytes());
       cipher.init(Cipher.DECRYPT_MODE, key);
       byte[] decrypted = cipher.doFinal(encypted);
       decrypt = new String(decrypted);
-    } catch (Exception e) {
-      LOG.error(e.getMessage(), e);
+    } catch (InvalidKeyException e) {
+      throw new CloudAdminException("Cannot decrypt password", e);
+    } catch (IllegalBlockSizeException e) {
+      throw new CloudAdminException("Cannot decrypt password", e);
+    } catch (BadPaddingException e) {
+      throw new CloudAdminException("Cannot decrypt password", e);
     }
     return decrypt;
 
