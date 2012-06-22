@@ -43,7 +43,7 @@ public class PasswordCipher {
 
   private static final Logger LOG       = LoggerFactory.getLogger(PasswordCipher.class);
 
-  PasswordCipher() {
+  public PasswordCipher() {
     try {
       key = new SecretKeySpec(secret.getBytes(), "AES");
       cipher = Cipher.getInstance("AES/ECB/PKCS5Padding", "SunJCE");
