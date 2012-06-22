@@ -25,6 +25,7 @@ SCR_Log="/root/init.log"
 WGET_Log="/root/wget-out.log"
 INIT="/root/.init"
 CMDSQL="/usr/bin/mysql"
+JMXTrCFG="/etc/sysconfig/jmxtrans"
 
 URL="http://169.254.169.254"				# Base URL for retrieve instance metadata
 URI_InstID="/latest/meta-data/instance-id"		# Instance ID , used as name for default repo for app.server
@@ -167,7 +168,7 @@ export EC2_HOME JAVA_HOME EC2_PRIVATE_KEY EC2_CERT PATH
 	  echo "Mail host: $MailHost" >> $SCR_Log
 	}
 # Get mail port
-	MailPort=$(cut -f 10 -d\& $ResFile | grep -E '[[:digit:]]{2,}' )
+	MailPort=$(cut -f 10 -d\& $ResFile | grep -E '[[:digit:]]{2,5}' )
 	[ -z "$MailPort" ] && {
 	  echo "Mail port is empty" >> $SCR_Log
 	  exit 2
@@ -190,6 +191,29 @@ export EC2_HOME JAVA_HOME EC2_PRIVATE_KEY EC2_CERT PATH
 	} || {
 	  echo "Mail user password: defined" >> $SCR_Log
 	}
+# Get Graphite server address
+	GraphSHost=$(cut -f 13 -d\& $ResFile | grep -E '[[:print:]]{6,}' )
+	[ -z "$GraphSHost" ] && {
+	  echo "Grathite server is not defined. JMX will not started" >> $SCR_Log
+	  JMXTr=""
+	} || {
+	  echo "Graphite server is ${GraphSHost}" >> $SCR_Log
+	  JMXTr="1"
+	}
+# Get Graphite server port
+	GraphSPort=$(cut -f 14 -d\& $ResFile | grep -E '[[:print:]]{6,}' )
+	[ -z "$GraphSPort" ] && {
+	  echo "Port of grathite server is not defined. JMX will not started" >> $SCR_Log
+	  JMXTr=""
+	} || {
+	  [ -n "${JMXTr}" ] && {
+	    echo "Graphite server port is ${GraphSPort}" >> $SCR_Log
+	    JMXTr="1"
+	  } || {
+	    true
+	  }
+	}
+	
 # Attache EBS volume for data
 	ec2-attach-volume -i $InstID -d "/dev/sdd" $VolID 2>>$SCR_Log && {
 	  StartTime=`date +'%s'`
@@ -381,7 +405,16 @@ export EC2_HOME JAVA_HOME EC2_PRIVATE_KEY EC2_CERT PATH
 	  echo "HTTP daemon successfully started" >> $SCR_Log
 	} || {
 	  echo "HTTP daemon not started :(" >> $SCR_Log
-	}	
+	}
+# Check for JMXTrans
+	[ -n "${JMXTr}" ] && {
+	  sed -r -i -e "s/^JMXTrHost=NOT_DEFINED$/JMXTrHost=${GraphSHost}" "${JMXTrCFG}"
+	  sed -r -i -e "s/^JMXTrPort=NOT_DEFINED$/JMXTrPort=${GraphSPort}" "${JMXTrCFG}"
+	  /etc/init.d/jmxtrans start
+	  echo "JMXTrans started" >> ${SCR_Log}
+	} || {
+	  echo "JMXTrans wasn't launched" >> ${SCR_Log}
+	}
 
 # Starting app.server
 	echo "Starting app.server (tomcat)" >> $SCR_Log
