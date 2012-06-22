@@ -48,8 +48,240 @@ CloudLogin.clearMessage = function() {
 /**
  * Do nothing
  */
-CloudLogin.doNothing = function() {
-  return;
+CloudLogin.doNothing = function(event) {
+  if(event != undefined) {
+    event.preventDefault();
+  }
+}
+
+
+
+/*===========================================================================================================*
+ *        STEP PROFILE
+ *===========================================================================================================*/
+
+CloudLogin.showStepProfile = function(event) {
+  if(event != undefined) {
+    event.preventDefault();
+  }
+  
+  $('#StepSpace').hide();
+  $('#StepEmail').hide();
+  $('#StepProfile').show();
+}
+
+CloudLogin.validateStepProfile = function(event) {
+  if(event != undefined) {
+    event.preventDefault();
+  }
+  CloudLogin.showStepSpace();
+}
+
+
+
+/*===========================================================================================================*
+ *        STEP SPACES
+ *===========================================================================================================*/
+ 
+CloudLogin.WS_SPACES_URL = "rest/gadgets/spaces/public/",
+CloudLogin.WS_JOIN_SPACE_URL = "rest/gadgets/spaces/join/";
+CloudLogin.WS_JOIN_RESPONSE_OK = "Join";
+CloudLogin.SPACES_SELECTED = new Array();
+CloudLogin.NB_SPACES_OK = 0;
+CloudLogin.NB_SPACES_REQUESTED = 0;
+CloudLogin.SPACES_BUTTON_DEFAULT_LABEL = "Next";
+CloudLogin.SPACES_BUTTON_DEFAULT_WIDTH = "100px";
+ 
+CloudLogin.showStepSpace = function() {
+  $('#StepProfile').hide();
+  $('#StepEmail').hide();
+  $('#StepSpace').show();
+}
+
+/**
+ * Init spaces. Execute an ajax request to get all spaces the user can join and display it into dom.
+ */
+CloudLogin.initSpaces = function() {
+  var mainUrl = CloudLogin.WS_SPACES_URL;
+  
+  CloudLogin.lockSpaces();
+  
+  // Clean selected spaces
+  CloudLogin.SPACES_SELECTED = [];
+  
+  // Clean list
+  $('.FL').remove();
+  
+  $.ajax({
+    url: mainUrl,
+    success: function(spaces) {
+      var listSpaces = $('#SpacesContent');
+      var liSpace = inputSpace = undefined;
+    
+      // Fetch all steps to create list
+      $.each(spaces, function(i, space) {
+        inputSpace = $(document.createElement('input')).attr({type: 'checkbox', id: space.spaceId}).click(CloudLogin.toggleSpace);
+        if(i % 2 === 0) {
+          liSpace = $(document.createElement('li')).addClass('FL');
+          liSpace.append(inputSpace).append(space.displayName + ' <br />');
+        }
+        else {
+          liSpace.append(inputSpace).append(space.displayName);
+        }
+        listSpaces.append(liSpace);
+      });
+      
+      CloudLogin.unlockSpaces();
+    },
+    error: function(request, status, error) {
+      console.log("Cannot get spaces [Status=" + status + "], [Error=" + error + "]");
+      CloudLogin.unlockSpaces();
+    },
+    dataType: 'json'
+  });
+}
+
+/**
+ * Validate this step "Spaces", Try to join current user to spaces selected. If there is no spaces selected, Go to next step
+ */
+CloudLogin.validateStepSpace = function(event) {
+  if(event != undefined) {
+    event.preventDefault();
+  }
+
+  CloudLogin.NB_SPACES_OK = 0;
+  CloudLogin.NB_SPACES_REQUESTED = 0;
+  
+  // Try to join user to spaces
+  CloudLogin.lockSpaces();
+
+  if(CloudLogin.SPACES_SELECTED.length > 0) {
+    // Update text and width of button
+    $("#t_submit_space").width("120px");
+    $("#t_submit_space").val("Joining...");
+  
+    for(var i=0; i<CloudLogin.SPACES_SELECTED.length; i++) {
+      CloudLogin.joinSpace(CloudLogin.SPACES_SELECTED[i]);
+    }
+  }
+  else {
+    CloudLogin.showStepEmail();
+  }
+}
+
+/**
+ * Ajax request to join space
+ */
+CloudLogin.joinSpace = function(spaceId) {
+  var mainUrl = CloudLogin.WS_JOIN_SPACE_URL + spaceId;
+
+  $.ajax({
+    url: mainUrl,
+    success: function(response) {
+      CloudLogin.NB_SPACES_REQUESTED++;
+      if(response.indexOf(CloudLogin.WS_JOIN_RESPONSE_OK) != -1) {
+        console.log("OK space " + spaceId + " is joined");
+        CloudLogin.NB_SPACES_OK++;
+      }
+      else {
+        console.log("Cannot join space " + spaceId + " is not joined: [" + response + "]");
+      }
+      CloudLogin.finalizeJoinSpaces();
+    },
+    error: function(request, status, error) {
+      CloudLogin.NB_SPACES_REQUESTED++;
+      console.log("Cannot join space [Status=" + status + "], [Error=" + error + "]");
+      CloudLogin.finalizeJoinSpaces();
+    },
+    dataType: 'text'
+  });
+}
+
+/**
+ * Called after all spaces are joined (or not)
+ */
+CloudLogin.finalizeJoinSpaces = function() {
+
+  // Case of Joining is finish but there is some spaces in error
+  if(CloudLogin.NB_SPACES_REQUESTED == CloudLogin.SPACES_SELECTED.length) {
+    if(CloudLogin.NB_SPACES_OK < CloudLogin.SPACES_SELECTED.length) {
+      console.log("Some spaces cannot be joined by user");
+      CloudLogin.unlockSpaces();
+      CloudLogin.initSpaces();
+    }
+    else {
+      console.log("All spaces are joined by user");
+      CloudLogin.unlockSpaces();
+      CloudLogin.initSpaces();
+      CloudLogin.showStepEmail();
+    }
+  }
+}
+
+/**
+ * This method permit to select a space or unselect in memory and update button "Next"
+ */
+CloudLogin.toggleSpace = function(event) {
+  var idSpace = event.target.id;
+  
+  if(event.target.checked == true) {
+    CloudLogin.SPACES_SELECTED.push(idSpace);
+  }
+  else {
+    CloudLogin.removeByValue(CloudLogin.SPACES_SELECTED, idSpace);
+  }
+  
+  CloudLogin.updateButtonJoin();
+}
+
+/**
+ * Update text and size of button of this step "Spaces"
+ */
+CloudLogin.updateButtonJoin = function() {
+
+  // Update button
+  var nbSpaces = CloudLogin.SPACES_SELECTED.length;
+  var textSpaces = "";
+  var textSpacesWidth = CloudLogin.SPACES_BUTTON_DEFAULT_WIDTH;
+  if(nbSpaces > 1) {
+    textSpaces = "Join " + nbSpaces + " spaces";
+    textSpacesWidth = "130px";
+  }
+  else if(nbSpaces > 0) {
+    textSpaces = "Join " + nbSpaces + " space";
+    textSpacesWidth = "120px";
+  }
+  else {
+    textSpaces = "Next";
+    textSpacesWidth = CloudLogin.SPACES_BUTTON_DEFAULT_WIDTH;
+  }
+  
+  $("#t_submit_space").width(textSpacesWidth);
+  $("#t_submit_space").val(textSpaces);
+}
+
+/**
+ * lock spaces and update button if is necessary
+ */
+CloudLogin.lockSpaces = function() {
+  
+  // lock button Next
+  document.getElementById("t_submit_space").disabled = true;
+}
+
+/**
+ * unlock spaces and update button if is necessary
+ */
+CloudLogin.unlockSpaces = function() {
+  
+  // delete Load image
+  $('#SpacesLoader').hide();
+  $('#SpacesContainer').show();
+
+  // Unlock button Next
+  document.getElementById("t_submit_space").disabled = false;
+  
+  CloudLogin.updateButtonJoin();
 }
 
 
@@ -140,7 +372,6 @@ CloudLogin.initTextExt = function() {
  * Show step Email
  */
 CloudLogin.showStepEmail = function() {
-  
   $('#StepProfile').hide();
   $('#StepSpace').hide();
   $('#StepEmail').show();
@@ -153,6 +384,9 @@ CloudLogin.showStepEmail = function() {
  * Validate datas from step Email
  */
 CloudLogin.validateStepEmail = function(event) {
+  if(event != undefined) {
+    event.preventDefault();
+  }
   
   CloudLogin.NB_EMAILS_OK = 0;
   CloudLogin.NB_EMAILS_REQUESTED = 0;
@@ -162,7 +396,7 @@ CloudLogin.validateStepEmail = function(event) {
   var emailNotTagged = document.getElementById("email").value;
   
   // only if there is no tags and this is not default value
-  if(emails.length === 0 && CloudLogin.DEFAULT_VALUE != emailNotTagged) {
+  if(emails.length == 0 && CloudLogin.DEFAULT_VALUE != emailNotTagged) {
     if(emailNotTagged != undefined && emailNotTagged.length > 0) {
       // trim
       emailNotTagged = emailNotTagged.replace(/^\s+/g,'').replace(/\s+$/g,'')
@@ -179,7 +413,7 @@ CloudLogin.validateStepEmail = function(event) {
       return;
     }
   }
-  else {
+  else if(emails.length > 0) {
     $("#t_submit_email").val("Sending...");
   }
   
@@ -268,7 +502,6 @@ CloudLogin.finalizeSendEmails = function() {
  * Update button Send. At the first button is "Skip", after it is "Send (x)" x is number of mails
  */
 CloudLogin.updateSendButton = function() {
-  console.log(CloudLogin.NB_EMAILS);
   if(CloudLogin.NB_EMAILS > 0) {
     $("#t_submit_email").val("Send (" + CloudLogin.NB_EMAILS + ")");
   }
@@ -292,89 +525,6 @@ CloudLogin.incrementNbMails = function() {
   CloudLogin.updateSendButton();
 }
 
-
-
-/*===========================================================================================================*
- *        STEP PROFILE
- *===========================================================================================================*/
-
-CloudLogin.showStepProfile = function() {
-  $('#StepSpace').hide();
-  $('#StepEmail').hide();
-  $('#StepProfile').show();
-}
-
-CloudLogin.validateStepProfile = function() {
-  CloudLogin.showStepSpace();
-}
-
-
-
-/*===========================================================================================================*
- *        STEP SPACES
- *===========================================================================================================*/
- 
-CloudLogin.WS_SPACES_URL = "rest/gadgets/spaces/public",
- 
-CloudLogin.showStepSpace = function() {
-  $('#StepProfile').hide();
-  $('#StepEmail').hide();
-  $('#StepSpace').show();
-}
-
-CloudLogin.validateStepSpace = function() {
-  CloudLogin.showStepEmail();
-}
-
-CloudLogin.initSpaces = function() {
-  var mainUrl = CloudLogin.WS_SPACES_URL;
-  
-  CloudLogin.lockSpaces();
-  
-  $.ajax({
-    url: mainUrl,
-    success: function(spaces) {
-      var listSpaces = $('#SpacesContent');
-      var liSpace = undefined;
-    
-      // Fetch all steps to create list
-      $.each(spaces, function(i, space) {
-        
-        if(i % 2 === 0) {
-          liSpace = $(document.createElement('li')).addClass('FL');
-          liSpace.append('<input type="checkbox" />' + space.displayName + ' <br />');
-        }
-        else {
-          liSpace.append('<input type="checkbox" />' + space.displayName);
-        }
-        listSpaces.append(liSpace);
-      });
-      
-      CloudLogin.unlockSpaces();
-    },
-    error: function(request, status, error) {
-      console.log("NOK [Status=" + status + "], [Error=" + error + "]");
-      CloudLogin.unlockSpaces();
-    },
-    dataType: 'json'
-  });
-}
-
-CloudLogin.lockSpaces = function() {
-  
-  // lock button Next
-  document.getElementById("t_submit_space").disabled = true;
-}
-
-CloudLogin.unlockSpaces = function() {
-  
-  // delete Load image
-  $('#SpacesLoader').hide();
-  $('#SpacesContainer').show();
-
-  // Unlock button Next
-  document.getElementById("t_submit_space").disabled = false;
-}
 
 
 /*===========================================================================================================*
@@ -408,4 +558,16 @@ CloudLogin.isValidEmail = function(email) {
     isValidEmail = true;
   }
   return isValidEmail;
+}
+
+/**
+ * Remove an element by his value
+ */
+CloudLogin.removeByValue = function(arr, val) {
+  for(var i=0; i<arr.length; i++) {
+    if(arr[i] == val) {
+      arr.splice(i, 1);
+      break;
+    }
+  }
 }

@@ -56,7 +56,7 @@
       <h1 class="StartedBarBG">Welcome to Cloud Workspaces - Get started in 3 easy steps</h1>
       <div class="Steps" id="">
         <span class="StepBG"></span>
-        <a href="#" onclick="CloudLogin.doNothing();" class="StepSelectIcon" style="left: 60px;">1</a><a href="#" onclick="CloudLogin.showStepSpace();" class="StartedIcon" style="left: 310px;" >2</a><a href="#" onclick="CloudLogin.showStepEmail();" class="StepIcon" style="left: 569px;">3</a>
+        <a href="#" onclick="CloudLogin.doNothing(event);" class="StepSelectIcon" style="left: 60px;">1</a><a href="#" onclick="CloudLogin.validateStepProfile(event);" class="StartedIcon" style="left: 310px;" >2</a><a href="#" onclick="CloudLogin.doNothing(event);" class="StepIcon" style="left: 569px;">3</a>
       </div>
       <h3>Step 1: Complete your profile</h3>
       <p><strong>Securely manage your work files in the cloud - add a few to get started.</strong></p>
@@ -64,7 +64,7 @@
         <tbody>
           <tr>
             <td class="FormInput"><div class="HelpText">Drag and drop a document to add it to your private folder</div></td>
-            <td class="FormButton"> <input type="button" onclick="CloudLogin.validateStepProfile();" value="Next" id="t_submit_profile" class="Button" /></td>
+            <td class="FormButton"> <input type="button" onclick="CloudLogin.validateStepProfile(event);" value="Next" id="t_submit_profile" class="Button" /></td>
           </tr>
         </tbody>
       </table>
@@ -79,7 +79,7 @@
       <h1 class="StartedBarBG">Welcome to Cloud Workspaces - Get started in 3 easy steps</h1>
       <div class="Steps" id="">
         <span class="StepBG"></span>
-        <a href="#" onclick="CloudLogin.showStepProfile();" class="StartedIcon" style="left: 60px;">1</a><a href="#" onclick="CloudLogin.doNothing();" class="StepSelectIcon" style="left: 310px;" >2</a><a href="#" onclick="CloudLogin.showStepEmail();" class="StartedIcon" style="left: 569px;">3</a>
+        <a href="#" onclick="CloudLogin.showStepProfile(event);" class="StartedIcon" style="left: 60px;">1</a><a href="#" onclick="CloudLogin.doNothing(event);" class="StepSelectIcon" style="left: 310px;" >2</a><a href="#" onclick="CloudLogin.validateStepSpace(event);" class="StartedIcon" style="left: 569px;">3</a>
       </div>
       <h3>Step 2:  Join Spaces</h3>
       <p>Create your own dedicated collaboration spaces for your team or specific projects. We've set up your first space to help you get started.</p>
@@ -91,9 +91,9 @@
               </ul>
             </td>
             <td class="FormInput CheckBox" id="SpacesLoader">
-              <img src="http://www.i-move.chicco.com/images/loader.gif" />
+              <img src="<%=request.getContextPath()%>/background/loader.gif" />
             </td>
-            <td class="FormButton"> <input type="button" onclick="CloudLogin.validateStepSpace();" value="Next" id="t_submit_space" class="Button" /></td>
+            <td class="FormButton"> <input type="button" onclick="CloudLogin.validateStepSpace(event);" value="Next" id="t_submit_space" class="Button" /></td>
           </tr>
         </tbody>
       </table>
@@ -108,7 +108,7 @@
       <h1 class="StartedBarBG">Welcome to Cloud Workspaces - Get started in 3 easy steps</h1>
       <div class="Steps" id="">
         <span class="StepBG"></span>
-        <a href="#" onclick="CloudLogin.showStepProfile();" class="StepIcon" style="left: 60px;">1</a><a href="#" onclick="CloudLogin.showStepSpace();" class="StepIcon" style="left: 310px;" >2</a><a href="#" onclick="CloudLogin.doNothing();" class="StepSelectIcon" style="left: 569px;">3</a>
+        <a href="#" onclick="CloudLogin.doNothing(event);" class="StepIcon" style="left: 60px;">1</a><a href="#" onclick="CloudLogin.doNothing(event);" class="StepIcon" style="left: 310px;" >2</a><a href="#" onclick="CloudLogin.doNothing(event);" class="StepSelectIcon" style="left: 569px;">3</a>
       </div>
       <h3>Step 3: Invite Coworkers</h3>
       <p><strong>Send email invitations to your coworkers to connect with them in your social intranet.</strong><br/>(note: Only @<%=tenantDomain%> email addresses will be invited to your workspace. Other addresses will receive an invitation to discover Cloud Workspaces)</p>
@@ -120,7 +120,7 @@
             <td class="FormInput">
               <textarea id="email" name="" class="required InputText"></textarea>
             </td>
-            <td class="FormButton"> <input type="button" onclick="CloudLogin.validateStepEmail();" value="Skip" id="t_submit_email" class="Button" /></td>
+            <td class="FormButton"> <input type="button" onclick="CloudLogin.validateStepEmail(event);" value="Skip" id="t_submit_email" class="Button" /></td>
           </tr>
         </tbody>
       </table>
