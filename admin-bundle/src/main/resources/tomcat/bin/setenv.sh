@@ -86,7 +86,7 @@ EXO_CLOUD_ADMIN_OPTS="-Dadmin.agent.auth.username=$CLOUD_AGENT_USERNAME \
                       -Dcloud.admin.mail.port=$CLOUD_MAIL_PORT \
                       -Dcloud.admin.mail.ssl=$CLOUD_MAIL_SSL \
                       -Dcloud.admin.mail.user=$CLOUD_MAIL_USER \
-                      -Dcloud.admin.crypto.password=$TRUE \
+                      -Dcloud.admin.crypt.registration.password=false \
                       -Dcloud.admin.mail.password=$CLOUD_MAIL_PASSWORD \
                       -Dcloud.admin.mail.smtp.socketFactory.class=$CLOUD_MAIL_SMTP_SOCKETFACTORY_CLASS \
                       -Dcloud.admin.mail.smtp.socketFactory.fallback=$CLOUD_MAIL_SMTP_SOCKETFACTORY_FALLBACK \

@@ -41,7 +41,7 @@ public class PasswordCipher {
 
   private static Base64       coder;
 
-  private static final Logger LOG       = LoggerFactory.getLogger(UserRequestDAO.class);
+  private static final Logger LOG       = LoggerFactory.getLogger(PasswordCipher.class);
 
   static {
     try {
@@ -67,7 +67,7 @@ public class PasswordCipher {
 
   public synchronized String decrypt(String codedText) {
     String decrypt = "";
-    if (!System.getProperty("cloud.admin.crypto.password").equals("TRUE"))
+    if (System.getProperty("cloud.admin.crypt.registration.password").equals("false"))
       return codedText;
     try {
       byte[] encypted = coder.decode(codedText.getBytes());
