@@ -18,7 +18,15 @@
  */
 package com.exoplatform.cloudworkspaces.organization.listener;
 
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_OK;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.ExoContainer;
@@ -29,15 +37,6 @@ import org.exoplatform.services.organization.User;
 import org.exoplatform.services.organization.UserEventListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-
-import javax.jcr.RepositoryException;
 
 public class UserLimitListener extends UserEventListener {
 
@@ -67,28 +66,59 @@ public class UserLimitListener extends UserEventListener {
       strUrl.append("/rest/cloud-admin/cloudworkspaces/tenant-service/maxallowed/");
       strUrl.append(tName);
 
-      url = new URL(strUrl.toString());
-      connection = (HttpURLConnection) url.openConnection();
-      connection.setRequestMethod("GET");
-      if (connection.getResponseCode() != HTTP_OK) {
+      // try three times if maxallowed service will fail with 5xx status
+      int attemptsNumber = 3;
+      int responseCode;
+      do {
+        url = new URL(strUrl.toString());
+        connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+        responseCode = connection.getResponseCode();
+
+        if (responseCode >= HTTP_INTERNAL_ERROR) {
+          attemptsNumber--;
+          try {
+            Thread.sleep(10000);
+          } catch (Throwable e) {
+            LOG.warn("Error of thread sleep: " + e);
+          }
+        } else {
+          attemptsNumber = 0;
+        }
+      } while (responseCode >= HTTP_INTERNAL_ERROR && attemptsNumber > 0);
+
+      if (responseCode != HTTP_OK) {
         String err = readText(connection.getErrorStream());
         LOG.error("Unable to add user to workspace " + tName + " - HTTP status:"
             + connection.getResponseCode()
             + (err != null ? ". Server error: \r\n" + err + "\r\n" : ""));
-        throw new RepositoryException("Unable to add user " + user.getUserName() + " to workspace "
-            + tName + " - HTTP confirmation error.");
-      } else {
-        String resp_body = "";
-        String inputLine;
-        BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-        while ((inputLine = in.readLine()) != null)
-          resp_body = resp_body.concat(inputLine);
+        throw new UserLimitException("Unable to add user " + user.getUserName() + " to workspace "
+            + tName + " - HTTP confirmation error (" + responseCode + ")");
+      }
+
+      StringBuilder responseBody = new StringBuilder();
+      String inputLine;
+      BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+      try {
+        while ((inputLine = in.readLine()) != null) {
+          responseBody.append(inputLine);
+        }
+      } finally {
         in.close();
-        if (Integer.parseInt(resp_body) == -1 || Integer.parseInt(resp_body) > list.getSize() - 1) // minus root
-          return;
-        else
-          throw new RepositoryException("Unable to add user " + user.getUserName()
-              + " to workspace " + tName + " - limit reached");
+      }
+      
+      int maxAllowed;
+      try {
+        maxAllowed = Integer.parseInt(responseBody.toString());
+      } catch(NumberFormatException e) {
+        throw new UserLimitException("Error in maxallowed service response:", e);
+      }
+      
+      if (maxAllowed == -1 || maxAllowed > list.getSize() - 1) { // minus root
+        return;
+      } else {
+        throw new UserLimitException("Unable to add user " + user.getUserName() + " to workspace "
+            + tName + " - limit reached");
       }
     }
   }
