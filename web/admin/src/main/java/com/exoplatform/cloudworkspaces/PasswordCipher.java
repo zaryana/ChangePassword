@@ -55,6 +55,8 @@ public class PasswordCipher {
 
   public synchronized String encrypt(String plainText) {
     String encrypt = "";
+    if (System.getProperty("cloud.admin.crypt.registration.password").equals("false"))
+      return plainText;
     try {
       cipher.init(Cipher.ENCRYPT_MODE, key);
       byte[] cipherText = cipher.doFinal(plainText.getBytes());
