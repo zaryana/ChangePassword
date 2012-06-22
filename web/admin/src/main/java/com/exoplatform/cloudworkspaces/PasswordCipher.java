@@ -40,11 +40,14 @@ public class PasswordCipher {
   private static Cipher       cipher;
 
   private static Base64       coder;
+  
+  private static String       sProperty;
 
   private static final Logger LOG       = LoggerFactory.getLogger(PasswordCipher.class);
 
   static {
     try {
+      sProperty = System.getProperty("cloud.admin.crypt.registration.password");
       key = new SecretKeySpec(secret.getBytes(), "AES");
       cipher = Cipher.getInstance("AES/ECB/PKCS5Padding", "SunJCE");
       coder = new Base64(32, linebreak, true);
@@ -54,31 +57,35 @@ public class PasswordCipher {
   }
 
   public synchronized String encrypt(String plainText) {
-    String encrypt = "";
-    if (System.getProperty("cloud.admin.crypt.registration.password").equals("false"))
-      return plainText;
-    try {
-      cipher.init(Cipher.ENCRYPT_MODE, key);
-      byte[] cipherText = cipher.doFinal(plainText.getBytes());
-      encrypt = new String(coder.encode(cipherText));
-    } catch (Exception e) {
-      LOG.error(e.getMessage(), e);
+    if (sProperty.equals(null) || sProperty.equals("true")) {
+      String encrypt = "";
+      try {
+        cipher.init(Cipher.ENCRYPT_MODE, key);
+        byte[] cipherText = cipher.doFinal(plainText.getBytes());
+        encrypt = new String(coder.encode(cipherText));
+      } catch (Exception e) {
+        LOG.error(e.getMessage(), e);
+      }
+      return encrypt;
     }
-    return encrypt;
+    else
+      return plainText;
   }
 
   public synchronized String decrypt(String codedText) {
-    String decrypt = "";
-    if (System.getProperty("cloud.admin.crypt.registration.password").equals("false"))
-      return codedText;
-    try {
-      byte[] encypted = coder.decode(codedText.getBytes());
-      cipher.init(Cipher.DECRYPT_MODE, key);
-      byte[] decrypted = cipher.doFinal(encypted);
-      decrypt = new String(decrypted);
-    } catch (Exception e) {
-      LOG.error(e.getMessage(), e);
+    if (sProperty.equals(null) || sProperty.equals("true")) {
+      String decrypt = "";
+      try {
+        byte[] encypted = coder.decode(codedText.getBytes());
+        cipher.init(Cipher.DECRYPT_MODE, key);
+        byte[] decrypted = cipher.doFinal(encypted);
+        decrypt = new String(decrypted);
+      } catch (Exception e) {
+        LOG.error(e.getMessage(), e);
+      }
+      return decrypt;
     }
-    return decrypt;
+    else
+      return codedText;
   }
 }
