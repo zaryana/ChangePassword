@@ -50,6 +50,7 @@ if [ $t -ge $timeout ] ; then
   exit 1
 fi
 
+echo ""
 echo "Local Cloud started succesfully at $remote_cwks                " # need spaces to rewrite waiting text
 exit 0
 
