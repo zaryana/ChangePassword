@@ -40,14 +40,11 @@ public class PasswordCipher {
   private static Cipher       cipher;
 
   private static Base64       coder;
-  
-  private static String       sProperty;
 
   private static final Logger LOG       = LoggerFactory.getLogger(PasswordCipher.class);
 
-  static {
+  PasswordCipher() {
     try {
-      sProperty = System.getProperty("cloud.admin.crypt.registration.password");
       key = new SecretKeySpec(secret.getBytes(), "AES");
       cipher = Cipher.getInstance("AES/ECB/PKCS5Padding", "SunJCE");
       coder = new Base64(32, linebreak, true);
@@ -57,35 +54,30 @@ public class PasswordCipher {
   }
 
   public synchronized String encrypt(String plainText) {
-    if (sProperty.equals(null) || sProperty.equals("true")) {
-      String encrypt = "";
-      try {
-        cipher.init(Cipher.ENCRYPT_MODE, key);
-        byte[] cipherText = cipher.doFinal(plainText.getBytes());
-        encrypt = new String(coder.encode(cipherText));
-      } catch (Exception e) {
-        LOG.error(e.getMessage(), e);
-      }
-      return encrypt;
+
+    String encrypt = "";
+    try {
+      cipher.init(Cipher.ENCRYPT_MODE, key);
+      byte[] cipherText = cipher.doFinal(plainText.getBytes());
+      encrypt = new String(coder.encode(cipherText));
+    } catch (Exception e) {
+      LOG.error(e.getMessage(), e);
     }
-    else
-      return plainText;
+    return encrypt;
+
   }
 
   public synchronized String decrypt(String codedText) {
-    if (sProperty.equals(null) || sProperty.equals("true")) {
-      String decrypt = "";
-      try {
-        byte[] encypted = coder.decode(codedText.getBytes());
-        cipher.init(Cipher.DECRYPT_MODE, key);
-        byte[] decrypted = cipher.doFinal(encypted);
-        decrypt = new String(decrypted);
-      } catch (Exception e) {
-        LOG.error(e.getMessage(), e);
-      }
-      return decrypt;
+    String decrypt = "";
+    try {
+      byte[] encypted = coder.decode(codedText.getBytes());
+      cipher.init(Cipher.DECRYPT_MODE, key);
+      byte[] decrypted = cipher.doFinal(encypted);
+      decrypt = new String(decrypted);
+    } catch (Exception e) {
+      LOG.error(e.getMessage(), e);
     }
-    else
-      return codedText;
+    return decrypt;
+
   }
 }
