@@ -36,17 +36,19 @@ import javax.crypto.spec.SecretKeySpec;
  * password.
  */
 public class PasswordCipher {
-  private static byte[]       linebreak = {};
+  
+  protected static final Logger LOG       = LoggerFactory.getLogger(PasswordCipher.class);
+  
+  protected byte[]       linebreak = {};
 
-  private static String       secret    = "tvnw63wfg9gh5392";
+  protected final String       secret    = "tvnw63wfg9gh5392";
 
-  private static SecretKey    key;
+  protected SecretKey    key;
 
-  private static Cipher       cipher;
+  protected Cipher       cipher;
 
-  private static Base64       coder;
+  protected Base64       coder;
 
-  private static final Logger LOG       = LoggerFactory.getLogger(PasswordCipher.class);
 
   public PasswordCipher() {
     try {
