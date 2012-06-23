@@ -5,7 +5,7 @@ if [ -e $1 ] ; then
   exit 1
 fi
 
-PACKAGE_NAME=$(find . -maxdepth 1 -name "cloud-workspaces-local-cloud*.zip" -printf %f\\n)
+PACKAGE_NAME=$(find . -maxdepth 1 -name "cloud-workspaces-local-cloud*.zip")
 
 if [ -z "$PACKAGE_NAME" ]; then
   echo "Can't find bundle to upload, exiting."
