@@ -21,9 +21,13 @@ package com.exoplatform.cloudworkspaces.dao;
 import static org.exoplatform.cloudmanagement.admin.configuration.AdminConfiguration.CLOUD_ADMIN_TENANT_QUEUE_DIR;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.locks.Lock;
 
 import org.apache.commons.configuration.Configuration;
 import org.exoplatform.cloudmanagement.admin.CloudAdminException;
@@ -40,6 +44,14 @@ public class PropertiesModifiableEmailValidationStorage implements ModifiableEma
                                          FOLDER_NAME_IN_QUEUE_DIR);
   }
 
+  /**
+   * List of the aliases saved in storage
+   */
+  public Set<String> getAliases() throws IOException
+  {
+    return storage.getAliases();
+  }
+  
   /**
    * @see org.exoplatform.cloudmanagement.admin.dao.EmailValidationStorage#setValidationData(java.util.Map)
    */

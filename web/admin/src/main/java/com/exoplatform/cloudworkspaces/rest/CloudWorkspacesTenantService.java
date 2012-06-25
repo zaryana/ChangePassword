@@ -813,14 +813,14 @@ public class CloudWorkspacesTenantService {
   }
 
   /**
-   * Send custom mail to owners of tenants on validation. TODO
+   * Send custom mail to owners of tenants on validation.
    * 
    * <pre>
    * possible use of "scope" parameter, /sendmail/{scope}:
-   * * validation - send to users of tenants on validation
+   * * validating_email - send to users of tenants on validation
    * * suspended - send to users of suspended tenants
    * * online - send to users of online tenants
-   * * error - send to users of tenants in error
+   * * creation_fail - send to users of tenants in error
    * * all - to all users
    * ....
    * </pre>
@@ -838,7 +838,7 @@ public class CloudWorkspacesTenantService {
   String mailSubject, @PathParam("state")
   String state) throws CloudAdminException {
 
-    if (state.equals("validation")) {
+    if (state.compareToIgnoreCase((TenantState.VALIDATING_EMAIL.toString())) == 0) {
       notificationMailSender.sendEmailToValidation(mailTemplate, mailSubject);
     } else {
       notificationMailSender.sendEmailForTenantsWithParameter(mailTemplate, mailSubject, state);

@@ -1442,7 +1442,7 @@ public class TestCloudWorkspacesTenantService {
   public void testSendEmailToValidation(ITestContext context) throws CloudAdminException {
     final String SUBJECT = "subject";
     final String TEMPLATE = "template";
-    final String STATE = "validation";
+    final String STATE = "VALIDATING_EMAIL";
 
     RestAssured.given()
                .auth()

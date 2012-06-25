@@ -5,6 +5,7 @@ import com.dumbster.smtp.SimpleSmtpServer;
 import com.dumbster.smtp.SmtpMessage;
 import com.exoplatform.cloudworkspaces.MailingProperties;
 import com.exoplatform.cloudworkspaces.NotificationMailSender;
+import com.exoplatform.cloudworkspaces.dao.ModifiableEmailValidationStorage;
 import com.exoplatform.cloudworkspaces.http.WorkspacesOrganizationRequestPerformer;
 import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.Configuration;
@@ -45,6 +46,7 @@ public class TestMailSender {
   TenantNameValidator tenantNameValidator;
   UserMailValidator userMailValidator;
   TenantInfoDataManager tenantInfoDataManager;
+  ModifiableEmailValidationStorage modifiableEmailValidationStorage;
 
   @BeforeMethod
   public void initMocks(){
@@ -68,7 +70,8 @@ public class TestMailSender {
                                         emailValidationStorage,
                                         tenantNameValidator,
                                         userMailValidator,
-                                        tenantInfoDataManager);
+                                        tenantInfoDataManager,
+                                        modifiableEmailValidationStorage);
     cleanUpMails();
   }
 
