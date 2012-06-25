@@ -18,6 +18,7 @@
  */
 package com.exoplatform.cloudworkspaces;
 
+import com.exoplatform.cloudworkspaces.dao.ModifiableEmailValidationStorage;
 import com.exoplatform.cloudworkspaces.http.WorkspacesOrganizationRequestPerformer;
 import org.apache.commons.configuration.Configuration;
 import org.exoplatform.cloudmanagement.admin.CloudAdminException;
@@ -35,7 +36,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -60,13 +63,16 @@ public class NotificationMailSender {
 
   private TenantInfoDataManager                        tenantInfoDataManager;
 
+  private final ModifiableEmailValidationStorage       modifiableEmailValidationStorage;
+
   public NotificationMailSender(Configuration cloudAdminConfiguration,
                                 WorkspacesMailSender mailSender,
                                 WorkspacesOrganizationRequestPerformer workspacesOrganizationRequestPerformer,
                                 EmailValidationStorage emailValidationStorage,
                                 TenantNameValidator tenantNameValidator,
                                 UserMailValidator userMailValidator,
-                                TenantInfoDataManager tenantInfoDataManager) {
+                                TenantInfoDataManager tenantInfoDataManager,
+                                ModifiableEmailValidationStorage modifiableEmailValidationStorage) {
     this.cloudAdminConfiguration = cloudAdminConfiguration;
     this.mailSender = mailSender;
     this.workspacesOrganizationRequestPerformer = workspacesOrganizationRequestPerformer;
@@ -74,6 +80,7 @@ public class NotificationMailSender {
     this.tenantNameValidator = tenantNameValidator;
     this.userMailValidator = userMailValidator;
     this.tenantInfoDataManager = tenantInfoDataManager;
+    this.modifiableEmailValidationStorage = modifiableEmailValidationStorage;
   }
 
   public void sendOkToJoinEmail(String userMail, Map<String, String> props) throws CloudAdminException {
@@ -90,7 +97,6 @@ public class NotificationMailSender {
       LOG.error("Configuration error - join email not send.", e);
     }
   }
-
 
   public void sendJoinRejectedEmails(String tName, String userMail, Map<String, String> props) throws CloudAdminException {
     String userTemplate = cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_JOIN_CLOSED_USER_TEMPLATE,
@@ -294,22 +300,18 @@ public class NotificationMailSender {
 
     int counter = 0;
     StringBuilder info = new StringBuilder();
+    Set<String> setAliasses = new HashSet();
 
     final String confDir = System.getProperty("cloud.admin.configuration.dir");
 
     LOG.info("Sending custom email '" + subject + "' to users from validation queue.");
 
-    final File tenantQueueDir = new File(cloudAdminConfiguration.getString(CLOUD_ADMIN_TENANT_QUEUE_DIR),
-                                         "validation");
-    if (!tenantQueueDir.exists()) {
-      LOG.error("Queue storage " + tenantQueueDir.getAbsolutePath() + " not found");
-      throw new CloudAdminException(500, "Cannot read queue storage. Contact administrators.");
+    try {
+      setAliasses = modifiableEmailValidationStorage.getAliases();
+    } catch (IOException e) {
+      throw new CloudAdminException("Cannot read aliases.", e);
     }
-
-    String listForTenantQueueDir[] = tenantQueueDir.list();
-    for (String id : listForTenantQueueDir) {
-
-      String uuid = id.substring(0, id.indexOf('.'));
+    for (String uuid : setAliasses) {
 
       Map<String, String> validationData = emailValidationStorage.getValidationData(uuid);
 
@@ -339,7 +341,7 @@ public class NotificationMailSender {
         LOG.error("Cannot send custom email '"
             + subject
             + "' to owner of request "
-            + id
+            + uuid
             + (validationData != null ? " (tenant: " + tenantName + ", email: " + userMail + ")"
                                      : "") + ". Skipping it.", e);
       }
@@ -384,26 +386,23 @@ public class NotificationMailSender {
     final String confDir = System.getProperty("cloud.admin.configuration.dir");
     String mailTemplate = confDir + "/" + emailTemplate;
 
-    if (state.equals("all"))
+    if (state.compareToIgnoreCase("all") == 0)
       sendEmailToValidation(emailTemplate, subject);
     else {
       try {
         tState = TenantState.valueOf(state.toUpperCase());
       } catch (IllegalArgumentException e) {
-        if (state.equals("error"))
-          tState = TenantState.CREATION_FAIL;
-        else
-          LOG.error("Error in a URL. ", e);
+        LOG.error("Error in a URL. ", e);
       }
     }
-    if (state.equals("all") || tState != null) {
+    if (state.compareToIgnoreCase("all") == 0 || tState != null) {
       LOG.info("Sending custom email '" + subject + "' to users of " + state + " tenants.");
 
       Set<String> tenants = tenantInfoDataManager.getNames();
-      
+
       for (String tenantName : tenants) {
         try {
-          if (state.equals("all")) {
+          if (state.compareToIgnoreCase("all") == 0) {
             String userMail = tenantInfoDataManager.getValue(tenantName,
                                                              TenantInfoFieldName.PROPERTY_USER_MAIL);
             String templateId = tenantInfoDataManager.getValue(tenantName,

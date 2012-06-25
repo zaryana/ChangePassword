@@ -18,7 +18,9 @@
  */
 package com.exoplatform.cloudworkspaces.dao;
 
+import java.io.IOException;
 import java.util.Map;
+import java.util.Set;
 
 import org.exoplatform.cloudmanagement.admin.CloudAdminException;
 import org.exoplatform.cloudmanagement.admin.dao.EmailValidationStorage;
@@ -34,4 +36,9 @@ public interface ModifiableEmailValidationStorage extends EmailValidationStorage
    * @throws CloudAdminException
    */
   boolean setValidationData(String uuid, Map<String, String> validationData) throws CloudAdminException;
+  
+  /**
+   * List of the aliases saved in storage
+   */
+  public Set<String> getAliases() throws IOException;
 }
