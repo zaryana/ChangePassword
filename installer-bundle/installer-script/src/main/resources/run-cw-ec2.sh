@@ -201,7 +201,7 @@ export EC2_HOME JAVA_HOME EC2_PRIVATE_KEY EC2_CERT PATH
 	  JMXTr="1"
 	}
 # Get Graphite server port
-	GraphSPort=$(cut -f 14 -d\& $ResFile | grep -E '[[:print:]]{6,}' )
+	GraphSPort=$(cut -f 14 -d\& $ResFile | grep -E '[[:digit:]]{2,}' )
 	[ -z "$GraphSPort" ] && {
 	  echo "Port of grathite server is not defined. JMX will not started" >> $SCR_Log
 	  JMXTr=""
@@ -408,8 +408,8 @@ export EC2_HOME JAVA_HOME EC2_PRIVATE_KEY EC2_CERT PATH
 	}
 # Check for JMXTrans
 	[ -n "${JMXTr}" ] && {
-	  sed -r -i -e "s/^JMXTrHost=NOT_DEFINED$/JMXTrHost=${GraphSHost}" "${JMXTrCFG}"
-	  sed -r -i -e "s/^JMXTrPort=NOT_DEFINED$/JMXTrPort=${GraphSPort}" "${JMXTrCFG}"
+	  sed -r -i -e "s/^JMXTrHost=NOT_DEFINED$/JMXTrHost=${GraphSHost}/" "${JMXTrCFG}"
+	  sed -r -i -e "s/^JMXTrPort=NOT_DEFINED$/JMXTrPort=${GraphSPort}/" "${JMXTrCFG}"
 	  /etc/init.d/jmxtrans start
 	  echo "JMXTrans started" >> ${SCR_Log}
 	} || {
