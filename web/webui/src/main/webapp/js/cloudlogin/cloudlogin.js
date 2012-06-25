@@ -161,7 +161,8 @@ CloudLogin.finalizeSendEmails = function() {
     // Clear email not tagged
     document.getElementById("email").value = "";
     
-    //CloudLogin.updateSendButton();
+    // Update Send button to return to initial state and activate button
+    CloudLogin.updateSendButton();
   }
   else if(CloudLogin.NB_EMAILS === 0) {
     // Case of one email not tagged but sent, we exit wizard
@@ -195,6 +196,9 @@ CloudLogin.validateStep1 = function(event) {
       document.getElementById("email").value = "";
       return;
     }
+  }
+  else {
+    $("#t_submit").val("Sending...");
   }
   
   // deactivate button
