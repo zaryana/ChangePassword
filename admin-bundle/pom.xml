@@ -1,13 +1,30 @@
 <?xml version="1.0"?>
 <!--
-    Copyright (C) 2011 eXo Platform SAS.
+
+   Copyright (C) 2011 eXo Platform SAS.
+
+   This is free software; you can redistribute it and/or modify it
+   under the terms of the GNU Lesser General Public License as
+   published by the Free Software Foundation; either version 2.1 of
+   the License, or (at your option) any later version.
+
+   This software is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+   Lesser General Public License for more details.
+
+   You should have received a copy of the GNU Lesser General Public
+   License along with this software; if not, write to the Free
+   Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+   02110-1301 USA, or see the FSF site: http://www.fsf.org.
+
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>com.exoplatform.cloudworkspaces</groupId>
     <artifactId>cloud-workspaces-parent</artifactId>
-    <version>1.0.7</version>
+    <version>1.1.0-Beta03-SNAPSHOT</version>
   </parent>
   <artifactId>cloud-workspaces-admin-bundle</artifactId>
   <packaging>pom</packaging>
@@ -21,25 +38,52 @@
       <scope>provided</scope>
       <type>war</type>
     </dependency>
-
     <dependency>
       <groupId>org.exoplatform.cloud-management</groupId>
-      <artifactId>cloud-admin-valve</artifactId>
-      <scope>provided</scope>
-      <type>jar</type>
+      <artifactId>cloud-admin-packaging-war</artifactId>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>com.exoplatform.cloudworkspaces</groupId>
+      <artifactId>cloud-management-valve-patch</artifactId>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.cloud-management</groupId>
-      <artifactId>cloud-services-common</artifactId>
-      <scope>provided</scope>
-      <type>jar</type>
+      <artifactId>cloud-commons</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-catalina-jmx-remote</artifactId>
-      <scope>provided</scope>
-      <type>jar</type>
+    </dependency>
+
+    <!-- Logger dependencies -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jul-to-slf4j</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jcl-over-slf4j</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>log4j-over-slf4j</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.mail</groupId>
+      <artifactId>mail</artifactId>
     </dependency>
   </dependencies>
 
@@ -61,7 +105,7 @@
                 </goals>
                 <configuration>
                   <includeTypes>war</includeTypes>
-                  <stripVersion>false</stripVersion>
+                  <stripVersion>true</stripVersion>
                   <outputDirectory>${project.build.directory}/packager-conf/war</outputDirectory>
                 </configuration>
               </execution>
@@ -99,31 +143,61 @@
                 <goals>
                   <goal>run</goal>
                 </goals>
-              </execution>          
+              </execution>
               <execution>
-                <id>02-configure-cloud-admin</id>
+                <id>configure-cloud-admin</id>
                 <phase>prepare-package</phase>
                 <configuration>
                   <tasks>
-                    <echo message="Copy configuration for cloud-admin" />
-                    <copy todir="${project.build.directory}/admin-tomcat/exo-admin-conf" overwrite="true">
-                      <fileset dir="${basedir}/src/main/resources/tomcat/exo-admin-conf" />
+                    <echo message="Copy configuration for cloud-admin"/>
+                      <copy todir="${project.build.directory}/admin-tomcat/exo-admin-conf" overwrite="true">
+                        <fileset dir="${basedir}/src/main/resources/tomcat/exo-admin-conf"/>
+                      </copy>
+                      <copy todir="${project.build.directory}/admin-tomcat/bin" overwrite="true">
+                        <fileset dir="${basedir}/src/main/resources/tomcat/bin"/>
+                      </copy>
+                      <copy todir="${project.build.directory}/admin-tomcat/conf" overwrite="true">
+                        <fileset dir="${basedir}/src/main/resources/tomcat/conf"/>
+                      </copy>
+
+                      <echo message="Deploy cloud-workspaces-web-admin.war"/>
+                      <copy file="${project.build.directory}/packager-conf/war/cloud-workspaces-web-admin.war" tofile="${project.build.directory}/admin-tomcat/webapps/ROOT.war"/>
+
+                      <chmod file="${project.build.directory}/admin-tomcat/bin/*.sh" perm="+x"/>
+
+                      <echo message="Copy cloud-management-valve-patch.jar"/>
+                      <copy file="${project.build.directory}/packager-conf/jar/cloud-management-valve-patch-${project.version}.jar" tofile="${project.build.directory}/admin-tomcat/lib/cloud-management-valve-patch-${project.version}.jar"/>
+
+                      <echo message="Copy cloud-services-common.jar"/>
+                      <copy file="${project.build.directory}/packager-conf/jar/cloud-commons-${org.exoplatform.cloud-management.version}.jar" tofile="${project.build.directory}/admin-tomcat/lib/cloud-commons-${org.exoplatform.cloud-management.version}.jar"/>
+
+                      <echo message="Copy tomcat-catalina-jmx-remote.jar"/>
+                      <copy file="${project.build.directory}/packager-conf/jar/tomcat-catalina-jmx-remote-${tomcat.version}.jar" tofile="${project.build.directory}/admin-tomcat/lib/tomcat-catalina-jmx-remote-${tomcat.version}.jar"/>
+
+                      <echo message="Copy logger jars"/>
+                      <copy file="${project.build.directory}/packager-conf/jar/slf4j-api-${org.slf4j.version}.jar" tofile="${project.build.directory}/admin-tomcat/lib/slf4j-api.jar"/>
+                      <copy file="${project.build.directory}/packager-conf/jar/jcl-over-slf4j-${org.slf4j.version}.jar" tofile="${project.build.directory}/admin-tomcat/lib/jcl-over-slf4j.jar"/>
+                      <copy file="${project.build.directory}/packager-conf/jar/jul-to-slf4j-${org.slf4j.version}.jar" tofile="${project.build.directory}/admin-tomcat/lib/jul-to-slf4j.jar"/>
+                      <copy file="${project.build.directory}/packager-conf/jar/log4j-over-slf4j-${org.slf4j.version}.jar" tofile="${project.build.directory}/admin-tomcat/lib/log4j-over-slf4j.jar"/>
+                      <copy file="${project.build.directory}/packager-conf/jar/logback-classic-${ch.qos.logback.version}.jar" tofile="${project.build.directory}/admin-tomcat/lib/logback-classic.jar"/>
+                      <copy file="${project.build.directory}/packager-conf/jar/logback-core-${ch.qos.logback.version}.jar" tofile="${project.build.directory}/admin-tomcat/lib/logback-core.jar"/>
+
+                      <copy file="${project.build.directory}/packager-conf/jar/mail-1.4.2.jar" tofile="${project.build.directory}/admin-tomcat/lib/mail.jar"/>
+                  </tasks>
+                </configuration>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>copy-scripts-for-tests</id>
+                <phase>prepare-package</phase>
+                <configuration>
+                  <tasks>
+                    <copy todir="${project.build.directory}/local-cloud">
+                      <fileset dir="${basedir}/src/main/resources/local-cloud" />
                     </copy>
-                    <copy todir="${project.build.directory}/admin-tomcat/bin" overwrite="true">
-                      <fileset dir="${basedir}/src/main/resources/tomcat/bin" />
-                    </copy>
-                    <copy todir="${project.build.directory}/admin-tomcat/conf" overwrite="true">
-                      <fileset dir="${basedir}/src/main/resources/tomcat/conf" />
-                    </copy>
-                    <echo message="Deploy cloud-workspaces-web-admin.war" />
-                    <copy file="${project.build.directory}/packager-conf/war/cloud-workspaces-web-admin-${project.version}.war" tofile="${project.build.directory}/admin-tomcat/webapps/ROOT.war" />
-                    <chmod file="${project.build.directory}/admin-tomcat/bin/*.sh" perm="+x" />
-                    <echo message="Copy cloud-admin-valve.jar" />
-                    <copy file="${project.build.directory}/packager-conf/jar/cloud-admin-valve-${org.exoplatform.cloud-management.version}.jar" tofile="${project.build.directory}/admin-tomcat/lib/cloud-admin-valve-${org.exoplatform.cloud-management.version}.jar" />
-                    <echo message="Copy cloud-services-common.jar" />
-                    <copy file="${project.build.directory}/packager-conf/jar/cloud-services-common-${org.exoplatform.cloud-management.version}.jar" tofile="${project.build.directory}/admin-tomcat/lib/cloud-services-common-${org.exoplatform.cloud-management.version}.jar" />
-                    <echo message="Copy tomcat-catalina-jmx-remote.jar" />
-                    <copy file="${project.build.directory}/packager-conf/jar/tomcat-catalina-jmx-remote-${tomcat.version}.jar" tofile="${project.build.directory}/admin-tomcat/lib/tomcat-catalina-jmx-remote-${tomcat.version}.jar" />
+                    <chmod file="${project.build.directory}/local-cloud/*.sh" perm="+x"/>
                   </tasks>
                 </configuration>
                 <goals>
@@ -142,6 +216,8 @@
                   <goal>single</goal>
                 </goals>
                 <configuration>
+                  <appendAssemblyId>false</appendAssemblyId>
+                  <updateOnly>false</updateOnly>
                   <descriptors>
                     <descriptor>src/main/assembly/tomcat-archive.xml</descriptor>
                   </descriptors>

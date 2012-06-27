@@ -24,33 +24,25 @@
    <display-name>cloud-admin</display-name>
 
    <context-param>
-      <param-name>javax.ws.rs.Application</param-name>
-      <param-value>com.exoplatform.cloudworkspaces.rest.CloudIntranetRestApplication</param-value>
+      <param-name>webapp-composer-class</param-name>
+      <param-value>com.exoplatform.cloudworkspaces.CloudWorkspacesAdminApplicationComposer</param-value>
    </context-param>
 
-   <!-- filter>
-      <filter-name>TeeFilter</filter-name>
-      <filter-class>ch.qos.logback.access.servlet.TeeFilter</filter-class>
-   </filter-->
-
-   <!-- filter-mapping>
-      <filter-name>TeeFilter</filter-name>
-      <url-pattern>/rest/*</url-pattern>
-   </filter-mapping-->        
+   
+   <filter>
+   <filter-name>picoFilter</filter-name>
+   <filter-class>org.everrest.pico.servlet.EverrestPicoFilter</filter-class>
+</filter>
+<filter-mapping>
+   <filter-name>picoFilter</filter-name>
+   <url-pattern>/*</url-pattern>
+</filter-mapping>
    
 
    <listener>
-      <listener-class>org.exoplatform.cloudmanagement.admin.PropertiesInitializerListner</listener-class>
+      <listener-class>org.picocontainer.web.PicoServletContainerListener</listener-class>
    </listener>
-
-   <listener>
-      <listener-class>org.everrest.core.servlet.EverrestInitializedListener</listener-class>
-   </listener>
-
-   <listener>
-      <description>ServletContextListener</description>
-      <listener-class>com.exoplatform.cloudworkspaces.listener.AutoResumeListener</listener-class>
-    </listener>
+   
 
    <servlet>
       <servlet-name>EverrestServlet</servlet-name>
@@ -69,7 +61,14 @@
       <url-pattern>/rest/private/*</url-pattern>
    </servlet-mapping>
 
-
+   <servlet-mapping>
+      <servlet-name>EverrestServlet</servlet-name>
+      <url-pattern>/admin-shell/rest/private/*</url-pattern>
+   </servlet-mapping>
+   
+   <welcome-file-list>
+      <welcome-file>/index.html</welcome-file>
+   </welcome-file-list>
 
 
 
@@ -77,6 +76,7 @@
       <web-resource-collection>
          <web-resource-name>Cloud-admin-application</web-resource-name>
          <url-pattern>/rest/private/*</url-pattern>
+         <url-pattern>/admin-shell/rest/private/*</url-pattern>
          <http-method>POST</http-method>
          <http-method>GET</http-method>
       </web-resource-collection>
@@ -90,22 +90,20 @@
    </security-constraint>
 
 
-   <!-- Define the Login Configuration for this Application -->
    <login-config>
       <auth-method>BASIC</auth-method>
       <realm-name>Cloud admin application</realm-name>
    </login-config>
 
-   <!-- Security roles referenced by this web application -->
    <security-role>
       <description>The role that is required to log in to the Cloud admin application</description>
       <role-name>cloud-admin</role-name>
+      <role-name>cloud-manager</role-name>
    </security-role>
 
-   <security-role>
-    <description>The role that is required to log in to the Cloud Tenants validation</description>
-    <role-name>cloud-manager</role-name>
-   </security-role>
+
+
+
 
 </web-app>
 

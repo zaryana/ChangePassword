@@ -1,25 +1,7 @@
-/*
- * Copyright (C) 2012 eXo Platform SAS.
- *
- * This is free software; you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation; either version 2.1 of
- * the License, or (at your option) any later version.
- *
- * This software is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this software; if not, write to the Free
- * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- */
 package com.exoplatform.cloudworkspaces;
 
+import org.apache.commons.configuration.Configuration;
 import org.exoplatform.cloudmanagement.admin.CloudAdminException;
-import org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,12 +15,17 @@ import java.util.List;
 import java.util.Properties;
 
 public class UserRequestDAO {
-  CloudAdminConfiguration     cloudAdminConfiguration;
+  Configuration               cloudAdminConfiguration;
+
+  PasswordCipher              passwordCipher;
 
   private static final Logger LOG = LoggerFactory.getLogger(UserRequestDAO.class);
 
-  public UserRequestDAO(CloudAdminConfiguration cloudAdminConfiguration) {
+  public UserRequestDAO(Configuration cloudAdminConfiguration, PasswordCipher passwordCipher) {
     this.cloudAdminConfiguration = cloudAdminConfiguration;
+    if (System.getProperty("cloud.admin.crypt.registration.password") != null
+        && System.getProperty("cloud.admin.crypt.registration.password").equals("true"))
+      this.passwordCipher = passwordCipher;
   }
 
   public void put(UserRequest req) throws CloudAdminException {
@@ -63,7 +50,11 @@ public class UserRequestDAO {
     properties.setProperty("last-name", req.getLastName());
     properties.setProperty("company-name", req.getCompanyName());
     properties.setProperty("phone", req.getPhone());
-    properties.setProperty("password", req.getPassword());
+    if (passwordCipher != null) {
+      properties.setProperty("password", passwordCipher.encrypt(req.getPassword()));
+    } else {
+      properties.setProperty("password", req.getPassword());
+    }
     properties.setProperty("confirmation-id", req.getConfirmationId());
     properties.setProperty("isadministrator", Boolean.toString(req.isAdministrator()));
 
@@ -91,7 +82,7 @@ public class UserRequestDAO {
   }
 
   public List<UserRequest> search(String tNameFilter, RequestState stateFilter) throws CloudAdminException {
-
+    String password;
     List<UserRequest> result = new ArrayList<UserRequest>();
     String folderName = getRegistrationWaitingFolder();
     File[] list = new File(folderName).listFiles();
@@ -104,8 +95,13 @@ public class UserRequestDAO {
           Properties newprops = new Properties();
           newprops.load(io);
           io.close();
+          if (passwordCipher != null)
+            password = passwordCipher.decrypt(newprops.getProperty("password"));
+          else
+            password = newprops.getProperty("password");
           if (stateFilter == null
               || newprops.getProperty("action").equalsIgnoreCase(stateFilter.toString())) {
+
             UserRequest req = new UserRequest(one.getName(),
                                               newprops.getProperty("tenant"),
                                               newprops.getProperty("user-mail"),
@@ -113,7 +109,7 @@ public class UserRequestDAO {
                                               newprops.getProperty("last-name"),
                                               newprops.getProperty("company-name"),
                                               newprops.getProperty("phone"),
-                                              newprops.getProperty("password"),
+                                              password,
                                               newprops.getProperty("confirmation-id"),
                                               Boolean.parseBoolean(newprops.getProperty("isadministrator")),
                                               RequestState.valueOf(newprops.getProperty("action")));
@@ -130,6 +126,7 @@ public class UserRequestDAO {
 
   public UserRequest searchByEmail(String email) throws CloudAdminException {
     String folderName = getRegistrationWaitingFolder();
+    String password;
     File folder = new File(folderName);
     if (!folder.exists())
       return null;
@@ -141,6 +138,10 @@ public class UserRequestDAO {
         Properties newprops = new Properties();
         newprops.load(io);
         io.close();
+        if (passwordCipher != null)
+          password = passwordCipher.decrypt(newprops.getProperty("password"));
+        else
+          password = newprops.getProperty("password");
         if (newprops.getProperty("user-mail").equalsIgnoreCase(email)) {
           return new UserRequest(one.getName(),
                                  newprops.getProperty("tenant"),
@@ -149,7 +150,7 @@ public class UserRequestDAO {
                                  newprops.getProperty("last-name"),
                                  newprops.getProperty("company-name"),
                                  newprops.getProperty("phone"),
-                                 newprops.getProperty("password"),
+                                 password,
                                  newprops.getProperty("confirmation-id"),
                                  Boolean.parseBoolean(newprops.getProperty("isadministrator")),
                                  RequestState.valueOf(newprops.getProperty("action")));
@@ -165,6 +166,7 @@ public class UserRequestDAO {
 
   public UserRequest searchByFilename(String filename) throws CloudAdminException {
     String folderName = getRegistrationWaitingFolder();
+    String password;
     File folder = new File(folderName);
     if (!folder.exists())
       return null;
@@ -175,6 +177,10 @@ public class UserRequestDAO {
       Properties newprops = new Properties();
       newprops.load(io);
       io.close();
+      if (passwordCipher != null)
+        password = passwordCipher.decrypt(newprops.getProperty("password"));
+      else
+        password = newprops.getProperty("password");
       return new UserRequest(propertyFile.getName(),
                              newprops.getProperty("tenant"),
                              newprops.getProperty("user-mail"),
@@ -182,7 +188,7 @@ public class UserRequestDAO {
                              newprops.getProperty("last-name"),
                              newprops.getProperty("company-name"),
                              newprops.getProperty("phone"),
-                             newprops.getProperty("password"),
+                             password,
                              newprops.getProperty("confirmation-id"),
                              Boolean.parseBoolean(newprops.getProperty("isadministrator")),
                              RequestState.valueOf(newprops.getProperty("action")));
@@ -194,7 +200,7 @@ public class UserRequestDAO {
   }
 
   private String getRegistrationWaitingFolder() throws CloudAdminException {
-    String folder = cloudAdminConfiguration.getProperty("cloud.admin.tenant.waiting.dir", null);
+    String folder = cloudAdminConfiguration.getString("cloud.admin.tenant.waiting.dir", null);
     if (folder == null) {
       LOG.error("Registration waitind dir is not defined in the admin configuration");
       throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");

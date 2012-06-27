@@ -1,0 +1,193 @@
+[
+{
+    "command": ["tenant resume"],
+    "path": "/cloud-admin/tenant-service/resume",
+    "method": "GET",
+    "description" : "Resume suspended tenant on available application server. Options: -n, --name - name of tenant for resume.",
+    "params": [
+      {
+	  "name": "tenant",
+	  "type": "QUERY",
+	  "options":[-n, --name],
+	  "hasArg": true,
+	  "mandatory": true
+      }
+    ]   
+},
+{
+    "command": ["tenant suspend"],
+    "path": "/cloud-admin/tenant-service/suspend",
+    "method": "POST",
+    "description" : "Suspend tenant by name. Options: -n, --name - name of tenant for suspend.",
+    "params": [
+      {
+	  "name": "tenant",
+	  "type": "QUERY",
+	  "options":[-n, --name],
+	  "hasArg": true,
+	  "mandatory": true
+      }
+    ]   
+},
+{
+    "command": ["tenant disable"],
+    "path": "/cloud-admin/tenant-service/disable",
+    "method": "POST",
+    "description" : "Make tenant disable for users. Options: -n, --name - name of tenant for disable.",
+    "params": [
+      {
+	  "name": "tenant",
+	  "type": "QUERY",
+	  "options":[-n, --name],
+	  "hasArg": true,
+	  "mandatory": true
+      }
+    ]       
+},
+{
+    "command": ["tenant enable"],
+    "path": "/cloud-admin/tenant-service/enable",
+    "method": "POST",
+    "description" : "Make tenant available for users. Options: -n, --name - name of tenant for enable.",
+    "params": [
+      {
+	  "name": "tenant",
+	  "type": "QUERY",
+	  "options":[-n, --name],
+	  "hasArg": true,
+	  "mandatory": true
+      }
+    ]       
+},
+{
+    "command": ["tenant status"],
+    "path": "/cloud-admin/tenant-service/tenant-status",
+    "method": "GET",
+    "description" : "Show info about tenant. Options: -n, --name - name of tenant for receiving status.",
+    "params": [
+      {
+	  "name": "tenant",
+	  "type": "QUERY",
+	  "options":[-n, --name],
+	  "hasArg": true,
+	  "mandatory": true
+      }
+    ]       
+},
+{
+    "command": ["tenant list"],
+    "path": "/cloud-admin/info-service/tenant-list-all",
+    "method": "GET",
+    "description" : "Get list of all tenants with its metadata."    
+},
+{
+    "command": ["tenant list-order-as"],
+    "path": "/cloud-admin/info-service/tenant-list-order-as",
+    "method": "GET",
+    "description" : "Get list of all tenants with its metadata ordered by application server."    
+},
+{
+    "command": ["tenant list-order-state"],
+    "path": "/cloud-admin/info-service/tenant-list-order-state",
+    "method": "GET",
+    "description" : "Get list of all tenants with its metadata ordered by state."    
+},
+{
+    "command": ["tenant number"],
+    "path": "/cloud-admin/info-service/tenant-number",
+    "method": "GET",
+    "description" : "Get total tenant number in the cloud."    
+},
+{
+    "command": ["tenant number-order-state"],
+    "path": "/cloud-admin/info-service/tenant-number-order-state",
+    "method": "GET",
+    "description" : "Get number of online tenants by tenant state."    
+},
+{
+    "command": ["tenant number-order-as"],
+    "path": "/cloud-admin/info-service/tenant-number-order-as",
+    "method": "GET",
+    "description" : "Get number of online tenants on each application server."    
+},
+{
+    "command": ["server states"],
+    "path": "/cloud-admin/info-service/server-states",
+    "method": "GET",
+    "description" : "Get list of all registered application servers and their states."   
+},
+{
+    "command": ["server logs"],
+    "path": "/cloud-admin/cloudworkspaces/info-service/server-logs",
+    "method": "GET",
+    "description" : "Get list of all registered application servers and links to their logs."   
+},
+{
+    "command": ["user online"],
+    "path": "/cloud-admin/info-service/users-list",
+    "method": "GET",
+    "description" : "Get list of users and its email addresses from all online tenants."   
+},
+{
+    "command": ["server types"],
+    "path": "/cloud-admin/info-service/get-types",
+    "method": "GET",
+    "description" : "Get all registered application server types."   
+},
+{
+    "command": ["server start"],
+    "path": "/cloud-admin/application-service/start-server",
+    "method": "POST",
+    "description" : "Start new application server. Options: -t, --type - type for new application server.",
+    "params": [
+      {
+	  "name": "type",
+	  "type": "QUERY",
+	  "options":[-t, --type],
+	  "hasArg": true,
+	  "mandatory": true
+      }
+    ]
+},
+{
+    "command": ["server stop"],
+    "path": "/cloud-admin/application-service/stop-server",
+    "method": "POST",
+    "description" : "Stop application server. Options: -a, --alias - server for stop",
+    "params": [
+      {
+	  "name": "alias",
+	  "type": "QUERY",
+	  "options":[-a, --alias],
+	  "hasArg": true,
+	  "mandatory": true
+      }
+    ]
+},
+
+{
+    "command": ["autoscaling block"],
+    "path": "/cloud-admin/autoscaling-service/block-autoscaling",
+    "method": "POST",
+    "description" : "Block cloud autoscaling."   
+},
+{
+    "command": ["autoscaling allow"],
+    "path": "/cloud-admin/autoscaling-service/allow-autoscaling",
+    "method": "POST",
+    "description" : "Allow cloud autoscaling."   
+},
+{
+    "command": ["autoscaling status"],
+    "path": "/cloud-admin/autoscaling-service/autoscaling-status",
+    "method": "GET",
+    "description" : "Shows cloud autoscaling status."   
+},
+
+{
+	"command": ["user number-per-tenant"],
+	"path": "/cloud-admin/statistic/number-of-users",
+	"method": "GET",
+	"description" : "Shows number of users for each tenant."
+},
+]

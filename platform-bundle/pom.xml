@@ -8,8 +8,9 @@
   <parent>
     <groupId>com.exoplatform.cloudworkspaces</groupId>
     <artifactId>cloud-workspaces-parent</artifactId>
-    <version>1.0.7</version>
+    <version>1.1.0-Beta03-SNAPSHOT</version>
   </parent>
+
   <artifactId>cloud-workspaces-platform-bundle</artifactId>
   <packaging>pom</packaging>
   <name>eXo Cloud Workspaces :: Platform bundle</name>
@@ -97,6 +98,21 @@
           <classifier>tomcat</classifier>
         </dependency>
 
+        <!-- Cloud Management -->
+        <dependency>
+          <groupId>org.exoplatform.cloud-management</groupId>
+          <artifactId>cloud-rest-everrest</artifactId>
+          <scope>provided</scope>
+          <type>jar</type>
+        </dependency>
+
+        <dependency>
+           <groupId>org.everrest</groupId>
+           <artifactId>everrest-groovy</artifactId>
+           <scope>provided</scope>
+           <type>jar</type>
+        </dependency>
+
         <!-- Third parties -->
         <dependency>
           <groupId>mysql</groupId>
@@ -149,7 +165,7 @@
                     <delete dir="${project.build.directory}/platform-cloud-tomcat/gatein/conf/cloud/cloud-admin" />
                     <delete dir="${project.build.directory}/platform-cloud-tomcat/webapps/ROOT" />
                     <delete
-                      file="${project.build.directory}/platform-cloud-tomcat/lib/cloud-admin-valve-${org.exoplatform.cloud-management.version}.jar" />
+                      file="${project.build.directory}/platform-cloud-tomcat/lib/cloud-admin-valve-tomcat-${org.exoplatform.cloud-management.version}.jar" />
                     <delete file="${project.build.directory}/platform-cloud-tomcat/webapps/cloud-admin.war" />
 
                     <!-- Delete binaries -->
@@ -218,10 +234,10 @@
                     <copy file="${project.basedir}/src/main/resources/tomcat/gatein/conf/cloud/users.properties"
                       tofile="${project.build.directory}/platform-cloud-tomcat/gatein/conf/cloud/users.properties"
                       overwrite="true" />
-                    <copy
+                    <!--copy
                       file="${project.basedir}/src/main/resources/tomcat/gatein/conf/cloud/agent-configuration.xml"
                       tofile="${project.build.directory}/platform-cloud-tomcat/gatein/conf/cloud/agent-configuration.xml"
-                      overwrite="true" />
+                      overwrite="true" /-->
                     <copy
                       file="${project.basedir}/src/main/resources/tomcat/gatein/conf/portal/portal/configuration.xml"
                       tofile="${project.build.directory}/platform-cloud-tomcat/gatein/conf/portal/portal/configuration.xml"

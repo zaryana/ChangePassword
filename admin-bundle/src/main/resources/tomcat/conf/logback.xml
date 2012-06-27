@@ -26,43 +26,30 @@
          <!-- daily rollover -->
          <fileNamePattern>${cloud.admin.log.dir}/%d{yyyy/MM/dd}/cloud-admin-%i.log</fileNamePattern>
          <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-            <!-- or whenever the file size reaches 1MB -->
-            <maxFileSize>1MB</maxFileSize>
+            <!-- or whenever the file size reaches 2MB -->
+            <maxFileSize>2MB</maxFileSize>
          </timeBasedFileNamingAndTriggeringPolicy>
       </rollingPolicy>
       <encoder>
-         <pattern>%-41(%date[%.15thread])%-45([%-5level] [%.30logger{30} %L]) - %msg%n</pattern>
+         <pattern>%-41(%date[%.15thread]) %-45([%-5level] [%.30logger{30} %L]) - %msg%n</pattern>
       </encoder>
    </appender>
 
 
    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
       <encoder>
-         <pattern>%-41(%date[%.15thread])%-45([%-5level]  [%.30logger{30} %L]) - %msg%n</pattern>
+         <pattern>%-41(%date[%.15thread]) %-45([%-5level]  [%.30logger{30} %L]) - %msg%n</pattern>
       </encoder>
       <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
          <level>info</level>
       </filter>
    </appender>
 
+   <include file="${logback.smtp.appender.conf.file}"/>
+   <logger name="org.apache.catalina.loader" level="OFF"/>
+   <logger name="org.apache.catalina.session.PersistentManagerBase" level="OFF"/>
 
-   <appender name="email" class="ch.qos.logback.classic.net.SMTPAppender">
-      <SMTPHost>${cloud.admin.mail.host}</SMTPHost>
-      <SMTPPort>${cloud.admin.mail.port}</SMTPPort>
-      <SSL>${cloud.admin.mail.ssl}</SSL>
-      <username>${cloud.admin.mail.user}</username>
-      <password>${cloud.admin.mail.password}</password>
-      <to>${cloud.admin.mail.logger.email}</to>
-      <from>${cloud.admin.mail.admin.email}</from>
-      <subject>Cloud-Admin error: %logger{20} - %m</subject>
-      <layout class="ch.qos.logback.classic.PatternLayout">
-         <pattern>%-41(%date[%.15thread])%-45([%-5level] [%.30logger{30} %L]) - %msg%n</pattern>
-      </layout>
-      <bufferSize>1</bufferSize>
-   </appender>
-
-
-   <root level="debug">
+   <root level="INFO">
       <appender-ref ref="stdout"/>
       <appender-ref ref="file"/>
       <appender-ref ref="email"/>

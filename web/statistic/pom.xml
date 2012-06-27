@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (C) 2011 eXo Platform SAS. -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.exoplatform.cloudworkspaces</groupId>
+    <artifactId>cloud-workspaces-web</artifactId>
+    <version>1.1.0-Beta03-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>cloud-workspaces-web-statistic</artifactId>
+  <packaging>jar</packaging>
+  <name>eXo Cloud Workspaces :: Statistic</name>
+  <description>eXo Cloud Workspaces Statistic</description>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.exoplatform.cloud-management</groupId>
+      <artifactId>cloud-admin</artifactId>
+      <scope>compile</scope>
+      <type>jar</type>
+    </dependency>
+
+    <!-- TEST deps -->
+    <dependency>
+      <groupId>org.testng</groupId>
+      <artifactId>testng</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-all</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.everrest</groupId>
+      <artifactId>everrest-assured</artifactId>
+      <scope>test</scope>
+      </dependency>
+    <dependency>
+      <groupId>dumbster</groupId>
+      <artifactId>dumbster</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>

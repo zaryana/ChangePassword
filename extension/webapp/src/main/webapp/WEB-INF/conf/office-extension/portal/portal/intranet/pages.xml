@@ -32,8 +32,8 @@
 			<access-permissions>*:/platform/users</access-permissions>
 			<container id="OfficeLeft" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
 				<access-permissions>*:/platform/users</access-permissions>
-                                <!-- My Profile gadget -->
-		                <portlet-application>
+                 <!-- My Profile gadget -->
+		         <portlet-application>
 					<portlet>
 						<application-ref>dashboard</application-ref>
 						<portlet-ref>GadgetPortlet</portlet-ref>
@@ -52,7 +52,7 @@
 				</portlet-application>
 				
 				<!-- Invitations gadget -->
-		                <portlet-application>
+		        <portlet-application>
 					<portlet>
 						<application-ref>dashboard</application-ref>
 						<portlet-ref>GadgetPortlet</portlet-ref>
@@ -70,8 +70,29 @@
 					<show-application-state>true</show-application-state>
 				</portlet-application>
 				
-                                <!-- Agenda gadget -->
-		                <portlet-application>
+				 <!-- My Documents gadget -->
+		         <portlet-application>
+					<portlet>
+						<application-ref>dashboard</application-ref>
+						<portlet-ref>GadgetPortlet</portlet-ref>
+						<preferences>
+							<preference>
+								<name>url</name>
+								<value>local://MyDocumentsGadget</value>
+								<read-only>false</read-only>
+							</preference>
+						</preferences>
+					</portlet>
+					<title>Gadget Portlet</title>
+					<access-permissions>*:/platform/users</access-permissions>
+					<show-info-bar>false</show-info-bar>
+					<show-application-state>true</show-application-state>
+				</portlet-application>
+				
+				
+				
+                 <!-- My Spaces gadget -->
+		         <portlet-application>
 					<portlet>
 						<application-ref>dashboard</application-ref>
 						<portlet-ref>GadgetPortlet</portlet-ref>
@@ -89,25 +110,9 @@
 					<show-application-state>true</show-application-state>
 				</portlet-application>
 
-                                <!-- Feature poll gadget -->
-		                <portlet-application>
-					<portlet>
-						<application-ref>dashboard</application-ref>
-						<portlet-ref>GadgetPortlet</portlet-ref>
-						<preferences>
-							<preference>
-								<name>url</name>
-								<value>local://MyDocumentsGadget</value>
-								<read-only>false</read-only>
-							</preference>
-						</preferences>
-					</portlet>
-					<title>Gadget Portlet</title>
-					<access-permissions>*:/platform/users</access-permissions>
-					<show-info-bar>false</show-info-bar>
-					<show-application-state>true</show-application-state>
-				</portlet-application>
-				<!-- My spaces gadget -->
+                               
+				
+				<!-- who's online gadget -->
 				<portlet-application>
 					<portlet>
 						<application-ref>dashboard</application-ref>
@@ -328,7 +333,7 @@
 					<show-application-state>true</show-application-state>
 				   </portlet-application>
 -->
-                                <!-- Getting started gadget -->
+                <!-- Getting started gadget -->
 				<portlet-application>
 					<portlet>
 						<application-ref>dashboard</application-ref>
@@ -347,8 +352,8 @@
 					<show-application-state>true</show-application-state>
 				</portlet-application>
 				
-                                <!-- Invite Join Workspace -->
-		                <portlet-application>
+                <!-- Invitation Workspace -->
+		        <portlet-application>
 					<portlet>
 						<application-ref>dashboard</application-ref>
 						<portlet-ref>GadgetPortlet</portlet-ref>
@@ -365,8 +370,27 @@
 					<show-info-bar>false</show-info-bar>
 					<show-application-state>true</show-application-state>
 				</portlet-application>		
+				
+				<!-- Agenda Workspace -->
+		        <portlet-application>
+					<portlet>
+						<application-ref>dashboard</application-ref>
+						<portlet-ref>GadgetPortlet</portlet-ref>
+						<preferences>
+							<preference>
+								<name>url</name>
+								<value>local://AgendaGadget</value>
+								<read-only>false</read-only>
+							</preference>
+						</preferences>
+					</portlet>
+					<title>Gadget Portlet</title>
+					<access-permissions>*:/platform/users</access-permissions>
+					<show-info-bar>false</show-info-bar>
+					<show-application-state>true</show-application-state>
+				</portlet-application>
 
-                                <!-- Who is online gadget -->
+                <!-- People Suggestion Gadget -->
 				<portlet-application>
 					<portlet>
 						<application-ref>dashboard</application-ref>
@@ -385,7 +409,7 @@
 					<show-application-state>true</show-application-state>
 				</portlet-application>
 				
-                                <!-- Bookmark gadget -->
+                <!-- Space Suggestion Gadget -->
 				<portlet-application>
 					<portlet>
 						<application-ref>dashboard</application-ref>

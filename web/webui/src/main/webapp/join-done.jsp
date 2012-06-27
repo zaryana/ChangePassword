@@ -11,7 +11,8 @@
     <script type="text/javascript">var tb_pathToImage = "/background/img_video.png";
       var email = location.hash.substring(1);
       var split = email.split('@');
-      var tName = split[1].substring(0, split[1].indexOf('.'));
+      tenants.init();
+      var tName = getTenantName(email);
     </script>
   </head>
   <body onLoad="tenants.initDonePage();">

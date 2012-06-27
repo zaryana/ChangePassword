@@ -69,9 +69,7 @@
     </div>
     <!--  marketo response container  -->
     <iframe id="mktOutput" name="mktOutput" style='display:none; visibility:hidden'></iframe>
-    <!-- BEGIN: MARKETO TRACKING -->
     <script type="text/javascript" src="/js/mktFormSupport.js"></script>
-    <!-- END: MARKETO TRACKING -->
     <script type="text/javascript" src="/js/trackers.js"></script>
   </body>
 </html>

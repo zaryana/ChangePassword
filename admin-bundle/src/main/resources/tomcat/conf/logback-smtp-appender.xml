@@ -1,0 +1,33 @@
+<!--
+
+    Copyright (C) 2011 eXo Platform SAS.
+
+    This is free software; you can redistribute it and/or modify it
+    under the terms of the GNU Lesser General Public License as
+    published by the Free Software Foundation; either version 2.1 of
+    the License, or (at your option) any later version.
+
+    This software is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+    Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public
+    License along with this software; if not, write to the Free
+    Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+    02110-1301 USA, or see the FSF site: http://www.fsf.org.
+
+-->
+<appender name="email" class="ch.qos.logback.classic.net.SMTPAppender">
+   <SMTPHost>smtp.gmail.com</SMTPHost>
+   <SMTPPort>465</SMTPPort>
+   <SSL>true</SSL>
+   <username>exo.cloud.ide@gmail.com</username>
+   <password>cloudIDEuAeXo</password>
+   <to>exo.cloud.ide@gmail.com</to>
+   <from>exo.cloud.ide@gmail.com</from>
+   <subject>Cloud-Admin error: %logger{20} - %m</subject>
+   <layout class="ch.qos.logback.classic.PatternLayout">
+      <pattern>%-41(%date[%.15thread]) %-45([%-5level] [%.30logger{30} %L]) - %msg%n</pattern>
+   </layout>
+</appender>

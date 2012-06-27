@@ -10,16 +10,17 @@
     <artifactId>exo.parent</artifactId>
     <version>7.1</version>
   </parent>
+
   <groupId>com.exoplatform.cloudworkspaces</groupId>
   <artifactId>cloud-workspaces-parent</artifactId>
-  <version>1.0.7</version>
+  <version>1.1.0-Beta03-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>eXo Cloud Workspaces</name>
   <description>Parent POM for Cloud Workspaces projects.</description>
 
   <scm>
-    <connection>scm:git:https://git.exoplatform.org/private/products/cloud-workspaces/</connection>
-    <developerConnection>scm:git:https://git.exoplatform.org/private/products/cloud-workspaces/</developerConnection>
+    <connection>https://github.com/exoplatform/cloud-workspaces/</connection>
+    <developerConnection>https://github.com/exoplatform/cloud-workspaces/</developerConnection>
     <url>http://fisheye.exoplatform.org/browse/cloud-workspaces/</url>
   </scm>
 
@@ -30,20 +31,20 @@
     <maven.compiler.target>1.6</maven.compiler.target>
 
     <!-- eXo Modules -->
-    <org.exoplatform.platform.cloud.version>3.5.2-3</org.exoplatform.platform.cloud.version>
-    <org.exoplatform.platform.version>3.5.2</org.exoplatform.platform.version>
-    <org.exoplatform.kernel.version>2.3.6-GA</org.exoplatform.kernel.version>
-    <org.exoplatform.core.version>2.4.6-GA</org.exoplatform.core.version>
-    <org.exoplatform.ws.version>2.2.6-GA</org.exoplatform.ws.version>
-    <org.exoplatform.jcr.version>1.14.6-GA</org.exoplatform.jcr.version>
-    <org.exoplatform.ks.version>2.2.8</org.exoplatform.ks.version>
-    <org.exoplatform.cs.version>2.2.8</org.exoplatform.cs.version>    
-    <org.exoplatform.ecms.version>2.3.5</org.exoplatform.ecms.version>
-    <org.exoplatform.cloud-management.version>1.1-M2</org.exoplatform.cloud-management.version>
-
-    <!-- Cloud gadget services -->
-    <org.exoplatform.portal.version>3.2.3-PLF</org.exoplatform.portal.version>
-    <org.exoplatform.social.version>1.2.8</org.exoplatform.social.version>
+    <org.exoplatform.platform.cloud.version>3.5.4-SNAPSHOT</org.exoplatform.platform.cloud.version>
+    <org.exoplatform.platform.version>3.5.4-SNAPSHOT</org.exoplatform.platform.version>
+    <org.exoplatform.kernel.version>2.3.8-GA-SNAPSHOT</org.exoplatform.kernel.version>
+    <org.exoplatform.core.version>2.4.8-GA-SNAPSHOT</org.exoplatform.core.version>
+    <org.exoplatform.ws.version>2.2.8-GA-SNAPSHOT</org.exoplatform.ws.version>
+    <org.exoplatform.jcr.version>1.14.8-GA-SNAPSHOT</org.exoplatform.jcr.version>
+    <org.exoplatform.jcr-services.version>1.14.8-GA-SNAPSHOT</org.exoplatform.jcr-services.version>
+    <org.exoplatform.cloud-management.version>1.1-M6</org.exoplatform.cloud-management.version>
+    <org.exoplatform.ide.version>1.2.0-M4</org.exoplatform.ide.version>
+    <org.exoplatform.portal.version>3.2.5-PLF-SNAPSHOT</org.exoplatform.portal.version>
+    <org.exoplatform.cs.version>2.2.10-SNAPSHOT</org.exoplatform.cs.version>
+    <org.exoplatform.ks.version>2.2.10-SNAPSHOT</org.exoplatform.ks.version>
+    <org.exoplatform.ecms.version>2.3.8-SNAPSHOT</org.exoplatform.ecms.version>
+    <org.exoplatform.social.version>1.2.10-SNAPSHOT</org.exoplatform.social.version>
 
     <!-- Db libs -->
     <mysql.connector.java.version>5.1.13</mysql.connector.java.version>
@@ -76,6 +77,19 @@
     <version.compiler.plugin>2.3.2</version.compiler.plugin>
     <version.war.plugin>2.1.1</version.war.plugin>
     <version.assembly.plugin>2.2.2</version.assembly.plugin>
+
+    <!-- Logger libs -->
+    <org.slf4j.version>1.6.1</org.slf4j.version>
+    <ch.qos.logback.version>1.0.0</ch.qos.logback.version>
+    <log4j.version>1.2.16</log4j.version>
+
+    <everrest.version>1.0.2</everrest.version>
+
+    <!-- test -->
+    <testng.version>6.3.1</testng.version>
+    <mockito.version>1.9.0</mockito.version>
+    <everrest.assured.version>0.4</everrest.assured.version>
+    <dumbster.version>1.6</dumbster.version>
 
     <!-- maven-release-plugin -->
     <arguments>-Prelease,distrib,exo-private,exo-staging -Dgatein.working.dir=target -Dmaven.wagon.provider.http=httpclient</arguments>
@@ -120,6 +134,12 @@
       </dependency>
       <dependency>
         <groupId>com.exoplatform.cloudworkspaces</groupId>
+        <artifactId>cloud-management-valve-patch</artifactId>
+        <version>${project.version}</version>
+        <type>jar</type>
+      </dependency>
+      <dependency>
+        <groupId>com.exoplatform.cloudworkspaces</groupId>
         <artifactId>cloud-workspaces-extension-webapp</artifactId>
         <version>${project.version}</version>
         <type>war</type>
@@ -145,6 +165,12 @@
         <artifactId>cloud-workspaces-platform-navigation</artifactId>
         <version>${project.version}</version>
         <type>war</type>
+      </dependency>
+      <dependency>
+        <groupId>com.exoplatform.cloudworkspaces</groupId>
+        <artifactId>cloud-workspaces-web-statistic</artifactId>
+        <version>${project.version}</version>
+        <type>jar</type>
       </dependency>
 
       <!-- Cloud Workspaces gadgets -->
@@ -175,6 +201,12 @@
         <type>zip</type>
         <classifier>tomcat</classifier>
       </dependency>
+      <dependency>
+        <groupId>com.exoplatform.platform.cloud</groupId>
+        <artifactId>cloud-admin-connector-localhost</artifactId>
+        <version>${org.exoplatform.platform.cloud.version}</version>
+        <type>jar</type>
+      </dependency>
 
       <!-- Cloud Managemenet -->
       <dependency>
@@ -185,7 +217,7 @@
       </dependency>
       <dependency>
         <groupId>org.exoplatform.cloud-management</groupId>
-        <artifactId>cloud-admin-valve</artifactId>
+        <artifactId>cloud-admin-valve-tomcat</artifactId>
         <version>${org.exoplatform.cloud-management.version}</version>
         <type>jar</type>
       </dependency>
@@ -197,7 +229,19 @@
       </dependency>
       <dependency>
         <groupId>org.exoplatform.cloud-management</groupId>
+        <artifactId>cloud-commons</artifactId>
+        <version>${org.exoplatform.cloud-management.version}</version>
+        <type>jar</type>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.cloud-management</groupId>
         <artifactId>cloud-admin</artifactId>
+        <version>${org.exoplatform.cloud-management.version}</version>
+        <type>jar</type>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.cloud-management</groupId>
+        <artifactId>cloud-admin-connector-ec2</artifactId>
         <version>${org.exoplatform.cloud-management.version}</version>
         <type>jar</type>
       </dependency>
@@ -206,6 +250,29 @@
         <artifactId>cloud-agent</artifactId>
         <version>${org.exoplatform.cloud-management.version}</version>
         <type>jar</type>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.cloud-management</groupId>
+        <artifactId>cloud-admin-packaging-war</artifactId>
+        <version>${org.exoplatform.cloud-management.version}</version>
+        <type>war</type>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.cloud-management</groupId>
+        <artifactId>cloud-rest-everrest</artifactId>
+        <version>${org.exoplatform.cloud-management.version}</version>
+        <type>jar</type>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.ide</groupId>
+        <artifactId>exo-ide-shell</artifactId>
+        <version>${org.exoplatform.ide.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.ide</groupId>
+        <artifactId>exo-ide-packaging-shell-war</artifactId>
+        <version>${org.exoplatform.ide.version}</version>
+        <type>war</type>
       </dependency>
 
       <!-- eXo dependencies -->
@@ -351,6 +418,61 @@
         <type>jar</type>
       </dependency>
       <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${org.slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>jcl-over-slf4j</artifactId>
+        <version>${org.slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>jul-to-slf4j</artifactId>
+        <version>${org.slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>log4j-over-slf4j</artifactId>
+        <version>${org.slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-classic</artifactId>
+        <version>${ch.qos.logback.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-core</artifactId>
+        <version>${ch.qos.logback.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.testng</groupId>
+        <artifactId>testng</artifactId>
+        <version>${testng.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-all</artifactId>
+        <version>${mockito.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.everrest</groupId>
+        <artifactId>everrest-groovy</artifactId>
+        <version>${everrest.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.everrest</groupId>
+        <artifactId>everrest-assured</artifactId>
+        <version>${everrest.assured.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>dumbster</groupId>
+        <artifactId>dumbster</artifactId>
+        <version>${dumbster.version}</version>
+      </dependency>
+      <dependency>
         <groupId>javax.jcr</groupId>
         <artifactId>jcr</artifactId>
         <version>${jcr.version}</version>
@@ -371,10 +493,11 @@
         <enabled>true</enabled>
       </snapshots>
     </pluginRepository>
-  </pluginRepositories>      
+  </pluginRepositories>
 
   <modules>
     <module>cloud-management-patch</module>
+    <module>cloud-management-valve-patch</module>
     <module>component</module>
     <module>web</module>
     <module>admin-bundle</module>
@@ -383,6 +506,8 @@
     <module>wizard-extension</module>
     <module>navigation</module>
     <module>platform-bundle</module>
+    <module>installer-bundle</module>
+    <module>local-cloud</module>
   </modules>
 
 </project>
