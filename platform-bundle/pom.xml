@@ -169,6 +169,15 @@
                       <fileset dir="${project.build.directory}/platform-cloud-tomcat/webapps" includes="workflow.war" />
                       <fileset dir="${project.build.directory}/platform-cloud-tomcat/lib" includes="exo-ecms-ext-workflow-.*.jar" />
                     </delete>
+                    
+                    <!-- Comment filter Terms and Conditions -->
+                    <unzip src="${project.build.directory}/platform-cloud-tomcat/lib/exo.platform.component.common-${org.exoplatform.platform.version}.jar" dest="${project.build.directory}/platform-cloud-tomcat/lib/plf" />
+                    <replace file="${project.build.directory}/platform-cloud-tomcat/lib/plf/conf/portal/configuration.xml">
+                      <replacetoken><![CDATA[<import>jar:/conf/termsandconditions/web-filter-configuration.xml</import>]]></replacetoken>
+                      <replacevalue><![CDATA[<!--<import>jar:/conf/termsandconditions/web-filter-configuration.xml</import>-->]]></replacevalue>
+                    </replace>
+                    <zip destfile="${project.build.directory}/platform-cloud-tomcat/lib/exo.platform.component.common-${org.exoplatform.platform.version}.jar" basedir="${project.build.directory}/platform-cloud-tomcat/lib/plf" />
+                    <delete dir="${project.build.directory}/platform-cloud-tomcat/lib/plf" />
 
                     <unzip src="${project.build.directory}/platform-cloud-tomcat/webapps/portal.war" dest="${project.build.directory}/platform-cloud-tomcat/webapps/portal" />
                     <replace
