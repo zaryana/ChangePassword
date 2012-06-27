@@ -90,6 +90,18 @@
     </component-plugin>
   </external-component-plugins>
 
+  <!-- This configuration is needed for CLDINT-287-->
+  <!-- This configuration must be after 3 listener above, to make sure Identity was existed before start UserJoinTenantListener-->
+  <external-component-plugins>
+    <target-component>org.exoplatform.services.organization.OrganizationService</target-component>
+    <component-plugin>
+      <name>user.join.tenant.listener</name>
+      <set-method>addListenerPlugin</set-method>
+      <type>com.exoplatform.cloudworkspaces.social.listener.UserJoinTenantListener</type>
+      <description>this listener notifies all existed users when a new user joined tenant</description>
+    </component-plugin>
+  </external-component-plugins>
+
   <external-component-plugins>
     <target-component>org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy</target-component>
       <component-plugin>

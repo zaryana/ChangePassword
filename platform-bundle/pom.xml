@@ -28,6 +28,12 @@
         </dependency>
         <dependency>
           <groupId>com.exoplatform.cloudworkspaces</groupId>
+          <artifactId>cloud-workspaces-component-social</artifactId>
+          <scope>provided</scope>
+          <type>jar</type>
+        </dependency>
+        <dependency>
+          <groupId>com.exoplatform.cloudworkspaces</groupId>
           <artifactId>cloud-workspaces-component-organization</artifactId>
           <scope>provided</scope>
           <type>jar</type>

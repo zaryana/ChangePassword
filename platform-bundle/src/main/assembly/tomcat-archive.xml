@@ -99,6 +99,7 @@
        <outputDirectory>app-server-tomcat/lib</outputDirectory>
        <includes>
          <include>mysql:mysql-connector-java</include>
+         <include>com.exoplatform.cloudworkspaces:cloud-workspaces-component-social</include>
          <include>com.exoplatform.cloudworkspaces:cloud-workspaces-component-organization</include>
          <include>com.exoplatform.cloudworkspaces:cloud-workspaces-component-initializer</include>
          <include>com.exoplatform.cloudworkspaces:cloud-workspaces-component-multitenancy</include>
