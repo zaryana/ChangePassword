@@ -25,6 +25,7 @@ public class CloudLoginFilter implements Filter {
 
   private static final String LOGIN_URI = "/login";
   private static final String DOLOGIN_URI = "/dologin";
+  private static final String REST_URI = "rest";
 
   private CloudLoginService cloudLoginService;
   public CloudLoginService getCloudLoginService() {
@@ -45,8 +46,9 @@ public class CloudLoginFilter implements Filter {
     String loginRequestUri = httpServletRequest.getContextPath() + LOGIN_URI;
     String dologinRequestUri = httpServletRequest.getContextPath() + DOLOGIN_URI;
     boolean isLoginUri = (requestUri.contains(loginRequestUri) || requestUri.contains(dologinRequestUri));
+    boolean isRestUri = (requestUri.contains(REST_URI));
     
-    if(! isLoginUri && CloudLoginStatus.INITIATED.equals(getCloudLoginService().getStatus(user))) {
+    if(! isLoginUri && !isRestUri && CloudLoginStatus.INITIATED.equals(getCloudLoginService().getStatus(user))) {
 
       // Get full url
       String reqUri = httpServletRequest.getRequestURI().toString();
