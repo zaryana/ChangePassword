@@ -3,18 +3,23 @@
 <web-app> 
   <display-name>cloud-portlets</display-name>
   <description>Cloud workspaces portlets</description>
+
   <listener> 
     <listener-class>org.exoplatform.services.portletcontainer.impl.servlet.PortletApplicationListener</listener-class>
   </listener>
+  
   <listener>
     <listener-class>org.exoplatform.container.web.PortalContainerConfigOwner</listener-class>
   </listener>
+  
   <servlet>
     <servlet-name>PortletWrapper</servlet-name>
 	<servlet-class>org.exoplatform.services.portletcontainer.impl.servlet.ServletWrapper</servlet-class>
   </servlet>
+  
   <servlet-mapping>
     <servlet-name>PortletWrapper</servlet-name>
 	<url-pattern>/PortletWrapper</url-pattern>
   </servlet-mapping>
+
 </web-app>

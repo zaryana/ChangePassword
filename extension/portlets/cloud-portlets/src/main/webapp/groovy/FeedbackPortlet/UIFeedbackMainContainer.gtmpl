@@ -1,0 +1,8 @@
+<%
+import com.exoplatform.cloudworkspaces.portlet.FeedbackPortlet.*;
+%>
+ 
+<div id="UIFeedbackMainContainer" class="ContenFeedback ClearFix" style="display:none">
+    <span class="txtThank"><%=_ctx.appRes(uicomponent.getId() + ".label.Thanks")%></span>
+    <%uicomponent.renderChild(UIFeedbackForm);%>
+</div>

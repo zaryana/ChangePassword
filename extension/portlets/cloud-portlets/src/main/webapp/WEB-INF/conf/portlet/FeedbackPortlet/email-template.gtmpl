@@ -1,0 +1,6 @@
+<ul>
+  <li>From: <b>${senderName}</b> (<i>${senderEmail}</i>)</li>
+  <li>Tenant: <b>${tenant}</b></li>
+  <li>On page: <b>${pageName}</b> (${pageRef})</li>
+  <li>Message:<p>${feedback}</p></li>
+</ul>

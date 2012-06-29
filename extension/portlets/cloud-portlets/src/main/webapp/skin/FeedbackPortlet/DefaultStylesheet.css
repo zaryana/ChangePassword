@@ -1,0 +1,85 @@
+/**
+ * Copyright (C) 2003-2007 eXo Platform SAS.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Affero General Public License
+ * as published by the Free Software Foundation; either version 3
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, see<http://www.gnu.org/licenses/>.
+ */
+
+.UIFeedBack{
+    width: 255px;
+    z-index: 1000;
+}
+
+.UIFeedBack .TitleFeedBack{
+    background: url('DefaultSkin/background/bgHeader.png') no-repeat;
+    font-family: 'Helvetica Neue LT Std', Verdana, Arial, Tahoma, sans-serif;
+    font-size: 13px;
+    color: #8e8e8e;
+    height: 30px;
+    padding: 15px 0 0 22px;
+    font-weight: bold;
+}
+
+.UIFeedBack .Icon{
+    height: 13px;
+    width: 13px;
+    display: inline-block;
+    margin-right: 6px;
+    cursor: pointer;
+}
+
+.UIFeedBack .ExpandIcon{
+    background: url('DefaultSkin/background/iconFeedback.png') no-repeat left top;
+}
+
+.UIFeedBack .CollapseIcon{
+    background: url('DefaultSkin/background/iconFeedback.png') no-repeat left -13px;
+}
+
+.UIFeedBack .ContenFeedback{
+    background: url('DefaultSkin/background/bgFeedback.png') repeat-y;
+    padding: 8px 20px 0 20px;
+    min-height: 172px;
+}
+
+.UIFeedBack .TextArea{
+    border: solid 1px #d3d3d3;
+    background: #fbfbfb;
+    border-radius: 5px;
+    min-height: 50px;
+    padding: 10px;
+    width: 199px;
+}
+
+.UIFeedBack .ContenFeedback .Button{
+    background: url('DefaultSkin/background/bgBnt.png') repeat-x;
+    height: 26px;
+    border: solid 1px #676767;
+    border-radius: 5px;
+    line-height: 26px;
+    padding: 0 20px;
+    color: #fff;
+    font-weight: bold;
+    float: right;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+
+.UIFeedBack .txtThank{
+    display: block;
+    font-weight: bold;
+    margin-top: 20px;
+    text-align: center;
+    color: #707070;
+}    
