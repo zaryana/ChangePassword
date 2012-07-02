@@ -185,7 +185,7 @@
                       <fileset dir="${project.build.directory}/platform-cloud-tomcat/webapps" includes="workflow.war" />
                       <fileset dir="${project.build.directory}/platform-cloud-tomcat/lib" includes="exo-ecms-ext-workflow-.*.jar" />
                     </delete>
-                    
+
                     <!-- Comment filter Terms and Conditions -->
                     <unzip src="${project.build.directory}/platform-cloud-tomcat/lib/exo.platform.component.common-${org.exoplatform.platform.version}.jar" dest="${project.build.directory}/platform-cloud-tomcat/lib/plf" />
                     <replace file="${project.build.directory}/platform-cloud-tomcat/lib/plf/conf/portal/configuration.xml">
@@ -194,20 +194,6 @@
                     </replace>
                     <zip destfile="${project.build.directory}/platform-cloud-tomcat/lib/exo.platform.component.common-${org.exoplatform.platform.version}.jar" basedir="${project.build.directory}/platform-cloud-tomcat/lib/plf" />
                     <delete dir="${project.build.directory}/platform-cloud-tomcat/lib/plf" />
-
-                    <unzip src="${project.build.directory}/platform-cloud-tomcat/webapps/portal.war" dest="${project.build.directory}/platform-cloud-tomcat/webapps/portal" />
-                    <replace
-                      dir="${project.build.directory}/platform-cloud-tomcat/webapps/portal/groovy/portal/webui/workspace">
-                      <include name="UIPortalApplicationChildren.gtmpl" />
-                      <replacetoken><![CDATA[</body>]]></replacetoken>
-                      <replacevalue><![CDATA[<!-- BEGIN: LOOPFUSE TRACKING -->
-                    <script type="text/javascript" src="http://lfov.net/webrecorder/js/listen.js"></script>
-                    <!-- END: LOOPFUSE TRACKING -->
-                    <script type="text/javascript" src="http://cloud-workspaces.com/js/trackers.js"></script>
-                    </body>]]></replacevalue>
-                    </replace>
-                    <zip destfile="${project.build.directory}/platform-cloud-tomcat/webapps/portal.war" basedir="${project.build.directory}/platform-cloud-tomcat/webapps/portal" />
-                    <delete dir="${project.build.directory}/platform-cloud-tomcat/webapps/portal" />
 
                     <unzip src="${project.build.directory}/platform-cloud-tomcat/webapps/ecm-wcm-extension.war"
                       dest="${project.build.directory}/platform-cloud-tomcat/webapps/ecm-wcm-extension" />
