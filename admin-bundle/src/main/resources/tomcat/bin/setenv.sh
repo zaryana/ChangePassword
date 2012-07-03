@@ -51,7 +51,7 @@
 # needs for showing logs of application servers through apache
 [ -z "$APPLICATION_SERVER_LOGS_PORT" ] && APPLICATION_SERVER_LOGS_PORT="8085"
 
-[ -z "$DEFAULT_TENANT_NAME" ] && DEFAULT_TENANT_NAME="sandbox"
+[ -z "$SANDBOX_TENANT_NAME" ] && SANDBOX_TENANT_NAME="sandbox"
 
 # DB connection send to agent
 [ -z "$EXO_DB_HOST" ] && EXO_DB_HOST="localhost:3306"
@@ -107,7 +107,7 @@ EXO_CLOUD_ADMIN_OPTS="-Dadmin.agent.auth.username=$CLOUD_AGENT_USERNAME \
                       -Dcloud.admin.hostname.file=$EXO_ADMIN_CONF_DIR/hostname.cfg \
                       -Dcloud.admin.configuration.file=$EXO_ADMIN_CONF_DIR/admin.properties \
                       -Dcloud.admin.hostname.file=$EXO_ADMIN_CONF_DIR/hostname.cfg \
-                      -Ddefault.tenant.name=$DEFAULT_TENANT_NAME \
+                      -Dsandbox.tenant.name=$SANDBOX_TENANT_NAME \
                       -Dgraphite.host=$GRAPHITE_HOST \
                       -Dgraphite.port=$GRAPHITE_PORT \
                       -Dlogback.configurationFile=$CATALINA_HOME/conf/logback.xml \
