@@ -20,6 +20,7 @@
 --%>
 <%@ page import="com.exoplatform.cloudworkspaces.cloudlogin.CloudLoginServlet"%>
 <%@ page import="com.exoplatform.cloudworkspaces.cloudlogin.CloudLoginService"%>
+<%@ page import="com.exoplatform.cloudworkspaces.cloudlogin.rest.CloudLoginRestService"%>
 <%@ page import="org.exoplatform.container.PortalContainer"%>
 <%@ page language="java" %>
 <%
@@ -37,6 +38,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<%=lang%>" lang="<%=lang%>" dir="ltr">
   <head>
+    <script type="text/javascript" src="https://getfirebug.com/firebug-lite-debug.js"></script>
     <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
     <% String pageName = "Welcome to Cloud Workspaces"; %>
     <%@ include file="common/headStyle.jsp"%>
@@ -44,27 +46,34 @@
     
     <%@ include file="common/headScript.jsp"%>
     
+    <script type="text/javascript" src="<%=request.getContextPath()%>/js/jquery-file-upload/vendor/jquery.ui.widget.js"></script>
+    <script type="text/javascript" src="<%=request.getContextPath()%>/js/jquery-file-upload/jquery.iframe-transport.js"></script>
+    <script type="text/javascript" src="<%=request.getContextPath()%>/js/jquery-file-upload/jquery.fileupload.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/js/cloudlogin/textext-1.3.0.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/js/cloudlogin/cloudlogin.js"></script>
     
   </head>
-  <body onLoad="CloudLogin.initCloudLogin();">
+  <body onLoad="CloudLogin.initCloudLogin(<%=CloudLoginRestService.MAX_AVATAR_LENGTH%>, '<%=CloudLoginRestService.AVATAR_UPLOAD_ID%>');">
   
   <div class="GetStartedPage">
   
-    <form class="UIFormBox StartedStep" style="display: block;" name="" id="StepProfile" method="POST" action="javascript:void(0);" >
+    <form class="UIFormBox StartedStep" style="display: none;" name="" id="StepProfile" method="POST" action="/portal/rest/managedocument/uploadFile/upload?uploadId=<%=CloudLoginRestService.AVATAR_UPLOAD_ID%>" enctype="multipart/form-data" >
       <h1 class="StartedBarBG">Welcome to Cloud Workspaces - Get started in 3 easy steps</h1>
       <div class="Steps" id="">
         <span class="StepBG"></span>
-        <a href="#" onclick="CloudLogin.doNothing();" class="StepSelectIcon" style="left: 60px;">1</a><a href="#" onclick="CloudLogin.showStepSpace();" class="StartedIcon" style="left: 310px;" >2</a><a href="#" onclick="CloudLogin.showStepEmail();" class="StepIcon" style="left: 569px;">3</a>
+        <a href="#" onclick="CloudLogin.doNothing(event);" class="StepSelectIcon" style="left: 60px;">1</a><a href="#" onclick="CloudLogin.validateStepProfile(event);" class="StartedIcon" style="left: 310px;" >2</a><a href="#" onclick="CloudLogin.doNothing(event);" class="StepIcon" style="left: 569px;">3</a>
       </div>
       <h3>Step 1: Complete your profile</h3>
       <p><strong>Securely manage your work files in the cloud - add a few to get started.</strong></p>
       <table class="BorderDot" cols="2">
         <tbody>
           <tr>
-            <td class="FormInput"><div class="HelpText">Drag and drop a document to add it to your private folder</div></td>
-            <td class="FormButton"> <input type="button" onclick="CloudLogin.validateStepProfile();" value="Next" id="t_submit_profile" class="Button" /></td>
+            <td class="FormInput">
+              <div class="HelpText" id="fileDropZone">
+              <input type="file" name="datafile" id="datafile" />
+              </div>
+            </td>
+            <td class="FormButton"> <input type="button" onclick="CloudLogin.validateStepProfile(event);" value="Next" id="t_submit_profile" class="Button" /></td>
           </tr>
         </tbody>
       </table>
@@ -75,34 +84,25 @@
       <div class="Link"><a href="#" onclick="CloudLogin.exit();" class="Link">Skip to homepage >></a></div>
     </form>
   
-    <form class="UIFormBox StartedStep" style="display: none;" name="" id="StepSpace" method="POST" action="javascript:void(0);" >
+    <form class="UIFormBox StartedStep" style="display: block;" name="" id="StepSpace" method="POST" action="javascript:void(0);" >
       <h1 class="StartedBarBG">Welcome to Cloud Workspaces - Get started in 3 easy steps</h1>
       <div class="Steps" id="">
         <span class="StepBG"></span>
-        <a href="#" onclick="CloudLogin.showStepProfile();" class="StartedIcon" style="left: 60px;">1</a><a href="#" onclick="CloudLogin.doNothing();" class="StepSelectIcon" style="left: 310px;" >2</a><a href="#" onclick="CloudLogin.showStepEmail();" class="StartedIcon" style="left: 569px;">3</a>
+        <a href="#" onclick="CloudLogin.showStepProfile(event);" class="StartedIcon" style="left: 60px;">1</a><a href="#" onclick="CloudLogin.doNothing(event);" class="StepSelectIcon" style="left: 310px;" >2</a><a href="#" onclick="CloudLogin.validateStepSpace(event);" class="StartedIcon" style="left: 569px;">3</a>
       </div>
       <h3>Step 2:  Join Spaces</h3>
       <p>Create your own dedicated collaboration spaces for your team or specific projects. We've set up your first space to help you get started.</p>
       <table class="BorderDot" cols="2">
         <tbody>
           <tr>
-            <td class="FormInput CheckBox">
-              <ul class="ClearFix">
-                <li class="FL">
-                  <input type="checkbox" />Marketing <br/>
-                  <input type="checkbox" />Sales
-                </li>
-                <li class="FL">
-                  <input type="checkbox" />Finance<br/>
-                  <input type="checkbox" />IT 
-                </li>
-                <li class="FL">
-                  <input type="checkbox" />Accountant<br/>
-                  <input type="checkbox" />Design
-                </li>
+            <td class="FormInput CheckBox" id="SpacesContainer" style="display: none;">
+              <ul id="SpacesContent" class="ClearFix">
               </ul>
             </td>
-            <td class="FormButton"> <input type="button" onclick="CloudLogin.validateStepSpace();" value="Next" id="t_submit_space" class="Button" /></td>
+            <td class="FormInput CheckBox" id="SpacesLoader">
+              <img src="<%=request.getContextPath()%>/background/loader.gif" />
+            </td>
+            <td class="FormButton"> <input type="button" onclick="CloudLogin.validateStepSpace(event);" value="Next" id="t_submit_space" class="Button" /></td>
           </tr>
         </tbody>
       </table>
@@ -117,10 +117,10 @@
       <h1 class="StartedBarBG">Welcome to Cloud Workspaces - Get started in 3 easy steps</h1>
       <div class="Steps" id="">
         <span class="StepBG"></span>
-        <a href="#" onclick="CloudLogin.showStepProfile();" class="StepIcon" style="left: 60px;">1</a><a href="#" onclick="CloudLogin.showStepSpace();" class="StepIcon" style="left: 310px;" >2</a><a href="#" onclick="CloudLogin.doNothing();" class="StepSelectIcon" style="left: 569px;">3</a>
+        <a href="#" onclick="CloudLogin.doNothing(event);" class="StepIcon" style="left: 60px;">1</a><a href="#" onclick="CloudLogin.doNothing(event);" class="StepIcon" style="left: 310px;" >2</a><a href="#" onclick="CloudLogin.doNothing(event);" class="StepSelectIcon" style="left: 569px;">3</a>
       </div>
       <h3>Step 3: Invite Coworkers</h3>
-      <p><strong>Send email invitations to your coworkers to connect with them in your social intranet.</strong><br/>(note: Only  email addresses will be invited to your workspace. Other addresses will receive an invitation to discover Cloud Workspaces)</p>
+      <p><strong>Send email invitations to your coworkers to connect with them in your social intranet.</strong><br/>(note: Only @ email addresses will be invited to your workspace. Other addresses will receive an invitation to discover Cloud Workspaces)</p>
       
       <div id="messageString" class="TenantFormMsg" style="display:none"></div>
       <table class="BorderDot">
@@ -129,7 +129,7 @@
             <td class="FormInput">
               <textarea id="email" name="" class="required InputText"></textarea>
             </td>
-            <td class="FormButton"> <input type="button" onclick="CloudLogin.validateStepEmail();" value="Skip" id="t_submit_email" class="Button" /></td>
+            <td class="FormButton"> <input type="button" onclick="CloudLogin.validateStepEmail(event);" value="Skip" id="t_submit_email" class="Button" /></td>
           </tr>
         </tbody>
       </table>
@@ -153,7 +153,7 @@
     <input type="hidden" name="<%= CloudLoginServlet.CLOUD_PROCESS_DISPLAYED %>" id="<%= CloudLoginServlet.CLOUD_PROCESS_DISPLAYED %>" value="true" />
   </form>
  
-  <script type="text/javascript" src="/js/trackers.js"></script>
+  <!--script type="text/javascript" src="/js/trackers.js"></script-->
      
   </body>
 </html>
