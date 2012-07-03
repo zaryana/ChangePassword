@@ -28,8 +28,14 @@ import org.exoplatform.social.core.model.AvatarAttachment;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.wiki.mow.api.Attachment;
+import org.exoplatform.wiki.mow.api.Page;
+import org.exoplatform.wiki.service.WikiService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 import javax.annotation.security.RolesAllowed;
@@ -67,11 +73,14 @@ public class WorkspacesSpaceService
 
   private ForumService forumService;
 
-  public WorkspacesSpaceService(Authenticator authenticator, SpaceService spaceService, ForumService forumService)
+  private WikiService wikiService;
+
+  public WorkspacesSpaceService(Authenticator authenticator, SpaceService spaceService, ForumService forumService, WikiService wikiService)
   {
     this.authenticator = authenticator;
     this.spaceService = spaceService;
     this.forumService = forumService;
+    this.wikiService = wikiService;
   }
 
   @POST
@@ -133,6 +142,37 @@ public class WorkspacesSpaceService
       LOG.error(error, e);
       return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(error).build();
     }
+
+    //Wiki
+    try
+    {
+      Page page = wikiService.getPageById("portal", "intranet",  "WikiHome"); //createPage("portal", "intranet", "Getting Started Guide", "WikiHome");
+      page.setTitle("Getting Started Guide");
+      Attachment content = page.getContent();
+      content.setText(readInputStreamAsString(getClass().getResourceAsStream("/wiki/content.txt")));
+    } catch (Exception e) {
+      String error = "Cannot create wiki page: " + e.getMessage();
+      LOG.error(error, e);
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(error).build();
+    }
+
     return Response.ok().build();
   }
+
+
+
+  public static String readInputStreamAsString(InputStream in)
+    throws IOException
+  {
+    BufferedInputStream bis = new BufferedInputStream(in);
+    ByteArrayOutputStream buf = new ByteArrayOutputStream();
+    int result = bis.read();
+    while(result != -1) {
+      byte b = (byte)result;
+      buf.write(b);
+      result = bis.read();
+    }
+    return buf.toString();
+  }
+
 }

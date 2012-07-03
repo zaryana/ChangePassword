@@ -360,7 +360,14 @@
         <version>${org.exoplatform.ks.version}</version>
         <scope>provided</scope>
         <type>jar</type>
-        </dependency>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.ks</groupId>
+        <artifactId>exo.ks.eXoApplication.wiki.service</artifactId>
+        <version>${org.exoplatform.ks.version}</version>
+        <scope>provided</scope>
+        <type>jar</type>
+      </dependency>
       <dependency>
         <groupId>org.exoplatform.ecms</groupId>
         <artifactId>exo-ecms-core-services</artifactId>
