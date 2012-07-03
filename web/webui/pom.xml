@@ -7,8 +7,9 @@
   <parent>
     <groupId>com.exoplatform.cloudworkspaces</groupId>
     <artifactId>cloud-workspaces-web</artifactId>
-    <version>1.0.7</version>
+    <version>1.1.0-Beta03-SNAPSHOT</version>
   </parent>
+
   <artifactId>cloud-workspaces-webui</artifactId>
   <packaging>war</packaging>
   <name>eXo Cloud Workspaces :: WebUI</name>

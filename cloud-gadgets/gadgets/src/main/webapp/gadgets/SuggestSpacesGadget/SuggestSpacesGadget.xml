@@ -125,13 +125,11 @@
                 link += "<div class='spacePicture' ><a href='#'><img src='"+item.avatarUrl+"'></a></div>";
                 link += "<div class='spaceInfo'>";
                 link += "<div class='spaceName'><a href='/portal/intranet/all-spaces' target='_parent'>"+item.displayName+"</a></div>";
-                                
-                link += "<div class='spaceAction' ><a class='connect' href='#' onclick='return false'>";
-                
+                                                
                 if(item.registration == "open")
-                    link += "Join</a>";
+                    link += "<div class='spaceAction' ><a class='connect' href='/portal/g/:spaces:"+item.name+"/"+item.name+"' target='_parent'>Join</a>";
                 else
-                    link += "Request</a>";
+                    link += "<div class='spaceAction' ><a class='connect' href='#' onclick='return false'>Request</a>";
                 
                 link += "  | <a class='ignore' href='#' onclick='return false'>Ignore</a></div>";
                 link += "</div></li>";

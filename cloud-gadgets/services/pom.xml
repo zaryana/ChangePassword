@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
 <!-- Copyright (C) 2011 eXo Platform SAS. -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
   <parent>
     <groupId>com.exoplatform.cloudworkspaces</groupId>
     <artifactId>cloud-gadgets</artifactId>
-    <version>1.0.7</version>
+    <version>1.1.0-Beta03-SNAPSHOT</version>
   </parent>
 
   <artifactId>cloud-workspaces-gadget-services</artifactId>
@@ -20,31 +20,29 @@
 
   <dependencies>
     <dependency>
-    	<groupId>org.exoplatform.kernel</groupId>
-    	<artifactId>exo.kernel.container</artifactId>
-    	<scope>provided</scope>
-    	<type>jar</type>
+      <groupId>org.exoplatform.kernel</groupId>
+      <artifactId>exo.kernel.container</artifactId>
+      <scope>provided</scope>
+      <type>jar</type>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.kernel</groupId>
       <artifactId>exo.kernel.component.common</artifactId>
       <scope>provided</scope>
       <type>jar</type>
-    </dependency>    
-    <dependency>
-    	<groupId>org.exoplatform.portal</groupId>
-    	<artifactId>exo.portal.component.portal</artifactId>
-    	<scope>provided</scope>
-    	<type>jar</type>
     </dependency>
-
     <dependency>
-    	<groupId>org.exoplatform.social</groupId>
-    	<artifactId>exo.social.component.core</artifactId>
-    	<scope>provided</scope>
-    	<type>jar</type>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.component.portal</artifactId>
+      <scope>provided</scope>
+      <type>jar</type>
     </dependency>
-
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.component.core</artifactId>
+      <scope>provided</scope>
+      <type>jar</type>
+    </dependency>
     <dependency>
       <groupId>org.exoplatform.ks</groupId>
       <artifactId>exo.ks.eXoApplication.forum.service</artifactId>
@@ -52,40 +50,35 @@
       <scope>provided</scope>
       <type>jar</type>
     </dependency>
-
     <dependency>
-    	<groupId>org.exoplatform.ecms</groupId>
-    	<artifactId>exo-ecms-core-services</artifactId>
-    	<scope>provided</scope>
-    	<type>jar</type>
+      <groupId>org.exoplatform.ecms</groupId>
+      <artifactId>exo-ecms-core-services</artifactId>
+      <scope>provided</scope>
+      <type>jar</type>
     </dependency>
-
     <dependency>
-    	<groupId>org.exoplatform.ws</groupId>
-    	<artifactId>exo.ws.commons</artifactId>
-    	<scope>provided</scope>
-    	<type>jar</type>
+      <groupId>org.exoplatform.ws</groupId>
+      <artifactId>exo.ws.commons</artifactId>
+      <scope>provided</scope>
+      <type>jar</type>
     </dependency>
-
     <dependency>
-    	<groupId>org.exoplatform.social</groupId>
-    	<artifactId>exo.social.component.common</artifactId>
-    	<scope>provided</scope>
-    	<type>jar</type>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.component.common</artifactId>
+      <scope>provided</scope>
+      <type>jar</type>
     </dependency>
-    
     <dependency>
       <groupId>org.exoplatform.cs</groupId>
       <artifactId>exo.cs.web.webservice</artifactId>
       <version>${org.exoplatform.cs.version}</version>
       <scope>provided</scope>
-    </dependency>    
-
+    </dependency>
     <dependency>
       <groupId>org.exoplatform.cs</groupId>
       <artifactId>exo.cs.eXoApplication.calendar.service</artifactId>
-      <version>${org.exoplatform.cs.version}</version>      
+      <version>${org.exoplatform.cs.version}</version>
       <scope>provided</scope>
-    </dependency>    
+    </dependency>
   </dependencies>
 </project>

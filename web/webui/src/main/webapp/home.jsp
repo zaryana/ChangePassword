@@ -5,63 +5,47 @@
     <% String pageName = "Sign Up to Cloud Workspaces"; %>
     <%@ include file="common/headStyle.jsp"%>
     <%@ include file="common/headScript.jsp"%>
-    <script type="text/javascript" src="/balupton-jquery-lightbox/scripts/jquery.lightbox.js"></script>
+    <link rel="stylesheet" href="/lightbox/css/lightbox.css" type="text/css" media="screen" />
+    <script type="text/javascript" src="/lightbox/jquery.lightbox.js"></script>
     <script type="text/javascript">
-      $(function(){
-        $.Lightbox.construct({
-         // "show_linkback": false,
-            "download_link": false,
-                  "opacity": 0.7,
-                    "speed": 20, // milliseconds
-                     "text": {
-                   // For translating
-                    "image":    "Image",
-                       "of":    "of",
-                    "close":    "Close X",
-                "closeInfo":   "You can also click anywhere outside the image to close.",
-                 "download":    "Download.",
-                     "help": {
-                    "close": "Click to close",
-                 "interact": ""
-                 },
-  
-                "about": {
-                 "text":  "",
-                "title": "",
-                 "link":  ""
-                }
-            }
-        });
-
-        // preload images to display in lightbox immediately
-        var links = document.getElementsByTagName("a");
-        for (var i in links)
-        {
-          var link = links[i];
-          if (link.rel && link.rel === "lightbox" && link.href)
-          {
-            preload(link.href);
-          }
-        }
-
-        function preload(imageSrc) {
-          var imageObj = new Image();
-          imageObj.src=imageSrc;
-        }
+     $(function()
+      {
+       $('.lightbox').lightbox({
+        fitToScreen : true,
+        imageClickClose : false,
+        fileLoadingImage : '/lightbox/images/loading.gif',
+        fileBottomNavCloseImage : '/lightbox/images/closelabel.gif'
       });
-    </script>
+
+     // preload images to display in lightbox immediately
+     var links = document.getElementsByTagName("a");
+     for ( var i in links)
+      {
+       var link = links[i];
+       if (link.className && link.className === "lightbox" && link.href)
+        {
+         preload(link.href);
+       }
+      }
+
+     function preload(imageSrc)
+     {
+      var imageObj = new Image();
+      imageObj.src = imageSrc;
+     }
+    });
+</script>
     <!-- load ThickBox to display video (http://jquery.com/demo/thickbox/) -->
     <link rel="stylesheet" href="/thickbox/thickbox.css" type="text/css" media="screen" />
     <script src="/thickbox/thickbox.js" type="text/javascript"></script>    
     <script type="text/javascript">var tb_pathToImage = "/background/img_video.png";</script>
     <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
   </head>
-
   <body onLoad="tenants.init();">
     <div class="UIPageContainer">
       <!--begin header-->
       <%@ include file="common/header.jsp"%>
-  
+
       <div class="UIPageBodyContainer">
         <!--begin banner-->
         <div class="UIBanner">
@@ -82,34 +66,31 @@
                   <li><a href="http://community.exoplatform.org" target="_blank">Forum</a></li>
                   <li><a href="/about.jsp">About</a></li>
                 </ul>
-                
               </div>
               <div class="FormBox">
                 <div class="BoxContent ClearFix">
-                
                 <div class="ribbon">Beta</div>
-				<div class="ribbon-triangle"></div>
-    
-                  <form class="UIForm" action="javascript:void(0);"   method="POST" name="cloud-workspaces-profile" id="signupForm">
-										<!-- Marketo input hidden fields -->
-										<input name="Cloud_Workspaces_User__c" id="Cloud_Workspaces_User__c" type='hidden' value="yes" />
-										<input name="LeadSource" id="LeadSource" type='hidden' value="Web - Cloud Workspaces" />
-										<input type="hidden" name="_marketo_comments" value="" />
-										<input type="hidden" name="lpId" value="1047" />
-										<input type="hidden" name="subId" value="46" />
-										<input type="hidden" name="kw" value="" />
-										<input type="hidden" name="cr" value="" />
-										<input type="hidden" name="searchstr" value="" />
-										<input type="hidden" name="lpurl" value="http://learn.cloud-workspaces.com/Cloud-Workspaces-Sign-Up-English.html?cr={creative}&kw={keyword}" />
-										<input type="hidden" name="formid" value="1035" />
-										<input type="hidden" name="returnURL" value="" />
-										<input type="hidden" name="retURL" value="" />
-										<input type="hidden" name="_mkt_disp" value="return" />
-										<input type="hidden" name="_mkt_trk" value="" />
-                    <div id="messageString" class="TenantFormMsg"></div>
-                    <input class="InputText" type="text" name="email" id="email" value="Enter your professional email" onclick="this.value='';" />
-                    <input class="Button" type="submit" id="t_submit"  value="Sign Up" onClick="tenants.doSingupRequest();" />
-                  </form>
+                <div class="ribbon-triangle"></div>
+                <form class="UIForm" action="javascript:void(0);"   method="POST" name="cloud-workspaces-profile" id="signupForm">
+                  <!-- Marketo input hidden fields -->
+                  <input name="Cloud_Workspaces_User__c" id="Cloud_Workspaces_User__c" type='hidden' value="yes" />
+                  <input name="LeadSource" id="LeadSource" type='hidden' value="Web - Cloud Workspaces" />
+                  <input type="hidden" name="_marketo_comments" value="" />
+                  <input type="hidden" name="lpId" value="1047" />
+                  <input type="hidden" name="subId" value="46" />
+                  <input type="hidden" name="kw" value="" />
+                  <input type="hidden" name="cr" value="" />
+                  <input type="hidden" name="searchstr" value="" />
+                  <input type="hidden" name="lpurl" value="http://learn.cloud-workspaces.com/Cloud-Workspaces-Sign-Up-English.html?cr={creative}&kw={keyword}" />
+                  <input type="hidden" name="formid" value="1035" />
+                  <input type="hidden" name="returnURL" value="" />
+                  <input type="hidden" name="retURL" value="" />
+                  <input type="hidden" name="_mkt_disp" value="return" />
+                  <input type="hidden" name="_mkt_trk" value="" />
+                  <div id="messageString" class="TenantFormMsg"></div>
+                  <input class="InputText" type="text" name="email" id="email" value="Enter your professional email" onclick="this.value='';" />
+                  <input class="Button" type="submit" id="t_submit"  value="Sign Up" onClick="tenants.doSingupRequest();" />
+                </form>
                   <div class="SocialBox">
                     <div id="fb-root"></div>
                     <script>(function(d, s, id) {
@@ -125,8 +106,8 @@
                         </div>
                      </div>
                      <div class="FR"> 
-                           <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://cloud-workspaces.com" data-text="Cloud-Workspaces: The Free Social Intranet for Your Company" data-via="eXoPlatform" data-count="none">Tweet</a>
-<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+                       <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://cloud-workspaces.com" data-text="Cloud-Workspaces: The Free Social Intranet for Your Company" data-via="eXoPlatform" data-count="none">Tweet</a>
+                       <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
                         <!-- Place this tag where you want the +1 button to render -->
                         <g:plusone size="medium"></g:plusone>
                      </div>
@@ -160,7 +141,6 @@
             </div>
           </div>
         </div>
-    
         <!--IndexPage-->
          <div class="UIPageBody IndexPage">
 			<h3>Features Overview</h3>
@@ -185,13 +165,13 @@
 			</div>
 			<div class="ClearFix">
 				<div class="Cols LCol FL">
-					<a class="lightbox-enabled" rel="lightbox" href="background/ide.png" title="Extend and customize your social intranet with the built-in Cloud IDE"><img src="background/04_Mini.png" alt=""/></a>
+					<a class="lightbox" rel="lightbox" href="background/ide.png" title="Extend and customize your social intranet with the built-in Cloud IDE"><img src="background/04_Mini.png" alt=""/></a>
 					<h4 class="SpecialTit">Extend and customize your social intranet with the built-in Cloud IDE</h4>
 					<p>Toggling between your company social network and other sites you regularly use, such as web analytics or project management tools, can be distracting and inefficient. Third party web apps can be integrated directly in your Cloud Workspaces as gadgets. </p>
 				</div>
 				
 				<div class="Cols BigCol FR">
-					<a class="lightbox-enabled" rel="lightbox" href="background/iPad-Gadgets.png" title="Your personal dashboard on-the-go: native mobile apps for Cloud Workspaces"><img src="background/05_Mini.png" alt=""/></a>
+					<a class="lightbox" rel="lightbox" href="background/iPad-Gadgets.png" title="Your personal dashboard on-the-go: native mobile apps for Cloud Workspaces"><img src="background/05_Mini.png" alt=""/></a>
 					<h4 class="SpecialTit">Your personal dashboard on-the-go: native mobile apps for Cloud Workspaces</h4>
 					<p>Native iPhone, iPad, and Android apps let you securely and easily view your personal dashboard, including any of the custom gadgets you've added. Post status updates and share photos, stay updated with your colleagues' activities, access your internal document repository - all the key functions of your social intranet, right in your pocket.</p>
 				</div>
@@ -215,11 +195,11 @@
         </object>
       </div>
     </div>
-    <!--  marketo response container  -->
+
+    <!-- marketo response container -->
     <iframe id="mktOutput" name="mktOutput" style='display:none; visibility:hidden'></iframe>
     <!-- BEGIN: MARKETO TRACKING -->
     <script type="text/javascript" src="/js/mktFormSupport.js"></script>
-    <!-- END: MARKETO TRACKING -->
     <script type="text/javascript" src="/js/trackers.js"></script>
   </body>
 </html>

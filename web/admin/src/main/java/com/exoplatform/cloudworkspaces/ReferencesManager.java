@@ -18,8 +18,8 @@
  */
 package com.exoplatform.cloudworkspaces;
 
+import org.apache.commons.configuration.Configuration;
 import org.exoplatform.cloudmanagement.admin.CloudAdminException;
-import org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,18 +32,21 @@ import java.util.Properties;
 
 public class ReferencesManager {
 
-  private CloudAdminConfiguration cloudAdminConfiguration;
+  public static final String  CLOUD_ADMIN_REFERENCES_DIR  = "cloud.admin.references.dir";
 
-  private String                  referenceFilename;
+  public static final String  CLOUD_ADMIN_REFERENCES_FILE = "cloud.admin.references.file";
 
-  private static final Logger     LOG = LoggerFactory.getLogger(ReferencesManager.class);
+  private Configuration       cloudAdminConfiguration;
 
-  private static Object           obj = new Object();
+  private String              referenceFilename;
 
-  public ReferencesManager(CloudAdminConfiguration cloudAdminConfiguration) {
+  private static final Logger LOG                         = LoggerFactory.getLogger(ReferencesManager.class);
+
+  private static Object       obj                         = new Object();
+
+  public ReferencesManager(Configuration cloudAdminConfiguration) {
     this.cloudAdminConfiguration = cloudAdminConfiguration;
-    this.referenceFilename = cloudAdminConfiguration.getProperty("cloud.admin.references.file",
-                                                                 null);
+    this.referenceFilename = cloudAdminConfiguration.getString(CLOUD_ADMIN_REFERENCES_FILE, null);
   }
 
   public String getHash(String email) throws CloudAdminException {
@@ -142,7 +145,7 @@ public class ReferencesManager {
   }
 
   private String getReferencesFolder() throws CloudAdminException {
-    String folder = cloudAdminConfiguration.getProperty("cloud.admin.references.dir", null);
+    String folder = cloudAdminConfiguration.getString(CLOUD_ADMIN_REFERENCES_DIR, null);
     if (folder == null || referenceFilename == null) {
       LOG.error("References dir is not defined in the admin configuration");
       throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");

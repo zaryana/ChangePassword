@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 eXo Platform SAS.
+ * Copyright (C) 2011 eXo Platform SAS.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -18,8 +18,8 @@
  */
 package com.exoplatform.cloudworkspaces;
 
+import org.apache.commons.configuration.Configuration;
 import org.exoplatform.cloudmanagement.admin.CloudAdminException;
-import org.exoplatform.cloudmanagement.admin.configuration.CloudAdminConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,12 +33,17 @@ import java.util.UUID;
 
 public class ChangePasswordManager {
 
-  private CloudAdminConfiguration cloudAdminConfiguration;
+  public static final long    REFERENCE_TIME_LIMIT                = 360 * 60 * 1000;
 
-  private static final Logger     LOG = LoggerFactory.getLogger(ChangePasswordManager.class);
+  public static final String  CLOUD_ADMIN_PASSWORD_REFERENCES_DIR = "cloud.admin.password.references.dir";
 
-  public ChangePasswordManager(CloudAdminConfiguration cloudAdminConfiguration) {
+  private Configuration       cloudAdminConfiguration;
+
+  private static final Logger LOG                                 = LoggerFactory.getLogger(ChangePasswordManager.class);
+
+  public ChangePasswordManager(Configuration cloudAdminConfiguration) {
     this.cloudAdminConfiguration = cloudAdminConfiguration;
+
   }
 
   public String addReference(String email) throws CloudAdminException {
@@ -76,7 +81,7 @@ public class ChangePasswordManager {
       newprops.load(io);
       io.close();
       String timestamp = newprops.getProperty("created");
-      if ((System.currentTimeMillis() - Long.valueOf(timestamp)) > (360 * 60 * 1000)) {
+      if ((System.currentTimeMillis() - Long.valueOf(timestamp)) > REFERENCE_TIME_LIMIT) {
         propertyFile.delete();
         throw new CloudAdminException(errMessage);
       }
@@ -97,7 +102,7 @@ public class ChangePasswordManager {
   }
 
   private String getPasswordReferencesFolder() throws CloudAdminException {
-    String folder = cloudAdminConfiguration.getProperty("cloud.admin.password.references.dir", null);
+    String folder = cloudAdminConfiguration.getString(CLOUD_ADMIN_PASSWORD_REFERENCES_DIR, null);
     if (folder == null) {
       LOG.error("Registration waitind dir is not defined in the admin configuration");
       throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");

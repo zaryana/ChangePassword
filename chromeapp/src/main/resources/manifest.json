@@ -1,0 +1,18 @@
+{
+   "app": {
+      "launch": {
+         "web_url": "http://cloud-workspaces.com/"
+      },
+      "urls": [ "http://*.cloud-workspaces.com/", "http://cloud-workspaces.com/" ]
+   },
+   "description": "The Free Social Intranet for Your Company",
+   "icons": {
+      "128": "icon128.png",
+      "32": "icon32.png",
+      "64": "icon64.png",
+      "96": "icon96.png"
+   },
+   "name": "Cloud Workspaces",
+   "permissions": [  ],
+   "version": "1.1"
+}

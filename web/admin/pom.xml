@@ -2,21 +2,16 @@
 <!-- Copyright (C) 2011 eXo Platform SAS. -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
   <parent>
     <groupId>com.exoplatform.cloudworkspaces</groupId>
     <artifactId>cloud-workspaces-web</artifactId>
-    <version>1.0.7</version>
+    <version>1.1.0-Beta03-SNAPSHOT</version>
   </parent>
 
   <artifactId>cloud-workspaces-web-admin</artifactId>
   <packaging>war</packaging>
   <name>eXo Cloud Workspaces :: Admin</name>
   <description>eXo Cloud Workspaces Admin web application</description>
-
-  <properties>
-    <archive>${project.build.directory}/${project.artifactId}-${project.version}.war/WEB-INF/lib/cloud-admin-${org.exoplatform.cloud-management.version}.jar</archive>
-  </properties>
 
   <dependencies>
     <dependency>
@@ -33,7 +28,7 @@
     </dependency>
     <dependency>
       <groupId>org.exoplatform.cloud-management</groupId>
-      <artifactId>cloud-admin-valve</artifactId>
+      <artifactId>cloud-admin-valve-tomcat</artifactId>
       <scope>compile</scope>
       <type>jar</type>
     </dependency>
@@ -49,49 +44,122 @@
       <scope>provided</scope>
       <type>jar</type>
     </dependency>
+    <dependency>
+      <groupId>com.exoplatform.platform.cloud</groupId>
+      <artifactId>cloud-admin-connector-localhost</artifactId>
+      <type>jar</type>
+    </dependency>
+
+    <!-- used own patch of ec2 connector from cloud-management-patch -->
+    <!--dependency>
+      <groupId>org.exoplatform.cloud-management</groupId>
+      <artifactId>cloud-admin-connector-ec2</artifactId>
+    </dependency-->
+    <dependency>
+      <groupId>com.exoplatform.cloudworkspaces</groupId>
+      <artifactId>cloud-workspaces-web-statistic</artifactId>
+      <scope>compile</scope>
+      <type>jar</type>
+    </dependency>
+
+    <!-- add exo-ide-shell dependency for using CLIResourcesService -->
+    <dependency>
+      <groupId>org.exoplatform.ide</groupId>
+      <artifactId>exo-ide-shell</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.everrest</groupId>
+          <artifactId>everrest-integration-exo</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.crsh</groupId>
+          <artifactId>crsh.shell.core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.crsh</groupId>
+          <artifactId>crsh.jcr</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.testng</groupId>
+      <artifactId>testng</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-all</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.everrest</groupId>
+      <artifactId>everrest-assured</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>dumbster</groupId>
+      <artifactId>dumbster</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
     <plugins>
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>truezip-maven-plugin</artifactId>
-        <version>${version.truezip.plugin}</version>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
         <executions>
           <execution>
-            <id>remove-a-validator</id>
+            <id>copy-shell</id>
+            <phase>process-resources</phase>
             <goals>
-              <goal>remove</goal>
+              <goal>copy</goal>
             </goals>
-            <phase>package</phase>
             <configuration>
-              <fileset>
-                <!-- note how the archive is treated a normal file directory -->
-                <directory>${archive}/org/exoplatform/cloudmanagement/admin</directory>
-                <includes>
-                  <include>**/TenantMetadataValidator.class</include>
-                </includes>
-              </fileset>
-            </configuration>
-          </execution>
-          <execution>
-            <id>remove-a-listener</id>
-            <goals>
-              <goal>remove</goal>
-            </goals>
-            <phase>package</phase>
-            <configuration>
-              <fileset>
-                <!-- note how the archive is treated a normal file directory -->
-                <directory>${archive}/org/exoplatform/cloudmanagement/admin/status/listener</directory>
-                <includes>
-                  <include>**/MailSenderListener.class</include>
-                </includes>
-              </fileset>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.exoplatform.ide</groupId>
+                  <artifactId>exo-ide-packaging-shell-war</artifactId>
+                  <type>war</type>
+                  <overWrite>false</overWrite>
+                  <outputDirectory>${project.build.directory}/packager-conf/war</outputDirectory>
+                  <destFileName>shell.war</destFileName>
+                </artifactItem>
+              </artifactItems>
+              <outputDirectory>${project.build.directory}/wars</outputDirectory>
+              <overWriteReleases>false</overWriteReleases>
+              <overWriteSnapshots>true</overWriteSnapshots>
             </configuration>
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-shell-resources</id>
+            <phase>process-resources</phase>
+            <configuration>
+              <tasks>
+                <unwar src="${project.build.directory}/packager-conf/war/shell.war" dest="${project.build.directory}/packager-conf/unwar/shell"/>
+                <copy todir="${project.build.directory}/${project.artifactId}-${project.version}/admin-shell">
+                  <fileset dir="${project.build.directory}/packager-conf/unwar/shell">
+                    <exclude name="**/META-INF/**"/>
+                    <exclude name="**/WEB-INF/**"/>
+                    <exclude name="**/gwt/**"/>
+                    <exclude name="**/index.html"/>
+                    <exclude name="**/Shell.html"/>
+                  </fileset>
+                </copy>
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
       <plugin>
         <artifactId>maven-war-plugin</artifactId>
         <configuration>

@@ -26,6 +26,7 @@ import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.services.organization.User;
 import org.exoplatform.services.rest.impl.RuntimeDelegateImpl;
 import org.exoplatform.services.rest.resource.ResourceContainer;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -268,41 +269,49 @@ public class SpaceRestServices implements ResourceContainer {
       catch (Exception e) {
         log.error("Error in space deny rest service: " + e.getMessage(), e);
         return Response.ok("error").cacheControl(cacheControl).build();
-      }
-   }
-
-  @GET
-  @Path("public")
-  public Response getPublicSpaces(@Context SecurityContext sc, @Context UriInfo uriInfo) {
-    String userId;
-    userId = getUserId(sc, uriInfo);
-    if(userId == null) {
-        return Response.status(500).cacheControl(cacheControl).build();
+      } 
+        
     }
-    try {
-      SpaceService spaceService = (SpaceService)ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(SpaceService.class);
-      ListAccess publicSpaces = spaceService.getPublicSpacesWithListAccess(userId);
-      JSONArray jsonArray = new JSONArray();
-      Space spaces[] = (Space[])publicSpaces.load(0, publicSpaces.getSize());
-      if(spaces != null && spaces.length > 0) {
-        for(int i = 0; i < spaces.length; i++) {
-          Space space = spaces[i];
-          if(!space.getVisibility().equals("hidden") && !space.getRegistration().equals("close")) {
-            JSONObject json = new JSONObject();
+      
+    @GET
+    @Path("public")
+    public Response getPublicSpaces(@Context SecurityContext sc, @Context UriInfo uriInfo) {
+      
+      try {
+        String userId = getUserId(sc, uriInfo);
+        if(userId == null) {
+            return Response.status(HTTPStatus.INTERNAL_ERROR).cacheControl(cacheControl).build();
+        }
+        
+        SpaceService spaceService = (SpaceService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(SpaceService.class);    
+        ListAccess<Space> publicSpaces = spaceService.getPublicSpacesWithListAccess(userId);
+       
+        JSONArray jsonArray = new JSONArray();
+
+        Space[] spaces = publicSpaces.load(0, publicSpaces.getSize());
+        if(spaces != null && spaces.length > 0) {
+          for (Space space : spaces) {
+            
+            if(space.getVisibility().equals("hidden"))
+             continue;
+            if(space.getRegistration().equals("close"))
+             continue;
+            
+            JSONObject json = new JSONObject();                    
             json.put("name", space.getName());
             json.put("displayName", space.getDisplayName());
-            json.put("spaceId", space.getId());
-            jsonArray.put(json);
+            json.put("spaceId", space.getId());     
+            jsonArray.put(json);    
           }
         }
+  
+        return Response.ok(jsonArray.toString(), MediaType.APPLICATION_JSON).cacheControl(cacheControl).build();
       }
-      return Response.ok(jsonArray.toString(), "application/json").cacheControl(cacheControl).build();
+      catch (Exception e) {
+        log.error("Error in space invitation rest service: " + e.getMessage(), e);
+        return Response.ok("error").cacheControl(cacheControl).build();
+      }
     }
-    catch(Exception e) {
-      log.error((new StringBuilder()).append("Error in space invitation rest service: ").append(e.getMessage()).toString(), e);
-    }
-    return Response.ok("error").cacheControl(cacheControl).build();
-  }
 
   
   private String getUserId(SecurityContext sc, UriInfo uriInfo) {

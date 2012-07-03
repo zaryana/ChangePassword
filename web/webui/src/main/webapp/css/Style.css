@@ -411,6 +411,23 @@ p {
   padding-bottom: 10px;
 }
 
+.GetStartedPage .TenantFormMsg {
+  background: url("../background/ErrorIcon.gif") no-repeat 60px top;
+  padding: 0 62px 25px 85px;
+  text-align: left;
+  font-size: 13px;
+  font-weight: bold;
+  margin-top: 25px;
+}
+
+.GetStartedPage .TenantFormMsg ul {
+  color: #3D3D3D;
+  font-size: 12px;
+  font-weight: normal;
+  line-height: 25px;
+  margin-top: 5px;
+}
+
 /*IntroBox*/
 .UI-Intro {
   background: #f8f8f8;
