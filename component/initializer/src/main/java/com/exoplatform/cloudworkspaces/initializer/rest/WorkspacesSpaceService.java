@@ -65,27 +65,27 @@ public class WorkspacesSpaceService  {
 
     try {
     // verify if there is no space already created
-    Space space = spaceService.getSpaceByDisplayName(defaultSpaceName);
-    if (space == null) {
-      space = new Space();
-      space.setDisplayName(defaultSpaceName);
-      space.setPrettyName(defaultSpaceName);
-      space.setRegistration(Space.OPEN);
-      space.setPriority(Space.LOW_PRIORITY);
-      space.setVisibility(Space.PRIVATE);
-      space.setDescription(description);
-      //DefaultSpaceApplicationHander is the default implementation of SpaceApplicationHandler. You can create your own by extending SpaceApplicationHandler. The default type is "classic" (DefaultSpaceApplicationHandler.NAME = clasic)
-      space.setType(DefaultSpaceApplicationHandler.NAME);
-      //Preparing avatar
-      InputStream inputStream = getClass().getResourceAsStream("/image/getting-started.png");
-      AvatarAttachment avatar = new AvatarAttachment(defaultSpaceName, "getting-started.png","image/png", inputStream, "social", System.currentTimeMillis());
-      space.setAvatarAttachment(avatar);
+      Space space = spaceService.getSpaceByDisplayName(defaultSpaceName);
+      if (space == null) {
+        space = new Space();
+        space.setDisplayName(defaultSpaceName);
+        space.setPrettyName(defaultSpaceName);
+        space.setRegistration(Space.OPEN);
+        space.setPriority(Space.LOW_PRIORITY);
+        space.setVisibility(Space.PRIVATE);
+        space.setDescription(description);
+        //DefaultSpaceApplicationHander is the default implementation of SpaceApplicationHandler. You can create your own by extending SpaceApplicationHandler. The default type is "classic" (DefaultSpaceApplicationHandler.NAME = clasic)
+        space.setType(DefaultSpaceApplicationHandler.NAME);
+        //Preparing avatar
+        InputStream inputStream = getClass().getResourceAsStream("/image/getting-started.png");
+        AvatarAttachment avatar = new AvatarAttachment(defaultSpaceName, "getting-started.png","image/png", inputStream, "social", System.currentTimeMillis());
+        space.setAvatarAttachment(avatar);
 
-      //create the space
-      space = spaceService.createSpace(space, rootUser);
-      spaceService.setManager(space, rootUser, true);
-      spaceService.updateSpaceAvatar(space);
-     }
+        //create the space
+        space = spaceService.createSpace(space, rootUser);
+        spaceService.setManager(space, rootUser, true);
+        spaceService.updateSpaceAvatar(space);
+      }
     }
     catch  (Exception e)
     {
@@ -96,7 +96,7 @@ public class WorkspacesSpaceService  {
 
       //Forum
       //Forum forum = forumService.getForum("spaces", defaultSpaceName);
-      try {
+    try {
       Topic topic = new Topic();
       topic.setTopicName("What do you think about Cloud Workspaces?");
       topic.setOwner(rootUser);
@@ -107,13 +107,13 @@ public class WorkspacesSpaceService  {
       topic.setCreatedDate(new Date(System.currentTimeMillis()));
       topic.setDescription(forumMessage);
       forumService.saveTopic("forumCategoryspaces", "forumSpace"+ lowcasedSpaceName, topic, true, false, new MessageBuilder());
-      }
-      catch  (Exception e)
-      {
-        String error = "Cannot create forum topic: " + e.getMessage();
-        LOG.error(error, e);
-        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(error).build();
-      }
+    }
+    catch  (Exception e)
+    {
+      String error = "Cannot create forum topic: " + e.getMessage();
+      LOG.error(error, e);
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(error).build();
+    }
     return Response.ok().build();
   }
 }
