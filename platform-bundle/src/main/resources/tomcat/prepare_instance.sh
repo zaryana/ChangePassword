@@ -93,7 +93,7 @@
   else
     echo "Space creation failed.."
   fi
-  sleep 30s
+  sleep 15s
 
   # Asking to create template
   echo "Creating Tenant Template (JCR backup)"
