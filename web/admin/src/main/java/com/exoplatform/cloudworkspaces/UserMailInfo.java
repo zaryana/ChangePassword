@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 eXo Platform SAS.
+ * Copyright (C) 2012 eXo Platform SAS.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -16,29 +16,36 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package com.exoplatform.cloudworkspaces.dao;
+package com.exoplatform.cloudworkspaces;
 
-import org.exoplatform.cloudmanagement.admin.CloudAdminException;
-import org.exoplatform.cloudmanagement.admin.dao.EmailValidationStorage;
+public class UserMailInfo {
 
-import java.io.IOException;
-import java.util.Map;
-import java.util.Set;
+  private String username;
 
-public interface ModifiableEmailValidationStorage extends EmailValidationStorage {
+  private String tenant;
 
-  /**
-   * Store tenant information and return unique id of request.
-   * 
-   * @param validationData
-   * @param uuid
-   * @return
-   * @throws CloudAdminException
-   */
-  boolean setValidationData(String uuid, Map<String, String> validationData) throws CloudAdminException;
-  
-  /**
-   * List of the aliases saved in storage
-   */
-  public Set<String> getAliases() throws IOException;
+  public UserMailInfo() {
+  }
+
+  public UserMailInfo(String username, String tenant) {
+    this.username = username;
+    this.tenant = tenant;
+  }
+
+  public String getUsername() {
+    return username;
+  }
+
+  public void setUsername(String username) {
+    this.username = username;
+  }
+
+  public String getTenant() {
+    return tenant;
+  }
+
+  public void setTenant(String tenant) {
+    this.tenant = tenant;
+  }
+
 }

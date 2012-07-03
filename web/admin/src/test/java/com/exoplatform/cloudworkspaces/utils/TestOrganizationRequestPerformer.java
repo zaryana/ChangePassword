@@ -4,6 +4,7 @@ import com.exoplatform.cloudworkspaces.UserAlreadyExistsException;
 import com.exoplatform.cloudworkspaces.http.WorkspacesOrganizationRequestPerformer;
 import com.exoplatform.cloudworkspaces.http.WorkspacesUsersListResponseHandler;
 import com.exoplatform.cloudworkspaces.users.UserLimitsStorage;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.ProtocolVersion;
@@ -95,7 +96,7 @@ public class TestOrganizationRequestPerformer {
     ArgumentsCacheAnswer<HttpResponse> answer = new ArgumentsCacheAnswer<HttpResponse>(resp);
     Mockito.when(client.execute((HttpUriRequest) Matchers.any())).thenAnswer(answer);
 
-    performer.storeUser("aaa", "test@aaa.com", "fname", "lname", "pass", true);
+    performer.storeUser("aaa", "test", "test@aaa.com", "fname", "lname", "pass", true);
     Mockito.verify(client, Mockito.atLeastOnce()).execute((HttpPost) Mockito.anyObject());
     HttpPost post = (HttpPost)answer.getArgument(0);
     String requestParams = readInputStreamAsString(post.getEntity().getContent());
@@ -139,7 +140,7 @@ public class TestOrganizationRequestPerformer {
     ArgumentsCacheAnswer<HttpResponse> answer = new ArgumentsCacheAnswer<HttpResponse>(resp);
     Mockito.when(client.execute((HttpUriRequest) Matchers.any())).thenAnswer(answer);
 
-    performer.updatePassword("aaa", "test@aaa.com", "pass");
+    performer.updatePassword("aaa", "test", "test@aaa.com", "pass");
     Mockito.verify(client, Mockito.atLeastOnce()).execute((HttpPost) Mockito.anyObject());
     HttpPost post = (HttpPost)answer.getArgument(0);
     String requestParams = readInputStreamAsString(post.getEntity().getContent());

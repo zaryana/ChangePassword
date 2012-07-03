@@ -189,9 +189,9 @@ Tenants.prototype.initJoinPage = function() {
             // alert(data);
             email = data;
             if (email != null && email != "") {
-              var split = email.split('@');
+              userinfo = getUserMailInfo(email);
               $('#email').val(email);
-              var prefix = split[0];
+              var prefix = userinfo.username;
               $('#username').val(prefix);
               if (prefix.indexOf('.') > -1) {
                 var splittedName = prefix.split('.');
@@ -200,7 +200,7 @@ Tenants.prototype.initJoinPage = function() {
               } else {
                 $('#first_name').val(prefix.capitalize());
               }
-              $('#workspace').val(getTenantName(email));
+              $('#workspace').val(userinfo.tenant);
               $('#rfid').val(rfid);
             } else {
               $("#messageString").html("Application error: email is not found. Please contact support.");
@@ -221,7 +221,7 @@ Tenants.prototype.initSignInPage = function() {
     email = $.getUrlVar('email');
     if (email != null && email != "") {
       $('#email').val(email);
-      $('#workspace').val(getTenantName(email));
+      $('#workspace').val(getUserMailInfo(email).tenant);
     }
   }
 }
@@ -276,7 +276,7 @@ Tenants.prototype.initResumingPage = function() {
   tenants.init();
   if (queryString != null && queryString != "") {
     email = $.getUrlVar('email');
-    var workspace = getTenantName(email);
+    var workspace = getUserMailInfo(email).tenant;
     $("#li1").html("If you are already a member of the " + workspace
         + " Workspace, please <a href=\"/signin.jsp?email=" + email + "\">try again</a> in few minutes.");
     $("#li2").html("If you are trying to join " + workspace
@@ -288,7 +288,7 @@ Tenants.prototype.initResumingPage = function() {
 
   function isOnline(){
     var email = $.getUrlVar('email');
-    var workspace = getTenantName(email);
+    var workspace = getUserMailInfo(email).tenant;
     var host = location.hostname.indexOf("www") == 0 ? location.hostname.substring(4) :location.hostname;
     var login_redirect = location.protocol + '//' + workspace + '.' + host + '/portal/dologin?&initialURI=/portal/intranet/home';
     var signup_redirect = location.protocol + '//' + host + '/signup-done.jsp';
@@ -335,7 +335,7 @@ Tenants.prototype.doLogin = function() {
   if (!valid)
     return;
 
-  var username = login.substring(0, login.indexOf('@'));
+  var username = getUserMailInfo(login).username;
   var host = location.hostname.indexOf("www") == 0 ? location.hostname.substring(4) :location.hostname;
   var redirect = location.protocol + '//' + tname + '.' + host;
   redirect += '/portal/login?username=';
@@ -640,7 +640,7 @@ Tenants.prototype.handleJoinResponse = function(resp) {
       var tname = $('#workspace').val();
       var login = $('#email').val();
       var pass = $('#password').val();
-      var username = login.substring(0, login.indexOf('@'));
+      var username = getUserMailInfo(login).username;
       var host = location.hostname.indexOf("www") == 0 ? location.hostname.substring(4) :location.hostname;
       var redirect = location.protocol + '//' + tname + '.' + host;
       redirect += '/portal/login?username=';
@@ -859,8 +859,9 @@ Tenants.prototype.splitName = function(name) {
   }
 }
 
-function  getTenantName(email) {
-      var checkURL = tenantServicePath + "/tenantname/" + email;
+//function  getTenantName(email) {
+function getUserMailInfo(email) {
+      var checkURL = tenantServicePath + "/usermailinfo/" + email;
       var result;
       $.ajax({
           url : checkURL,
@@ -871,8 +872,9 @@ function  getTenantName(email) {
           error : function(request, status, error) {
              _gel("messageString").innerHTML = "Application error: cannot get tenant name. Please contact support."
            },
-          dataType : 'text'
+          dataType : 'json'
           });
+
           return result;
 }
 

@@ -21,8 +21,7 @@ package com.exoplatform.cloudworkspaces;
 import static org.exoplatform.cloudmanagement.admin.configuration.AdminConfiguration.CLOUD_ADMIN_TENANT_BACKUP_ID;
 import static org.exoplatform.cloudmanagement.admin.configuration.AdminConfiguration.CLOUD_ADMIN_TENANT_QUEUE_DIR;
 
-import java.io.File;
-import java.util.Map;
+import com.exoplatform.cloudworkspaces.dao.ModifiableEmailValidationStorage;
 
 import org.apache.commons.configuration.Configuration;
 import org.exoplatform.cloudmanagement.admin.CloudAdminException;
@@ -32,7 +31,8 @@ import org.exoplatform.cloudmanagement.admin.dao.TenantInfoDataManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.exoplatform.cloudworkspaces.dao.ModifiableEmailValidationStorage;
+import java.io.File;
+import java.util.Map;
 
 public class TemplateManagement {
 

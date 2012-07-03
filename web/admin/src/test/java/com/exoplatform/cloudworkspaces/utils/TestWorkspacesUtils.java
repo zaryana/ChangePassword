@@ -18,54 +18,49 @@
  */
 package com.exoplatform.cloudworkspaces.utils;
 
-
 import com.exoplatform.cloudworkspaces.CloudIntranetUtils;
+import com.exoplatform.cloudworkspaces.EmailBlacklist;
 import com.exoplatform.cloudworkspaces.ReferencesManager;
+import com.exoplatform.cloudworkspaces.http.WorkspacesOrganizationRequestPerformer;
 
 import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.Configuration;
+import org.mockito.Mockito;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-
 public class TestWorkspacesUtils {
-  
+
   CloudIntranetUtils utils;
-  
+
   @BeforeMethod
   public void initMocks() {
     Configuration cloudAdminConfiguration = new CompositeConfiguration();
     ReferencesManager referencesManager = new ReferencesManager(cloudAdminConfiguration);
-    utils = new CloudIntranetUtils(referencesManager);
+    EmailBlacklist blacklist = Mockito.mock(EmailBlacklist.class);
+    WorkspacesOrganizationRequestPerformer organizationRequestPerformer = Mockito.mock(WorkspacesOrganizationRequestPerformer.class);
+    utils = new CloudIntranetUtils(referencesManager, blacklist, organizationRequestPerformer);
   }
-  
+
   @DataProvider(name = "emails1")
   public Object[][] data() {
-      return new Object[][]{
-        {"test1@exoplatform.com", true}, 
-        {"test1@exoplatform.com.ua.net", true},
-        {"test2@oracle", false},
-        {"@oracle", false},
-        {"oracle", false},
-        {"test2@", false},
-        {"test2", false}
-       };
+    return new Object[][] { { "test1@exoplatform.com", true },
+        { "test1@exoplatform.com.ua.net", true }, { "test2@oracle", false }, { "@oracle", false },
+        { "oracle", false }, { "test2@", false }, { "test2", false } };
   }
 
   @DataProvider(name = "emails2")
   public Object[][] data2() {
-    return new Object[][]{
-            {"test1@exoplatform.com", "exoplatform"},
-            {"test1@exoplatform.com.ua.net", "exoplatform"},
-            {"test1@exoplatform.fed.us", "exoplatform"},
-            {"test1@exoplatform.crimea.ua", "exoplatform-crimea"},
-            {"test1@exoplatform.crimea.zp.ua", "exoplatform-crimea-zp"},
-            {"test1@exoplatform.crimea.pa.us", "exoplatform-crimea-pa"}
-    };
+    return new Object[][] { { "test1@exoplatform.com", "exoplatform" },
+        { "test1@exoplatform.com.ua.net", "exoplatform" },
+        { "test1@exoplatform.fed.us", "exoplatform" },
+        { "test1@exoplatform.crimea.ua", "exoplatform-crimea" },
+        { "test1@exoplatform.crimea.zp.ua", "exoplatform-crimea-zp" },
+        { "test1@exoplatform.crimea.pa.us", "exoplatform-crimea-pa" } };
   }
-  
+
   @Test(dataProvider = "emails1")
   public void testValidateEmail(String email, boolean result) {
     Assert.assertEquals(utils.validateEmail(email), result);
@@ -74,7 +69,7 @@ public class TestWorkspacesUtils {
   @Test(dataProvider = "emails2")
   public void testEmail2TenantName(String email, String result) {
     System.setProperty("cloud.admin.hostname.file", "target/test-classes/hostname.cfg");
-    Assert.assertEquals(utils.email2tenantName(email), result);
+    Assert.assertEquals(utils.email2userMailInfo(email).getTenant(), result);
   }
-  
+
 }
