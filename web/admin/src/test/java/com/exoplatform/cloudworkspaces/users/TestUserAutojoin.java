@@ -18,8 +18,15 @@
  */
 package com.exoplatform.cloudworkspaces.users;
 
-import com.exoplatform.cloudworkspaces.*;
+import com.exoplatform.cloudworkspaces.CloudIntranetUtils;
+import com.exoplatform.cloudworkspaces.EmailBlacklist;
+import com.exoplatform.cloudworkspaces.NotificationMailSender;
+import com.exoplatform.cloudworkspaces.PasswordCipher;
+import com.exoplatform.cloudworkspaces.ReferencesManager;
+import com.exoplatform.cloudworkspaces.UserAlreadyExistsException;
+import com.exoplatform.cloudworkspaces.UserRequestDAO;
 import com.exoplatform.cloudworkspaces.http.WorkspacesOrganizationRequestPerformer;
+
 import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.Configuration;
 import org.exoplatform.cloudmanagement.admin.CloudAdminException;
@@ -41,6 +48,7 @@ import java.util.Set;
  */
 public class TestUserAutojoin {
 
+  CloudIntranetUtils utils;
   UsersManager manager;
   WorkspacesOrganizationRequestPerformer  requestPerformer;
   ReferencesManager referencesManager;
@@ -53,7 +61,7 @@ public class TestUserAutojoin {
     Configuration cloudAdminConfiguration = new CompositeConfiguration();
     cloudAdminConfiguration.setProperty("cloud.admin.tenant.waiting.dir", "target/test-classes/queue");
     referencesManager = Mockito.mock((ReferencesManager.class));
-    CloudIntranetUtils utils = Mockito.mock((CloudIntranetUtils.class));
+    utils = new CloudIntranetUtils(referencesManager, Mockito.mock(EmailBlacklist.class), Mockito.mock(WorkspacesOrganizationRequestPerformer.class));
     requestPerformer = Mockito.mock(WorkspacesOrganizationRequestPerformer.class);
     UserLimitsStorage userLimitsStorage = Mockito.mock(UserLimitsStorage.class);
     notificationMailSender = Mockito.mock(NotificationMailSender.class);
@@ -62,6 +70,7 @@ public class TestUserAutojoin {
     UserRequestDAO   userRequestDao  = new UserRequestDAO(cloudAdminConfiguration, passwordCipher);
 
     this.manager = new UsersManager(cloudAdminConfiguration,
+                                            utils,
                                             requestPerformer,
                                             tenantInfoDataManager,
                                             notificationMailSender,
@@ -82,6 +91,7 @@ public class TestUserAutojoin {
     Mockito.when(passwordCipher.decrypt(Matchers.anyString())).thenReturn("password");
     manager.joinAll();
     Mockito.verify(requestPerformer, Mockito.times(3)).storeUser(Matchers.anyString(),  // 3 of 3 users joined
+                                                                 Matchers.anyString(),
                                                                  Matchers.anyString(),
                                                                  Matchers.anyString(),
                                                                  Matchers.anyString(),
@@ -107,6 +117,7 @@ public class TestUserAutojoin {
                                                                  Matchers.anyString(),
                                                                  Matchers.anyString(),
                                                                  Matchers.anyString(),
+                                                                 Matchers.anyString(),
                                                                  Matchers.anyBoolean());
 
   }
@@ -124,6 +135,7 @@ public class TestUserAutojoin {
     Mockito.when(passwordCipher.decrypt(Matchers.anyString())).thenReturn("password");
     manager.joinAll();
     Mockito.verify(requestPerformer, Mockito.times(2)).storeUser(Matchers.anyString(), // 2 of 3 users joined
+                                                                 Matchers.anyString(),
                                                                  Matchers.anyString(),
                                                                  Matchers.anyString(),
                                                                  Matchers.anyString(),
@@ -147,6 +159,7 @@ public class TestUserAutojoin {
                                                                  Matchers.anyString(),
                                                                  Matchers.anyString(),
                                                                  Matchers.anyString(),
+                                                                 Matchers.anyString(),
                                                                  Matchers.anyBoolean());
 
     Mockito.verify(notificationMailSender, Mockito.times(1)).sendOkToJoinEmail(Matchers.anyString(), //Join link is send
@@ -163,6 +176,7 @@ public class TestUserAutojoin {
     Mockito.when(requestPerformer.isNewUserAllowed(Matchers.anyString(), Matchers.anyString())).thenThrow(UserAlreadyExistsException.class);
     manager.joinAll();
     Mockito.verify(requestPerformer, Mockito.times(0)).storeUser(Matchers.anyString(), //User not joined
+                                                                 Matchers.anyString(),
                                                                  Matchers.anyString(),
                                                                  Matchers.anyString(),
                                                                  Matchers.anyString(),

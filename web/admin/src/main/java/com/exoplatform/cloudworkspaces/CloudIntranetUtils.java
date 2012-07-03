@@ -19,28 +19,46 @@
  */
 package com.exoplatform.cloudworkspaces;
 
+import com.exoplatform.cloudworkspaces.http.UserNotFoundException;
+import com.exoplatform.cloudworkspaces.http.WorkspacesOrganizationRequestPerformer;
+
 import org.exoplatform.cloudmanagement.admin.CloudAdminException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+
 public class CloudIntranetUtils {
 
-  private ReferencesManager   referencesManager;
+  private ReferencesManager                            referencesManager;
 
-  public static final String  CLOUD_ADMIN_HOSTNAME_FILE = "cloud.admin.hostname.file";
+  private final EmailBlacklist                         emailBlacklist;
 
-  public static final char    TENANT_NAME_DELIMITER     = '-';
+  private final WorkspacesOrganizationRequestPerformer organizationRequestPerformer;
 
-  private static final Logger LOG                       = LoggerFactory.getLogger(CloudIntranetUtils.class);
+  public static final String                           CLOUD_ADMIN_HOSTNAME_FILE = "cloud.admin.hostname.file";
 
-  public CloudIntranetUtils(ReferencesManager referencesManager) {
+  public static final char                             TENANT_NAME_DELIMITER     = '-';
+
+  private static final Logger                          LOG                       = LoggerFactory.getLogger(CloudIntranetUtils.class);
+
+  public CloudIntranetUtils(ReferencesManager referencesManager,
+                            EmailBlacklist emailBlacklist,
+                            WorkspacesOrganizationRequestPerformer organizationRequestPerformer) {
     this.referencesManager = referencesManager;
+    this.emailBlacklist = emailBlacklist;
+    this.organizationRequestPerformer = organizationRequestPerformer;
   }
 
   public boolean validateEmail(String aEmailAddress) {
@@ -74,8 +92,8 @@ public class CloudIntranetUtils {
 
   public boolean validateName(String aName) throws CloudAdminException {
     String nameRegexp = "^[A-Za-z][\\u0000-\\u007F\\u0080-\\u00FFa-zA-Z0-9 '&-.]*[A-Za-z0-9]$";
-    return  Pattern.matches(nameRegexp, aName);
-   }
+    return Pattern.matches(nameRegexp, aName);
+  }
 
   /**
    * Read text message from InputStream.
@@ -104,13 +122,44 @@ public class CloudIntranetUtils {
     }
   }
 
-  public String email2tenantName(String email) {
+  public String getSandboxTenantName() {
+    return System.getProperty("sandbox.tenant.name");
+  }
+
+  public boolean hasUsernameInSandboxTenant(String email) throws CloudAdminException {
+    try {
+      organizationRequestPerformer.getUserNameByEmail(getSandboxTenantName(), email);
+      return true;
+    } catch (UserNotFoundException e) {
+      return false;
+    }
+  }
+
+  public String getUsernameInSandboxTenant(String email) throws CloudAdminException {
+    return organizationRequestPerformer.getUserNameByEmail(getSandboxTenantName(), email);
+  }
+
+  public UserMailInfo email2userMailInfo(String email) {
+    if (emailBlacklist.isInBlackList(email)) {
+      try {
+        String defaultTenant = getSandboxTenantName();
+        try {
+          String username = getUsernameInSandboxTenant(email);
+          return new UserMailInfo(username, defaultTenant);
+        } catch (UserNotFoundException e) {
+          // use default algorithm
+        }
+      } catch (CloudAdminException e) {
+        LOG.error(e.getLocalizedMessage(), e);
+      }
+    }
+    String username = email.substring(0, email.indexOf('@'));
     String hostname = email.substring(email.indexOf("@") + 1).toLowerCase();
     String[] subdomains = hostname.split("\\.");
     String tenantName;
     if (subdomains.length < 3) {
       // first or second level domain name
-      return subdomains[0];
+      return new UserMailInfo(username, subdomains[0]);
     } else {
       // special cases
       tenantName = hostname.substring(0, hostname.lastIndexOf("."));
@@ -143,7 +192,7 @@ public class CloudIntranetUtils {
                 e);
     }
 
-    return tenantName.replace('.', TENANT_NAME_DELIMITER);
+    return new UserMailInfo(username, tenantName.replace('.', TENANT_NAME_DELIMITER));
   }
 
 }

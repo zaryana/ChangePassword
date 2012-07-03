@@ -12,7 +12,7 @@
       var email = location.hash.substring(1);
       var split = email.split('@');
       tenants.init();
-      var tName = getTenantName(email);
+      var tName = getUserMailInfo(email).tenant;
     </script>
   </head>
   <body onLoad="tenants.initDonePage();">

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 eXo Platform SAS.
+ * Copyright (C) 2012 eXo Platform SAS.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -16,29 +16,18 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package com.exoplatform.cloudworkspaces.dao;
+package com.exoplatform.cloudworkspaces.http;
 
 import org.exoplatform.cloudmanagement.admin.CloudAdminException;
-import org.exoplatform.cloudmanagement.admin.dao.EmailValidationStorage;
 
-import java.io.IOException;
-import java.util.Map;
-import java.util.Set;
+public class UserNotFoundException extends CloudAdminException {
 
-public interface ModifiableEmailValidationStorage extends EmailValidationStorage {
+  public UserNotFoundException(String message) {
+    super(message);
+  }
 
-  /**
-   * Store tenant information and return unique id of request.
-   * 
-   * @param validationData
-   * @param uuid
-   * @return
-   * @throws CloudAdminException
-   */
-  boolean setValidationData(String uuid, Map<String, String> validationData) throws CloudAdminException;
-  
-  /**
-   * List of the aliases saved in storage
-   */
-  public Set<String> getAliases() throws IOException;
+  public UserNotFoundException(String message, Exception cause) {
+    super(message, cause);
+  }
+
 }

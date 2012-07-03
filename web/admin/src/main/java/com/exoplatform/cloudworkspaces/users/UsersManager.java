@@ -18,6 +18,7 @@
  */
 package com.exoplatform.cloudworkspaces.users;
 
+import com.exoplatform.cloudworkspaces.CloudIntranetUtils;
 import com.exoplatform.cloudworkspaces.NotificationMailSender;
 import com.exoplatform.cloudworkspaces.ReferencesManager;
 import com.exoplatform.cloudworkspaces.RequestState;
@@ -45,6 +46,8 @@ public class UsersManager {
 
   private final Configuration                          cloudAdminConfiguration;
 
+  private final CloudIntranetUtils                     utils;
+
   private final WorkspacesOrganizationRequestPerformer workspacesOrganizationRequestPerformer;
 
   private final TenantInfoDataManager                  tenantInfoDataManager;
@@ -58,6 +61,7 @@ public class UsersManager {
   private final ReferencesManager                      referencesManager;
 
   public UsersManager(Configuration cloudAdminConfiguration,
+                      CloudIntranetUtils utils,
                       WorkspacesOrganizationRequestPerformer workspacesOrganizationRequestPerformer,
                       TenantInfoDataManager tenantInfoDataManager,
                       NotificationMailSender notificationMailSender,
@@ -65,6 +69,7 @@ public class UsersManager {
                       UserRequestDAO userRequestDao,
                       ReferencesManager referencesManager) {
     this.cloudAdminConfiguration = cloudAdminConfiguration;
+    this.utils = utils;
     this.workspacesOrganizationRequestPerformer = workspacesOrganizationRequestPerformer;
     this.tenantInfoDataManager = tenantInfoDataManager;
     this.notificationMailSender = notificationMailSender;
@@ -111,7 +116,7 @@ public class UsersManager {
         String userMail = user.getUserEmail();
         String fName = user.getFirstName();
         String lName = user.getLastName();
-        String username = userMail.substring(0, (userMail.indexOf("@")));
+        String username = utils.email2userMailInfo(userMail).getUsername();
 
         // Prepare properties for mailing
         Map<String, String> props = new HashMap<String, String>();
@@ -143,7 +148,7 @@ public class UsersManager {
         String userMail = user.getUserEmail();
         String fName = user.getFirstName();
         String lName = user.getLastName();
-        String username = userMail.substring(0, (userMail.indexOf("@")));
+        String username = utils.email2userMailInfo(userMail).getUsername();
 
         // Prepare properties for mailing
         Map<String, String> props = new HashMap<String, String>();
@@ -194,45 +199,40 @@ public class UsersManager {
 
   public synchronized void joinWaitingLimitUsers(String tName) throws CloudAdminException {
     for (UserRequest user : userRequestDao.search(tName, RequestState.WAITING_LIMIT)) {
-        String tenant = user.getTenantName();
-        String userMail = user.getUserEmail();
-        String fName = user.getFirstName();
-        String lName = user.getLastName();
-        String username = userMail.substring(0, (userMail.indexOf("@")));
+      String tenant = user.getTenantName();
+      String userMail = user.getUserEmail();
+      String fName = user.getFirstName();
+      String lName = user.getLastName();
+      String username = utils.email2userMailInfo(userMail).getUsername();
 
-        Map<String, String> props = new HashMap<String, String>();
-        props.put("tenant.masterhost",
-                  AdminConfigurationUtil.getMasterHost(cloudAdminConfiguration));
-        props.put("tenant.repository.name", tenant);
-        props.put("user.mail", userMail);
-        props.put("user.name", username);
-        props.put("first.name", fName);
-        props.put("last.name", lName);
+      Map<String, String> props = new HashMap<String, String>();
+      props.put("tenant.masterhost", AdminConfigurationUtil.getMasterHost(cloudAdminConfiguration));
+      props.put("tenant.repository.name", tenant);
+      props.put("user.mail", userMail);
+      props.put("user.name", username);
+      props.put("first.name", fName);
+      props.put("last.name", lName);
 
-        try 
-        {
-          joinUser(user);
-          notificationMailSender.sendUserJoinedEmails(tenant, fName, userMail, props);
-          userRequestDao.delete(user);
-        } 
-        catch (UserAlreadyExistsException e) {
-          LOG.warn("User " + userMail + " is already exists, deleting from waiting queue.");
-          notificationMailSender.sendUserJoinedEmails(tenant, fName, userMail, props);
-          userRequestDao.delete(user);
-        } 
-        catch (UsersLimitExceedException e) {
-          // do nothing this user already has status WAITING_LIMIT
-        } 
-        catch (UsersFormNotFilledException e) {
-          Map<String, String> formProps = new HashMap<String, String>();
-          formProps.put("tenant.masterhost",
-                        AdminConfigurationUtil.getMasterHost(cloudAdminConfiguration));
-          formProps.put("tenant.repository.name", tenant);
-          formProps.put("user.mail", userMail);
-          formProps.put("rfid", referencesManager.putEmail(userMail, UUID.randomUUID().toString()));
-          LOG.info("Sending join letter to " + userMail + " - his tenant is raised user limit.");
-          notificationMailSender.sendOkToJoinEmail(userMail, formProps);
-          userRequestDao.delete(user);
+      try {
+        joinUser(user);
+        notificationMailSender.sendUserJoinedEmails(tenant, fName, userMail, props);
+        userRequestDao.delete(user);
+      } catch (UserAlreadyExistsException e) {
+        LOG.warn("User " + userMail + " is already exists, deleting from waiting queue.");
+        notificationMailSender.sendUserJoinedEmails(tenant, fName, userMail, props);
+        userRequestDao.delete(user);
+      } catch (UsersLimitExceedException e) {
+        // do nothing this user already has status WAITING_LIMIT
+      } catch (UsersFormNotFilledException e) {
+        Map<String, String> formProps = new HashMap<String, String>();
+        formProps.put("tenant.masterhost",
+                      AdminConfigurationUtil.getMasterHost(cloudAdminConfiguration));
+        formProps.put("tenant.repository.name", tenant);
+        formProps.put("user.mail", userMail);
+        formProps.put("rfid", referencesManager.putEmail(userMail, UUID.randomUUID().toString()));
+        LOG.info("Sending join letter to " + userMail + " - his tenant is raised user limit.");
+        notificationMailSender.sendOkToJoinEmail(userMail, formProps);
+        userRequestDao.delete(user);
       }
     }
   }
@@ -250,7 +250,7 @@ public class UsersManager {
     String userMail = user.getUserEmail();
     String fName = user.getFirstName();
     String lName = user.getLastName();
-    String username = userMail.substring(0, (userMail.indexOf("@")));
+    String username = utils.email2userMailInfo(userMail).getUsername();
 
     try {
       if (!workspacesOrganizationRequestPerformer.isNewUserAllowed(tenant, username)) {
@@ -263,6 +263,7 @@ public class UsersManager {
       LOG.info("Joining {} {} to tenant {} from queue.", new Object[] {
           (user.isAdministrator()) ? "administrator" : "user", userMail, tenant });
       workspacesOrganizationRequestPerformer.storeUser(tenant,
+                                                       username,
                                                        userMail,
                                                        fName,
                                                        lName,
