@@ -63,7 +63,7 @@ public class WorkspacesSpaceService
 
   String description = "Get started with your social intranet with a few tips and tricks";
 
-  String forumMessage = "Give us your opinion and feature requests at beta@cloud-workspaces.com!";
+  String forumMessage = "Give us your opinion and feature requests at [email]beta@cloud-workspaces.com[/email]!";
 
   protected String rootUser = "root";
 
@@ -146,7 +146,7 @@ public class WorkspacesSpaceService
     //Wiki
     try
     {
-      Page page = wikiService.getPageById("portal", "intranet",  "WikiHome"); //createPage("portal", "intranet", "Getting Started Guide", "WikiHome");
+      Page page = wikiService.getPageById("group", "/spaces/" + lowcasedSpaceName,  "WikiHome"); //createPage("portal", "intranet", "Getting Started Guide", "WikiHome");
       page.setTitle("Getting Started Guide");
       Attachment content = page.getContent();
       content.setText(readInputStreamAsString(getClass().getResourceAsStream("/wiki/content.txt")));
