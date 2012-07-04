@@ -72,16 +72,16 @@ CloudLogin.doNothing = function(event) {
  *        STEP PROFILE
  *===========================================================================================================*/
 
-CloudLogin.AVATAR_REGEXP = /^image\/(gif|jpeg|png)$/;
+CloudLogin.AVATAR_EXT_REGEXP = /^(gif|jpeg|jpg|png)$/;
 
 CloudLogin.showStepProfile = function(event) {
   if(event != undefined) {
     event.preventDefault();
   }
   
-  /*$('#StepSpace').hide();
+  $('#StepSpace').hide();
   $('#StepEmail').hide();
-  $('#StepProfile').show();*/
+  $('#StepProfile').show();
 }
 
 CloudLogin.validateStepProfile = function(event) {
@@ -93,44 +93,28 @@ CloudLogin.validateStepProfile = function(event) {
 
 CloudLogin.initUploadFile = function() {
   $(document).ready(function() {
-    $('#StepProfile').fileupload(/*'option',*/ {
-      dataType: 'json',
+    $('#StepProfile').fileupload({
       dropZone: $('#fileDropZone'),
-      /*acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
-      process: [
-          {
-              action: 'load',
-              fileTypes: /^image\/(gif|jpeg|png)$/,
-              maxFileSize: 20000000 // 20MB
-          },
-          {
-              action: 'resize',
-              maxWidth: 1440,
-              maxHeight: 900
-          },
-          {
-              action: 'save'
-          }
-      ],*/
+      // Redefine add method to filter with size and file type
       add: function (e, data) {
         var submitFile = true;
-        /*if(data.files[0].size >= CloudLogin.AVATAR_MAX_LENGTH) {
+        if(data.files[0].size && data.files[0].size >= CloudLogin.AVATAR_MAX_LENGTH) {
           submitFile = false;
           console.log("File size is too large");
         }
-        console.log(data);
-        if(! CloudLogin.AVATAR_REGEXP.test(data.files[0].type)) {
+        if(! CloudLogin.AVATAR_EXT_REGEXP.test(CloudLogin.getFileExtension(data.files[0].name))) {
           submitFile = false;
           console.log("File is not in proper format");
-        }*/
+        }
         
         if(submitFile) {
           data.submit();
         }
       },
+      // If upload is ok, 
       done: function (e, data) {
+        console.log(data);
         console.log("upload done !");
-        alert("upload done !");
         CloudLogin.createAvatar(data.files[0].name);
       }
     });
@@ -145,7 +129,6 @@ CloudLogin.createAvatar = function(fileName) {
     success: function(data, textStatus) {
       console.log(data);
       console.log("avatar created [status=" + textStatus + "]");
-      alert("avatar created [status=" + textStatus + "]");
     },
     error: function(data, textStatus, error) {
       console.log(data);
@@ -663,5 +646,11 @@ CloudLogin.removeByValue = function(arr, val) {
       arr.splice(i, 1);
       break;
     }
+  }
+}
+
+CloudLogin.getFileExtension = function(fileName) {
+  if(fileName != null && fileName != undefined) {
+    return fileName.split('.').pop();
   }
 }

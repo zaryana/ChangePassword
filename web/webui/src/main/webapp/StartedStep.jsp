@@ -57,7 +57,7 @@
   
   <div class="GetStartedPage">
   
-    <form class="UIFormBox StartedStep" style="display: none;" name="" id="StepProfile" method="POST" action="/portal/rest/managedocument/uploadFile/upload?uploadId=<%=CloudLoginRestService.AVATAR_UPLOAD_ID%>" enctype="multipart/form-data" >
+    <form class="UIFormBox StartedStep" style="display: block;" name="" id="StepProfile" method="POST" action="/portal/rest/managedocument/uploadFile/upload?uploadId=<%=CloudLoginRestService.AVATAR_UPLOAD_ID%>" enctype="multipart/form-data" >
       <h1 class="StartedBarBG">Welcome to Cloud Workspaces - Get started in 3 easy steps</h1>
       <div class="Steps" id="">
         <span class="StepBG"></span>
@@ -70,7 +70,7 @@
           <tr>
             <td class="FormInput">
               <div class="HelpText" id="fileDropZone">
-              <input type="file" name="datafile" id="datafile" />
+              <input type="file" name="datafile" id="datafile" data-url="/portal/rest/managedocument/uploadFile/upload?uploadId=<%=CloudLoginRestService.AVATAR_UPLOAD_ID%>" />
               </div>
             </td>
             <td class="FormButton"> <input type="button" onclick="CloudLogin.validateStepProfile(event);" value="Next" id="t_submit_profile" class="Button" /></td>
@@ -84,7 +84,7 @@
       <div class="Link"><a href="#" onclick="CloudLogin.exit();" class="Link">Skip to homepage >></a></div>
     </form>
   
-    <form class="UIFormBox StartedStep" style="display: block;" name="" id="StepSpace" method="POST" action="javascript:void(0);" >
+    <form class="UIFormBox StartedStep" style="display: none;" name="" id="StepSpace" method="POST" action="javascript:void(0);" >
       <h1 class="StartedBarBG">Welcome to Cloud Workspaces - Get started in 3 easy steps</h1>
       <div class="Steps" id="">
         <span class="StepBG"></span>
