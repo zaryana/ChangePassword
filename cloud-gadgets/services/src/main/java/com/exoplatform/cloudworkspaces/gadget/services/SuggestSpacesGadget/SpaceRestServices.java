@@ -160,7 +160,7 @@ public class SpaceRestServices implements ResourceContainer {
         if(spaceService.isInvitedUser(spaceService.getSpaceById(spaceName), userId))
             spaceService.addMember(spaceService.getSpaceById(spaceName), userId);
  
-        return Response.ok("Accepted", MediaType.APPLICATION_JSON).cacheControl(cacheControl).build();
+        return Response.ok("{}", MediaType.APPLICATION_JSON).cacheControl(cacheControl).build();
     
     }
       catch (Exception e) {
@@ -183,7 +183,7 @@ public class SpaceRestServices implements ResourceContainer {
         SpaceService spaceService = (SpaceService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(SpaceService.class);           
         spaceService.removeInvitedUser(spaceService.getSpaceById(spaceName), userId);
  
-        return Response.ok("Deny", MediaType.APPLICATION_JSON).cacheControl(cacheControl).build();   
+        return Response.ok("{}", MediaType.APPLICATION_JSON).cacheControl(cacheControl).build();   
     }
       catch (Exception e) {
         log.error("Error in space deny rest service: " + e.getMessage(), e);
@@ -205,7 +205,7 @@ public class SpaceRestServices implements ResourceContainer {
         SpaceService spaceService = (SpaceService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(SpaceService.class);           
         spaceService.addPendingUser(spaceService.getSpaceById(spaceName), userId);
  
-        return Response.ok("Request", MediaType.APPLICATION_JSON).cacheControl(cacheControl).build();  
+        return Response.ok("{}", MediaType.APPLICATION_JSON).cacheControl(cacheControl).build();  
     }
       catch (Exception e) {
         log.error("Error in space deny rest service: " + e.getMessage(), e);
@@ -229,7 +229,7 @@ public class SpaceRestServices implements ResourceContainer {
             spaceService.addMember(spaceService.getSpaceById(spaceName), userId);
             
          
-        return Response.ok("Join", MediaType.APPLICATION_JSON).cacheControl(cacheControl).build();  
+        return Response.ok("{}", MediaType.APPLICATION_JSON).cacheControl(cacheControl).build();  
     }
       catch (Exception e) {
         log.error("Error in space deny rest service: " + e.getMessage(), e);
