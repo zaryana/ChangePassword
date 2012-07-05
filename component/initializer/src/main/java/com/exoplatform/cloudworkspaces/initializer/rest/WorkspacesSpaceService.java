@@ -128,6 +128,7 @@ public class WorkspacesSpaceService
     try
     {
       Topic topic = new Topic();
+      topic.setLink("/portal/intranet/forum/topic/"+topic.getId());
       topic.setTopicName("What do you think about Cloud Workspaces?");
       topic.setOwner(rootUser);
       topic.setModifiedBy(rootUser);
@@ -146,7 +147,7 @@ public class WorkspacesSpaceService
     //Wiki
     try
     {
-      Page page = wikiService.getPageById("portal", "intranet",  "WikiHome"); //createPage("portal", "intranet", "Getting Started Guide", "WikiHome");
+      Page page = wikiService.getPageById("portal", "intranet",  "WikiHome");
       page.setTitle("Getting Started Guide");
       Attachment content = page.getContent();
       content.setText(readInputStreamAsString(getClass().getResourceAsStream("/wiki/content.txt")));
