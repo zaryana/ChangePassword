@@ -132,7 +132,7 @@ public class TestRESTOrganizationService {
 
     Mockito.verify(userHandler).createUser((User) Mockito.anyObject(), Mockito.eq(true));
 
-    Mockito.verify(membership_handler, Mockito.times(3))
+    Mockito.verify(membership_handler, Mockito.times(1))
            .linkMembership((User) Mockito.anyObject(),
                            (Group) Mockito.anyObject(),
                            (MembershipType) Mockito.anyObject(),

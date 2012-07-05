@@ -1,43 +1,29 @@
 package com.exoplatform.cloudworkspaces.gadget.services.SuggestSpacesGadget;
 
-import org.json.JSONObject;
-import org.json.JSONArray;
-import java.util.ArrayList;
-import java.util.List;
-import java.net.URI;
-
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.CacheControl;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.RuntimeDelegate;
-import javax.ws.rs.core.SecurityContext;
-import javax.ws.rs.core.UriInfo;
-import javax.ws.rs.core.Context;
-
-import org.exoplatform.social.core.space.model.Space;
-import org.exoplatform.social.core.space.spi.SpaceService;
-
 import org.exoplatform.common.http.HTTPStatus;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.services.organization.User;
 import org.exoplatform.services.rest.impl.RuntimeDelegateImpl;
 import org.exoplatform.services.rest.resource.ResourceContainer;
-import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.model.Profile;
-import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
-import org.exoplatform.social.core.manager.IdentityManager;
-import org.exoplatform.social.core.manager.RelationshipManager;
-import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
-import org.exoplatform.social.core.profile.ProfileFilter;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import java.net.URI;
+import java.util.List;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.CacheControl;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
+import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.ext.RuntimeDelegate;
 
 
 
@@ -116,9 +102,9 @@ public class SpaceRestServices implements ResourceContainer {
    
     for (Space space : suggestedSpaces) {
       
-      if(space.getVisibility() == "hidden")
+      if(space.getVisibility().equals(Space.HIDDEN))
        continue;
-      if(space.getRegistration() == "close")
+      if(space.getRegistration().equals(Space.CLOSE))
        continue;
 
       String avatar = space.getAvatarUrl();
@@ -292,9 +278,9 @@ public class SpaceRestServices implements ResourceContainer {
         if(spaces != null && spaces.length > 0) {
           for (Space space : spaces) {
             
-            if(space.getVisibility().equals("hidden"))
+            if(space.getVisibility().equals(Space.HIDDEN))
              continue;
-            if(space.getRegistration().equals("close"))
+            if(space.getRegistration().equals(Space.CLOSE))
              continue;
             
             JSONObject json = new JSONObject();                    
