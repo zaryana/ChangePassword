@@ -14,7 +14,6 @@
       <div class="UIPageBodyContainer">
         <div class="UIPageBody FormPages">
           <h1>Activate Your Cloud Workspaces Account</h1>
-          <p class="FillProfileInfo">Fill in your profile to complete your Cloud Workspaces registration.</p>
           <div id="messageString" class="TenantFormMsg"></div>
           <form class="UIForm" action="javascript:void(0);"  method="POST" name="cloud-workspaces-profile" id="joinForm">
 						<!-- Marketo input hidden fields -->
@@ -33,11 +32,14 @@
 						<input type="hidden" name="_mkt_disp" value="return" />
 						<input type="hidden" name="_mkt_trk" value="" />
             <table cols="2">
-              <tr>
+              <tr style="display:none;">
                 <td class="Field">Workspace:</td><td> <input class="required InputText DisabledArea" type="text" name="workspace" id="workspace" disabled value="mycompany" /></td>
               </tr>
-              <tr>
+              <tr style="display:none;">
                 <td class="Field">Email:</td><td> <input class="required InputText  DisabledArea" type="text" name="email" id="email" disabled value="your.name@yourcompany.com" /></td>
+              </tr>
+              <tr>
+                <td class="Field">Username:</td><td> <input class="required InputText DisabledArea" type="text" name="username" disabled id="username" /></td>
               </tr>
               <tr>
                 <td class="Field">First name:</td><td> <input class="required InputText" type="text" name="first_name" id="first_name" /><span class="Star">*</span></td>
@@ -45,9 +47,7 @@
               <tr>
                 <td class="Field">Last name:</td><td> <input class="required InputText" type="text" name="last_name" id="last_name" /><span class="Star">*</span></td>
               </tr>
-              <tr>
-                <td class="Field">Username:</td><td> <input class="required InputText DisabledArea" type="text" name="username" disabled id="username" /></td>
-              </tr>
+              
               <tr>
                 <td class="Field">Password:</td><td> <input class="required InputText" type="password" name="password" id="password" /><span class="Star">*</span></td>
               </tr>
