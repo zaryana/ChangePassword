@@ -154,28 +154,14 @@ public class WorkspacesRESTOrganizationServiceImpl {
       newUser.setEmail(email);
       userHandler.createUser(newUser, true);
 
-      // register user in groups '/platform/developers' and '/platform/users'
       GroupHandler groupHandler = organizationService.getGroupHandler();
       MembershipType membership_member = organizationService.getMembershipTypeHandler()
                                                             .findMembershipType("member");
-      MembershipType membership_all = organizationService.getMembershipTypeHandler()
-                                                         .findMembershipType("*");
-
       if (Boolean.parseBoolean(administrator)) {
         Group adminGroup = groupHandler.findGroupById("/platform/administrators");
-        Group devGroup = groupHandler.findGroupById("/developers");
-        Group contributorsGroup = groupHandler.findGroupById("/platform/web-contributors");
         organizationService.getMembershipHandler().linkMembership(newUser,
                                                                   adminGroup,
                                                                   membership_member,
-                                                                  true);
-        organizationService.getMembershipHandler().linkMembership(newUser,
-                                                                  devGroup,
-                                                                  membership_member,
-                                                                  true);
-        organizationService.getMembershipHandler().linkMembership(newUser,
-                                                                  contributorsGroup,
-                                                                  membership_all,
                                                                   true);
       }
 
