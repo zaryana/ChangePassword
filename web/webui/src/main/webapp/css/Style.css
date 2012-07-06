@@ -231,7 +231,7 @@ p {
 /*Form box*/
 .UIBanner .FormBox .BoxContent {
   width: 665px;
-  min-height: 245px;
+  min-height: 285px;
   background:#fff ;
 }
 
@@ -239,6 +239,21 @@ p {
   margin: 0 auto;
   padding: 25px 35px 10px 35px;
   text-align: center;
+}
+
+.UIBanner .FormBox .TenantFormMsg {
+	color: #FE4444;
+	font-size: 12px;
+	margin: 10px 0 0;
+	padding: 0 52px 15px 30px;
+	text-align: left;
+	line-height: 20px
+}
+
+.UIBanner .FormBox .TenantFormMsg .WarningIcon {
+	background: url("../background/RedWarningIcon.png") no-repeat 20px top;
+	padding-left: 52px;
+	display: block;
 }
 
 .UIBanner .FormBox input.InputText {
@@ -255,7 +270,7 @@ p {
 }
 
 .UIBanner .FormBox input.Button {
-  margin: 25px auto 20px;
+  margin: 25px auto 30px;
   width: 170px;
   height: 40px;
   font-family: Helvetica, arial, tahoma;
@@ -404,28 +419,20 @@ p {
   text-decoration: underline;
 }
 
-.TenantFormMsg {
-  font-size: 18px;
-  color: #ff0000;
-  text-align: center;
-  padding-bottom: 10px;
-}
-
 .GetStartedPage .TenantFormMsg {
-  background: url("../background/ErrorIcon.gif") no-repeat 60px top;
-  padding: 0 62px 25px 85px;
-  text-align: left;
-  font-size: 13px;
-  font-weight: bold;
-  margin-top: 25px;
+	background: url("../background/RedWarningIcon.png") no-repeat 60px top;
+	color: #fe4444;
+	font-size: 12px;
+	font-weight: bold;
+	margin-top: 25px;
+	padding: 0 62px 25px 90px;
+	text-align: left;
+	line-height: 20px;
 }
 
 .GetStartedPage .TenantFormMsg ul {
-  color: #3D3D3D;
-  font-size: 12px;
-  font-weight: normal;
-  line-height: 25px;
-  margin-top: 5px;
+	font-weight: normal;
+	line-height: 25px;
 }
 
 /*IntroBox*/
