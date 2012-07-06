@@ -67,6 +67,11 @@
     for(UserNode node in siteNodes) {
       renderPageNode(node, idx++ % 2 == 0);
     }
+    
+    if (uicomponent.hasPermissionOnIDENode()) {
+        String ideLink = uicomponent.getIDENode();
+        print """<li class="MenuItem"><a class="ItemIcon" href="$ideLink">IDE</a></li>"""
+    }    
     print """
       </ul>
     """;

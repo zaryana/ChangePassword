@@ -30,6 +30,20 @@
       <artifactId>exo.portal.webui.eXo</artifactId>
       <scope>provided</scope>
     </dependency>
+    
+    <dependency>
+      <groupId>org.exoplatform.platform</groupId>
+      <artifactId>exo.platform.component.common</artifactId>
+      <version>${org.exoplatform.platform.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.exoplatform.platform</groupId>
+      <artifactId>exo.platform.component.webui</artifactId>
+      <version>${org.exoplatform.platform.version}</version>
+      <scope>provided</scope>
+    </dependency>        
 
   </dependencies>
 </project>

@@ -1,3 +1,17 @@
 .OfficeMiddleTDContainer {
   border-left: solid 1px #E2DDC7 !important;
 }
+
+#UIToolbarContainer .UITableColumnContainer .PinToolbarContainerTDContainer {
+  display: none;
+}
+
+.UIToolbarContainer .UITableColumnContainer .UISetupPlatformToolBarPortletTDContainer {
+  float: right;
+  margin-right: 5px;
+}
+
+.UIToolbarContainer .UITableColumnContainer .UserInfoPortletTDContainer {
+  float: right;
+  margin-right: 3px;
+}
