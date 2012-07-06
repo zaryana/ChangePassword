@@ -152,11 +152,12 @@ public class CloudWorkspacesTenantService {
       tName = userInfo.getTenant();
 
       if (emailBlacklist.isInBlackList(userMail) && !tName.equals(utils.getSandboxTenantName())) {
-        String domain = userMail.substring(userMail.indexOf("@"));
-        LOG.info("User " + userMail + " rejected. Need work email address.");
-        return Response.status(Status.BAD_REQUEST)
-                       .entity("Sorry, we can't sign you up with an email address " + domain
-                           + ". Try with your work email.")
+        LOG.info("User " + userMail + " rejected. Need work email address. Redirecting to tryagain.jsp...");
+        return Response.status(309)
+                       .header("Location",
+                               "http://"
+                                   + AdminConfigurationUtil.getMasterHost(cloudAdminConfiguration)
+                                   + "/tryagain.jsp")
                        .build();
       }
 

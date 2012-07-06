@@ -1187,7 +1187,7 @@ public class TestCloudWorkspacesTenantService {
                .formParam("user-mail", EMAIL)
                .port((Integer) context.getAttribute(EverrestJetty.JETTY_PORT))
                .expect()
-               .statusCode(Status.BAD_REQUEST.getStatusCode())
+               .statusCode(309)
                .when()
                .post("/rest/cloud-admin/cloudworkspaces/tenant-service/signup");
 

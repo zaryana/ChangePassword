@@ -1296,12 +1296,13 @@ hr {
 }
 
 .BlacklistedBanner .FormBox {
-	padding: 8px 0px;
+	padding: 8px 0 0;
 }
 
 .BlacklistedBanner .FormBox input.InputText {
+    text-align: left;
     border-radius: 3px 0px 0px 3px;
-    color: #636363;
+    color: #b2b2b2;
     font-size: 18px;
     height: 28px;
     line-height: 28px;
@@ -1309,11 +1310,15 @@ hr {
 	float: left;
 }
 
-.BlacklistedBanner input.Button {
-    background-color: #30c1eb;
-    border-radius: 0px 3px 3px 0px;
+.UIPageContainer .BlacklistedBanner input.Button {
+    background-color: #30C1EB;
+    background-position: left bottom;
+    border-radius: 0 3px 3px 0;
     font-size: 20px;
+    font-weight: bold;
     height: 50px;
+    margin: 0;
+    padding: 0;
     width: 120px;
 }
 
