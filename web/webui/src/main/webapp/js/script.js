@@ -244,9 +244,9 @@ Tenants.prototype.initResumingHidePage = function() {
   tenants.init();
   var workspace = $("#tenantname").text();
   $("#li1").html("If you are already a member of the " + workspace
-      + " Workspace, please <a href=\"javascript:void(0);\" onClick=\"window.location.reload()\">try again</a> in few minutes.");
-  $("#li2").html("If you are trying to join " + workspace
-      + " Workspace, check you mail box for an invitation");
+      + " social intranet, please <a href=\"javascript:void(0);\" onClick=\"window.location.reload()\">try again</a> in a few minutes.");
+  $("#li2").html("If you are trying to join the " + workspace
+      + " social intranet, check you mail box for an invitation.");
   tryResume(workspace);
 }
 
@@ -596,7 +596,7 @@ Tenants.prototype.handleSignupResponse = function(resp) {
       "formid": $('#formid').val()
     }, function() {
      });
-     $("#messageString").html(resp);
+     $("#messageString").html('<span class="WarningIcon">' + resp + '</span>');
   }
   $("#t_submit").attr('disabled', '');
   $("#t_submit").val("Sign Up");

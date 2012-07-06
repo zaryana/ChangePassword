@@ -19,5 +19,6 @@
     <module>initializer</module> 
     <module>organization</module>
     <module>multitenancy</module>
+    <module>social</module>
   </modules>
 </project>
