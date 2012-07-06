@@ -28,27 +28,37 @@ get() {
   echo $(curl --write-out %{http_code} --connect-timeout 60 -s -S --output $curl_res $1)
 }
 
-code=0
-# will wait for 30min
-timeout=$((30 * 60))
-tstep=5
-t=0
-while [ $code -ne 302 ] && [ $code -ne 200 ] && [ $t -lt $timeout ] ; do
-  code=$(get "http://$remote_cwks/portal/intranet/home")
-  if [ $code -ge 500  ] ; then
-    echo "Cannot start app server. Internal error: "
-    cat $curl_res
+get_answer() {
+  local code=0
+  # will wait for 30min
+  timeout=$((30 * 60))
+  local tstep=5
+  local t=0
+  while [ $code -ne 302 ] && [ $code -ne 200 ] && [ $t -lt $timeout ] ; do
+    code=$(get "http://$remote_cwks/portal/intranet/home")
+    if [ $code -ge 500  ] ; then
+      echo "Cannot start app server. Internal error: "
+      cat $curl_res
+      exit 1
+    fi
+    sleep $tstep
+    t=$((t + tstep))
+    echo -ne "\rwaiting $t seconds from $timeout, http status: $code     "
+  done
+  
+  if [ $t -ge $timeout ] ; then
+    echo "WARNING! Server not responding in time. See app server logs for details."
     exit 1
   fi
-  sleep $tstep
-  t=$((t + tstep))
-  echo -ne "\rwaiting $t seconds from $timeout, http status: $code     "
-done
+}
 
-if [ $t -ge $timeout ] ; then
-  echo "WARNING! Server not responding in time. See app server logs for details."
-  exit 1
+get_answer "http://$remote_cwks/portal/intranet/home"
+
+if [ ! -e $2 ] ; then
+  curl --connect-timeout 900 -s  -X POST -u cloudadmin:cloudadmin http://$remote_cwks/rest/private/cloud-admin/tenant-service/create/$2
 fi
+
+get_answer "http://$2.$remote_cwks/portal/intranet/home"
 
 echo ""
 echo "Local Cloud started succesfully at $remote_cwks                " # need spaces to rewrite waiting text
