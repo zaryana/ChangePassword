@@ -25,8 +25,18 @@
  */
 
 /**
- * --------------------- Sends data to LOOPFUSE tracker and Google Analytics if this is page from domain with targetDomainNameForTracking 
+ * --------------------- Sends data to Marketo and Google Analytics if this is page from domain with targetDomainNameForTracking 
  */
+
+
+if (typeof jQuery === 'undefined') {
+	var script = document.createElement('script');
+	script.src = 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js';
+	script.type = 'text/javascript';
+	document.getElementsByTagName('head')[0].appendChild(script);
+}
+
+
 
 var targetDomainNameForTracking = "cloud-workspaces.com";
 if (testDomainPrefix(targetDomainNameForTracking)){
