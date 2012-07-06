@@ -35,7 +35,7 @@ get_answer() {
   local tstep=5
   local t=0
   while [ $code -ne 302 ] && [ $code -ne 200 ] && [ $t -lt $timeout ] ; do
-    code=$(get "http://$remote_cwks/portal/intranet/home")
+    code=$(get $1)
     if [ $code -ge 500  ] ; then
       echo "Cannot start app server. Internal error: "
       cat $curl_res
