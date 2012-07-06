@@ -125,11 +125,10 @@ public class WorkspacesSpaceService
     }
 
     //Forum
-    //Forum forum = forumService.getForum("spaces", defaultSpaceName);
     try
     {
       Topic topic = new Topic();
-      topic.setLink("/portal/intranet/forum/topic/"+topic.getId());
+      topic.setLink("/portal/g/:spaces:"+lowcasedSpaceName + "/"+ lowcasedSpaceName +"/forum/topic/"+topic.getId());
       topic.setTopicName("What do you think about Cloud Workspaces?");
       topic.setOwner(rootUser);
       topic.setModifiedBy(rootUser);
@@ -146,12 +145,27 @@ public class WorkspacesSpaceService
     }
 
     //Wiki
+
+    String wikiType = "group";
+    String wikiOwner =  "/spaces/" + lowcasedSpaceName;
+
     try
     {
-      Page page = wikiService.getPageById("group", "/spaces/" + lowcasedSpaceName,  "WikiHome"); //createPage("portal", "intranet", "Getting Started Guide", "WikiHome");
+      Page page = wikiService.getPageById(wikiType, wikiOwner,  null);
       page.setTitle("Getting Started Guide");
       Attachment content = page.getContent();
       content.setText(readInputStreamAsString(getClass().getResourceAsStream("/wiki/content.txt")));
+
+      //Notify listeners
+//      List<PageWikiListener> listeners = wikiService.getPageListeners();
+//        for (PageWikiListener l : listeners) {
+//          try {
+//            l.postUpdatePage(wikiType, wikiOwner, "WikiHome", page);
+//          } catch (Exception e) {
+//              LOG.warn(String.format("Notify listener [%s] failed", l.toString()), e);
+//          }
+//       }
+
     } catch (Exception e) {
       String error = "Cannot create wiki page: " + e.getMessage();
       LOG.error(error, e);
