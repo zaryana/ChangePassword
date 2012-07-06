@@ -1287,6 +1287,7 @@ hr {
 .BlacklistedBanner p {
     color: #FFFFFF;
     font-size: 16px;
+    font-family: arial, helvetica, sans-serif;
 	line-height: 22px;
 }
 
@@ -1336,5 +1337,6 @@ hr {
 
 .BlacklistEmailsPage p  {
     font-size: 16px;
+    font-family: arial, helvetica, sans-serif;
 	margin: 0px 280px 0px 0px;
 }
