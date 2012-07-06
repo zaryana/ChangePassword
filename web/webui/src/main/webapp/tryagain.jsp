@@ -23,16 +23,18 @@
 					<p class="Note">Sorry, we really need a company email address.</p>
 				</div>
 			</div>
-			<div class="UIPageBody BlacklistEmailsPage">
-				<div class="Item ClearFix">
-					<a class="Button FR" href="javascript:void(0);" onclick="showContactUsForm('/contact-us.jsp');"><img alt="" src="background/contact-us-button.png" /></a>
-					<h3>Want to see Cloud Workspaces in action, but don't need your own account?</h3>
-					<p>Contact our sales team for a demo.</p>
-				</div>
-				<div class="Item ClearFix">
-					<a class="Button FR" href="http://www.exoplatform.com/exo-platform-3.5-trial/eXo-Platform-3.5.zip"><img alt="" src="background/download-exoplatform.png" /></a>
-					<h3>Or, download the 30-day trial of eXo Platform 3.5</h3>
-					<p>Cloud Workspaces is based on eXo Platform 3.5 enterprise portal and user experience platform. To discover Cloud Workspaces social intranet features, and much more, download the on-premises edition of eXo Platform 3.5. </p>
+			<div class="UIPageBodyContainer">
+				<div class="UIPageBody BlacklistEmailsPage">
+					<div class="Item ClearFix">
+						<a class="Button FR" href="javascript:void(0);" onclick="showContactUsForm('/contact-us.jsp');"><img alt="" src="background/contact-us-button.png" /></a>
+						<h3>Want to see Cloud Workspaces in action, but don't need your own account?</h3>
+						<p>Contact our sales team for a demo.</p>
+					</div>
+					<div class="Item ClearFix">
+						<a class="Button FR" href="http://www.exoplatform.com/exo-platform-3.5-trial/eXo-Platform-3.5.zip"><img alt="" src="background/download-exoplatform.png" /></a>
+						<h3>Or, download the 30-day trial of eXo Platform 3.5</h3>
+						<p>Cloud Workspaces is based on eXo Platform 3.5 enterprise portal and user experience platform. To discover Cloud Workspaces social intranet features, and much more, download the on-premises edition of eXo Platform 3.5. </p>
+					</div>
 				</div>
 			</div>
       <!--begin Footer-->
