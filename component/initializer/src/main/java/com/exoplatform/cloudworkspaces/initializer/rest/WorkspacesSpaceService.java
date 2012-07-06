@@ -103,10 +103,9 @@ public class WorkspacesSpaceService
         space.setPrettyName(defaultSpaceName);
         space.setRegistration(Space.OPEN);
         space.setPriority(Space.LOW_PRIORITY);
-        space.setVisibility(Space.PRIVATE);
+        space.setVisibility(Space.PRIVATE); //Due to bug in SOC-2721
         space.setGroupId("/platform/users");
         space.setDescription(description);
-        //DefaultSpaceApplicationHander is the default implementation of SpaceApplicationHandler. You can create your own by extending SpaceApplicationHandler. The default type is "classic" (DefaultSpaceApplicationHandler.NAME = clasic)
         space.setType(DefaultSpaceApplicationHandler.NAME);
         //Preparing avatar
         InputStream inputStream = getClass().getResourceAsStream("/image/getting-started.png");
