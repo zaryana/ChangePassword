@@ -1266,3 +1266,70 @@ hr {
     width: 397px;
 	border-radius: 12px;
 }
+
+
+/**********  Blacklist-Homepage  ***********/
+
+
+.BlacklistedBanner {
+    background: url("../background/bg_banner.png") repeat-x scroll left top transparent;
+    min-height: 300px;
+}
+
+.BlacklistedBanner h2 {
+    color: #FFFFFF;
+    font-size: 30px;
+    font-weight: bold;
+    margin: 0 0 15px;
+    padding: 25px 0 0;
+}
+
+.BlacklistedBanner p {
+    color: #FFFFFF;
+    font-size: 16px;
+	line-height: 22px;
+}
+
+.BlacklistedBanner .Note {
+    color: #ffcc00;
+    font-size: 14px;
+}
+
+.BlacklistedBanner .FormBox {
+	padding: 8px 0px;
+}
+
+.BlacklistedBanner .FormBox input.InputText {
+    border-radius: 3px 0px 0px 3px;
+    color: #636363;
+    font-size: 18px;
+    height: 28px;
+    line-height: 28px;
+    width: 427px;
+	float: left;
+}
+
+.BlacklistedBanner input.Button {
+    background-color: #30c1eb;
+    border-radius: 0px 3px 3px 0px;
+    font-size: 20px;
+    height: 50px;
+    width: 120px;
+}
+
+.BlacklistEmailsPage .Item {
+	margin-bottom: 30px;
+    color: #636363;
+	line-height: 22px;
+}
+
+.BlacklistEmailsPage h3  {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0 280px 5px 0;
+}
+
+.BlacklistEmailsPage p  {
+    font-size: 16px;
+	margin: 0px 280px 0px 0px;
+}
