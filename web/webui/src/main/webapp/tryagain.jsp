@@ -6,7 +6,7 @@
     <%@ include file="common/headStyle.jsp"%>
     <%@ include file="common/headScript.jsp"%>
   </head>
-  <body onLoad="tenants.init();">
+  <body onLoad="tenants.initTryAgainPage();">
     <div class="UIPageContainer">
       <!--begin header-->
       <%@ include file="common/header.jsp"%>
@@ -17,10 +17,12 @@
 					<p>We can't complete your registration with a personal email address. To create a private social intranet for your company, or to know which existing network to add you to, a professional email address is required.<br/><br/></p>
 					<p>Enter your corporate email address below to get started with Cloud Workspaces</p>
 					<div class="FormBox">
-						<input id="email" class="InputText" type="text" onclick="this.value='';" value="Enter your work email" name="email">
-						<input id="t_submit" class="Button" type="submit" onclick="tenants.doSingupRequest();" value="Sign Up">
+                                                <form class="UIForm" action="javascript:void(0);"   method="POST" name="cloud-workspaces-profile" id="signupForm">
+						        <input id="email" class="InputText" type="text" onclick="this.value='';" value="Enter your work email" name="email">
+						        <input id="t_submit" class="Button" type="submit" onclick="tenants.doSignupRequestOnTryAgain();" value="Sign Up">
+                                                </form>
 					</div>
-					<p class="Note">Sorry, we really need a company email address.</p>
+					<p id="tryAgainNote" class="Note"></p>
 				</div>
 			</div>
 			<div class="UIPageBodyContainer">

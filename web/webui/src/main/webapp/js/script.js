@@ -215,6 +215,35 @@ Tenants.prototype.initJoinPage = function() {
   }
 }
 
+function setCookie(name,value,minutes) {
+    if (minutes) {
+        var date = new Date();
+        date.setTime(date.getTime()+(minutes*60*1000));
+        var expires = "; expires="+date.toGMTString();
+    }
+    else var expires = "";
+    document.cookie = name+"="+value+expires+"; path=/";
+}
+
+function getCookie(name) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0;i < ca.length;i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1,c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+    }
+    return null;
+}
+
+Tenants.prototype.initTryAgainPage = function() {
+  tenants.init();
+  var tryagainMessage = getCookie("tryagainMessage");
+  if (tryagainMessage != null) {
+    $('#tryAgainNote').html("Sorry, we really need a company email address.");
+  }
+}
+
 Tenants.prototype.initSignInPage = function() {
   tenants.init();
   if (queryString != null && queryString != "") {
@@ -376,7 +405,28 @@ Tenants.prototype.doSingupRequest = function() {
 
   $("#t_submit").val("Wait...");
   $("#t_submit").attr('disabled', 'disabled');
-  tenants.xmlhttpPost(url, tenants.handleSignupResponse, tenants.getquerystringSignup);
+  tenants.xmlhttpPost(url, tenants.handleSignupResponse, tenants.getquerystringSignup, null);
+
+}
+
+Tenants.prototype.doSignupRequestOnTryAgain = function() {
+  var url = tenantServicePath + "/signup";
+
+  if ($('#email').val().length == 0) {
+    $("#messageString").html("Please, indicate your email.");
+    return;
+  }
+
+  if ($('#email').val().indexOf('%') > -1) {
+      $("#messageString").html("Your email contains disallowed characters.");
+    return;
+  }
+
+  $("#t_submit").val("Wait...");
+  $("#t_submit").attr('disabled', 'disabled');
+  tenants.xmlhttpPost(url, tenants.handleSignupResponse, tenants.getquerystringSignup, function() {
+    setCookie("tryagainMessage", "true", 5);
+  });
 
 }
 
@@ -427,7 +477,7 @@ Tenants.prototype.doCreationRequest = function() {
 
   $("#t_submit").val("Wait...");
   $("#t_submit").attr('disabled', 'disabled');
-  tenants.xmlhttpPost(url, tenants.handleCreationResponse, tenants.getquerystringCreate);
+  tenants.xmlhttpPost(url, tenants.handleCreationResponse, tenants.getquerystringCreate, null);
 
 }
 
@@ -469,7 +519,7 @@ Tenants.prototype.doJoinRequest = function() {
 
   $("#t_submit").val("Wait...");
   $("#t_submit").attr('disabled', 'disabled');
-  tenants.xmlhttpPost(url, tenants.handleJoinResponse, tenants.getquerystringJoin);
+  tenants.xmlhttpPost(url, tenants.handleJoinResponse, tenants.getquerystringJoin, null);
 }
 
 Tenants.prototype.doContactRequest = function() {
@@ -477,7 +527,7 @@ Tenants.prototype.doContactRequest = function() {
   var valid = $("#mycontactForm").valid();
   if (!valid)
     return;
-  tenants.xmlhttpPost(url, tenants.handleContactResponse, tenants.getquerystringContactUs);
+  tenants.xmlhttpPost(url, tenants.handleContactResponse, tenants.getquerystringContactUs, null);
 
   // document.getElementById(CONTACT_US_CONTAINER_ID).style.display = "none";
   // document.getElementById(MASK_LAYER_ID).style.display = "none";
@@ -681,7 +731,7 @@ Tenants.prototype.handleContactResponse = function(resp) {
   }
 }
 
-Tenants.prototype.xmlhttpPost = function(strURL, handler, paramsMapper) {
+Tenants.prototype.xmlhttpPost = function(strURL, handler, paramsMapper, redirectHandler) {
   var xmlHttpReq = false;
   var self = this;
   // Mozilla/Safari
@@ -698,6 +748,8 @@ Tenants.prototype.xmlhttpPost = function(strURL, handler, paramsMapper) {
     if (self.xmlHttpReq.readyState == 4) {
       if (self.xmlHttpReq.status == 309) { // Custom status to handle
         // redirects;
+        if (redirectHandler != null)
+          redirectHandler();
         window.location = self.xmlHttpReq.getResponseHeader("Location");
         return;
       }
