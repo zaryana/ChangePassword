@@ -159,6 +159,9 @@
                       <copy todir="${project.build.directory}/admin-tomcat/conf" overwrite="true">
                         <fileset dir="${basedir}/src/main/resources/tomcat/conf"/>
                       </copy>
+                      <copy todir="${project.build.directory}/admin-tomcat/data" overwrite="true">
+                        <fileset dir="${basedir}/src/main/resources/tomcat/data"/>
+                      </copy>
 
                       <echo message="Deploy cloud-workspaces-web-admin.war"/>
                       <copy file="${project.build.directory}/packager-conf/war/cloud-workspaces-web-admin.war" tofile="${project.build.directory}/admin-tomcat/webapps/ROOT.war"/>
