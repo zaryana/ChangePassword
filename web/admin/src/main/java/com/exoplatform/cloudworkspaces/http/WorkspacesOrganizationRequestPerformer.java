@@ -19,6 +19,7 @@
 package com.exoplatform.cloudworkspaces.http;
 
 import static java.net.HttpURLConnection.HTTP_CREATED;
+import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
 import static java.net.HttpURLConnection.HTTP_OK;
 
 import com.exoplatform.cloudworkspaces.UserAlreadyExistsException;
@@ -39,7 +40,9 @@ import org.exoplatform.cloudmanagement.admin.http.HttpClientManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Map;
@@ -69,13 +72,12 @@ public class WorkspacesOrganizationRequestPerformer {
   }
 
   public void storeUser(String tName,
+                        String username,
                         String userMail,
                         String firstName,
                         String lastName,
                         String password,
                         boolean isAdministrator) throws CloudAdminException {
-
-    String username = userMail.substring(0, (userMail.indexOf("@")));
 
     String alias = tenantInfoDataManager.getValue(tName,
                                                   TenantInfoFieldName.PROPERTY_APSERVER_ALIAS);
@@ -131,11 +133,9 @@ public class WorkspacesOrganizationRequestPerformer {
     }
   }
 
-  public void updatePassword(String tName, String email, String password) throws CloudAdminException {
+  public void updatePassword(String tName, String username, String email, String password) throws CloudAdminException {
     if (email == null || password == null)
       throw new CloudAdminException("Cannot validate user with such input data. Please, review it.");
-
-    String username = email.substring(0, (email.indexOf("@")));
 
     String alias = tenantInfoDataManager.getValue(tName,
                                                   TenantInfoFieldName.PROPERTY_APSERVER_ALIAS);
@@ -235,6 +235,72 @@ public class WorkspacesOrganizationRequestPerformer {
       usersCount--;
 
     return maxUsers == -1 || usersCount < maxUsers;
+  }
+
+  public String getUserNameByEmail(String tName, String email) throws CloudAdminException {
+
+    String alias = tenantInfoDataManager.getValue(tName,
+                                                  TenantInfoFieldName.PROPERTY_APSERVER_ALIAS);
+    String baseUri = applicationServerConfigurationManager.getHttpUriToServer(alias);
+    HttpClient httpClient = httpClientManager.getHttpClient(alias);
+
+    StringBuilder strUrl = new StringBuilder();
+    strUrl.append(baseUri);
+    strUrl.append(ORGANIZATION_SERVICE_PATH + "/usernamebyemail/");
+    strUrl.append(tName);
+    strUrl.append('/');
+    strUrl.append(email);
+
+    HttpGet request = new HttpGet(strUrl.toString());
+    HttpResponse response = null;
+    try {
+      response = httpClient.execute(request);
+      int status = response.getStatusLine().getStatusCode();
+      if (status == HTTP_NOT_FOUND) {
+        throw new UserNotFoundException("User with email " + email + " not found in tenant "
+            + tName);
+      }
+      if (status != HTTP_OK) {
+        LOG.error("Unable to check user in workspace {} ({}) - HTTP status: {}", new Object[] {
+            tName, alias, response.getStatusLine().getStatusCode() });
+        throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
+      }
+
+      InputStream stream = response.getEntity().getContent();
+      ByteArrayOutputStream bout = new ByteArrayOutputStream();
+      try {
+        int length = 0;
+        byte[] buf = new byte[1024];
+        while (length >= 0) {
+          bout.write(buf, 0, length);
+          length = stream.read(buf);
+        }
+      } finally {
+        bout.close();
+        stream.close();
+      }
+      return new String(bout.toByteArray());
+
+    } catch (ClientProtocolException e) {
+      LOG.error(e.getMessage(), e);
+      throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.",
+                                    e);
+    } catch (IOException e) {
+      LOG.error(e.getMessage(), e);
+      throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.",
+                                    e);
+    } finally {
+      if (response != null) {
+        try {
+          response.getEntity().getContent().close();
+        } catch (IllegalStateException e) {
+          throw new CloudAdminException("An problem happened during closing http connection.");
+        } catch (IOException e) {
+          throw new CloudAdminException("An problem happened during closing http connection.");
+        }
+      }
+    }
+
   }
 
 }

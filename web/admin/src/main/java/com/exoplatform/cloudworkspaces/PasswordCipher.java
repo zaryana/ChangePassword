@@ -18,12 +18,12 @@
  */
 package com.exoplatform.cloudworkspaces;
 
-import java.security.InvalidKeyException;
-
 import org.apache.commons.codec.binary.Base64;
 import org.exoplatform.cloudmanagement.admin.CloudAdminException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.security.InvalidKeyException;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;

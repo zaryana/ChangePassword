@@ -122,6 +122,12 @@
       </dependency>
       <dependency>
         <groupId>com.exoplatform.cloudworkspaces</groupId>
+        <artifactId>cloud-workspaces-component-initializer</artifactId>
+        <version>${project.version}</version>
+        <type>jar</type>
+      </dependency> 
+      <dependency>
+        <groupId>com.exoplatform.cloudworkspaces</groupId>
         <artifactId>cloud-workspaces-web-admin</artifactId>
         <version>${project.version}</version>
         <type>war</type>
@@ -360,7 +366,14 @@
         <version>${org.exoplatform.ks.version}</version>
         <scope>provided</scope>
         <type>jar</type>
-        </dependency>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.ks</groupId>
+        <artifactId>exo.ks.eXoApplication.wiki.service</artifactId>
+        <version>${org.exoplatform.ks.version}</version>
+        <scope>provided</scope>
+        <type>jar</type>
+      </dependency>
       <dependency>
         <groupId>org.exoplatform.ecms</groupId>
         <artifactId>exo-ecms-core-services</artifactId>

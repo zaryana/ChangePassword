@@ -1,0 +1,74 @@
+{{section justify="true"}}
+{{column}}
+{{panel  title="Table of Contents"}}
+{{toc}}{{/toc}}
+{{/panel}}
+{{/column}}
+
+{{column}}
+{{panel  title="Getting Started"}}
+{{excerpt}}This page will give you a few pointers on how to use your social intranet.{{/excerpt}}
+{{/panel}}
+{{/column}}
+{{/section}}
+
+= Connections =
+
+== How do I share status updates with specific coworkers? ==
+
+To view another user’s profile and status updates, you must first connect with them. Establishing connections lets you follow the colleagues you want, and keeps distracting noise out of your activity stream.
+
+== How do I find and connect with coworkers in my network? ==
+
+You can browse all users in your company network, or search for colleagues by name, job experience, title or department, then send, approve or decline connection requests.
+
+= Spaces =
+
+== What is a Space? ==
+
+Spaces are structured work environments dedicated to project, team or cross-departmental collaboration. Spaces can be customized with tools and content that support the processes, organization and communication required by different groups.
+
+== What features or apps are available within a Space? ==
+
+Spaces can be customized by adding or removing built-in apps. Admins can provide members of a Space with an enterprise Wiki, forum, shared calendars, document repository, and more. Updates within apps are published in each space’s dedicated activity stream, where members can view recent team activities and share feedback.
+
+== Who can create a Space? Can administrator rights be changed? ==
+
+Any member of your company network can create a space, and by default the creator will be granted administrator status. The admin can give administrative rights to other members of a Space in the Settings menu.
+
+== Can I control the privacy settings of a Space that I’ve created? ==
+
+Visibility and access settings can be customized depending on your requirements; a private space is visible and accessible only to selected invitees, while others can be visible to everyone, with either open or approval-required membership.
+
+== How do I find and join existing Spaces? ==
+
+Browse your company network’s spaces using the “Find Spaces” function. Open spaces can be joined by any employee, while others may be joined on request with administrator approval.
+
+= Documents = 
+
+== Who can view my documents? ==
+
+By default any document you add to your personal repository is private and only accessible to you. Documents added to collaboration Spaces can be shared with group members. In addition, you can share documents with all colleagues in your employee network by adding them to the Public folder in the Documents app.
+
+== What type of document can I upload? ==
+
+You can upload any type of document, but only images, videos, and PDF files can be visualized from the web interface.
+
+== How do I upload documents ==
+
+To upload personal documents, go to the Documents application in the Apps menu. You'll find the upload button in the toolbar.
+To upload a document to a space, and share it with all members of that space, click on the Documents app in the space's navigation bar (on the top right corner).
+
+= Mobile =
+
+== What can I do with the eXo mobile apps? ==
+
+For the full feature list, visit the mobile apps page.
+
+== How do I download the mobile app? ==
+
+You can download the eXo Mobile app on the Apple Store and Android Store under the name "eXo Platform 3.5".
+
+== How do I connect my device to my company’s social intranet? ==
+
+After installing and opening eXo Mobile on your device, select the settings tab from the homepage. In the server list, press "Modify Server" and enter your company network’s URL (for example, mycompany.cloud-workspaces.com).

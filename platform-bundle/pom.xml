@@ -40,6 +40,12 @@
         </dependency>
         <dependency>
           <groupId>com.exoplatform.cloudworkspaces</groupId>
+          <artifactId>cloud-workspaces-component-initializer</artifactId>
+          <scope>provided</scope>
+          <type>jar</type>
+        </dependency>
+        <dependency>
+          <groupId>com.exoplatform.cloudworkspaces</groupId>
           <artifactId>cloud-workspaces-extension-webapp</artifactId>
           <scope>provided</scope>
           <type>war</type>
@@ -164,8 +170,7 @@
                     <delete file="${project.build.directory}/platform-cloud-tomcat/conf/Catalina/localhost/cloud-admin.xml" />
                     <delete dir="${project.build.directory}/platform-cloud-tomcat/gatein/conf/cloud/cloud-admin" />
                     <delete dir="${project.build.directory}/platform-cloud-tomcat/webapps/ROOT" />
-                    <delete
-                      file="${project.build.directory}/platform-cloud-tomcat/lib/cloud-admin-valve-tomcat-${org.exoplatform.cloud-management.version}.jar" />
+                    <delete file="${project.build.directory}/platform-cloud-tomcat/lib/cloud-admin-valve-tomcat-${org.exoplatform.cloud-management.version}.jar" />
                     <delete file="${project.build.directory}/platform-cloud-tomcat/webapps/cloud-admin.war" />
 
                     <!-- Delete binaries -->
@@ -187,27 +192,13 @@
                     </delete>
                     
                     <!-- Comment filter Terms and Conditions -->
-                    <unzip src="${project.build.directory}/platform-cloud-tomcat/lib/exo.platform.component.common-${org.exoplatform.platform.version}.jar" dest="${project.build.directory}/platform-cloud-tomcat/lib/plf" />
-                    <replace file="${project.build.directory}/platform-cloud-tomcat/lib/plf/conf/portal/configuration.xml">
-                      <replacetoken><![CDATA[<import>jar:/conf/termsandconditions/web-filter-configuration.xml</import>]]></replacetoken>
-                      <replacevalue><![CDATA[<!--<import>jar:/conf/termsandconditions/web-filter-configuration.xml</import>-->]]></replacevalue>
+                    <unzip src="${project.build.directory}/platform-cloud-tomcat/webapps/platform-extension.war" dest="${project.build.directory}/platform-cloud-tomcat/webapps/plf" />
+                    <replace file="${project.build.directory}/platform-cloud-tomcat/webapps/plf/WEB-INF/conf/configuration.xml">
+                      <replacetoken><![CDATA[<import>war:/conf/termsandconditions/web-filter-configuration.xml</import>]]></replacetoken>
+                      <replacevalue><![CDATA[<!--<import>war:/conf/termsandconditions/web-filter-configuration.xml</import>-->]]></replacevalue>
                     </replace>
-                    <zip destfile="${project.build.directory}/platform-cloud-tomcat/lib/exo.platform.component.common-${org.exoplatform.platform.version}.jar" basedir="${project.build.directory}/platform-cloud-tomcat/lib/plf" />
-                    <delete dir="${project.build.directory}/platform-cloud-tomcat/lib/plf" />
-
-                    <unzip src="${project.build.directory}/platform-cloud-tomcat/webapps/portal.war" dest="${project.build.directory}/platform-cloud-tomcat/webapps/portal" />
-                    <replace
-                      dir="${project.build.directory}/platform-cloud-tomcat/webapps/portal/groovy/portal/webui/workspace">
-                      <include name="UIPortalApplicationChildren.gtmpl" />
-                      <replacetoken><![CDATA[</body>]]></replacetoken>
-                      <replacevalue><![CDATA[<!-- BEGIN: LOOPFUSE TRACKING -->
-                    <script type="text/javascript" src="http://lfov.net/webrecorder/js/listen.js"></script>
-                    <!-- END: LOOPFUSE TRACKING -->
-                    <script type="text/javascript" src="http://cloud-workspaces.com/js/trackers.js"></script>
-                    </body>]]></replacevalue>
-                    </replace>
-                    <zip destfile="${project.build.directory}/platform-cloud-tomcat/webapps/portal.war" basedir="${project.build.directory}/platform-cloud-tomcat/webapps/portal" />
-                    <delete dir="${project.build.directory}/platform-cloud-tomcat/webapps/portal" />
+                    <zip destfile="${project.build.directory}/platform-cloud-tomcat/webapps/platform-extension.war" basedir="${project.build.directory}/platform-cloud-tomcat/webapps/plf" />
+                    <delete dir="${project.build.directory}/platform-cloud-tomcat/webapps/plf" />
 
                     <unzip src="${project.build.directory}/platform-cloud-tomcat/webapps/ecm-wcm-extension.war"
                       dest="${project.build.directory}/platform-cloud-tomcat/webapps/ecm-wcm-extension" />

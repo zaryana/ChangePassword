@@ -1,5 +1,7 @@
 #!/bin/bash
 
+./stop_developer.sh
+
 ./cloud_deploy.sh cloud@cwks
 
 RETVAL=$?

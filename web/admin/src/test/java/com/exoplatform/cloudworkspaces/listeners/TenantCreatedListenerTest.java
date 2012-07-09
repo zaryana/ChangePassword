@@ -22,6 +22,7 @@ import com.exoplatform.cloudworkspaces.NotificationMailSender;
 import com.exoplatform.cloudworkspaces.RequestState;
 import com.exoplatform.cloudworkspaces.listener.TenantCreatedListener;
 import com.exoplatform.cloudworkspaces.users.UsersManager;
+
 import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.Configuration;
 import org.exoplatform.cloudmanagement.admin.dao.TenantDataManagerException;

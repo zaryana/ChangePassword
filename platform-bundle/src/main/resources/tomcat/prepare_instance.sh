@@ -84,13 +84,24 @@
   # Waiting for full start
   sleep 90s
   curl --connect-timeout $CONNECT_TIMEOUT http://localhost:8080/portal/intranet/home
+  
+  # Asking to create space
+  echo "Creating Default Space.."
+  RES=$(rest 'POST' 'http://localhost:8080/cloud-agent/rest/cloud-agent/space-service/create-default')
+  if [ $? -eq 0 ]; then
+    echo "OK"
+  else
+    echo "Space creation failed.."
+  fi
+  sleep 15s
 
   # Asking to create template
   echo "Creating Tenant Template (JCR backup)"
   ID=$(rest 'POST' 'http://localhost:8080/cloud-agent/rest/cloud-agent/template-service/template')
   echo "Issued Tenant Template: $ID"
   sleep 15s
-
+  
+ 
   # Check template OK (by length)
   IDlen=$(echo ${#ID})
   if [ $IDlen -ne 32 ] ; then

@@ -20,6 +20,7 @@ package com.exoplatform.cloudworkspaces;
 
 import com.exoplatform.cloudworkspaces.dao.ModifiableEmailValidationStorage;
 import com.exoplatform.cloudworkspaces.http.WorkspacesOrganizationRequestPerformer;
+
 import org.apache.commons.configuration.Configuration;
 import org.exoplatform.cloudmanagement.admin.CloudAdminException;
 import org.exoplatform.cloudmanagement.admin.TenantRegistrationException;
@@ -35,15 +36,12 @@ import org.exoplatform.cloudmanagement.status.TenantState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-
-import static org.exoplatform.cloudmanagement.admin.configuration.AdminConfiguration.CLOUD_ADMIN_TENANT_QUEUE_DIR;
 
 public class NotificationMailSender {
 

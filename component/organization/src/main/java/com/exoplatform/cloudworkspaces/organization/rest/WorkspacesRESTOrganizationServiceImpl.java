@@ -21,30 +21,48 @@ package com.exoplatform.cloudworkspaces.organization.rest;
 import org.exoplatform.common.http.HTTPStatus;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.services.jcr.RepositoryService;
-import org.exoplatform.services.organization.*;
+import org.exoplatform.services.organization.Group;
+import org.exoplatform.services.organization.GroupHandler;
+import org.exoplatform.services.organization.MembershipType;
+import org.exoplatform.services.organization.OrganizationService;
+import org.exoplatform.services.organization.Query;
+import org.exoplatform.services.organization.User;
+import org.exoplatform.services.organization.UserHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.security.RolesAllowed;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.text.Format;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.annotation.security.RolesAllowed;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
 
 /**
  * The Class IntranetRESTOrganizationServiceImpl.
  */
 @Path("/cloudworkspaces/organization")
-public class WorkspacesRESTOrganizationServiceImpl
-{
-  protected static final Logger LOG = LoggerFactory.getLogger(WorkspacesRESTOrganizationServiceImpl.class);
+public class WorkspacesRESTOrganizationServiceImpl {
+  protected static final Logger       LOG          = LoggerFactory.getLogger(WorkspacesRESTOrganizationServiceImpl.class);
 
   protected static final String       ROOT_USER    = "root";
 
@@ -57,8 +75,7 @@ public class WorkspacesRESTOrganizationServiceImpl
   protected final String              hostInfo;
 
   public WorkspacesRESTOrganizationServiceImpl(RepositoryService repositoryService,
-      OrganizationService organizationService)
-  {
+                                               OrganizationService organizationService) {
     this.repositoryService = repositoryService;
     this.organizationService = organizationService;
 
@@ -137,28 +154,14 @@ public class WorkspacesRESTOrganizationServiceImpl
       newUser.setEmail(email);
       userHandler.createUser(newUser, true);
 
-      // register user in groups '/platform/developers' and '/platform/users'
       GroupHandler groupHandler = organizationService.getGroupHandler();
       MembershipType membership_member = organizationService.getMembershipTypeHandler()
                                                             .findMembershipType("member");
-      MembershipType membership_all = organizationService.getMembershipTypeHandler()
-                                                         .findMembershipType("*");
-
       if (Boolean.parseBoolean(administrator)) {
         Group adminGroup = groupHandler.findGroupById("/platform/administrators");
-        Group devGroup = groupHandler.findGroupById("/developers");
-        Group contributorsGroup = groupHandler.findGroupById("/platform/web-contributors");
         organizationService.getMembershipHandler().linkMembership(newUser,
                                                                   adminGroup,
                                                                   membership_member,
-                                                                  true);
-        organizationService.getMembershipHandler().linkMembership(newUser,
-                                                                  devGroup,
-                                                                  membership_member,
-                                                                  true);
-        organizationService.getMembershipHandler().linkMembership(newUser,
-                                                                  contributorsGroup,
-                                                                  membership_all,
                                                                   true);
       }
 
@@ -203,6 +206,28 @@ public class WorkspacesRESTOrganizationServiceImpl
       return result;
     } catch (Exception e) {
       String err = "Unable to get administrators list in workspace " + tname;
+      LOG.error(err, e);
+      throw new WebApplicationException(e, Response.status(HTTPStatus.INTERNAL_ERROR)
+                                                   .entity(errorMessage(err, e))
+                                                   .type("text/plain")
+                                                   .build());
+    }
+  }
+
+  @GET
+  @Path("/usernamebyemail/{tname}/{email}")
+  @RolesAllowed("cloud-admin")
+  public Response hasUserByEmail(@PathParam("tname") String tname, @PathParam("email") String email) {
+    try {
+      repositoryService.setCurrentRepositoryName(tname);
+      Query emailQuery = new Query();
+      emailQuery.setEmail(email);
+      ListAccess<User> users = organizationService.getUserHandler().findUsersByQuery(emailQuery);
+      if (users.getSize() == 0)
+        return Response.status(404).build();
+      return Response.ok(String.valueOf(users.load(0, 1)[0].getUserName())).build();
+    } catch (Exception e) {
+      String err = "Unable to find users by email in workspace " + tname;
       LOG.error(err, e);
       throw new WebApplicationException(e, Response.status(HTTPStatus.INTERNAL_ERROR)
                                                    .entity(errorMessage(err, e))

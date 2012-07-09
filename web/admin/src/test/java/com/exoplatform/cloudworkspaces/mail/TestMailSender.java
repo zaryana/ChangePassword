@@ -1,12 +1,15 @@
 package com.exoplatform.cloudworkspaces.mail;
 
 
+import static org.exoplatform.cloudmanagement.admin.configuration.MailConfiguration.CLOUD_ADMIN_MAIL_SENDER;
+
 import com.dumbster.smtp.SimpleSmtpServer;
 import com.dumbster.smtp.SmtpMessage;
 import com.exoplatform.cloudworkspaces.MailingProperties;
 import com.exoplatform.cloudworkspaces.NotificationMailSender;
 import com.exoplatform.cloudworkspaces.dao.ModifiableEmailValidationStorage;
 import com.exoplatform.cloudworkspaces.http.WorkspacesOrganizationRequestPerformer;
+
 import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.Configuration;
 import org.everrest.assured.AvailablePortFinder;
@@ -27,8 +30,6 @@ import org.testng.annotations.Test;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-
-import static org.exoplatform.cloudmanagement.admin.configuration.MailConfiguration.CLOUD_ADMIN_MAIL_SENDER;
 
 /**
  * Created with IntelliJ IDEA.

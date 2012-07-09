@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 # Unzipping platform to create template
 AS_ZIP="cloud-workspaces-platform-bundle-tomcat.zip"
 

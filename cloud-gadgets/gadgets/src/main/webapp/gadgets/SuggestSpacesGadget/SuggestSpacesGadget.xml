@@ -127,7 +127,7 @@
                 link += "<div class='spaceName'><a href='/portal/intranet/all-spaces' target='_parent'>"+item.displayName+"</a></div>";
                                                 
                 if(item.registration == "open")
-                    link += "<div class='spaceAction' ><a class='connect' href='/portal/g/:spaces:"+item.name+"/"+item.name+"' target='_parent'>Join</a>";
+                    link += "<div class='spaceAction' ><a class='connect' href='#' onclick='return false'>Join</a>";
                 else
                     link += "<div class='spaceAction' ><a class='connect' href='#' onclick='return false'>Request</a>";
                 
@@ -140,7 +140,9 @@
                                 
                 $("#"+item.spaceId+" a.connect").live("click", function(){
                   if(item.registration == "open")
-                    $.getJSON("/rest/gadgets/spaces/join/"+item.spaceId, null);
+                    $.getJSON("/rest/gadgets/spaces/join/"+item.spaceId, function(){
+                    	window.parent.location.href="/portal/g/:spaces:"+item.name;	
+                    });
                   else
                     $.getJSON("/rest/gadgets/spaces/request/"+item.spaceId, null);
                   
