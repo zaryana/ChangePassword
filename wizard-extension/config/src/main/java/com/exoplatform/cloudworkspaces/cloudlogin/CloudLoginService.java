@@ -17,6 +17,8 @@
 
 package com.exoplatform.cloudworkspaces.cloudlogin;
 
+import org.exoplatform.upload.UploadResource;
+
 import com.exoplatform.cloudworkspaces.cloudlogin.data.CloudLoginStatus;
 
 public interface CloudLoginService {
@@ -45,4 +47,27 @@ public interface CloudLoginService {
    * @return
    */
   public String getCloudTenantDomain();
+  
+  /**
+   * This method create a JCR node which corresponds to an avatar image displayed temporarily by client.
+   * Use AvatarAttachement to resize image
+   * This node needs to be deleted after client use.
+   * 
+   * @return uri of image created
+   */
+  public String createTempAvatarNode(UploadResource upResource);
+  
+  /**
+   * This method delete a JCR node which corresponds to an avatar image displayed temporarily by client.
+   * 
+   * @return
+   */
+  public void deleteTempAvatarNode();
+  
+  /**
+   * Update the user profile with avatar resource
+   * 
+   * @param avatarResource
+   */
+  public void updateProfile(String userId, UploadResource avatarResource);
 }

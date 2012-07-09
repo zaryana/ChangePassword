@@ -21,6 +21,7 @@
 <%@ page import="com.exoplatform.cloudworkspaces.cloudlogin.CloudLoginServlet"%>
 <%@ page import="com.exoplatform.cloudworkspaces.cloudlogin.CloudLoginService"%>
 <%@ page import="com.exoplatform.cloudworkspaces.cloudlogin.rest.CloudLoginRestService"%>
+<%@ page import="com.exoplatform.cloudworkspaces.cloudlogin.impl.CloudLoginServiceImpl"%>
 <%@ page import="org.exoplatform.container.PortalContainer"%>
 <%@ page language="java" %>
 <%
@@ -53,11 +54,10 @@
     <script type="text/javascript" src="<%=request.getContextPath()%>/js/cloudlogin/cloudlogin.js"></script>
     
   </head>
-  <body onLoad="CloudLogin.initCloudLogin(<%=CloudLoginRestService.MAX_AVATAR_LENGTH%>, '<%=CloudLoginRestService.AVATAR_UPLOAD_ID%>');">
-  
+  <body onLoad="CloudLogin.initCloudLogin(<%=CloudLoginRestService.MAX_AVATAR_LENGTH%>, '<%=CloudLoginRestService.AVATAR_UPLOAD_ID%>', '<%=CloudLoginServiceImpl.getAvatarUriPath()%>', '<%=CloudLoginRestService.getProfileWsPath()%>');">
   <div class="GetStartedPage">
   
-    <form class="UIFormBox StartedStep" style="display: block;" name="" id="StepProfile" method="POST" action="/portal/rest/managedocument/uploadFile/upload?uploadId=<%=CloudLoginRestService.AVATAR_UPLOAD_ID%>" enctype="multipart/form-data" >
+    <form class="UIFormBox StartedStep" style="display: block;" name="" id="StepProfile" method="POST" action="<%=CloudLoginRestService.getUploadWsPath()%>?<%=CloudLoginRestService.WS_UPLOAD_PARAM_UPLOAD_ID%>=<%=CloudLoginRestService.AVATAR_UPLOAD_ID%>" enctype="multipart/form-data" >
       <h1 class="StartedBarBG">Welcome to Cloud Workspaces - Get started in 3 easy steps</h1>
       <div class="Steps" id="">
         <span class="StepBG"></span>
@@ -70,7 +70,8 @@
           <tr>
             <td class="FormInput">
               <div class="HelpText" id="fileDropZone">
-              <input type="file" name="datafile" id="datafile" data-url="/portal/rest/managedocument/uploadFile/upload?uploadId=<%=CloudLoginRestService.AVATAR_UPLOAD_ID%>" />
+              <input type="file" name="datafile" id="datafile" />
+              <img src="<%=request.getContextPath()%>/background/VoteMB.png" id="avatarImage" style="width: 56px;height: 56px;" />
               </div>
             </td>
             <td class="FormButton"> <input type="button" onclick="CloudLogin.validateStepProfile(event);" value="Next" id="t_submit_profile" class="Button" /></td>

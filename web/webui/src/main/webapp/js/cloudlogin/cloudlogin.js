@@ -4,14 +4,11 @@
  */
 var CloudLogin = {};
 
-CloudLogin.AVATAR_MAX_LENGTH = 2000000; // 2Mo by default
-CloudLogin.AVATAR_UPLOAD_ID = "cloudloginavatar"; // by default
-
 /*===========================================================================================================*
  *        FRAMEWORK METHODS
  *===========================================================================================================*/
  
-CloudLogin.initCloudLogin = function(maxAvatarLength, avatarUploadId) {
+CloudLogin.initCloudLogin = function(maxAvatarLength, avatarUploadId, avatarUriPath, profileWsPath) {
   if (!window.console) console = {};
   console.log = console.log || function(){};
   console.warn = console.warn || function(){};
@@ -24,6 +21,12 @@ CloudLogin.initCloudLogin = function(maxAvatarLength, avatarUploadId) {
   }
   if(avatarUploadId != undefined) {
     CloudLogin.AVATAR_UPLOAD_ID = avatarUploadId;
+  }
+  if(avatarUploadId != undefined) {
+    CloudLogin.AVATAR_URI_PATH = avatarUriPath;
+  }
+  if(profileWsPath != undefined) {
+    CloudLogin.PROFILE_WS_PATH = profileWsPath;
   }
   
   $("#email").val(CloudLogin.DEFAULT_VALUE);
@@ -71,8 +74,19 @@ CloudLogin.doNothing = function(event) {
 /*===========================================================================================================*
  *        STEP PROFILE
  *===========================================================================================================*/
+ 
+// Server variables
+CloudLogin.AVATAR_MAX_LENGTH = 2000000; // 2Mo by default
+CloudLogin.AVATAR_UPLOAD_ID = "cloudloginavatar"; // by default
+CloudLogin.AVATAR_URI_PATH = "/rest/jcr/repository/collaboration/exo:applications/cloudlogin/"; // by default
+CloudLogin.PROFILE_WS_PATH = "/portal/rest/cloudlogin/setavatar/"; // by default
 
-CloudLogin.AVATAR_EXT_REGEXP = /^(gif|jpeg|jpg|png)$/;
+// Static variables
+CloudLogin.AVATAR_EXT_REGEXP = /^(gif|jpeg|jpg|png)$/i;
+
+// Session variables
+CloudLogin.AVATAR_FILE_NAME = "";
+CloudLogin.ERROR_MESSAGE = "";
 
 CloudLogin.showStepProfile = function(event) {
   if(event != undefined) {
@@ -84,77 +98,119 @@ CloudLogin.showStepProfile = function(event) {
   $('#StepProfile').show();
 }
 
-CloudLogin.validateStepProfile = function(event) {
-  if(event != undefined) {
-    event.preventDefault();
-  }
-  CloudLogin.showStepSpace();
-}
-
 CloudLogin.initUploadFile = function() {
   $(document).ready(function() {
     $('#StepProfile').fileupload({
       dropZone: $('#fileDropZone'),
       // Redefine add method to filter with size and file type
       add: function (e, data) {
-        var submitFile = true;
-        if(data.files[0].size && data.files[0].size >= CloudLogin.AVATAR_MAX_LENGTH) {
-          submitFile = false;
-          console.log("File size is too large");
+        var fileOk = true;
+        var file = data.files[0];
+        var ext = CloudLogin.getFileExtension(file.name);
+        
+        CloudLogin.lockProfile();
+        
+        if(file.name == CloudLogin.AVATAR_FILE_NAME) {
+          fileOk = false;
+          console.log("File (" + file.name + ") is yet selected.");
         }
-        if(! CloudLogin.AVATAR_EXT_REGEXP.test(CloudLogin.getFileExtension(data.files[0].name))) {
-          submitFile = false;
-          console.log("File is not in proper format");
+        else {
+          if(file.size && file.size >= CloudLogin.AVATAR_MAX_LENGTH) {
+            fileOk = false;
+            console.log("File size is too large (" + file.size + " > " + max_size + ")");
+          }
+          if(! CloudLogin.AVATAR_EXT_REGEXP.test(ext)) {
+            fileOk = false;
+            console.log("File is not in proper format (." + ext + ")");
+          }
         }
         
-        if(submitFile) {
+        if(fileOk) {
           data.submit();
         }
+        else {
+          CloudLogin.unlockProfile();
+        }
       },
-      // If upload is ok, 
       done: function (e, data) {
-        console.log(data);
         console.log("upload done !");
-        CloudLogin.createAvatar(data.files[0].name);
+        // Upload is done we update uri of image
+        var imgUri = CloudLogin.AVATAR_URI_PATH + "/" + data.files[0].name;
+        // Save file name
+        CloudLogin.AVATAR_FILE_NAME = data.files[0].name;
+        // Display avatar
+        $("#avatarImage").attr("src", imgUri);
+      },
+      fail: function (e, data) {
+        console.log("upload fails !");
+      },
+      always: function (e, data) {
+        console.log("upload always !");
+        CloudLogin.unlockProfile();
       }
     });
   });
 }
 
-CloudLogin.createAvatar = function(fileName) {
+CloudLogin.validateStepProfile = function(event) {
+  if(event != undefined) {
+    event.preventDefault();
+  }
+  
+  if(CloudLogin.AVATAR_FILE_NAME != undefined && CloudLogin.AVATAR_FILE_NAME != "") {
+    // Update profile with avatar and others datas
+    CloudLogin.updateProfile(CloudLogin.AVATAR_FILE_NAME);
+  }
+  else {
+    console.log("There is no data to send.");
+    CloudLogin.finalizeUpdateProfile();
+  }
+}
+
+CloudLogin.updateProfile = function(fileName) {
   $.ajax({
     type: "GET",
-    url: "/portal/rest/cloudlogin/setavatar/",
+    url: CloudLogin.PROFILE_WS_PATH,
     data: {fileName: fileName, uploadId: CloudLogin.AVATAR_UPLOAD_ID},
     success: function(data, textStatus) {
-      console.log(data);
       console.log("avatar created [status=" + textStatus + "]");
+      CloudLogin.finalizeUpdateProfile();
     },
     error: function(data, textStatus, error) {
-      console.log(data);
       console.log("process executed: [status=" + textStatus + "], [error=" + error + "]");
+      CloudLogin.finalizeUpdateProfile();
     }
   });
 }
 
-/*CloudLogin.processUpload = function(_fileName, _uploadId) {
-  $.ajax({ 
-    type: "GET",
-    url: "/portal/rest/managedocument/uploadFile/control/",
-    data: {workspaceName: "social", 
-    driveName: "social",
-    currentFolder: "production/soc:providers/soc:organization/soc:john/soc:profile/", 
-    currentPortal: "portal", 
-    action: "save", 
-    language: "en", 
-    fileName: _fileName, 
-    uploadId: _uploadId},
-    success: function(data, textStatus){
-      console.log("process executed: [status=" + textStatus + "]");
-    }
-  });
-}*/
+CloudLogin.finalizeUpdateProfile = function() {
+  if(CloudLogin.ERROR_MESSAGE == "") {
+    // Clean image avatar
+    CloudLogin.AVATAR_FILE_NAME = "";
+  
+    // Show next step
+    CloudLogin.showStepSpace();
+  }
+  else {
+    alert(CloudLogin.ERROR_MESSAGE);
+  }
+}
 
+/**
+ * lock profile step and update button if is necessary
+ */
+CloudLogin.lockProfile = function() {
+  // lock button Next
+  document.getElementById("t_submit_profile").disabled = true;
+}
+
+/**
+ * unlock profile step and update button if is necessary
+ */
+CloudLogin.unlockProfile= function() {
+  // Unlock button Next
+  document.getElementById("t_submit_profile").disabled = false;
+}
 
 
 /*===========================================================================================================*

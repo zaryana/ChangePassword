@@ -17,6 +17,11 @@
 
 package com.exoplatform.cloudworkspaces.cloudlogin.impl;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.GregorianCalendar;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -30,15 +35,23 @@ import javax.jcr.nodetype.NodeType;
 import javax.ws.rs.core.CacheControl;
 
 import org.exoplatform.commons.utils.ListAccess;
+import org.exoplatform.commons.utils.MimeTypeResolver;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.component.RequestLifeCycle;
+import org.exoplatform.ecm.connector.fckeditor.FCKUtils;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.jcr.core.ManageableRepository;
 import org.exoplatform.services.jcr.ext.common.SessionProvider;
+import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
+import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.core.image.ImageUtils;
+import org.exoplatform.social.core.model.AvatarAttachment;
+import org.exoplatform.social.webui.Utils;
+import org.exoplatform.upload.UploadResource;
 
 import com.exoplatform.cloudworkspaces.cloudlogin.CloudLoginService;
 import com.exoplatform.cloudworkspaces.cloudlogin.data.CloudLoginStatus;
@@ -54,11 +67,16 @@ public class CloudLoginServiceImpl implements CloudLoginService {
   private static Log logger = ExoLogger.getLogger(CloudLoginServiceImpl.class);
   private RepositoryService repositoryService;
   private OrganizationService organizationService;
+  private NodeHierarchyCreator nodeHierarchyCreator;
 
   private static final String LOGIN_HISTORY_HOME = "exo:LoginHistoryHome";
   private static final String CL_MIXIN_TYPE = "exo:cloudlogin";
   private static final String CL_MIXIN_STATUS = "exo:cloudLoginStatus";
   private static final Pattern emailPattern = Pattern.compile("^([a-zA-Z0-9_\\.\\-])+\\@((([a-zA-Z0-9\\-])+\\.)+([a-zA-Z0-9]{2,4})+)$", Pattern.CASE_INSENSITIVE);
+
+  private static final String CL_JCR_ROOT_NODE_PATH = "/rest/jcr/repository/collaboration";
+  private static final String CL_JCR_APP_NODE_NAME = "exo:applications";
+  private static final String CL_JCR_FOLDER_NAME = "cloudlogin";
 
   
   /*=======================================================================
@@ -77,9 +95,10 @@ public class CloudLoginServiceImpl implements CloudLoginService {
     return sessionProvider.getSession(currentRepo.getConfiguration().getDefaultWorkspaceName(), currentRepo);
   }
 
-  public CloudLoginServiceImpl(RepositoryService repositoryService, OrganizationService organizationService) {
+  public CloudLoginServiceImpl(RepositoryService repositoryService, OrganizationService organizationService, NodeHierarchyCreator nodeHierarchyCreator) {
     this.repositoryService = repositoryService;
     this.organizationService = organizationService;
+    this.nodeHierarchyCreator = nodeHierarchyCreator;
   }
 
   
@@ -196,6 +215,148 @@ public class CloudLoginServiceImpl implements CloudLoginService {
     
     return domain;
   }
+  
+  @Override
+  public String createTempAvatarNode(UploadResource upResource) {
+    
+    String avatarUri = "";
+
+    RequestLifeCycle.begin(PortalContainer.getInstance());
+    
+    try {
+      String fileName = upResource.getFileName();
+      Node publicApplicationNode = nodeHierarchyCreator.getPublicApplicationNode(SessionProvider.createSystemProvider());
+      Node cloudLoginNode = null;
+      
+      // Folder node
+      if(! publicApplicationNode.hasNode(CL_JCR_FOLDER_NAME)) {
+        cloudLoginNode = publicApplicationNode.addNode(CL_JCR_FOLDER_NAME, "nt:folder");
+        cloudLoginNode.addMixin("mix:referenceable");
+      }
+      else {
+        cloudLoginNode = publicApplicationNode.getNode(CL_JCR_FOLDER_NAME);
+      }
+      
+      if(! cloudLoginNode.hasNode(fileName)) {
+        String location = upResource.getStoreLocation();
+        String mimeType = upResource.getMimeType();
+        
+        //resize image with avatar attachment
+        File file = new File(location);
+        FileInputStream inputStream = new FileInputStream(file);
+        AvatarAttachment avatarAttachment = ImageUtils.createResizedAvatarAttachment(inputStream, 200, 0, null, fileName, mimeType, null);
+        if(avatarAttachment == null) {
+          avatarAttachment = new AvatarAttachment(null, fileName, upResource.getMimeType(), inputStream, null, System.currentTimeMillis());
+        }
+        byte[] uploadData = avatarAttachment.getImageBytes();
+        
+        // Add the node
+        Node nodeFile = cloudLoginNode.addNode(fileName,FCKUtils.NT_FILE);
+        Node jcrContent = nodeFile.addNode("jcr:content","nt:resource");
+        MimeTypeResolver mimeTypeResolver = new MimeTypeResolver();
+        String mimetype = mimeTypeResolver.getMimeType(upResource.getFileName());
+        // Add the data to the node
+        jcrContent.setProperty("jcr:data",new ByteArrayInputStream(uploadData));
+        jcrContent.setProperty("jcr:lastModified",new GregorianCalendar());
+        jcrContent.setProperty("jcr:mimeType",mimetype);
+        // Save session of node
+        cloudLoginNode.getSession().save();
+        cloudLoginNode.getSession().refresh(true); // Make refreshing data
+        
+        avatarUri = CL_JCR_ROOT_NODE_PATH + nodeFile.getPath();
+      }
+      else {
+        Node avatarNode = publicApplicationNode.getNode(fileName);
+        avatarUri = CL_JCR_ROOT_NODE_PATH + avatarNode.getPath();
+      }
+    }
+    catch(Exception e) {
+      logger.error("CloudLogin: Cannot create temp avatar node", e);
+    }
+    finally {
+      try {
+        RequestLifeCycle.end();
+      } catch (Exception e) {
+        logger.warn("An exception has occurred while proceed RequestLifeCycle.end() : " + e.getMessage());
+      }
+    }
+    
+    return avatarUri;
+  }
+  
+  @Override
+  public void deleteTempAvatarNode() {
+
+    RequestLifeCycle.begin(PortalContainer.getInstance());
+    
+    try {
+      // Get node
+      Node publicApplicationNode = nodeHierarchyCreator.getPublicApplicationNode(SessionProvider.createSystemProvider());
+      if(publicApplicationNode.hasNode(CL_JCR_FOLDER_NAME)) {
+        Node cloudLoginNode = publicApplicationNode.getNode(CL_JCR_FOLDER_NAME);
+        cloudLoginNode.remove();
+        
+        // Save session of node
+        publicApplicationNode.getSession().save();
+        publicApplicationNode.getSession().refresh(true); // Make refreshing data
+      }
+      else {
+        logger.warn("CloudLogin: Node " + publicApplicationNode.getPath() + "/" + CL_JCR_FOLDER_NAME + " should exist");
+      }
+    }
+    catch(Exception e) {
+      logger.error("CloudLogin: Cannot delete temp avatar node", e);
+    }
+    finally {
+      try {
+        RequestLifeCycle.end();
+      } catch (Exception e) {
+        logger.warn("An exception has occurred while proceed RequestLifeCycle.end() : " + e.getMessage());
+      }
+    }
+  }
+
+  @Override
+  public void updateProfile(String userId, UploadResource avatarResource) {
+
+    RequestLifeCycle.begin(PortalContainer.getInstance());
+    
+    try {
+      File file = new File(avatarResource.getStoreLocation());
+      FileInputStream inputStream = new FileInputStream(file);
+      String mimeType = avatarResource.getMimeType();
+      String fileName = file.getName();
+      
+      // Create avatar attachement
+      AvatarAttachment avatarAttachment = ImageUtils.createResizedAvatarAttachment(inputStream, 200, 0, null, fileName, mimeType, null);
+      if(avatarAttachment == null) {
+        avatarAttachment = new AvatarAttachment(null, fileName, avatarResource.getMimeType(), inputStream, null, System.currentTimeMillis());
+      }
+      
+      // Update profile with new avatar
+      Profile p = Utils.getUserIdentity(userId, true).getProfile();
+      p.setProperty(Profile.AVATAR, avatarAttachment);
+      Map<String, Object> props = p.getProperties();
+      // Removes avatar url and resized avatar
+      for (String key : props.keySet()) {
+        if (key.startsWith(Profile.AVATAR + ImageUtils.KEY_SEPARATOR)) {
+          p.removeProperty(key);
+        }
+      }
+      Utils.getIdentityManager().updateProfile(p);
+    }
+    catch(Exception e) {
+      logger.error("CloudLogin: Cannot update profile", e);
+    }
+    finally {
+      try {
+        RequestLifeCycle.end();
+      } catch (Exception e) {
+        logger.warn("An exception has occurred while proceed RequestLifeCycle.end() : " + e.getMessage());
+      }
+    }
+  }
+  
   
   
   /*=======================================================================
@@ -335,5 +496,9 @@ public class CloudLoginServiceImpl implements CloudLoginService {
     }
     
     return domain;
+  }
+  
+  public static String getAvatarUriPath() {
+    return CL_JCR_ROOT_NODE_PATH + "/" + CL_JCR_APP_NODE_NAME + "/" + CL_JCR_FOLDER_NAME;
   }
 }
