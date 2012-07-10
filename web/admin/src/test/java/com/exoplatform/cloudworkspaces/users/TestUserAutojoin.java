@@ -48,49 +48,65 @@ import java.util.Set;
  */
 public class TestUserAutojoin {
 
-  CloudIntranetUtils utils;
-  UsersManager manager;
-  WorkspacesOrganizationRequestPerformer  requestPerformer;
-  ReferencesManager referencesManager;
-  NotificationMailSender notificationMailSender;
-  TenantInfoDataManager  tenantInfoDataManager;
-  PasswordCipher passwordCipher;
-  
+  CloudIntranetUtils                     utils;
+
+  UsersManager                           manager;
+
+  WorkspacesOrganizationRequestPerformer requestPerformer;
+
+  ReferencesManager                      referencesManager;
+
+  NotificationMailSender                 notificationMailSender;
+
+  TenantInfoDataManager                  tenantInfoDataManager;
+
+  PasswordCipher                         passwordCipher;
+
   @BeforeMethod
   public void initMocks() throws TenantDataManagerException {
     Configuration cloudAdminConfiguration = new CompositeConfiguration();
-    cloudAdminConfiguration.setProperty("cloud.admin.tenant.waiting.dir", "target/test-classes/queue");
+    cloudAdminConfiguration.setProperty("cloud.admin.tenant.waiting.dir",
+                                        "target/test-classes/queue");
     referencesManager = Mockito.mock((ReferencesManager.class));
-    utils = new CloudIntranetUtils(referencesManager, Mockito.mock(EmailBlacklist.class), Mockito.mock(WorkspacesOrganizationRequestPerformer.class));
+    utils = new CloudIntranetUtils(cloudAdminConfiguration,
+                                   referencesManager,
+                                   Mockito.mock(EmailBlacklist.class),
+                                   Mockito.mock(WorkspacesOrganizationRequestPerformer.class));
     requestPerformer = Mockito.mock(WorkspacesOrganizationRequestPerformer.class);
     UserLimitsStorage userLimitsStorage = Mockito.mock(UserLimitsStorage.class);
     notificationMailSender = Mockito.mock(NotificationMailSender.class);
-    tenantInfoDataManager =  Mockito.mock(TenantInfoDataManager.class);
+    tenantInfoDataManager = Mockito.mock(TenantInfoDataManager.class);
     passwordCipher = Mockito.mock(PasswordCipher.class);
-    UserRequestDAO   userRequestDao  = new UserRequestDAO(cloudAdminConfiguration, passwordCipher);
+    UserRequestDAO userRequestDao = new UserRequestDAO(cloudAdminConfiguration, passwordCipher);
 
     this.manager = new UsersManager(cloudAdminConfiguration,
-                                            utils,
-                                            requestPerformer,
-                                            tenantInfoDataManager,
-                                            notificationMailSender,
-                                            userLimitsStorage,
-                                            userRequestDao,
-                                            referencesManager);
+                                    utils,
+                                    requestPerformer,
+                                    tenantInfoDataManager,
+                                    notificationMailSender,
+                                    userLimitsStorage,
+                                    userRequestDao,
+                                    referencesManager);
   }
 
   @Test
-  public void testManagerCommon() throws CloudAdminException{
+  public void testManagerCommon() throws CloudAdminException {
     Set<String> tenantSet = new HashSet<String>();
     tenantSet.add("aaa");
     tenantSet.add("bbb");
     tenantSet.add("ccc");
     Mockito.when(tenantInfoDataManager.getNames()).thenReturn(tenantSet);
-    Mockito.when(tenantInfoDataManager.getValue(Matchers.anyString(), Matchers.anyString())).thenReturn("ONLINE");
-    Mockito.when(requestPerformer.isNewUserAllowed(Matchers.anyString(), Matchers.anyString())).thenReturn(true);
+    Mockito.when(tenantInfoDataManager.getValue(Matchers.anyString(), Matchers.anyString()))
+           .thenReturn("ONLINE");
+    Mockito.when(requestPerformer.isNewUserAllowed(Matchers.anyString(), Matchers.anyString()))
+           .thenReturn(true);
     Mockito.when(passwordCipher.decrypt(Matchers.anyString())).thenReturn("password");
     manager.joinAll();
-    Mockito.verify(requestPerformer, Mockito.times(3)).storeUser(Matchers.anyString(),  // 3 of 3 users joined
+    Mockito.verify(requestPerformer, Mockito.times(3)).storeUser(Matchers.anyString(), // 3
+                                                                                       // of
+                                                                                       // 3
+                                                                                       // users
+                                                                                       // joined
                                                                  Matchers.anyString(),
                                                                  Matchers.anyString(),
                                                                  Matchers.anyString(),
@@ -101,18 +117,25 @@ public class TestUserAutojoin {
   }
 
   @Test
-  public void testNotEnoughFreeSpace() throws CloudAdminException{
+  public void testNotEnoughFreeSpace() throws CloudAdminException {
     Set<String> tenantSet = new HashSet<String>();
     tenantSet.add("aaa");
     tenantSet.add("bbb");
     tenantSet.add("ccc");
     Mockito.when(tenantInfoDataManager.getNames()).thenReturn(tenantSet);
-    Mockito.when(tenantInfoDataManager.getValue(Matchers.anyString(), Matchers.anyString())).thenReturn("ONLINE");
-    Mockito.when(requestPerformer.isNewUserAllowed(Matchers.anyString(), Matchers.anyString())).thenReturn(true);
-    Mockito.when(requestPerformer.isNewUserAllowed(Matchers.eq("ccc"), Matchers.anyString())).thenReturn(false);
+    Mockito.when(tenantInfoDataManager.getValue(Matchers.anyString(), Matchers.anyString()))
+           .thenReturn("ONLINE");
+    Mockito.when(requestPerformer.isNewUserAllowed(Matchers.anyString(), Matchers.anyString()))
+           .thenReturn(true);
+    Mockito.when(requestPerformer.isNewUserAllowed(Matchers.eq("ccc"), Matchers.anyString()))
+           .thenReturn(false);
     Mockito.when(passwordCipher.decrypt(Matchers.anyString())).thenReturn("password");
     manager.joinAll();
-    Mockito.verify(requestPerformer, Mockito.times(2)).storeUser(Matchers.anyString(), // 2 of 3 users joined
+    Mockito.verify(requestPerformer, Mockito.times(2)).storeUser(Matchers.anyString(), // 2
+                                                                                       // of
+                                                                                       // 3
+                                                                                       // users
+                                                                                       // joined
                                                                  Matchers.anyString(),
                                                                  Matchers.anyString(),
                                                                  Matchers.anyString(),
@@ -123,18 +146,25 @@ public class TestUserAutojoin {
   }
 
   @Test
-  public void testTenantStateNotOnline() throws CloudAdminException{
+  public void testTenantStateNotOnline() throws CloudAdminException {
     Set<String> tenantSet = new HashSet<String>();
     tenantSet.add("aaa");
     tenantSet.add("bbb");
     tenantSet.add("ccc");
     Mockito.when(tenantInfoDataManager.getNames()).thenReturn(tenantSet);
-    Mockito.when(tenantInfoDataManager.getValue(Matchers.anyString(), Matchers.anyString())).thenReturn("ONLINE");
-    Mockito.when(tenantInfoDataManager.getValue(Matchers.eq("ccc"), Matchers.anyString())).thenReturn("WAITING_CREATION");
-    Mockito.when(requestPerformer.isNewUserAllowed(Matchers.anyString(), Matchers.anyString())).thenReturn(true);
+    Mockito.when(tenantInfoDataManager.getValue(Matchers.anyString(), Matchers.anyString()))
+           .thenReturn("ONLINE");
+    Mockito.when(tenantInfoDataManager.getValue(Matchers.eq("ccc"), Matchers.anyString()))
+           .thenReturn("WAITING_CREATION");
+    Mockito.when(requestPerformer.isNewUserAllowed(Matchers.anyString(), Matchers.anyString()))
+           .thenReturn(true);
     Mockito.when(passwordCipher.decrypt(Matchers.anyString())).thenReturn("password");
     manager.joinAll();
-    Mockito.verify(requestPerformer, Mockito.times(2)).storeUser(Matchers.anyString(), // 2 of 3 users joined
+    Mockito.verify(requestPerformer, Mockito.times(2)).storeUser(Matchers.anyString(), // 2
+                                                                                       // of
+                                                                                       // 3
+                                                                                       // users
+                                                                                       // joined
                                                                  Matchers.anyString(),
                                                                  Matchers.anyString(),
                                                                  Matchers.anyString(),
@@ -145,16 +175,21 @@ public class TestUserAutojoin {
   }
 
   @Test
-  public void testUserRegistrationNotComplete() throws CloudAdminException{
+  public void testUserRegistrationNotComplete() throws CloudAdminException {
     Set<String> tenantSet = new HashSet<String>();
     tenantSet.add("ddd");
     Mockito.when(tenantInfoDataManager.getNames()).thenReturn(tenantSet);
-    Mockito.when(tenantInfoDataManager.getValue(Matchers.anyString(), Matchers.anyString())).thenReturn("ONLINE");
-    Mockito.when(requestPerformer.isNewUserAllowed(Matchers.anyString(), Matchers.anyString())).thenReturn(true);
-    Mockito.when(referencesManager.putEmail(Matchers.anyString(), Matchers.anyString())).thenReturn("123123123");
+    Mockito.when(tenantInfoDataManager.getValue(Matchers.anyString(), Matchers.anyString()))
+           .thenReturn("ONLINE");
+    Mockito.when(requestPerformer.isNewUserAllowed(Matchers.anyString(), Matchers.anyString()))
+           .thenReturn(true);
+    Mockito.when(referencesManager.putEmail(Matchers.anyString(), Matchers.anyString()))
+           .thenReturn("123123123");
     Mockito.when(passwordCipher.decrypt(Matchers.anyString())).thenReturn("");
     manager.joinAll();
-    Mockito.verify(requestPerformer, Mockito.times(0)).storeUser(Matchers.anyString(), //User not joined
+    Mockito.verify(requestPerformer, Mockito.times(0)).storeUser(Matchers.anyString(), // User
+                                                                                       // not
+                                                                                       // joined
                                                                  Matchers.anyString(),
                                                                  Matchers.anyString(),
                                                                  Matchers.anyString(),
@@ -162,30 +197,36 @@ public class TestUserAutojoin {
                                                                  Matchers.anyString(),
                                                                  Matchers.anyBoolean());
 
-    Mockito.verify(notificationMailSender, Mockito.times(1)).sendOkToJoinEmail(Matchers.anyString(), //Join link is send
-                                                                               Matchers.anyMap());
+    Mockito.verify(notificationMailSender, Mockito.times(1))
+           .sendOkToJoinEmail(Matchers.anyString(), // Join link is send
+                              Matchers.anyMap());
 
   }
 
   @Test
-  public void testUserAlreadyExists() throws CloudAdminException{
+  public void testUserAlreadyExists() throws CloudAdminException {
     Set<String> tenantSet = new HashSet<String>();
     tenantSet.add("bbb");
     Mockito.when(tenantInfoDataManager.getNames()).thenReturn(tenantSet);
-    Mockito.when(tenantInfoDataManager.getValue(Matchers.anyString(), Matchers.anyString())).thenReturn("ONLINE");
-    Mockito.when(requestPerformer.isNewUserAllowed(Matchers.anyString(), Matchers.anyString())).thenThrow(UserAlreadyExistsException.class);
+    Mockito.when(tenantInfoDataManager.getValue(Matchers.anyString(), Matchers.anyString()))
+           .thenReturn("ONLINE");
+    Mockito.when(requestPerformer.isNewUserAllowed(Matchers.anyString(), Matchers.anyString()))
+           .thenThrow(UserAlreadyExistsException.class);
     manager.joinAll();
-    Mockito.verify(requestPerformer, Mockito.times(0)).storeUser(Matchers.anyString(), //User not joined
+    Mockito.verify(requestPerformer, Mockito.times(0)).storeUser(Matchers.anyString(), // User
+                                                                                       // not
+                                                                                       // joined
                                                                  Matchers.anyString(),
                                                                  Matchers.anyString(),
                                                                  Matchers.anyString(),
                                                                  Matchers.anyString(),
                                                                  Matchers.anyString(),
                                                                  Matchers.anyBoolean());
-    Mockito.verify(notificationMailSender, Mockito.times(1)).sendUserJoinedEmails(Matchers.anyString(), //Appropriate email send
-                                                                                  Matchers.anyString(),
-                                                                                  Matchers.anyString(),
-                                                                                   Matchers.anyMap());
+    Mockito.verify(notificationMailSender, Mockito.times(1))
+           .sendUserJoinedEmails(Matchers.anyString(), // Appropriate email send
+                                 Matchers.anyString(),
+                                 Matchers.anyString(),
+                                 Matchers.anyMap());
 
   }
 

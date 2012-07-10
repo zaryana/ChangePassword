@@ -51,8 +51,6 @@
 # needs for showing logs of application servers through apache
 [ -z "$APPLICATION_SERVER_LOGS_PORT" ] && APPLICATION_SERVER_LOGS_PORT="8085"
 
-[ -z "$SANDBOX_TENANT_NAME" ] && SANDBOX_TENANT_NAME="sandbox"
-
 # DB connection send to agent
 [ -z "$EXO_DB_HOST" ] && EXO_DB_HOST="localhost:3306"
 [ -z "$EXO_DB_USER" ] && EXO_DB_USER="dbuser"

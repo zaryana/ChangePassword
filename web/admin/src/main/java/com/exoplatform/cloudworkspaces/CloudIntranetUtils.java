@@ -22,6 +22,7 @@ package com.exoplatform.cloudworkspaces;
 import com.exoplatform.cloudworkspaces.http.UserNotFoundException;
 import com.exoplatform.cloudworkspaces.http.WorkspacesOrganizationRequestPerformer;
 
+import org.apache.commons.configuration.Configuration;
 import org.exoplatform.cloudmanagement.admin.CloudAdminException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +42,8 @@ import javax.mail.internet.InternetAddress;
 
 public class CloudIntranetUtils {
 
+  private final Configuration                          cloudAdminConfiguration;
+
   private ReferencesManager                            referencesManager;
 
   private final EmailBlacklist                         emailBlacklist;
@@ -53,9 +56,11 @@ public class CloudIntranetUtils {
 
   private static final Logger                          LOG                       = LoggerFactory.getLogger(CloudIntranetUtils.class);
 
-  public CloudIntranetUtils(ReferencesManager referencesManager,
+  public CloudIntranetUtils(Configuration cloudAdminConfiguration,
+                            ReferencesManager referencesManager,
                             EmailBlacklist emailBlacklist,
                             WorkspacesOrganizationRequestPerformer organizationRequestPerformer) {
+    this.cloudAdminConfiguration = cloudAdminConfiguration;
     this.referencesManager = referencesManager;
     this.emailBlacklist = emailBlacklist;
     this.organizationRequestPerformer = organizationRequestPerformer;
@@ -123,7 +128,7 @@ public class CloudIntranetUtils {
   }
 
   public String getSandboxTenantName() {
-    return System.getProperty("sandbox.tenant.name");
+    return cloudAdminConfiguration.getString("cloud.admin.sandbox.tenant.name");
   }
 
   public boolean hasUsernameInSandboxTenant(String email) throws CloudAdminException {
