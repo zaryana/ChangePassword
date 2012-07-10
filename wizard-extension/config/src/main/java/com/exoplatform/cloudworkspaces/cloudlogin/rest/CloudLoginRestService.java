@@ -45,6 +45,12 @@ import org.exoplatform.upload.UploadService;
 
 import com.exoplatform.cloudworkspaces.cloudlogin.CloudLoginService;
 
+/**
+ * This class is used to contact some REST WS from the tool cloud login wizard.
+ * 
+ * @author Clement
+ *
+ */
 @Path(CloudLoginRestService.WS_ROOT_PATH)
 public class CloudLoginRestService implements ResourceContainer {
   
@@ -127,7 +133,7 @@ public class CloudLoginRestService implements ResourceContainer {
    * 
    * @param fileName name of the file uploaded into server
    * @param uploadId ID of current upload
-   * @return JSON response
+   * @return 
    * @throws Exception
    */
   @GET
@@ -136,7 +142,9 @@ public class CloudLoginRestService implements ResourceContainer {
   @RolesAllowed("users")
   public Response updateProfile(
                 @QueryParam("fileName") String fileName,
-                @QueryParam("uploadId") String uploadId) {
+                @QueryParam("uploadId") String uploadId,
+                @QueryParam("name") String name,
+                @QueryParam("position") String position) {
 
     CacheControl cacheControl = new CacheControl();
     cacheControl.setNoCache(true);
@@ -165,7 +173,7 @@ public class CloudLoginRestService implements ResourceContainer {
           }
           
           // Update user profile
-          cloudLoginService.updateProfile(userId, resource);
+          cloudLoginService.updateProfile(userId, resource, name, position);
   
           // Delete temporary avatar
           cloudLoginService.deleteTempAvatarNode();
@@ -186,10 +194,18 @@ public class CloudLoginRestService implements ResourceContainer {
     return Response.ok().cacheControl(cacheControl).build();
   }
   
+  /**
+   * Used to create a request to the WS method uploadAvatar
+   * @return
+   */
   public static String getUploadWsPath() {
     return WS_PORTAL_PATH + WS_ROOT_PATH + WS_UPLOAD_PATH;
   }
   
+  /**
+   * Used to create a request to the WS method updateProfile
+   * @return
+   */
   public static String getProfileWsPath() {
     return WS_PORTAL_PATH + WS_ROOT_PATH + WS_PROFILE_PATH;
   }

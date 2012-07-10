@@ -100,7 +100,7 @@ CloudLogin.showStepProfile = function(event) {
 
 CloudLogin.initUploadFile = function() {
   $(document).ready(function() {
-    $('#StepProfile').fileupload({
+    $('#formFileAvatar').fileupload({
       dropZone: $('#fileDropZone'),
       // Redefine add method to filter with size and file type
       add: function (e, data) {
@@ -157,30 +157,19 @@ CloudLogin.validateStepProfile = function(event) {
     event.preventDefault();
   }
   
-  if(CloudLogin.AVATAR_FILE_NAME != undefined && CloudLogin.AVATAR_FILE_NAME != "") {
+  var nameProfile = $("#nameProfile").val();
+  var posProfile = $("#posProfile").val();
+  
+  if((nameProfile != undefined && nameProfile != "") 
+  || (posProfile != undefined && posProfile != "") 
+  || (CloudLogin.AVATAR_FILE_NAME != undefined && CloudLogin.AVATAR_FILE_NAME != "")) {
     // Update profile with avatar and others datas
-    CloudLogin.updateProfile(CloudLogin.AVATAR_FILE_NAME);
+    CloudLogin.updateProfile(CloudLogin.AVATAR_FILE_NAME, nameProfile, posProfile);
   }
   else {
     console.log("There is no data to send.");
     CloudLogin.finalizeUpdateProfile();
   }
-}
-
-CloudLogin.updateProfile = function(fileName) {
-  $.ajax({
-    type: "GET",
-    url: CloudLogin.PROFILE_WS_PATH,
-    data: {fileName: fileName, uploadId: CloudLogin.AVATAR_UPLOAD_ID},
-    success: function(data, textStatus) {
-      console.log("avatar created [status=" + textStatus + "]");
-      CloudLogin.finalizeUpdateProfile();
-    },
-    error: function(data, textStatus, error) {
-      console.log("process executed: [status=" + textStatus + "], [error=" + error + "]");
-      CloudLogin.finalizeUpdateProfile();
-    }
-  });
 }
 
 CloudLogin.finalizeUpdateProfile = function() {
@@ -194,6 +183,22 @@ CloudLogin.finalizeUpdateProfile = function() {
   else {
     alert(CloudLogin.ERROR_MESSAGE);
   }
+}
+
+CloudLogin.updateProfile = function(fileName, nameProfile, posProfile) {
+  $.ajax({
+    type: "GET",
+    url: CloudLogin.PROFILE_WS_PATH,
+    data: {fileName: fileName, uploadId: CloudLogin.AVATAR_UPLOAD_ID, name: nameProfile, position: posProfile},
+    success: function(data, textStatus) {
+      console.log("profile updated [status=" + textStatus + "]");
+      CloudLogin.finalizeUpdateProfile();
+    },
+    error: function(data, textStatus, error) {
+      console.log("profile update in error: [status=" + textStatus + "], [error=" + error + "]");
+      CloudLogin.finalizeUpdateProfile();
+    }
+  });
 }
 
 /**
@@ -266,6 +271,8 @@ CloudLogin.initSpaces = function() {
       });
       
       CloudLogin.unlockSpaces();
+      
+      console.info("Spaces initialized !");
     },
     error: function(request, status, error) {
       console.log("Cannot get spaces [Status=" + status + "], [Error=" + error + "]");

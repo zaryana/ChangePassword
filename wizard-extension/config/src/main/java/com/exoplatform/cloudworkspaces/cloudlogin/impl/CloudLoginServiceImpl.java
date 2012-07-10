@@ -57,7 +57,7 @@ import com.exoplatform.cloudworkspaces.cloudlogin.CloudLoginService;
 import com.exoplatform.cloudworkspaces.cloudlogin.data.CloudLoginStatus;
 
 /**
- * Service used to manage cloud login NODE
+ * Service used to manage all business with CloudLoginWizard
  * 
  * @author Clement
  *
@@ -317,33 +317,59 @@ public class CloudLoginServiceImpl implements CloudLoginService {
   }
 
   @Override
-  public void updateProfile(String userId, UploadResource avatarResource) {
+  public void updateProfile(String userId, UploadResource avatarResource, String fullName, String position) {
 
     RequestLifeCycle.begin(PortalContainer.getInstance());
     
     try {
-      File file = new File(avatarResource.getStoreLocation());
-      FileInputStream inputStream = new FileInputStream(file);
-      String mimeType = avatarResource.getMimeType();
-      String fileName = file.getName();
-      
-      // Create avatar attachement
-      AvatarAttachment avatarAttachment = ImageUtils.createResizedAvatarAttachment(inputStream, 200, 0, null, fileName, mimeType, null);
-      if(avatarAttachment == null) {
-        avatarAttachment = new AvatarAttachment(null, fileName, avatarResource.getMimeType(), inputStream, null, System.currentTimeMillis());
-      }
-      
-      // Update profile with new avatar
+
       Profile p = Utils.getUserIdentity(userId, true).getProfile();
-      p.setProperty(Profile.AVATAR, avatarAttachment);
-      Map<String, Object> props = p.getProperties();
-      // Removes avatar url and resized avatar
-      for (String key : props.keySet()) {
-        if (key.startsWith(Profile.AVATAR + ImageUtils.KEY_SEPARATOR)) {
-          p.removeProperty(key);
+      boolean profileNeedUpdate = false;
+      
+      // Update avatar
+      if(avatarResource != null) {
+        profileNeedUpdate = true;
+        File file = new File(avatarResource.getStoreLocation());
+        FileInputStream inputStream = new FileInputStream(file);
+        String mimeType = avatarResource.getMimeType();
+        String fileName = file.getName();
+        
+        // Create avatar attachement
+        AvatarAttachment avatarAttachment = ImageUtils.createResizedAvatarAttachment(inputStream, 200, 0, null, fileName, mimeType, null);
+        if(avatarAttachment == null) {
+          avatarAttachment = new AvatarAttachment(null, fileName, avatarResource.getMimeType(), inputStream, null, System.currentTimeMillis());
+        }
+        
+        // Update profile with new avatar
+        p.setProperty(Profile.AVATAR, avatarAttachment);
+        
+        Map<String, Object> props = p.getProperties();
+        // Removes avatar url and resized avatar
+        for (String key : props.keySet()) {
+          if (key.startsWith(Profile.AVATAR + ImageUtils.KEY_SEPARATOR)) {
+            p.removeProperty(key);
+          }
         }
       }
-      Utils.getIdentityManager().updateProfile(p);
+      if(fullName != null && fullName.length() > 0) {
+        String[] splitName = fullName.trim().split(" ");
+        profileNeedUpdate = true;
+        if(splitName.length == 2) {
+          p.setProperty(Profile.FIRST_NAME, splitName[0]);
+          p.setProperty(Profile.LAST_NAME, splitName[1]);
+        }
+        else {
+          p.setProperty(Profile.USERNAME, fullName);
+        }
+      }
+      if(position != null && position.length() > 0) {
+        profileNeedUpdate = true;
+        p.setProperty(Profile.POSITION, position);
+      }
+      
+      if(profileNeedUpdate) {
+        Utils.getIdentityManager().updateProfile(p);
+      }
     }
     catch(Exception e) {
       logger.error("CloudLogin: Cannot update profile", e);
@@ -498,6 +524,10 @@ public class CloudLoginServiceImpl implements CloudLoginService {
     return domain;
   }
   
+  /**
+   * Permits to create an URI path to display temp avatar image
+   * @return
+   */
   public static String getAvatarUriPath() {
     return CL_JCR_ROOT_NODE_PATH + "/" + CL_JCR_APP_NODE_NAME + "/" + CL_JCR_FOLDER_NAME;
   }

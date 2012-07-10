@@ -65,9 +65,9 @@ public interface CloudLoginService {
   public void deleteTempAvatarNode();
   
   /**
-   * Update the user profile with avatar resource
+   * Update the user profile with avatar resource, name and position
    * 
    * @param avatarResource
    */
-  public void updateProfile(String userId, UploadResource avatarResource);
+  public void updateProfile(String userId, UploadResource avatarResource, String fullName, String position);
 }

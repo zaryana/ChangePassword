@@ -57,7 +57,7 @@
   <body onLoad="CloudLogin.initCloudLogin(<%=CloudLoginRestService.MAX_AVATAR_LENGTH%>, '<%=CloudLoginRestService.AVATAR_UPLOAD_ID%>', '<%=CloudLoginServiceImpl.getAvatarUriPath()%>', '<%=CloudLoginRestService.getProfileWsPath()%>');">
   <div class="GetStartedPage">
   
-    <form class="UIFormBox StartedStep" style="display: block;" name="" id="StepProfile" method="POST" action="<%=CloudLoginRestService.getUploadWsPath()%>?<%=CloudLoginRestService.WS_UPLOAD_PARAM_UPLOAD_ID%>=<%=CloudLoginRestService.AVATAR_UPLOAD_ID%>" enctype="multipart/form-data" >
+    <div class="UIFormBox StartedStep" style="display: block;" name="" id="StepProfile" >
       <h1 class="StartedBarBG">Welcome to Cloud Workspaces - Get started in 3 easy steps</h1>
       <div class="Steps" id="">
         <span class="StepBG"></span>
@@ -70,7 +70,11 @@
           <tr>
             <td class="FormInput">
               <div class="HelpText" id="fileDropZone">
-              <input type="file" name="datafile" id="datafile" />
+              <input type="text" name="nameProfile" id="nameProfile" />
+              <input type="text" name="posProfile" id="posProfile" />
+              <form id="formFileAvatar" method="POST" action="<%=CloudLoginRestService.getUploadWsPath()%>?<%=CloudLoginRestService.WS_UPLOAD_PARAM_UPLOAD_ID%>=<%=CloudLoginRestService.AVATAR_UPLOAD_ID%>" enctype="multipart/form-data" >
+                <input type="file" name="datafile" id="datafile" />
+              </form>
               <img src="<%=request.getContextPath()%>/background/VoteMB.png" id="avatarImage" style="width: 56px;height: 56px;" />
               </div>
             </td>
@@ -83,7 +87,7 @@
         <p class="LeftStartTip"><strong>Tip:</strong> Easily access your documents on your iPhone, iPad or Android device with the eXo mobile app. You can keep files private, share them with specific coworkers or publish them in a dedicated space.</p>
       </div>
       <div class="Link"><a href="#" onclick="CloudLogin.exit();" class="Link">Skip to homepage >></a></div>
-    </form>
+    </div>
   
     <form class="UIFormBox StartedStep" style="display: none;" name="" id="StepSpace" method="POST" action="javascript:void(0);" >
       <h1 class="StartedBarBG">Welcome to Cloud Workspaces - Get started in 3 easy steps</h1>
