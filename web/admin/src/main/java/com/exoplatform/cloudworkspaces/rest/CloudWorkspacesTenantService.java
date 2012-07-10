@@ -144,6 +144,7 @@ public class CloudWorkspacesTenantService {
         LOG.info("User " + userMail + " rejected. Need valid email address.");
         return Response.status(Status.BAD_REQUEST)
                        .entity("Please enter a valid email address.")
+                       .type(MediaType.TEXT_PLAIN)
                        .build();
       }
 
@@ -168,7 +169,8 @@ public class CloudWorkspacesTenantService {
         LOG.info("User " + userMail + " already signed up to " + tName
             + ". Wait until a workspace will be created.");
         return Response.ok("You already signed up. Wait until your workspace will be created. We will inform you when it will be ready.")
-                       .build();
+                      .type(MediaType.TEXT_PLAIN)
+                      .build();
       }
     } catch (TenantAlreadyExistException ex) {
       Map<String, String> props = new HashMap<String, String>();
@@ -242,7 +244,7 @@ public class CloudWorkspacesTenantService {
           String msg = "Sorry, we cannot process your join request right now, workspace seems not ready. Please, try again later.";
           LOG.warn("Signup failed for user " + userMail + ", tenant " + tName + " state is "
               + tenantInfoDataManager.getValue(tName, TenantInfoFieldName.PROPERTY_STATE));
-          return Response.status(Status.SERVICE_UNAVAILABLE).entity(msg).build();
+          return Response.status(Status.SERVICE_UNAVAILABLE).entity(msg).type(MediaType.TEXT_PLAIN).build();
         }
         }
       } catch (UserAlreadyExistsException e) {

@@ -648,7 +648,7 @@ Tenants.prototype.handleSignupResponse = function(resp) {
      });
      $("#messageString").html('<span class="WarningIcon">' + resp + '</span>');
   }
-  $("#t_submit").attr('disabled', '');
+  $("#t_submit").removeAttr('disabled');
   $("#t_submit").val("Sign Up");
 }
 
@@ -671,7 +671,7 @@ Tenants.prototype.handleCreationResponse = function(resp) {
   } else {
     $("#messageString").html(resp);
   }
-  $("#t_submit").attr('disabled', '');
+  $("#t_submit").removeAttr('disabled');
   $("#t_submit").val("Create");
 }
 
@@ -704,7 +704,7 @@ Tenants.prototype.handleJoinResponse = function(resp) {
     $("#messageString").html(resp);
   }
 
-  $("#t_submit").attr('disabled', '');
+  $("#t_submit").removeAttr('disabled');
   $("#t_submit").val("Sign In");
 }
 
