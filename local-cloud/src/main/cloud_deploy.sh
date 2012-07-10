@@ -56,17 +56,19 @@ get_answer() {
 get_answer "http://$remote_cwks/portal/intranet/home"
 
 #Create sandbox
-curl --connect-timeout 900 -s  -X POST -u cloudadmin:cloudadmin http://$remote_cwks/rest/private/cloud-admin/tenant-service/create/demo
+curl --connect-timeout 900 -s  -X POST -u cloudadmin:cloudadmin "http://$remote_cwks/rest/private/cloud-admin/tenant-service/create/demo"
 
 get_answer "http://demo.$remote_cwks/portal/intranet/home"
                                                                                                                                                                                                                  get_answer "http://$2.$remote_cwks/portal/intranet/home" 
+sleep 20s
 
 #Create default 
 if [ ! -e $2 ] ; then
-  curl --connect-timeout 900 -s  -X POST -u cloudadmin:cloudadmin http://$remote_cwks/rest/private/cloud-admin/tenant-service/create/$2
+  echo "Creating tenant $2"
+  curl --connect-timeout 900 -s  -X POST -u cloudadmin:cloudadmin "http://$remote_cwks/rest/private/cloud-admin/tenant-service/create/$2"
+  get_answer "http://$2.$remote_cwks/portal/intranet/home"
 fi
 
-get_answer "http://$2.$remote_cwks/portal/intranet/home"
 
 echo ""
 echo "Local Cloud started succesfully at $remote_cwks                " # need spaces to rewrite waiting text
