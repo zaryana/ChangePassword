@@ -36,7 +36,7 @@ get_answer() {
   local t=0
   while [ $code -ne 302 ] && [ $code -ne 200 ] && [ $t -lt $timeout ] ; do
     code=$(get $1)
-    if [ $code -ge 500  ] ; then
+    if [ $code -ge 500  ] && [ $code -ne 502 ] ; then
       echo "Cannot start app server. Internal error: "
       cat $curl_res
       exit 1
@@ -52,8 +52,16 @@ get_answer() {
   fi
 }
 
+
 get_answer "http://$remote_cwks/portal/intranet/home"
 
+#Create sandbox
+curl --connect-timeout 900 -s  -X POST -u cloudadmin:cloudadmin http://$remote_cwks/rest/private/cloud-admin/tenant-service/create/demo
+
+get_answer "http://demo.$remote_cwks/portal/intranet/home"
+                                                                                                                                                                                                                 get_answer "http://$2.$remote_cwks/portal/intranet/home" 
+
+#Create default 
 if [ ! -e $2 ] ; then
   curl --connect-timeout 900 -s  -X POST -u cloudadmin:cloudadmin http://$remote_cwks/rest/private/cloud-admin/tenant-service/create/$2
 fi

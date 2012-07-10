@@ -57,7 +57,7 @@
     local lpath=`pwd`
     local curl_res="$lpath/curl.res"
     local status=`curl -s -S --connect-timeout $CONNECT_TIMEOUT -X $1 --output $curl_res --write-out %{http_code} -u $CLOUD_AGENT_USERNAME:$CLOUD_AGENT_PASSWORD $2`
-    local res=`cat $curl_res`
+    test -f $curl_res && local res=`cat $curl_res`
     if [ $status='200'  ] ; then
       echo $res
     else
