@@ -41,7 +41,10 @@ public class TestWorkspacesUtils {
     ReferencesManager referencesManager = new ReferencesManager(cloudAdminConfiguration);
     EmailBlacklist blacklist = Mockito.mock(EmailBlacklist.class);
     WorkspacesOrganizationRequestPerformer organizationRequestPerformer = Mockito.mock(WorkspacesOrganizationRequestPerformer.class);
-    utils = new CloudIntranetUtils(referencesManager, blacklist, organizationRequestPerformer);
+    utils = new CloudIntranetUtils(cloudAdminConfiguration,
+                                   referencesManager,
+                                   blacklist,
+                                   organizationRequestPerformer);
   }
 
   @DataProvider(name = "emails1")
