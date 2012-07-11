@@ -630,20 +630,22 @@ Tenants.prototype.handleSignupResponse = function(resp) {
     sendDataToMarketo({
       "Email" : $('#email').val(),
       "Cloud_Workspaces_User__c" : "Yes",
-      "lpId": $('#lpId').val(),
-      "subId": $('#subId').val(),
-      "formid": $('#formid').val()
+      "lpId": $('input[name=lpId]').val(),
+      "subId": $('input[name=subId]').val(),
+      "formid": $('input[name=formid]').val(),
+      "_mkt_trk": $('input[name=_mkt_trk]').val()
     }, function() {
       window.location = prefixUrl + "/signup-done.jsp";
     });
   } else {
     sendDataToMarketo({
-      "Email" : $('#email').val(),
+      "Email" : $('email').val(),
       "Cloud_Workspaces_User__c" : "No",
       "LeadSource" : $('#LeadSource').val(),
-      "lpId": $('#lpId').val(),
-      "subId": $('#subId').val(),
-      "formid": $('#formid').val()
+      "lpId": $('input[name=lpId]').val(),
+      "subId": $('input[name=subId]').val(),
+      "formid": $('input[name=formid]').val(),
+      "_mkt_trk": $('input[name=_mkt_trk]').val()
     }, function() {
      });
      $("#messageString").html('<span class="WarningIcon">' + resp + '</span>');
@@ -662,9 +664,10 @@ Tenants.prototype.handleCreationResponse = function(resp) {
       "Company" : $('#company').val(),
       "Phone" : $('#phone_work').val(),
       "Cloud_Workspaces_User__c" : "Yes",
-      "lpId": $('#lpId').val(),
-      "subId": $('#subId').val(),
-      "formid": $('#formid').val()
+      "lpId": $('input[name=lpId]').val(),
+      "subId": $('input[name=subId]').val(),
+      "formid": $('input[name=formid]').val(),
+      "_mkt_trk": $('input[name=_mkt_trk]').val()
     }, function() {
       window.location = prefixUrl + "/registration-done.jsp";
     });
@@ -683,9 +686,10 @@ Tenants.prototype.handleJoinResponse = function(resp) {
       "FirstName" : $('#first_name').val(),
       "LastName" : $('last_name').val(),
       "Cloud_Workspaces_User__c" : "Yes",
-      "lpId": $('#lpId').val(),
-      "subId": $('#subId').val(),
-      "formid": $('#formid').val()
+      "lpId": $('input[name=lpId]').val(),
+      "subId": $('input[name=subId]').val(),
+      "formid": $('input[name=formid]').val(),
+      "_mkt_trk": $('input[name=_mkt_trk]').val()
     }, function() {
       var tname = $('#workspace').val();
       var login = $('#email').val();
@@ -718,9 +722,10 @@ Tenants.prototype.handleContactResponse = function(resp) {
       "Cloud_Workspaces_Contact_Us_Subject__c" : $('#subject').val(),
       "Cloud_Workspaces_Contact_Us_Message__c" : $('#ContactUs_Message__c').val(),
       "Cloud_Workspaces_User__c" : "Yes",
-      "lpId": $('#lpId').val(),
-      "subId": $('#subId').val(),
-      "formid": $('#formid').val()
+      "lpId": $('input[name=lpId]').val(),
+      "subId": $('input[name=subId]').val(),
+      "formid": $('input[name=formid]').val(),
+      "_mkt_trk": $('input[name=_mkt_trk]').val()
     }, function() {
       window.location = "/contact-us-done.jsp";
     });
@@ -817,8 +822,7 @@ function sendDataToMarketo(data, afterSubmitCallback) {
    "lpurl": "http://learn.cloud-workspaces.com/Cloud-Workspaces-Sign-Up-English.html?cr={creative}&kw={keyword}",
    "returnURL": "",
    "retURL": "",
-   "_mkt_disp": "return",
-   "_mkt_trk": ""
+   "_mkt_disp": "return"
   }
 
   if (jQuery && document.getElementById(mktOutputIframeId)) {
