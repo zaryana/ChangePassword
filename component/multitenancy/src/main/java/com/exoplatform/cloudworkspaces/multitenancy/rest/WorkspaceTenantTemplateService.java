@@ -42,17 +42,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Service responsible for tenant template management and synchronization on agent side.
- * To get current list of templates available on the app server use agent's service:
- * <pre>/cloud-agent/info-service/template-list</pre>.
+ * Service responsible for tenant template management and synchronization on
+ * agent side. To get current list of templates available on the app server use
+ * agent's service:
  * 
+ * <pre>
+ * /cloud-agent/info-service/template-list
+ * </pre>
  * 
+ * .
  */
 @Path("/cloud-agent/template-service")
 public class WorkspaceTenantTemplateService {
 
-  private static final Logger LOG = LoggerFactory.getLogger(WorkspaceTenantTemplateService.class);
-  
+  private static final Logger       LOG = LoggerFactory.getLogger(WorkspaceTenantTemplateService.class);
+
   protected final BackupManager     jcrBackup;
 
   protected final RepositoryService jcrService;
@@ -61,16 +65,22 @@ public class WorkspaceTenantTemplateService {
     this.jcrService = jcrService;
     this.jcrBackup = jcrBackup;
   }
-  
+
   /**
-   * Create JCR backup on this app server. It's simplified version of HTTPBackupAgent dedicated for cloud goal. 
-   * It returns Id of issued to creation template (JCR backup). After this call a client should use 
-   * <pre>/cloud-agent/info-service/template-list</pre> to ensure the backup was created with no errors.
+   * Create JCR backup on this app server. It's simplified version of
+   * HTTPBackupAgent dedicated for cloud goal. It returns Id of issued to
+   * creation template (JCR backup). After this call a client should use
    * 
-   * @return Response with Id of created template or error code.  
+   * <pre>
+   * /cloud-agent/info-service/template-list
+   * </pre>
+   * 
+   * to ensure the backup was created with no errors.
+   * 
+   * @return Response with Id of created template or error code.
    */
   @POST
-  @Produces(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.TEXT_PLAIN)
   @RolesAllowed("cloud-admin")
   @Path("/template")
   public Response createTemplate() {
@@ -79,68 +89,74 @@ public class WorkspaceTenantTemplateService {
     try {
       File backupDir = jcrBackup.getBackupDirectory();
 
-      // this solution will works only if we have 'tenant.repository.name' thus and default repo, 
+      // this solution will works only if we have 'tenant.repository.name' thus
+      // and default repo,
       // in case when we work w/o default repo, will need another solution
-      repository = System.getProperty("tenant.repository.name") ; 
-      try { 
+      repository = System.getProperty("tenant.repository.name");
+      try {
         jcrService.getConfig().getRepositoryConfiguration(repository);
-      } catch(RepositoryConfigurationException e) {
+      } catch (RepositoryConfigurationException e) {
         // cannot read the repo, cannot do the work
         String error = "ERROR: Repository '" + repository + "' not found: " + e.getMessage();
         LOG.error(error, e);
         return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
       }
-      
+
       RepositoryBackupConfig config = new RepositoryBackupConfig();
       config.setBackupType(BackupManager.FULL_BACKUP_ONLY);
       config.setRepository(repository);
       config.setBackupDir(backupDir);
       config.setIncrementalJobPeriod(0);
       config.setIncrementalJobNumber(0);
-      
+
       RepositoryBackupChain chain = jcrBackup.startBackup(config);
-      
+
       String templateId = chain.getBackupId();
       LOG.info("Tenant template creation issued with Id " + templateId);
-      
+
       return Response.ok().entity(templateId).build();
     } catch (BackupOperationException e) {
       String error = "ERROR: Cannot backup repository '" + repository + "': " + e.getMessage();
       LOG.error(error, e);
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
     } catch (BackupConfigurationException e) {
-      String error = "ERROR: Backup configuration error for repository '" + repository + "': " + e.getMessage();
+      String error = "ERROR: Backup configuration error for repository '" + repository + "': "
+          + e.getMessage();
       LOG.error(error, e);
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
     } catch (RepositoryConfigurationException e) {
-      String error = "ERROR: Repository '" + repository + "' configuration error: " + e.getMessage();
+      String error = "ERROR: Repository '" + repository + "' configuration error: "
+          + e.getMessage();
       LOG.error(error, e);
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
-    } catch(RepositoryException e) {
+    } catch (RepositoryException e) {
       String error = "ERROR: Repository '" + repository + "' error: " + e.getMessage();
       LOG.error(error, e);
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
     }
   }
-  
+
   /**
-   * Not implemented. JCR Backup doesn't support backup removal. 
+   * Not implemented. JCR Backup doesn't support backup removal.
    * 
-   * @return Response 400 with "Not implemented" message.  
+   * @return Response 400 with "Not implemented" message.
    */
   @DELETE
   @RolesAllowed("cloud-admin")
   @Path("/template/{id}")
-  public Response deleteTemplate(@PathParam("id") String templateId) {
-    
+  @Produces(MediaType.TEXT_PLAIN)
+  public Response deleteTemplate(@PathParam("id")
+  String templateId) {
+
     return Response.status(Status.BAD_REQUEST).entity("Not implemented").build();
   }
-  
+
   /**
-   * Return current JCR backups available on this app server. It's simplified version of HTTPBackupAgent dedicated for cloud goal. 
-   * It returns list of Ids of JCR backups.
+   * Return current JCR backups available on this app server. It's simplified
+   * version of HTTPBackupAgent dedicated for cloud goal. It returns list of Ids
+   * of JCR backups.
    * 
-   * @return Response with list of Ids.  
+   * @return Response with list of Ids.
    */
   @GET
   @Produces(MediaType.APPLICATION_JSON)
@@ -149,19 +165,16 @@ public class WorkspaceTenantTemplateService {
   public Response getTemplatesList() {
     List<String> templateList = new ArrayList<String>();
     RepositoryBackupChainLog[] logs = jcrBackup.getRepositoryBackupsLogs();
-    if (logs != null && logs.length > 0)
-    {
-       for (RepositoryBackupChainLog backup : logs)
-       {
-         if (jcrBackup.findBackup(backup.getBackupId()) == null) {
-           // if (backup.isFinilized()) {
-           templateList.add(backup.getBackupId());
-         }
-       }
+    if (logs != null && logs.length > 0) {
+      for (RepositoryBackupChainLog backup : logs) {
+        if (jcrBackup.findBackup(backup.getBackupId()) == null) {
+          // if (backup.isFinilized()) {
+          templateList.add(backup.getBackupId());
+        }
+      }
     }
     LOG.info("Tenant templates list asked: " + templateList);
     return Response.ok().entity(templateList).build();
   }
-  
-  
+
 }
