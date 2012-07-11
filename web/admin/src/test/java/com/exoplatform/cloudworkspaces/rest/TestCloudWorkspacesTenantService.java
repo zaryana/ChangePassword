@@ -1518,9 +1518,7 @@ public class TestCloudWorkspacesTenantService {
                .when()
                .post("/rest/cloud-admin/cloudworkspaces/tenant-service/sendmail/{state}");
 
-    Mockito.verify(notificationMailSender).sendEmailForTenantsWithParameter(TEMPLATE,
-                                                                            SUBJECT,
-                                                                            STATE);
+    Mockito.verify(notificationMailSender).sendEmailForTenantsToState(TEMPLATE, SUBJECT, STATE);
 
     Mockito.verifyNoMoreInteractions(notificationMailSender);
   }

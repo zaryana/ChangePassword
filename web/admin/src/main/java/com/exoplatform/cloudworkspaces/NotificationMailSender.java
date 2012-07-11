@@ -298,7 +298,7 @@ public class NotificationMailSender {
 
     int counter = 0;
     StringBuilder info = new StringBuilder();
-    Set<String> setAliasses = new HashSet();
+    Set<String> setAliasses = new HashSet<String>();
 
     final String confDir = System.getProperty("cloud.admin.configuration.dir");
 
@@ -316,33 +316,34 @@ public class NotificationMailSender {
       String tenantName = validationData.get(TenantInfoFieldName.PROPERTY_TENANT_NAME);
       String userMail = validationData.get(TenantInfoFieldName.PROPERTY_USER_MAIL);
 
+      tenantNameValidator.validateTenantName(tenantName);
+      userMailValidator.validateUserMail(userMail);
+
+      // send email
+      String mailTemplate = confDir + "/" + emailTemplate;
       try {
-        tenantNameValidator.validateTenantName(tenantName);
-        userMailValidator.validateUserMail(userMail);
-
-        // send email
-        String mailTemplate = confDir + "/" + emailTemplate;
-
         sendCustomEmail(userMail, tenantName, uuid, mailTemplate, subject);
-
-        counter++;
-        info.append(userMail);
-        info.append(' ');
-
-        try {
-          Thread.sleep(1100);
-        } catch (Throwable e) {
-          LOG.warn("Error of thread sleep in sendCustomEmail: " + e);
-        }
-
       } catch (Exception e) {
-        LOG.error("Cannot send custom email '"
+        String msg = "Cannot send custom email '"
             + subject
             + "' to owner of request "
             + uuid
             + (validationData != null ? " (tenant: " + tenantName + ", email: " + userMail + ")"
-                                     : "") + ". Skipping it.", e);
+                                     : "") + ". Skipping it.";
+        LOG.error(msg, e);
+        throw new CloudAdminException(msg);
       }
+
+      counter++;
+      info.append(userMail);
+      info.append(' ');
+
+      try {
+        Thread.sleep(1100);
+      } catch (Throwable e) {
+        LOG.warn("Error of thread sleep in sendCustomEmail: " + e);
+      }
+
     }
     LOG.info("Custom message sent to tenants on validation. " + "Email '" + subject + "' sent to "
         + counter + " users" + (counter > 0 ? ": " + info.toString() : ""));
@@ -370,76 +371,54 @@ public class NotificationMailSender {
   }
 
   /**
-   * Send custom email to all owners of tenants with state status.
+   * Send custom email to all owners of tenants with status.
    * 
    * @param emailTemplate String
    * @param subject String
    * @param state String
-   * @throws CloudAdminException if cannot read validation storage
+   * @throws CloudAdminException
    */
-  public void sendEmailForTenantsWithParameter(String emailTemplate, String subject, String state) throws CloudAdminException {
+  public void sendEmailForTenantsToState(String emailTemplate, String subject, String state) throws CloudAdminException {
     int counter = 0;
     StringBuilder info = new StringBuilder();
     TenantState tState = null;
     final String confDir = System.getProperty("cloud.admin.configuration.dir");
     String mailTemplate = confDir + "/" + emailTemplate;
 
-    if (state.compareToIgnoreCase("all") == 0)
+    if ("all".equalsIgnoreCase(state)) {
       sendEmailToValidation(emailTemplate, subject);
-    else {
-      try {
-        tState = TenantState.valueOf(state.toUpperCase());
-      } catch (IllegalArgumentException e) {
-        LOG.error("Error in a URL. ", e);
-      }
+    } else {
+      tState = TenantState.valueOf(state.toUpperCase());
     }
-    if (state.compareToIgnoreCase("all") == 0 || tState != null) {
+    if ("all".equalsIgnoreCase(state) || tState != null) {
       LOG.info("Sending custom email '" + subject + "' to users of " + state + " tenants.");
 
       Set<String> tenants = tenantInfoDataManager.getNames();
 
       for (String tenantName : tenants) {
-        try {
-          if (state.compareToIgnoreCase("all") == 0) {
-            String userMail = tenantInfoDataManager.getValue(tenantName,
-                                                             TenantInfoFieldName.PROPERTY_USER_MAIL);
-            String templateId = tenantInfoDataManager.getValue(tenantName,
-                                                               TenantInfoFieldName.PROPERTY_TEMPLATE_ID);
-
+        if ("all".equalsIgnoreCase(state)
+            || tState.equals(TenantState.valueOf(tenantInfoDataManager.getValue(tenantName,
+                                                                                TenantInfoFieldName.PROPERTY_STATE)))) {
+          String userMail = tenantInfoDataManager.getValue(tenantName,
+                                                           TenantInfoFieldName.PROPERTY_USER_MAIL);
+          String templateId = tenantInfoDataManager.getValue(tenantName,
+                                                             TenantInfoFieldName.PROPERTY_TEMPLATE_ID);
+          try {
             sendCustomEmail(userMail, tenantName, templateId, mailTemplate, subject);
-
-            counter++;
-            info.append(userMail);
-            info.append(' ');
-
-            try {
-              Thread.sleep(1100);
-            } catch (Throwable e) {
-              LOG.warn("Error of thread sleep in sendCustomEmail: " + e);
-            }
-            continue;
-          } else if (tState.equals(TenantState.valueOf(tenantInfoDataManager.getValue(tenantName,
-                                                                                      TenantInfoFieldName.PROPERTY_STATE)))) {
-            String userMail = tenantInfoDataManager.getValue(tenantName,
-                                                             TenantInfoFieldName.PROPERTY_USER_MAIL);
-            String templateId = tenantInfoDataManager.getValue(tenantName,
-                                                               TenantInfoFieldName.PROPERTY_TEMPLATE_ID);
-
-            sendCustomEmail(userMail, tenantName, templateId, mailTemplate, subject);
-
-            counter++;
-            info.append(userMail);
-            info.append(' ');
-
-            try {
-              Thread.sleep(1100);
-            } catch (Throwable e) {
-              LOG.warn("Error of thread sleep in sendCustomEmail: " + e);
-            }
+          } catch (Exception e) {
+            String msg = "Cannot send custom email '" + subject + "' to owner of tenant '"
+                + tenantName + "'. Skipping it.";
+            throw new CloudAdminException(msg);
           }
-        } catch (Exception e) {
-          LOG.error("Cannot send custom email '" + subject + "' to owner of tenant '" + tenantName
-              + "'. Skipping it.", e);
+          counter++;
+          info.append(userMail);
+          info.append(' ');
+
+          try {
+            Thread.sleep(1100);
+          } catch (Throwable e) {
+            LOG.warn("Error of thread sleep in sendCustomEmail: " + e);
+          }
         }
       }
       LOG.info("Send custom mail to users of " + state + " tenants." + " Email '" + subject

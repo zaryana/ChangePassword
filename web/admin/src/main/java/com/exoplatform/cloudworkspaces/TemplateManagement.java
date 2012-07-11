@@ -85,7 +85,7 @@ public class TemplateManagement {
           LOG.error("Cannot update templateId");
         }
       } catch (TenantDataManagerException e) {
-        throw new CloudAdminException(e.getLocalizedMessage(), e);
+        throw new CloudAdminException(e.getMessage(), e);
       }
       counter++;
     }
