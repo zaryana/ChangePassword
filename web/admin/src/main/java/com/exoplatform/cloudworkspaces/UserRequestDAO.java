@@ -23,8 +23,9 @@ public class UserRequestDAO {
   public UserRequestDAO(Configuration cloudAdminConfiguration, PasswordCipher passwordCipher) {
     this.cloudAdminConfiguration = cloudAdminConfiguration;
     if (System.getProperty("cloud.admin.crypt.registration.password") != null
-        && System.getProperty("cloud.admin.crypt.registration.password").equals("true"))
+        && System.getProperty("cloud.admin.crypt.registration.password").equals("true")) {
       this.passwordCipher = passwordCipher;
+    }
   }
 
   public void put(UserRequest req) throws CloudAdminException {

@@ -20,6 +20,7 @@ package com.exoplatform.cloudworkspaces;
 
 import com.exoplatform.cloudworkspaces.dao.ModifiableEmailValidationStorage;
 import com.exoplatform.cloudworkspaces.http.WorkspacesOrganizationRequestPerformer;
+import com.sun.mail.iap.Response;
 
 import org.apache.commons.configuration.Configuration;
 import org.exoplatform.cloudmanagement.admin.CloudAdminException;
@@ -42,6 +43,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+
+import javax.ws.rs.core.Response.Status;
 
 public class NotificationMailSender {
 
@@ -376,7 +379,7 @@ public class NotificationMailSender {
    * @param emailTemplate String
    * @param subject String
    * @param state String
-   * @throws CloudAdminException
+   * @throws CloudAdminException if cannot send custom email
    */
   public void sendEmailForTenantsToState(String emailTemplate, String subject, String state) throws CloudAdminException {
     int counter = 0;
@@ -384,32 +387,28 @@ public class NotificationMailSender {
     TenantState tState = null;
     final String confDir = System.getProperty("cloud.admin.configuration.dir");
     String mailTemplate = confDir + "/" + emailTemplate;
+    boolean ifEqualsIgnoreCase = "all".equalsIgnoreCase(state);
 
-    if ("all".equalsIgnoreCase(state)) {
+    if (ifEqualsIgnoreCase) {
       sendEmailToValidation(emailTemplate, subject);
     } else {
       tState = TenantState.valueOf(state.toUpperCase());
     }
-    if ("all".equalsIgnoreCase(state) || tState != null) {
+    if (ifEqualsIgnoreCase || tState != null) {
       LOG.info("Sending custom email '" + subject + "' to users of " + state + " tenants.");
 
       Set<String> tenants = tenantInfoDataManager.getNames();
 
       for (String tenantName : tenants) {
-        if ("all".equalsIgnoreCase(state)
+        if (ifEqualsIgnoreCase
             || tState.equals(TenantState.valueOf(tenantInfoDataManager.getValue(tenantName,
                                                                                 TenantInfoFieldName.PROPERTY_STATE)))) {
           String userMail = tenantInfoDataManager.getValue(tenantName,
                                                            TenantInfoFieldName.PROPERTY_USER_MAIL);
           String templateId = tenantInfoDataManager.getValue(tenantName,
                                                              TenantInfoFieldName.PROPERTY_TEMPLATE_ID);
-          try {
-            sendCustomEmail(userMail, tenantName, templateId, mailTemplate, subject);
-          } catch (Exception e) {
-            String msg = "Cannot send custom email '" + subject + "' to owner of tenant '"
-                + tenantName + "'. Skipping it.";
-            throw new CloudAdminException(msg);
-          }
+          sendCustomEmail(userMail, tenantName, templateId, mailTemplate, subject);
+
           counter++;
           info.append(userMail);
           info.append(' ');
@@ -423,7 +422,8 @@ public class NotificationMailSender {
       }
       LOG.info("Send custom mail to users of " + state + " tenants." + " Email '" + subject
           + "' sent to " + counter + " users" + (counter > 0 ? ": " + info.toString() : ""));
-    } else
-      LOG.error("Cannot send custom email '" + subject + ". Skipping it.");
+    } else {
+      throw new CloudAdminException(400, "Wrong state.");
+    }
   }
 }

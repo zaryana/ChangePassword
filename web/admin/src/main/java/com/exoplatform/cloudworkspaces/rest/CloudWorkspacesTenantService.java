@@ -859,7 +859,7 @@ public class CloudWorkspacesTenantService {
    * @param String mailTemplate mail template to be send to given users
    * @param String mailSubject subject for a mail message
    * @return Response OK with details message or an error.
-   * @throws CloudAdminException if error occurs
+   * @throws Exception if cannot send send custom email
    */
   @POST
   @RolesAllowed({ "cloud-admin", "cloud-manager" })
@@ -867,14 +867,19 @@ public class CloudWorkspacesTenantService {
   @Produces(MediaType.TEXT_PLAIN)
   public Response sendMail(@FormParam("template") String mailTemplate,
                            @FormParam("subject") String mailSubject,
-                           @PathParam("state") String state) throws CloudAdminException {
-
-    if (state.compareToIgnoreCase((TenantState.VALIDATING_EMAIL.toString())) == 0) {
-      notificationMailSender.sendEmailToValidation(mailTemplate, mailSubject);
-    } else {
-      notificationMailSender.sendEmailForTenantsToState(mailTemplate, mailSubject, state);
+                           @PathParam("state") String state) throws Exception {
+    try {
+      if (TenantState.VALIDATING_EMAIL.toString().equalsIgnoreCase(state)) {
+        notificationMailSender.sendEmailToValidation(mailTemplate, mailSubject);
+      } else {
+        notificationMailSender.sendEmailForTenantsToState(mailTemplate, mailSubject, state);
+      }
+    } catch (CloudAdminException e) {
+      String msg = "Cannot send custom email '" + mailSubject + ", mail template is "
+          + mailTemplate + "'. Skipping it.";
+      LOG.info(msg);
+      throw e;
     }
-
     return Response.ok().build();
   }
 
