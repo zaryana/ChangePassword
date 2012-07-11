@@ -336,6 +336,47 @@ p {
   color:#7edcff;
 }
 
+.GetStartedPage .BorderDot .UserInput {
+    vertical-align: middle;
+    width: 148px;
+}
+
+.GetStartedPage .BorderDot .FieldLabel {
+    font-family: verdana;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 4px 20px 4px 4px;
+	vertical-align: top;
+	text-align: right;
+}
+
+.GetStartedPage .BorderDot .FieldComment input {
+    border: 1px solid #D3D3D3;
+    border-radius: 3px 3px 3px 3px;
+    box-shadow: 2px 2px 2px #F1F1F1 inset;
+    height: 18px;
+    padding: 6px 0;
+    width: 260px;
+	margin-bottom: 10px;
+}
+
+.GetStartedPage .BorderDot .LeftAvt{
+	margin-right: 100px;
+}
+
+.GetStartedPage .BorderDot .LeftAvt p{
+	margin: 0px 0px 10px;
+}
+
+.GetStartedPage .BorderDot .LeftAvt .BTBrowse{
+	border: 1px solid #C2C2C2;
+    border-radius: 4px 4px 4px 4px;
+    box-shadow: 0 -10px 12px #E7E7E7 inset;
+    color: #3D3D3D;
+    font-weight: bold;
+    padding: 4px 24px;
+}
+
 
 /** Ribbon **/
 
@@ -1217,17 +1258,23 @@ hr {
 	margin: 4px 6px 10px 23px;
 }
 
-.StartedStep .FormInput input, .StartedStep .FormInput textarea {
+.StepEmail .FormInput input, .StepEmail .FormInput textarea {
 	width: 414px;
 }
 
 .StartedStep .FormButton{
 	padding: 0px 0px 20px 12px;
-	vertical-align: top;
+	vertical-align: bottom;
 }
 
 .StartedStep .LeftStartTip{
-	margin: 0px 398px 12px 62px;
+	margin: 0px 386px 12px 62px;
+	padding-top: 30px;
+}
+
+.StartedStep .LeftStartTipST3{
+	margin: 0px 386px 12px 62px;
+	padding-top: 5px;
 }
 
 .StartedStep .RightStartTip{
@@ -1248,6 +1295,10 @@ hr {
 	color: #8b8b8b;
 }
 
+.StartedStep .ST3 {
+	margin: 36px 64px 41px 62px;
+}
+
 .StartedStep .BorderDot{
 	margin-left: 62px;
 	border-bottom: 1px dotted #ccc;
@@ -1255,7 +1306,7 @@ hr {
 
 .StartedStep .HelpText{
 	border: 2px dashed #FFE08B;
-    padding: 16px 0 16px 33px;
-    width: 397px;
+    padding: 14px 17px 14px 17px;
+    width: 224px;
 	border-radius: 12px;
 }

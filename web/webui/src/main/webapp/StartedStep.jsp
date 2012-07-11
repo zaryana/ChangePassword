@@ -39,7 +39,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<%=lang%>" lang="<%=lang%>" dir="ltr">
   <head>
-    <script type="text/javascript" src="https://getfirebug.com/firebug-lite-debug.js"></script>
+    <!--script type="text/javascript" src="https://getfirebug.com/firebug-lite-debug.js"></script-->
     <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
     <% String pageName = "Welcome to Cloud Workspaces"; %>
     <%@ include file="common/headStyle.jsp"%>
@@ -57,6 +57,7 @@
   <body onLoad="CloudLogin.initCloudLogin(<%=CloudLoginRestService.MAX_AVATAR_LENGTH%>, '<%=CloudLoginRestService.AVATAR_UPLOAD_ID%>', '<%=CloudLoginServiceImpl.getAvatarUriPath()%>', '<%=CloudLoginRestService.getProfileWsPath()%>');">
   <div class="GetStartedPage">
   
+  
     <div class="UIFormBox StartedStep" style="display: block;" name="" id="StepProfile" >
       <h1 class="StartedBarBG">Welcome to Cloud Workspaces - Get started in 3 easy steps</h1>
       <div class="Steps" id="">
@@ -64,18 +65,28 @@
         <a href="#" onclick="CloudLogin.doNothing(event);" class="StepSelectIcon" style="left: 60px;">1</a><a href="#" onclick="CloudLogin.validateStepProfile(event);" class="StartedIcon" style="left: 310px;" >2</a><a href="#" onclick="CloudLogin.doNothing(event);" class="StepIcon" style="left: 569px;">3</a>
       </div>
       <h3>Step 1: Complete your profile</h3>
-      <p><strong>Securely manage your work files in the cloud - add a few to get started.</strong></p>
       <table class="BorderDot" cols="2">
         <tbody>
           <tr>
+            <td class="FieldLabel UserInput">Username:</td>
+            <td class="FieldComment" colspan='2'><input type="text" id="nameProfile"></td>
+          </tr>
+          <tr>
+            <td class="FieldLabel UserInput">Your current position:</td>
+            <td class="FieldComment" colspan='2'><input type="text" id="posProfile"></td>
+          </tr>
+          <tr>
+            <td class="FieldLabel UserInput">Add a profile picture:</td>
             <td class="FormInput">
-              <div class="HelpText" id="fileDropZone">
-              <input type="text" name="nameProfile" id="nameProfile" />
-              <input type="text" name="posProfile" id="posProfile" />
-              <form id="formFileAvatar" method="POST" action="<%=CloudLoginRestService.getUploadWsPath()%>?<%=CloudLoginRestService.WS_UPLOAD_PARAM_UPLOAD_ID%>=<%=CloudLoginRestService.AVATAR_UPLOAD_ID%>" enctype="multipart/form-data" >
-                <input type="file" name="datafile" id="datafile" />
-              </form>
-              <img src="<%=request.getContextPath()%>/background/VoteMB.png" id="avatarImage" style="width: 56px;height: 56px;" />
+              <div class="ClearFix HelpText" id="fileDropZone">
+                <span class="FR"><img alt="" src="<%=request.getContextPath()%>/background/img_avt.png" id="avatarImage" style="width: 80px;height: 77px;" /></span>
+                <div class="LeftAvt">
+                  <p>Drag an image here or</p>
+                  <span class="fileinput-button">
+                    <div class="BTBrowse">Browse</div>
+                    <input type="file" name="datafile" id="datafile" />
+                  </span>
+                </div>
               </div>
             </td>
             <td class="FormButton"> <input type="button" onclick="CloudLogin.validateStepProfile(event);" value="Next" id="t_submit_profile" class="Button" /></td>
@@ -84,7 +95,7 @@
       </table>
       <div class="ClearFix StartTip">
         <a href="#" class="FR RightStartTip"><img width="264" src="<%=request.getContextPath()%>/background/img_st.png" alt=""/></a>
-        <p class="LeftStartTip"><strong>Tip:</strong> Easily access your documents on your iPhone, iPad or Android device with the eXo mobile app. You can keep files private, share them with specific coworkers or publish them in a dedicated space.</p>
+        <p class="LeftStartTip"><strong>Tip:</strong> Tip: Find and connect with your colleagues to see their latest updates in your activity stream.</p>
       </div>
       <div class="Link"><a href="#" onclick="CloudLogin.exit();" class="Link">Skip to homepage >></a></div>
     </div>
@@ -113,19 +124,19 @@
       </table>
       <div class="ClearFix StartTip">
         <a href="#" class="FR RightStartTip"><img width="264" src="<%=request.getContextPath()%>/background/img_st.png" alt=""/></a>
-        <p class="LeftStartTip"><strong>Tip:</strong> Easily access your documents on your iPhone, iPad or Android device with the eXo mobile app. You can keep files private, share them with specific coworkers or publish them in a dedicated space.</p>
+        <p class="LeftStartTip"><strong>Tip:</strong> Spaces provide the tools to make your internal work more productive, including wikis, forums, group calendars and more.</p>
       </div>
       <div class="Link"><a href="#" onclick="CloudLogin.exit();">Skip to homepage &gt;&gt;</a></div>
     </form>
   
-    <form class="UIFormBox StartedStep" style="display: none;" name="" id="StepEmail" method="POST" action="javascript:void(0);" >
+    <form class="UIFormBox StartedStep StepEmail" style="display: none;" name="" id="StepEmail" method="POST" action="javascript:void(0);" >
       <h1 class="StartedBarBG">Welcome to Cloud Workspaces - Get started in 3 easy steps</h1>
       <div class="Steps" id="">
         <span class="StepBG"></span>
         <a href="#" onclick="CloudLogin.doNothing(event);" class="StepIcon" style="left: 60px;">1</a><a href="#" onclick="CloudLogin.doNothing(event);" class="StepIcon" style="left: 310px;" >2</a><a href="#" onclick="CloudLogin.doNothing(event);" class="StepSelectIcon" style="left: 569px;">3</a>
       </div>
       <h3>Step 3: Invite Coworkers</h3>
-      <p><strong>Send email invitations to your coworkers to connect with them in your social intranet.</strong><br/>(note: Only @ email addresses will be invited to your workspace. Other addresses will receive an invitation to discover Cloud Workspaces)</p>
+      <p class="ST3"><strong>Send email invitations to your coworkers to connect with them in your social intranet.</strong><br/>(note: Only @ email addresses will be invited to your workspace. Other addresses will receive an invitation to discover Cloud Workspaces)</p>
       
       <div id="messageString" class="TenantFormMsg" style="display:none"></div>
       <table class="BorderDot">
@@ -140,7 +151,7 @@
       </table>
       <div class="ClearFix StartTip">
         <a href="#" class="FR RightStartTip"><img width="264" src="<%=request.getContextPath()%>/background/img_st.png" alt=""/></a>
-        <p class="LeftStartTip"><strong>Tip:</strong> Connecting with your colleagues will allow you to share documents, calendars, wiki pages and view their latest updates in your activity stream.</p>
+        <p class="LeftStartTipST3"><strong>Tip:</strong> Easily access your documents on your iPhone, iPad or Android device with the eXo mobile app. You can keep files private, share them with specific coworkers or publish them in a dedicated space.</p>
       </div>
       <div class="Link"><a href="#" onclick="CloudLogin.exit();" class="Link">Skip to homepage >></a></div>
     </form>

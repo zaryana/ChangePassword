@@ -86,6 +86,8 @@ CloudLogin.AVATAR_EXT_REGEXP = /^(gif|jpeg|jpg|png)$/i;
 
 // Session variables
 CloudLogin.AVATAR_FILE_NAME = "";
+CloudLogin.PROFILE_NAME = "";
+CloudLogin.PROFILE_POSITION = "";
 CloudLogin.ERROR_MESSAGE = "";
 
 CloudLogin.showStepProfile = function(event) {
@@ -100,8 +102,10 @@ CloudLogin.showStepProfile = function(event) {
 
 CloudLogin.initUploadFile = function() {
   $(document).ready(function() {
-    $('#formFileAvatar').fileupload({
+    $('#datafile').fileupload({
       dropZone: $('#fileDropZone'),
+      url: "/portal/rest/cloudlogin/uploadavatar?uploadId=cloudloginavatar",
+      type: "POST",
       // Redefine add method to filter with size and file type
       add: function (e, data) {
         var fileOk = true;
@@ -160,6 +164,19 @@ CloudLogin.validateStepProfile = function(event) {
   var nameProfile = $("#nameProfile").val();
   var posProfile = $("#posProfile").val();
   
+  if(nameProfile != CloudLogin.PROFILE_NAME) {
+    CloudLogin.PROFILE_NAME = nameProfile;
+  }
+  else {
+    nameProfile = ""; // we cannot resubmit this data, this is same as previous submit
+  }
+  if(posProfile != CloudLogin.PROFILE_POSITION) {
+    CloudLogin.PROFILE_POSITION = posProfile;
+  }
+  else {
+    posProfile = ""; // we cannot resubmit this data, this is same as previous submit
+  }
+  
   if((nameProfile != undefined && nameProfile != "") 
   || (posProfile != undefined && posProfile != "") 
   || (CloudLogin.AVATAR_FILE_NAME != undefined && CloudLogin.AVATAR_FILE_NAME != "")) {
@@ -174,7 +191,7 @@ CloudLogin.validateStepProfile = function(event) {
 
 CloudLogin.finalizeUpdateProfile = function() {
   if(CloudLogin.ERROR_MESSAGE == "") {
-    // Clean image avatar
+    // Clean data avatar
     CloudLogin.AVATAR_FILE_NAME = "";
   
     // Show next step

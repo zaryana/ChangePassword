@@ -146,16 +146,17 @@ public class CloudLoginRestService implements ResourceContainer {
                 @QueryParam("name") String name,
                 @QueryParam("position") String position) {
 
+    boolean hasNewAvatar = (fileName != null && uploadId != null);
     CacheControl cacheControl = new CacheControl();
     cacheControl.setNoCache(true);
     
-    if(fileName != null && uploadId != null) {
-      
-      try {
-        String userId = ConversationState.getCurrent().getIdentity().getUserId();
-        
+    try {
+      String userId = ConversationState.getCurrent().getIdentity().getUserId();
+      UploadResource resource = null;
+
+      if(hasNewAvatar) {
         // Get resource uploaded into server
-        UploadResource resource = uploadService.getUploadResource(uploadId);
+        resource = uploadService.getUploadResource(uploadId);
         if(resource != null) {
           File file = new File(resource.getStoreLocation());
           String mimeType = resource.getMimeType();
@@ -171,22 +172,26 @@ public class CloudLoginRestService implements ResourceContainer {
             logger.warn("File size is too large: " + file.length());
             return Response.ok("File size is too large: " + file.length() + " (Max=" + MAX_AVATAR_LENGTH + ")", MediaType.TEXT_PLAIN).cacheControl(cacheControl).build();
           }
-          
-          // Update user profile
-          cloudLoginService.updateProfile(userId, resource, name, position);
-  
-          // Delete temporary avatar
-          cloudLoginService.deleteTempAvatarNode();
-        }
-        else {
-          logger.warn("Upload resource with id " + uploadId + " cannot be found.");
         }
       }
-      catch(Exception e) {
-        logger.error("WS " + WS_ROOT_PATH + "/setavatar has a problem with getting node of avatar", e);
-        return Response.status(HTTPStatus.INTERNAL_ERROR).cacheControl(cacheControl).build();
+      else {
+        logger.warn("Upload resource with id " + uploadId + " cannot be found.");
       }
-      finally {
+        
+      // Update user profile
+      cloudLoginService.updateProfile(userId, resource, name, position);
+
+      if(hasNewAvatar) {
+        // Delete temporary avatar
+        cloudLoginService.deleteTempAvatarNode();
+      }
+    }
+    catch(Exception e) {
+      logger.error("WS " + WS_ROOT_PATH + "/setavatar has a problem with getting node of avatar", e);
+      return Response.status(HTTPStatus.INTERNAL_ERROR).cacheControl(cacheControl).build();
+    }
+    finally {
+      if(hasNewAvatar) {
         uploadService.removeUploadResource(uploadId);
       }
     }
