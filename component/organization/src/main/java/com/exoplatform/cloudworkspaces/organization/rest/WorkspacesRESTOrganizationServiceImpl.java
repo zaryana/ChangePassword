@@ -56,7 +56,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-
 /**
  * The Class IntranetRESTOrganizationServiceImpl.
  */
@@ -136,14 +135,15 @@ public class WorkspacesRESTOrganizationServiceImpl {
   @POST
   @Path("/adduser")
   @RolesAllowed("cloud-admin")
-  public Response createUser(@FormParam("tname") String tname,
-                             @FormParam("URI") String baseURI,
-                             @FormParam("username") String userName,
-                             @FormParam("password") String password,
-                             @FormParam("first-name") String firstName,
-                             @FormParam("last-name") String lastName,
-                             @FormParam("email") String email,
-                             @FormParam("isadministrator") String administrator) throws Exception {
+  public Response createUser(@FormParam("tname")
+  String tname, @FormParam("URI")
+  String baseURI, @FormParam("username")
+  String userName, @FormParam("password")
+  String password, @FormParam("first-name")
+  String firstName, @FormParam("last-name")
+  String lastName, @FormParam("email")
+  String email, @FormParam("isadministrator")
+  String administrator) throws Exception {
     try {
       repositoryService.setCurrentRepositoryName(tname);
       UserHandler userHandler = organizationService.getUserHandler();
@@ -165,7 +165,10 @@ public class WorkspacesRESTOrganizationServiceImpl {
                                                                   true);
       }
 
-      return Response.status(HTTPStatus.CREATED).entity("Created").build();
+      return Response.status(HTTPStatus.CREATED)
+                     .entity("Created")
+                     .type(MediaType.TEXT_PLAIN)
+                     .build();
     } catch (Exception e) {
       String err = "Unable to store user " + userName + " in tenant " + tname;
       LOG.error(err, e);
@@ -188,8 +191,9 @@ public class WorkspacesRESTOrganizationServiceImpl {
   @Produces(MediaType.APPLICATION_JSON)
   @Path("/users/{tname}")
   @RolesAllowed("cloud-admin")
-  public Map<String, String> getUsersList(@PathParam("tname") String tname,
-                                          @QueryParam("administratorsonly") String onlyAdmins) throws Exception {
+  public Map<String, String> getUsersList(@PathParam("tname")
+  String tname, @QueryParam("administratorsonly")
+  String onlyAdmins) throws Exception {
     try {
       Map<String, String> result = new HashMap<String, String>();
       repositoryService.setCurrentRepositoryName(tname);
@@ -217,7 +221,9 @@ public class WorkspacesRESTOrganizationServiceImpl {
   @GET
   @Path("/usernamebyemail/{tname}/{email}")
   @RolesAllowed("cloud-admin")
-  public Response hasUserByEmail(@PathParam("tname") String tname, @PathParam("email") String email) {
+  public Response hasUserByEmail(@PathParam("tname")
+  String tname, @PathParam("email")
+  String email) {
     try {
       repositoryService.setCurrentRepositoryName(tname);
       Query emailQuery = new Query();
@@ -225,7 +231,9 @@ public class WorkspacesRESTOrganizationServiceImpl {
       ListAccess<User> users = organizationService.getUserHandler().findUsersByQuery(emailQuery);
       if (users.getSize() == 0)
         return Response.status(404).build();
-      return Response.ok(String.valueOf(users.load(0, 1)[0].getUserName())).build();
+      return Response.ok(String.valueOf(users.load(0, 1)[0].getUserName()))
+                     .type(MediaType.TEXT_PLAIN)
+                     .build();
     } catch (Exception e) {
       String err = "Unable to find users by email in workspace " + tname;
       LOG.error(err, e);
@@ -239,9 +247,10 @@ public class WorkspacesRESTOrganizationServiceImpl {
   @POST
   @Path("/newpassword")
   @RolesAllowed("cloud-admin")
-  public Response updatePassword(@FormParam("tname") String tname,
-                                 @FormParam("username") String userName,
-                                 @FormParam("password") String password) throws Exception {
+  public Response updatePassword(@FormParam("tname")
+  String tname, @FormParam("username")
+  String userName, @FormParam("password")
+  String password) throws Exception {
     try {
       repositoryService.setCurrentRepositoryName(tname);
       User user = organizationService.getUserHandler().findUserByName(userName);
@@ -267,6 +276,7 @@ public class WorkspacesRESTOrganizationServiceImpl {
       } else {
         return Response.status(Status.BAD_REQUEST)
                        .entity("User " + userName + " not found on " + tname)
+                       .type(MediaType.TEXT_PLAIN)
                        .build();
       }
     } catch (Exception e) {

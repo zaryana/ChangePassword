@@ -135,7 +135,8 @@ public class CloudWorkspacesTenantService {
    */
   @POST
   @Path("/signup")
-  public Response signup(@FormParam("user-mail") String userMail) throws CloudAdminException {
+  public Response signup(@FormParam("user-mail")
+  String userMail) throws CloudAdminException {
     LOG.info("Received Signup request from " + userMail);
     String tName = null;
     String username = null;
@@ -153,7 +154,8 @@ public class CloudWorkspacesTenantService {
       tName = userInfo.getTenant();
 
       if (emailBlacklist.isInBlackList(userMail) && !tName.equals(utils.getSandboxTenantName())) {
-        LOG.info("User " + userMail + " rejected. Need work email address. Redirecting to tryagain.jsp...");
+        LOG.info("User " + userMail
+            + " rejected. Need work email address. Redirecting to tryagain.jsp...");
         return Response.status(309)
                        .header("Location",
                                "http://"
@@ -169,8 +171,8 @@ public class CloudWorkspacesTenantService {
         LOG.info("User " + userMail + " already signed up to " + tName
             + ". Wait until a workspace will be created.");
         return Response.ok("You already signed up. Wait until your workspace will be created. We will inform you when it will be ready.")
-                      .type(MediaType.TEXT_PLAIN)
-                      .build();
+                       .type(MediaType.TEXT_PLAIN)
+                       .build();
       }
     } catch (TenantAlreadyExistException ex) {
       Map<String, String> props = new HashMap<String, String>();
@@ -244,7 +246,10 @@ public class CloudWorkspacesTenantService {
           String msg = "Sorry, we cannot process your join request right now, workspace seems not ready. Please, try again later.";
           LOG.warn("Signup failed for user " + userMail + ", tenant " + tName + " state is "
               + tenantInfoDataManager.getValue(tName, TenantInfoFieldName.PROPERTY_STATE));
-          return Response.status(Status.SERVICE_UNAVAILABLE).entity(msg).type(MediaType.TEXT_PLAIN).build();
+          return Response.status(Status.SERVICE_UNAVAILABLE)
+                         .entity(msg)
+                         .type(MediaType.TEXT_PLAIN)
+                         .build();
         }
         }
       } catch (UserAlreadyExistsException e) {
@@ -291,13 +296,17 @@ public class CloudWorkspacesTenantService {
    */
   @POST
   @Path("/signup-link")
-  public Response signupLink(@FormParam("user-mail") String userMail) throws CloudAdminException {
+  public Response signupLink(@FormParam("user-mail")
+  String userMail) throws CloudAdminException {
     LOG.info("Received Signup Link request for " + userMail);
     String tName = null;
     String username = null;
     try {
       if (!utils.validateEmail(userMail)) {
-        return Response.status(Status.BAD_REQUEST).entity("Invalid email address.").build();
+        return Response.status(Status.BAD_REQUEST)
+                       .entity("Invalid email address.")
+                       .type(MediaType.TEXT_PLAIN)
+                       .build();
       }
 
       UserMailInfo userInfo = utils.email2userMailInfo(userMail);
@@ -308,6 +317,7 @@ public class CloudWorkspacesTenantService {
         return Response.status(Status.BAD_REQUEST)
                        .entity("Cannot sign up with an email address " + domain
                            + ". Require work email.")
+                       .type(MediaType.TEXT_PLAIN)
                        .build();
       }
 
@@ -327,6 +337,7 @@ public class CloudWorkspacesTenantService {
                            + " already signed up to "
                            + tName
                            + ". Wait until a workspace will be created. The user will be informed when it will be ready.")
+                       .type(MediaType.TEXT_PLAIN)
                        .build();
       }
     } catch (TenantAlreadyExistException ex) {
@@ -345,6 +356,7 @@ public class CloudWorkspacesTenantService {
                          .entity("http://"
                              + AdminConfigurationUtil.getMasterHost(cloudAdminConfiguration)
                              + "/join.jsp?rfid=" + uuid)
+                         .type(MediaType.TEXT_PLAIN)
                          .build();
         }
         case ONLINE: {
@@ -356,6 +368,7 @@ public class CloudWorkspacesTenantService {
                            .entity("http://"
                                + AdminConfigurationUtil.getMasterHost(cloudAdminConfiguration)
                                + "/join.jsp?rfid=" + uuid)
+                           .type(MediaType.TEXT_PLAIN)
                            .build();
           } else {
             LOG.info("Link request for join of user " + userMail + " to " + tName
@@ -363,6 +376,7 @@ public class CloudWorkspacesTenantService {
             return Response.status(Status.BAD_REQUEST)
                            .entity("Cannot invite " + userMail + " to " + tName
                                + ". Maximum number of users reached.")
+                           .type(MediaType.TEXT_PLAIN)
                            .build();
           }
         }
@@ -371,13 +385,17 @@ public class CloudWorkspacesTenantService {
           LOG.warn("Link request for signup of user " + userMail + " failed, tenant " + tName
               + " state is "
               + tenantInfoDataManager.getValue(tName, TenantInfoFieldName.PROPERTY_STATE));
-          return Response.status(Status.SERVICE_UNAVAILABLE).entity(msg).build();
+          return Response.status(Status.SERVICE_UNAVAILABLE)
+                         .entity(msg)
+                         .type(MediaType.TEXT_PLAIN)
+                         .build();
         }
         }
       } catch (UserAlreadyExistsException e) {
         LOG.info("Client error: user " + userMail + " already signed up to " + tName + ".");
         return Response.status(Status.CONFLICT)
                        .entity("User " + userMail + " already signed up to " + tName + ".")
+                       .type(MediaType.TEXT_PLAIN)
                        .build();
       }
     }
@@ -396,32 +414,37 @@ public class CloudWorkspacesTenantService {
    */
   @POST
   @Path("/join")
-  public Response joinIntranet(@FormParam("user-mail") String userMail,
-                               @FormParam("first-name") String firstName,
-                               @FormParam("last-name") String lastName,
-                               @FormParam("password") String password,
-                               @FormParam("confirmation-id") String uuid) throws CloudAdminException {
+  public Response joinIntranet(@FormParam("user-mail")
+  String userMail, @FormParam("first-name")
+  String firstName, @FormParam("last-name")
+  String lastName, @FormParam("password")
+  String password, @FormParam("confirmation-id")
+  String uuid) throws CloudAdminException {
     String tName = null;
     String username = null;
     try {
       if (!utils.validateEmail(userMail))
         return Response.status(Status.BAD_REQUEST)
                        .entity("Please enter a valid email address.")
+                       .type(MediaType.TEXT_PLAIN)
                        .build();
 
       if (!utils.validateUUID(userMail, uuid))
         return Response.status(Status.BAD_REQUEST)
                        .entity("Email address provided does not match with hash.")
+                       .type(MediaType.TEXT_PLAIN)
                        .build();
 
       if (!utils.validateName(firstName))
         return Response.status(Status.BAD_REQUEST)
                        .entity("Sorry, such first-name is not allowed. Please correct it and sign up again.")
+                       .type(MediaType.TEXT_PLAIN)
                        .build();
 
       if (!utils.validateName(lastName))
         return Response.status(Status.BAD_REQUEST)
                        .entity("Sorry, such last-name is not allowed. Please correct it and sign up again.")
+                       .type(MediaType.TEXT_PLAIN)
                        .build();
 
       UserMailInfo userInfo = utils.email2userMailInfo(userMail);
@@ -526,7 +549,10 @@ public class CloudWorkspacesTenantService {
       default: {
         String msg = "Sorry, we cannot process your join request right now, workspace seems not ready. Please, try again later.";
         LOG.warn("Joining user " + userMail + " failed, tenant " + tName + " state is " + tState);
-        return Response.status(Status.SERVICE_UNAVAILABLE).entity(msg).build();
+        return Response.status(Status.SERVICE_UNAVAILABLE)
+                       .entity(msg)
+                       .type(MediaType.TEXT_PLAIN)
+                       .build();
       }
       }
 
@@ -564,36 +590,42 @@ public class CloudWorkspacesTenantService {
    */
   @POST
   @Path("/create")
-  public Response createIntranet(@FormParam("user-mail") String userMail,
-                                 @FormParam("first-name") String firstName,
-                                 @FormParam("last-name") String lastName,
-                                 @FormParam("company-name") String companyName,
-                                 @FormParam("phone") String phone,
-                                 @FormParam("password") String password,
-                                 @FormParam("confirmation-id") String uuid) throws CloudAdminException {
+  public Response createIntranet(@FormParam("user-mail")
+  String userMail, @FormParam("first-name")
+  String firstName, @FormParam("last-name")
+  String lastName, @FormParam("company-name")
+  String companyName, @FormParam("phone")
+  String phone, @FormParam("password")
+  String password, @FormParam("confirmation-id")
+  String uuid) throws CloudAdminException {
     if (!utils.validateEmail(userMail))
       return Response.status(Status.BAD_REQUEST)
                      .entity("Please enter a valid email address.")
+                     .type(MediaType.TEXT_PLAIN)
                      .build();
 
     if (!utils.validateUUID(userMail, uuid))
       return Response.status(Status.BAD_REQUEST)
                      .entity("Sorry, your registration link has expired. Please sign up again.")
+                     .type(MediaType.TEXT_PLAIN)
                      .build();
 
     if (!utils.validateName(firstName))
       return Response.status(Status.BAD_REQUEST)
                      .entity("Sorry, such first-name is not allowed. Please correct it and sign up again.")
+                     .type(MediaType.TEXT_PLAIN)
                      .build();
 
     if (!utils.validateName(lastName))
       return Response.status(Status.BAD_REQUEST)
                      .entity("Sorry, such last-name is not allowed. Please correct it and sign up again.")
+                     .type(MediaType.TEXT_PLAIN)
                      .build();
 
     if (!utils.validateName(companyName))
       return Response.status(Status.BAD_REQUEST)
                      .entity("Sorry, such company is not allowed. Please correct it and sign up again.")
+                     .type(MediaType.TEXT_PLAIN)
                      .build();
 
     if (emailBlacklist.isInBlackList(userMail)) {
@@ -601,6 +633,7 @@ public class CloudWorkspacesTenantService {
       return Response.status(Status.BAD_REQUEST)
                      .entity("Sorry, we can't create workspace with an email address " + domain
                          + ". Try with your work email.")
+                     .type(MediaType.TEXT_PLAIN)
                      .build();
     }
     String tName = utils.email2userMailInfo(userMail).getTenant();
@@ -631,7 +664,10 @@ public class CloudWorkspacesTenantService {
     } catch (TenantAlreadyExistException e) {
       LOG.warn(" Duplicate creation request for tenant " + tName + " from " + userMail);
       referencesManager.removeEmail(userMail);
-      return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
+      return Response.status(Status.BAD_REQUEST)
+                     .entity(e.getMessage())
+                     .type(MediaType.TEXT_PLAIN)
+                     .build();
     }
   }
 
@@ -646,7 +682,8 @@ public class CloudWorkspacesTenantService {
   @GET
   @Path("/status/{tenantname}")
   @Produces(MediaType.TEXT_PLAIN)
-  public Response tenantStatus(@PathParam("tenantname") String tenantName) throws TenantDataManagerException {
+  public Response tenantStatus(@PathParam("tenantname")
+  String tenantName) throws TenantDataManagerException {
     if (tenantInfoDataManager.isExists(tenantName)) {
       String state = tenantInfoDataManager.getValue(tenantName, TenantInfoFieldName.PROPERTY_STATE);
       return Response.ok(state).build();
@@ -656,10 +693,11 @@ public class CloudWorkspacesTenantService {
 
   @POST
   @Path("/contactus")
-  public Response contactUs(@FormParam("user-mail") String userMail,
-                            @FormParam("first-name") String firstName,
-                            @FormParam("subject") String subject,
-                            @FormParam("text") String text) {
+  public Response contactUs(@FormParam("user-mail")
+  String userMail, @FormParam("first-name")
+  String firstName, @FormParam("subject")
+  String subject, @FormParam("text")
+  String text) {
     notificationMailSender.sendContactUsEmail(userMail, firstName, subject, text);
     return Response.ok().build();
   }
@@ -667,8 +705,9 @@ public class CloudWorkspacesTenantService {
   @GET
   @Path("/isuserexist/{tenantname}/{username}")
   @Produces(MediaType.TEXT_PLAIN)
-  public Response isuserexist(@PathParam("tenantname") String tName,
-                              @PathParam("username") String username) throws CloudAdminException {
+  public Response isuserexist(@PathParam("tenantname")
+  String tName, @PathParam("username")
+  String username) throws CloudAdminException {
     try {
       workspacesOrganizationRequestPerformer.isNewUserAllowed(tName, username);
       return Response.ok(Boolean.toString(false)).build();
@@ -680,30 +719,35 @@ public class CloudWorkspacesTenantService {
   @GET
   @Path("/maxallowed/{tenantname}")
   @Produces(MediaType.TEXT_PLAIN)
-  public Response maxallowed(@PathParam("tenantname") String tName) throws CloudAdminException {
+  public Response maxallowed(@PathParam("tenantname")
+  String tName) throws CloudAdminException {
     return Response.ok(Integer.toString(userLimitsStorage.getMaxUsersForTenant(tName))).build();
   }
 
   @GET
   @Path("uuid/{uuid}")
   @Produces(MediaType.TEXT_PLAIN)
-  public Response uuid(@PathParam("uuid") String uuid) throws CloudAdminException {
+  public Response uuid(@PathParam("uuid")
+  String uuid) throws CloudAdminException {
     String email = referencesManager.getEmail(uuid);
     if (email != null)
       return Response.ok(email).build();
     else
       return Response.status(Status.BAD_REQUEST)
                      .entity("Warning! You are using broken link to the Registration Page. Please sign up again.")
+                     .type(MediaType.TEXT_PLAIN)
                      .build();
   }
 
   @GET
   @Path("passrestore/{email}")
   @Produces(MediaType.TEXT_PLAIN)
-  public Response passrestore(@PathParam("email") String email) throws CloudAdminException {
+  public Response passrestore(@PathParam("email")
+  String email) throws CloudAdminException {
     if (!utils.validateEmail(email))
       return Response.status(Status.BAD_REQUEST)
                      .entity("Please enter a valid email address.")
+                     .type(MediaType.TEXT_PLAIN)
                      .build();
 
     UserMailInfo userinfo = utils.email2userMailInfo(email);
@@ -712,6 +756,7 @@ public class CloudWorkspacesTenantService {
     if (!tenantInfoDataManager.isExists(tName)) {
       return Response.status(Status.BAD_REQUEST)
                      .entity("This email " + email + " is not registered on Cloud Workspaces.")
+                     .type(MediaType.TEXT_PLAIN)
                      .build();
     }
     TenantState tState = TenantState.valueOf(tenantInfoDataManager.getValue(tName,
@@ -726,6 +771,8 @@ public class CloudWorkspacesTenantService {
         return Response.status(Status.BAD_REQUEST)
                        .entity("User with email " + email
                            + " is not registered on Cloud Workspaces.")
+                       .type(MediaType.TEXT_PLAIN)
+                       .type(MediaType.TEXT_PLAIN)
                        .build();
       }
       return Response.ok().build();
@@ -746,6 +793,7 @@ public class CloudWorkspacesTenantService {
     default: {
       return Response.status(Status.SERVICE_UNAVAILABLE)
                      .entity("Workspace " + tName + " seems not ready. Please, try again later.")
+                     .type(MediaType.TEXT_PLAIN)
                      .build();
     }
     }
@@ -754,7 +802,9 @@ public class CloudWorkspacesTenantService {
   @POST
   @Path("passconfirm")
   @Produces(MediaType.TEXT_PLAIN)
-  public Response passconfirm(@FormParam("uuid") String uuid, @FormParam("password") String password) throws CloudAdminException {
+  public Response passconfirm(@FormParam("uuid")
+  String uuid, @FormParam("password")
+  String password) throws CloudAdminException {
     // TODO if uuid not found, return BAD_REQUEST
     String email = changePasswordManager.validateReference(uuid);
     UserMailInfo userInfo = utils.email2userMailInfo(email);
@@ -776,7 +826,8 @@ public class CloudWorkspacesTenantService {
   @GET
   @Path("blacklisted/{email}")
   @Produces(MediaType.TEXT_PLAIN)
-  public Response blacklisted(@PathParam("email") String email) {
+  public Response blacklisted(@PathParam("email")
+  String email) {
     boolean blacklisted = emailBlacklist.isInBlackList(email);
     return Response.ok(Boolean.toString(blacklisted)).build();
   }
@@ -784,7 +835,8 @@ public class CloudWorkspacesTenantService {
   @GET
   @Path("usermailinfo/{email}")
   @Produces(MediaType.APPLICATION_JSON)
-  public UserMailInfo tenantname(@PathParam("email") String email) {
+  public UserMailInfo tenantname(@PathParam("email")
+  String email) {
     return utils.email2userMailInfo(email);
   }
 
@@ -799,7 +851,9 @@ public class CloudWorkspacesTenantService {
   @GET
   @Path("autojoin/{tenantname}/{state}")
   @Produces(MediaType.TEXT_PLAIN)
-  public Response joinall(@PathParam("tenantname") String tName, @PathParam("state") String state) throws CloudAdminException {
+  public Response joinall(@PathParam("tenantname")
+  String tName, @PathParam("state")
+  String state) throws CloudAdminException {
     RequestState rstate = RequestState.valueOf(state);
     usersManager.joinAll(tName, rstate);
     return Response.ok().build();
@@ -826,9 +880,11 @@ public class CloudWorkspacesTenantService {
   @POST
   @RolesAllowed({ "cloud-admin", "cloud-manager" })
   @Path("/sendmail/{state}")
-  public Response sendMail(@FormParam("template") String mailTemplate,
-                           @FormParam("subject") String mailSubject,
-                           @PathParam("state") String state) throws CloudAdminException {
+  @Produces(MediaType.TEXT_PLAIN)
+  public Response sendMail(@FormParam("template")
+  String mailTemplate, @FormParam("subject")
+  String mailSubject, @PathParam("state")
+  String state) throws CloudAdminException {
 
     if (state.compareToIgnoreCase((TenantState.VALIDATING_EMAIL.toString())) == 0) {
       notificationMailSender.sendEmailToValidation(mailTemplate, mailSubject);
@@ -842,6 +898,7 @@ public class CloudWorkspacesTenantService {
   @POST
   @RolesAllowed("cloud-admin")
   @Path("/update/templateid")
+  @Produces(MediaType.TEXT_PLAIN)
   public Response updateTempalateId() throws CloudAdminException {
 
     templateManagement.updateTemplateId();
