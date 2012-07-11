@@ -42,7 +42,6 @@ import org.exoplatform.ecm.connector.fckeditor.FCKUtils;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.jcr.core.ManageableRepository;
 import org.exoplatform.services.jcr.ext.common.SessionProvider;
-import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.OrganizationService;
@@ -67,15 +66,15 @@ public class CloudLoginServiceImpl implements CloudLoginService {
   private static Log logger = ExoLogger.getLogger(CloudLoginServiceImpl.class);
   private RepositoryService repositoryService;
   private OrganizationService organizationService;
-  private NodeHierarchyCreator nodeHierarchyCreator;
 
   private static final String LOGIN_HISTORY_HOME = "exo:LoginHistoryHome";
   private static final String CL_MIXIN_TYPE = "exo:cloudlogin";
   private static final String CL_MIXIN_STATUS = "exo:cloudLoginStatus";
   private static final Pattern emailPattern = Pattern.compile("^([a-zA-Z0-9_\\.\\-])+\\@((([a-zA-Z0-9\\-])+\\.)+([a-zA-Z0-9]{2,4})+)$", Pattern.CASE_INSENSITIVE);
 
+  // All nodes name used to have a temporary avatar into JCR
   private static final String CL_JCR_ROOT_NODE_PATH = "/rest/jcr/repository/collaboration";
-  private static final String CL_JCR_APP_NODE_NAME = "exo:applications";
+  private static final String CL_JCR_APP_NODE_NAME = "Documents";
   private static final String CL_JCR_FOLDER_NAME = "cloudlogin";
 
   
@@ -95,10 +94,9 @@ public class CloudLoginServiceImpl implements CloudLoginService {
     return sessionProvider.getSession(currentRepo.getConfiguration().getDefaultWorkspaceName(), currentRepo);
   }
 
-  public CloudLoginServiceImpl(RepositoryService repositoryService, OrganizationService organizationService, NodeHierarchyCreator nodeHierarchyCreator) {
+  public CloudLoginServiceImpl(RepositoryService repositoryService, OrganizationService organizationService) {
     this.repositoryService = repositoryService;
     this.organizationService = organizationService;
-    this.nodeHierarchyCreator = nodeHierarchyCreator;
   }
 
   
@@ -225,19 +223,9 @@ public class CloudLoginServiceImpl implements CloudLoginService {
     
     try {
       String fileName = upResource.getFileName();
-      Node publicApplicationNode = nodeHierarchyCreator.getPublicApplicationNode(SessionProvider.createSystemProvider());
-      Node cloudLoginNode = null;
+      Node avatarRootNode = getAvatarRootNode();
       
-      // Folder node
-      if(! publicApplicationNode.hasNode(CL_JCR_FOLDER_NAME)) {
-        cloudLoginNode = publicApplicationNode.addNode(CL_JCR_FOLDER_NAME, "nt:folder");
-        cloudLoginNode.addMixin("mix:referenceable");
-      }
-      else {
-        cloudLoginNode = publicApplicationNode.getNode(CL_JCR_FOLDER_NAME);
-      }
-      
-      if(! cloudLoginNode.hasNode(fileName)) {
+      if(! avatarRootNode.hasNode(fileName)) {
         String location = upResource.getStoreLocation();
         String mimeType = upResource.getMimeType();
         
@@ -251,7 +239,7 @@ public class CloudLoginServiceImpl implements CloudLoginService {
         byte[] uploadData = avatarAttachment.getImageBytes();
         
         // Add the node
-        Node nodeFile = cloudLoginNode.addNode(fileName,FCKUtils.NT_FILE);
+        Node nodeFile = avatarRootNode.addNode(fileName,FCKUtils.NT_FILE);
         Node jcrContent = nodeFile.addNode("jcr:content","nt:resource");
         MimeTypeResolver mimeTypeResolver = new MimeTypeResolver();
         String mimetype = mimeTypeResolver.getMimeType(upResource.getFileName());
@@ -260,13 +248,13 @@ public class CloudLoginServiceImpl implements CloudLoginService {
         jcrContent.setProperty("jcr:lastModified",new GregorianCalendar());
         jcrContent.setProperty("jcr:mimeType",mimetype);
         // Save session of node
-        cloudLoginNode.getSession().save();
-        cloudLoginNode.getSession().refresh(true); // Make refreshing data
+        avatarRootNode.getSession().save();
+        avatarRootNode.getSession().refresh(true); // Make refreshing data
         
         avatarUri = CL_JCR_ROOT_NODE_PATH + nodeFile.getPath();
       }
       else {
-        Node avatarNode = publicApplicationNode.getNode(fileName);
+        Node avatarNode = avatarRootNode.getNode(fileName);
         avatarUri = CL_JCR_ROOT_NODE_PATH + avatarNode.getPath();
       }
     }
@@ -290,18 +278,18 @@ public class CloudLoginServiceImpl implements CloudLoginService {
     RequestLifeCycle.begin(PortalContainer.getInstance());
     
     try {
+
       // Get node
-      Node publicApplicationNode = nodeHierarchyCreator.getPublicApplicationNode(SessionProvider.createSystemProvider());
-      if(publicApplicationNode.hasNode(CL_JCR_FOLDER_NAME)) {
-        Node cloudLoginNode = publicApplicationNode.getNode(CL_JCR_FOLDER_NAME);
-        cloudLoginNode.remove();
+      Node avatarRootNode = getAvatarRootNode();
+      if(avatarRootNode != null) {
+        avatarRootNode.remove();
         
         // Save session of node
-        publicApplicationNode.getSession().save();
-        publicApplicationNode.getSession().refresh(true); // Make refreshing data
+        avatarRootNode.getSession().save();
+        avatarRootNode.getSession().refresh(true); // Make refreshing data
       }
       else {
-        logger.warn("CloudLogin: Node " + publicApplicationNode.getPath() + "/" + CL_JCR_FOLDER_NAME + " should exist");
+        logger.warn("CloudLogin: Cannot delete Node " + CL_JCR_FOLDER_NAME + ", it should exist");
       }
     }
     catch(Exception e) {
@@ -522,6 +510,39 @@ public class CloudLoginServiceImpl implements CloudLoginService {
     }
     
     return domain;
+  }
+  
+  /**
+   * Get the node container of temp avatar node
+   * @param userId
+   * @return
+   */
+  private Node getAvatarRootNode() {
+    Node rootAvatarNode = null;
+    
+    try {
+      SessionProvider sessionProvider = SessionProvider.createSystemProvider();
+      Session session = this.getSession(sessionProvider);
+      Node rootNode = session.getRootNode();
+      
+      if(rootNode != null && rootNode.hasNode(CL_JCR_APP_NODE_NAME)) {
+        Node appNode = rootNode.getNode(CL_JCR_APP_NODE_NAME);
+        
+        // Folder node
+        if(! appNode.hasNode(CL_JCR_FOLDER_NAME)) {
+          rootAvatarNode = appNode.addNode(CL_JCR_FOLDER_NAME, "nt:folder");
+          rootAvatarNode.addMixin("mix:referenceable");
+        }
+        else {
+          rootAvatarNode = appNode.getNode(CL_JCR_FOLDER_NAME);
+        }
+      }
+    }
+    catch(Exception e) {
+      logger.error("CloudLoginWizard: Cannot get root avatar node", e);
+    }
+    
+    return rootAvatarNode;
   }
   
   /**
