@@ -203,8 +203,6 @@
                   <goal>single</goal>
                 </goals>
                 <configuration>
-                  <appendAssemblyId>false</appendAssemblyId>
-                  <updateOnly>false</updateOnly>
                   <descriptors>
                     <descriptor>src/main/assembly/tomcat-archive.xml</descriptor>
                   </descriptors>
