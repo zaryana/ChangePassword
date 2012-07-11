@@ -143,7 +143,8 @@ public class CloudLoginRestService implements ResourceContainer {
   public Response updateProfile(
                 @QueryParam("fileName") String fileName,
                 @QueryParam("uploadId") String uploadId,
-                @QueryParam("name") String name,
+                @QueryParam("firstName") String firstName,
+                @QueryParam("lastName") String lastName,
                 @QueryParam("position") String position) {
 
     boolean hasNewAvatar = (fileName != null && uploadId != null);
@@ -179,7 +180,7 @@ public class CloudLoginRestService implements ResourceContainer {
       }
         
       // Update user profile
-      cloudLoginService.updateProfile(userId, resource, name, position);
+      cloudLoginService.updateProfile(userId, resource, firstName, lastName, position);
 
       if(hasNewAvatar) {
         // Delete temporary avatar

@@ -69,5 +69,5 @@ public interface CloudLoginService {
    * 
    * @param avatarResource
    */
-  public void updateProfile(String userId, UploadResource avatarResource, String fullName, String position);
+  public void updateProfile(String userId, UploadResource avatarResource, String firstName, String lastName, String position);
 }

@@ -68,8 +68,8 @@
       <table class="BorderDot" cols="2">
         <tbody>
           <tr>
-            <td class="FieldLabel UserInput">Username:</td>
-            <td class="FieldComment" colspan='2'><input type="text" id="nameProfile"></td>
+            <td class="FieldLabel UserInput">First and Last names:</td>
+            <td class="FieldComment FieldMini" colspan='2'><input type="text" id="firstNameProfile"><input type="text" id="lastNameProfile"></td>
           </tr>
           <tr>
             <td class="FieldLabel UserInput">Your current position:</td>

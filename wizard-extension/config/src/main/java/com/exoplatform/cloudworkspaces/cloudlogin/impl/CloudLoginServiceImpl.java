@@ -305,7 +305,7 @@ public class CloudLoginServiceImpl implements CloudLoginService {
   }
 
   @Override
-  public void updateProfile(String userId, UploadResource avatarResource, String fullName, String position) {
+  public void updateProfile(String userId, UploadResource avatarResource, String firstName, String lastName, String position) {
 
     RequestLifeCycle.begin(PortalContainer.getInstance());
     
@@ -339,16 +339,13 @@ public class CloudLoginServiceImpl implements CloudLoginService {
           }
         }
       }
-      if(fullName != null && fullName.length() > 0) {
-        String[] splitName = fullName.trim().split(" ");
+      if(firstName != null && firstName.length() > 0) {
         profileNeedUpdate = true;
-        if(splitName.length == 2) {
-          p.setProperty(Profile.FIRST_NAME, splitName[0]);
-          p.setProperty(Profile.LAST_NAME, splitName[1]);
-        }
-        else {
-          p.setProperty(Profile.USERNAME, fullName);
-        }
+        p.setProperty(Profile.FIRST_NAME, firstName);
+      }
+      if(lastName != null && lastName.length() > 0) {
+        profileNeedUpdate = true;
+        p.setProperty(Profile.LAST_NAME, lastName);
       }
       if(position != null && position.length() > 0) {
         profileNeedUpdate = true;

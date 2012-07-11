@@ -86,7 +86,8 @@ CloudLogin.AVATAR_EXT_REGEXP = /^(gif|jpeg|jpg|png)$/i;
 
 // Session variables
 CloudLogin.AVATAR_FILE_NAME = "";
-CloudLogin.PROFILE_NAME = "";
+CloudLogin.PROFILE_FIRST_NAME = "";
+CloudLogin.PROFILE_LAST_NAME = "";
 CloudLogin.PROFILE_POSITION = "";
 CloudLogin.ERROR_MESSAGE = "";
 
@@ -101,6 +102,17 @@ CloudLogin.showStepProfile = function(event) {
 }
 
 CloudLogin.initUploadFile = function() {
+
+  // Set event onto link and browse button about avatar
+  /*$("#linkAvatar").click(function(event) {
+    event.preventDefault();
+    $("#datafile").trigger('click');
+  });
+  $("#browseAvatar").click(function(event) {
+    event.preventDefault();
+    $("#datafile").trigger('click');
+  });*/
+
   $(document).ready(function() {
     $('#datafile').fileupload({
       dropZone: $('#fileDropZone'),
@@ -161,15 +173,24 @@ CloudLogin.validateStepProfile = function(event) {
     event.preventDefault();
   }
   
-  var nameProfile = $("#nameProfile").val();
+  var firstNameProfile = $("#firstNameProfile").val();
+  var lastNameProfile = $("#lastNameProfile").val();
   var posProfile = $("#posProfile").val();
   
-  if(nameProfile != CloudLogin.PROFILE_NAME) {
-    CloudLogin.PROFILE_NAME = nameProfile;
+  if(firstNameProfile != CloudLogin.PROFILE_FIRST_NAME) {
+    CloudLogin.PROFILE_FIRST_NAME = firstNameProfile;
   }
   else {
-    nameProfile = ""; // we cannot resubmit this data, this is same as previous submit
+    firstNameProfile = ""; // we cannot resubmit this data, this is same as previous submit
   }
+  
+  if(lastNameProfile != CloudLogin.PROFILE_LAST_NAME) {
+    CloudLogin.PROFILE_LAST_NAME = lastNameProfile;
+  }
+  else {
+    lastNameProfile = ""; // we cannot resubmit this data, this is same as previous submit
+  }
+  
   if(posProfile != CloudLogin.PROFILE_POSITION) {
     CloudLogin.PROFILE_POSITION = posProfile;
   }
@@ -177,11 +198,13 @@ CloudLogin.validateStepProfile = function(event) {
     posProfile = ""; // we cannot resubmit this data, this is same as previous submit
   }
   
-  if((nameProfile != undefined && nameProfile != "") 
+  // Update only we have new datas
+  if((firstNameProfile != undefined && firstNameProfile != "") 
+  || (lastNameProfile != undefined && lastNameProfile != "") 
   || (posProfile != undefined && posProfile != "") 
   || (CloudLogin.AVATAR_FILE_NAME != undefined && CloudLogin.AVATAR_FILE_NAME != "")) {
     // Update profile with avatar and others datas
-    CloudLogin.updateProfile(CloudLogin.AVATAR_FILE_NAME, nameProfile, posProfile);
+    CloudLogin.updateProfile(CloudLogin.AVATAR_FILE_NAME, firstNameProfile, lastNameProfile, posProfile);
   }
   else {
     console.log("There is no data to send.");
@@ -202,11 +225,11 @@ CloudLogin.finalizeUpdateProfile = function() {
   }
 }
 
-CloudLogin.updateProfile = function(fileName, nameProfile, posProfile) {
+CloudLogin.updateProfile = function(fileName, firstNameProfile, lastNameProfile, posProfile) {
   $.ajax({
     type: "GET",
     url: CloudLogin.PROFILE_WS_PATH,
-    data: {fileName: fileName, uploadId: CloudLogin.AVATAR_UPLOAD_ID, name: nameProfile, position: posProfile},
+    data: {fileName: fileName, uploadId: CloudLogin.AVATAR_UPLOAD_ID, firstName: firstNameProfile, lastName: lastNameProfile, position: posProfile},
     success: function(data, textStatus) {
       console.log("profile updated [status=" + textStatus + "]");
       CloudLogin.finalizeUpdateProfile();
