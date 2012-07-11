@@ -33,7 +33,7 @@
 						<p>Contact our sales team for a demo.</p>
 					</div>
 					<div class="Item ClearFix">
-						<a class="Button FR" href="http://www.exoplatform.com/exo-platform-3.5-trial/eXo-Platform-3.5.zip"><img alt="" src="background/download-exoplatform.png" /></a>
+						<a class="Button FR" href="http://exoplatform.com/company/en/join-exo-community" target="_blank"><img alt="" src="background/download-exoplatform.png" /></a>
 						<h3>Or, download the 30-day trial of eXo Platform 3.5</h3>
 						<p>Cloud Workspaces is based on eXo Platform 3.5 enterprise portal and user experience platform. To discover Cloud Workspaces social intranet features, and much more, download the on-premises edition of eXo Platform 3.5. </p>
 					</div>
