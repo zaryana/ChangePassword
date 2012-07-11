@@ -4,7 +4,6 @@ import org.apache.commons.configuration.Configuration;
 import org.exoplatform.cloudmanagement.admin.CloudAdminException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -61,10 +60,12 @@ public class UserRequestDAO {
     try {
       propertyFile.createNewFile();
       properties.store(new FileOutputStream(propertyFile), "");
-    } catch (Exception e) {
-      LOG.error(e.getMessage(), e);
-      throw new CloudAdminException("A problem happened during processsing this request. It was reported to developers. Please, try again later.");
+    } catch (IOException e) {
+      String msg = "Tenant queuing error: failed to create queue property file.";
+      LOG.error(msg, e);
+      throw new CloudAdminException("A problem happened during processing this request. It was reported to developers. Please, try again later.");
     }
+
   }
 
   public void delete(UserRequest req) throws CloudAdminException {
@@ -73,12 +74,7 @@ public class UserRequestDAO {
     if (!folder.exists())
       return;
     File propertyFile = new File(folderName + req.getFileName());
-    try {
-      propertyFile.delete();
-    } catch (Exception e) {
-      LOG.error(e.getMessage(), e);
-      throw new CloudAdminException("A problem happened during processsing this request. It was reported to developers. Please, try again later.");
-    }
+    propertyFile.delete();
   }
 
   public List<UserRequest> search(String tNameFilter, RequestState stateFilter) throws CloudAdminException {
@@ -116,8 +112,9 @@ public class UserRequestDAO {
             result.add(req);
           }
         } catch (IOException e) {
-          LOG.error(e.getMessage(), e);
-          throw new CloudAdminException("A problem happened during processsing this request. It was reported to developers. Please, try again later.");
+          String msg = "Tenant queuing error: failed to read property file " + one.getName();
+          LOG.error(msg, e);
+          throw new CloudAdminException("A problem happened during processing this request. It was reported to developers. Please, try again later.");
         }
       }
     }
@@ -156,7 +153,7 @@ public class UserRequestDAO {
                                  RequestState.valueOf(newprops.getProperty("action")));
         }
       } catch (IOException e) {
-        String msg = "Tenant queuing error : failed to read property file " + one.getName();
+        String msg = "Tenant queuing error: failed to read property file " + one.getName();
         LOG.error(msg, e);
         throw new CloudAdminException("A problem happened during processing request . It was reported to developers. Please, try again later.");
       }
@@ -193,7 +190,7 @@ public class UserRequestDAO {
                              Boolean.parseBoolean(newprops.getProperty("isadministrator")),
                              RequestState.valueOf(newprops.getProperty("action")));
     } catch (IOException e) {
-      String msg = "Tenant queuing error : failed to read property file " + propertyFile.getName();
+      String msg = "Tenant queuing error: failed to read property file " + propertyFile.getName();
       LOG.error(msg, e);
       throw new CloudAdminException("A problem happened during processing request . It was reported to developers. Please, try again later.");
     }
@@ -202,8 +199,8 @@ public class UserRequestDAO {
   private String getRegistrationWaitingFolder() throws CloudAdminException {
     String folder = cloudAdminConfiguration.getString("cloud.admin.tenant.waiting.dir", null);
     if (folder == null) {
-      LOG.error("Registration waitind dir is not defined in the admin configuration");
-      throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
+      LOG.error("Registration waiting dir is not defined in the admin configuration");
+      throw new CloudAdminException("An problem happened during processing this request. It was reported to developers. Please, try again later.");
     }
     return folder;
   }

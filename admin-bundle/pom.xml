@@ -184,23 +184,7 @@
                       <copy file="${project.build.directory}/packager-conf/jar/log4j-over-slf4j-${org.slf4j.version}.jar" tofile="${project.build.directory}/admin-tomcat/lib/log4j-over-slf4j.jar"/>
                       <copy file="${project.build.directory}/packager-conf/jar/logback-classic-${ch.qos.logback.version}.jar" tofile="${project.build.directory}/admin-tomcat/lib/logback-classic.jar"/>
                       <copy file="${project.build.directory}/packager-conf/jar/logback-core-${ch.qos.logback.version}.jar" tofile="${project.build.directory}/admin-tomcat/lib/logback-core.jar"/>
-
                       <copy file="${project.build.directory}/packager-conf/jar/mail-1.4.2.jar" tofile="${project.build.directory}/admin-tomcat/lib/mail.jar"/>
-                  </tasks>
-                </configuration>
-                <goals>
-                  <goal>run</goal>
-                </goals>
-              </execution>
-              <execution>
-                <id>copy-scripts-for-tests</id>
-                <phase>prepare-package</phase>
-                <configuration>
-                  <tasks>
-                    <copy todir="${project.build.directory}/local-cloud">
-                      <fileset dir="${basedir}/src/main/resources/local-cloud" />
-                    </copy>
-                    <chmod file="${project.build.directory}/local-cloud/*.sh" perm="+x"/>
                   </tasks>
                 </configuration>
                 <goals>

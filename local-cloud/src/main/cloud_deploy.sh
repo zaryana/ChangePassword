@@ -62,9 +62,10 @@ get_answer "http://demo.$remote_cwks/portal/intranet/home"
                                                                                                                                                                                                                  get_answer "http://$2.$remote_cwks/portal/intranet/home" 
 sleep 20s
 
-#Create default 
+#Create default
 if [ ! -e $2 ] ; then
-  echo "Creating tenant $2"
+  echo ""
+  echo "\nCreating tenant $2"
   curl --connect-timeout 900 -s  -X POST -u cloudadmin:cloudadmin "http://$remote_cwks/rest/private/cloud-admin/tenant-service/create/$2"
   get_answer "http://$2.$remote_cwks/portal/intranet/home"
 fi
