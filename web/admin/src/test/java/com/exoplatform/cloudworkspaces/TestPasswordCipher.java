@@ -30,7 +30,7 @@ public class TestPasswordCipher {
   private String         plainText;
 
   @BeforeMethod
-  public void init() {
+  public void init() throws CloudAdminException  {
     passwordCipher = new PasswordCipher();
     plainText = "Test PasswordCipher 2012";
   }

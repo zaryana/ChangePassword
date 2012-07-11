@@ -24,10 +24,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -36,28 +39,27 @@ import javax.crypto.spec.SecretKeySpec;
  * password.
  */
 public class PasswordCipher {
-  
+
   protected static final Logger LOG       = LoggerFactory.getLogger(PasswordCipher.class);
-  
-  protected byte[]       linebreak = {};
 
-  protected final String       secret    = "tvnw63wfg9gh5392";
+  protected byte[]              linebreak = {};
 
-  protected SecretKey    key;
+  protected final String        secret    = "tvnw63wfg9gh5392";
 
-  protected Cipher       cipher;
+  protected SecretKey           key;
 
-  protected Base64       coder;
+  protected Cipher              cipher;
 
+  protected Base64              coder;
 
-  public PasswordCipher() {
+  public PasswordCipher() throws CloudAdminException {
+    key = new SecretKeySpec(secret.getBytes(), "AES");
     try {
-      key = new SecretKeySpec(secret.getBytes(), "AES");
       cipher = Cipher.getInstance("AES/ECB/PKCS5Padding", "SunJCE");
-      coder = new Base64(32, linebreak, true);
-    } catch (Throwable t) {
-      t.printStackTrace();
+    } catch (Exception e) {
+      throw new CloudAdminException("Cannot create Cipher for encryption and decryption", e);
     }
+    coder = new Base64(32, linebreak, true);
   }
 
   /**
