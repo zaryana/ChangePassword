@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ -e $1 ] ; then
+if [ -z $1 ] ; then
   echo "ERROR! Access URL required. Example: deploy_cloud.sh cloud@cwks"
   exit 1
 fi
@@ -28,7 +28,7 @@ get() {
   echo $(curl --write-out %{http_code} --connect-timeout 60 -s -S --output $curl_res $1)
 }
 
-get_answer() {
+is_ready() {
   local code=0
   # will wait for 30min
   timeout=$((30 * 60))
@@ -53,21 +53,21 @@ get_answer() {
 }
 
 
-get_answer "http://$remote_cwks/portal/intranet/home"
+is_ready "http://$remote_cwks/portal/intranet/home"
 
 #Create sandbox
 curl --connect-timeout 900 -s  -X POST -u cloudadmin:cloudadmin "http://$remote_cwks/rest/private/cloud-admin/tenant-service/create/demo"
 
-get_answer "http://demo.$remote_cwks/portal/intranet/home"
+is_ready "http://demo.$remote_cwks/portal/intranet/home"
                                                                                                                                                                                                                  get_answer "http://$2.$remote_cwks/portal/intranet/home" 
 sleep 20s
 
 #Create default
-if [ ! -e $2 ] ; then
+if [ -n $2 ] ; then
   echo ""
-  echo "\nCreating tenant $2"
+  echo -ne "\nCreating tenant $2"
   curl --connect-timeout 900 -s  -X POST -u cloudadmin:cloudadmin "http://$remote_cwks/rest/private/cloud-admin/tenant-service/create/$2"
-  get_answer "http://$2.$remote_cwks/portal/intranet/home"
+  is_ready "http://$2.$remote_cwks/portal/intranet/home"
 fi
 
 
