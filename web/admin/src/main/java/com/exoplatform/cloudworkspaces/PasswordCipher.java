@@ -63,9 +63,11 @@ public class PasswordCipher {
   }
 
   /**
-   * @param plainText
-   * @return encrypted string
-   * @throws CloudAdminException
+   * Encrypt a simple text.
+   * 
+   * @param plainText String
+   * @return encrypted String
+   * @throws CloudAdminException if cannot encrypt password
    */
   public synchronized String encrypt(String plainText) throws CloudAdminException {
     String encrypt = "";
@@ -85,9 +87,11 @@ public class PasswordCipher {
   }
 
   /**
-   * @param codedText
-   * @return decrypted string
-   * @throws CloudAdminException
+   * Decrypt a simple text.
+   * 
+   * @param codedText String
+   * @return decrypted String
+   * @throws CloudAdminException if cannot decrypt password
    */
   public synchronized String decrypt(String codedText) throws CloudAdminException {
     String decrypt = "";
