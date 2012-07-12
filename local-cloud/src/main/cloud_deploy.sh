@@ -64,7 +64,7 @@ is_ready "http://demo.$remote_cwks/portal/intranet/home"
 sleep 20s
 
 #Create default
-if [ -n $2 ] ; then
+if [ ! -z $2 ] ; then
   echo ""
   echo -ne "\nCreating tenant $2"
   res=$(curl --connect-timeout 900 -s  -X POST -u cloudadmin:cloudadmin "http://$remote_cwks/rest/private/cloud-admin/tenant-service/create/$2")
