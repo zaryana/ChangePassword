@@ -284,7 +284,9 @@ function tryResume(workspace) {
     url : accessUrl + "/tenant-service/resume?tenant=" + workspace,
     async : true,
     success : function(data) {
-      window.location = document.URL;
+      waitReadyWorkspace(workspace, function() {
+        window.location = document.URL;
+      });
     },
     error : function(response, status, error) {
       if (response.status != 0) {
@@ -297,6 +299,28 @@ function tryResume(workspace) {
           $("#messageString").html("Your tenant cannot be resumed in time. This was reported to administrators. Try again later.");
         }
       }
+    }
+  });
+}
+
+function waitReadyWorkspace(workspace, ready) {
+  var host = location.hostname.indexOf("www") == 0 ? location.hostname.substring(4) :location.hostname;
+  var isReadyUrl = location.protocol + '//' + host + '/rest/cloud-agent/info-service/is-ready/' + workspace;
+  $.ajax({
+    url : isReadyUrl,
+    async : false,
+    success : function(data) {
+      if (data === "true")
+        ready();
+      else
+        setTimeout(function() {
+          waitReadyWorkspace(workspace, ready);
+        }, 5 * 1000);
+    },
+    error : function(response, status, error) {
+      setTimeout(function() {
+        waitReadyWorkspace(workspace, ready);
+      }, 5 * 1000);
     }
   });
 }

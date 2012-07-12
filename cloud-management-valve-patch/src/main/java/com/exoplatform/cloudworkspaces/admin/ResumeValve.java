@@ -64,6 +64,17 @@ public class ResumeValve extends ValveBase {
       String tenant = TenantNameResolver.getTenantName(url);
 
       if (tenant != null) {
+
+        if (url.contains("/rest/cloud-agent/info-service/is-ready/")) {
+          OutputStream stream = response.getOutputStream();
+          try {
+            stream.write("false".getBytes());
+          } finally {
+            stream.close();
+          }
+          return;
+        }
+
         // resume tenant
         HttpURLConnection connection = null;
         URL resuming = new URL(resumingPage.replace("${tenant.masterhost}",
@@ -91,7 +102,7 @@ public class ResumeValve extends ValveBase {
           String headTemplate = "<head>";
           String baseTag = "<base href=\"http://" + System.getProperty("tenant.masterhost")
               + "\"></base>";
-          String tenantTag = "<span id='tenantname' style='visibility:hidden'>" + tenant
+          String tenantTag = "<span id='tenantname' style='display: none'>" + tenant
               + "</span>";
           String contactUsFrom = "onclick=\"showContactUsForm('/contact-us.jsp');\"";
           String contactUsTo = "target=\"blank\" href=\"/index.jsp\"";

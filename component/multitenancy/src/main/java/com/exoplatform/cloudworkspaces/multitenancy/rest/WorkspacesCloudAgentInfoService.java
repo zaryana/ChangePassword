@@ -49,8 +49,10 @@ import java.util.Set;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 @Path("/cloud-agent/info-service")
 public class WorkspacesCloudAgentInfoService extends CloudAgentInfoService {
@@ -71,6 +73,29 @@ public class WorkspacesCloudAgentInfoService extends CloudAgentInfoService {
     this.repositoryService = repositoryService;
     this.orgService = organizationService;
     this.temporaryTenantStateHolder = temporaryTenantStateHolder;
+  }
+
+  @GET
+  @Produces(MediaType.TEXT_PLAIN)
+  @Path("is-ready/{tenant}")
+  public Response isReady(@PathParam("tenant") String tenant) {
+    if (temporaryTenantStateHolder.getCreatingTenants().containsKey(tenant)
+        || temporaryTenantStateHolder.getStartingTenantState().containsKey(tenant)
+        || temporaryTenantStateHolder.getStoppingTenants().containsKey(tenant)) {
+      return Response.ok(Boolean.FALSE.toString()).build();
+    }
+
+    try {
+      if (repositoryService.getConfig().getRepositoryConfiguration(tenant) != null) {
+        return Response.ok(Boolean.TRUE.toString()).build();
+      } else {
+        return Response.ok(Boolean.FALSE.toString()).build();
+      }
+    } catch (RepositoryConfigurationException e) {
+      return Response.serverError()
+                     .entity("Sorry, rest service processing failed. Please, contact support.")
+                     .build();
+    }
   }
 
   @GET
