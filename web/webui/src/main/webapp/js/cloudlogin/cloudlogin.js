@@ -78,7 +78,7 @@ CloudLogin.doNothing = function(event) {
 // Server variables
 CloudLogin.AVATAR_MAX_LENGTH = 2000000; // 2Mo by default
 CloudLogin.AVATAR_UPLOAD_ID = "cloudloginavatar"; // by default
-CloudLogin.AVATAR_URI_PATH = "/rest/jcr/repository/collaboration/exo:applications/cloudlogin/"; // by default
+CloudLogin.AVATAR_URI_PATH = "/rest/jcr/repository/collaboration/Documents/cloudlogin/"; // by default
 CloudLogin.PROFILE_WS_PATH = "/portal/rest/cloudlogin/setavatar/"; // by default
 
 // Static variables
@@ -102,17 +102,6 @@ CloudLogin.showStepProfile = function(event) {
 }
 
 CloudLogin.initUploadFile = function() {
-
-  // Set event onto link and browse button about avatar
-  /*$("#linkAvatar").click(function(event) {
-    event.preventDefault();
-    $("#datafile").trigger('click');
-  });
-  $("#browseAvatar").click(function(event) {
-    event.preventDefault();
-    $("#datafile").trigger('click');
-  });*/
-
   $(document).ready(function() {
     $('#datafile').fileupload({
       dropZone: $('#fileDropZone'),

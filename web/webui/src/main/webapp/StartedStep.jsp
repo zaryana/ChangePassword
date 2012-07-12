@@ -29,6 +29,8 @@
   String lang = request.getLocale().getLanguage();
 
   String uri = (String)request.getAttribute(CloudLoginServlet.INITIAL_URI_ATTRIBUTE);
+  String firstName = (String)request.getAttribute(CloudLoginServlet.USER_PROFILE_FIRSTNAME);
+  String lastName = (String)request.getAttribute(CloudLoginServlet.USER_PROFILE_LASTNAME);
   
   /*CloudLoginService cloudLoginService = (CloudLoginService) PortalContainer.getCurrentInstance(session.getServletContext()).getComponentInstanceOfType(CloudLoginService.class);
   String tenantDomain = cloudLoginService.getCloudTenantDomain();*/
@@ -68,8 +70,11 @@
       <table class="BorderDot" cols="2">
         <tbody>
           <tr>
-            <td class="FieldLabel UserInput">First and Last names:</td>
-            <td class="FieldComment FieldMini" colspan='2'><input type="text" id="firstNameProfile"><input type="text" id="lastNameProfile"></td>
+            <td class="FieldLabel UserInput">First and Last name:</td>
+            <td class="FieldComment FieldMini" colspan='2'>
+              <input type="text" id="firstNameProfile" value="<%=(firstName!=null ? firstName : "")%>">
+              <input type="text" id="lastNameProfile" value="<%=(lastName!=null ? lastName : "")%>">
+            </td>
           </tr>
           <tr>
             <td class="FieldLabel UserInput">Your current position:</td>
