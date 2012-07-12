@@ -56,7 +56,7 @@ is_ready() {
 is_ready "http://$remote_cwks/portal/intranet/home"
 
 #Create sandbox
-echo "Creading tenant demo"
+echo -ne "Creating tenant demo \n"
 res=$(curl --connect-timeout 900 -s  -X POST -u cloudadmin:cloudadmin "http://$remote_cwks/rest/private/cloud-admin/tenant-service/create/demo")
 
 is_ready "http://demo.$remote_cwks/portal/intranet/home"
@@ -66,7 +66,7 @@ sleep 20s
 #Create default
 if [ ! -z $2 ] ; then
   echo ""
-  echo -ne "\nCreating tenant $2"
+  echo -ne "Creating tenant $2 \n"
   res=$(curl --connect-timeout 900 -s  -X POST -u cloudadmin:cloudadmin "http://$remote_cwks/rest/private/cloud-admin/tenant-service/create/$2")
   is_ready "http://$2.$remote_cwks/portal/intranet/home"
 fi
