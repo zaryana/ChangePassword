@@ -327,6 +327,12 @@
       </dependency>
       <dependency>
         <groupId>org.exoplatform.social</groupId>
+        <artifactId>exo.social.component.webui</artifactId>
+        <version>${org.exoplatform.social.version}</version>
+        <type>jar</type>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.social</groupId>
         <artifactId>exo.social.component.core</artifactId>
         <version>${org.exoplatform.social.version}</version>
         <type>jar</type>
@@ -384,6 +390,12 @@
       <dependency>
         <groupId>org.exoplatform.ecms</groupId>
         <artifactId>exo-ecms-core-services</artifactId>
+        <version>${org.exoplatform.ecms.version}</version>
+        <type>jar</type>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.ecms</groupId>
+        <artifactId>exo-ecms-core-connector</artifactId>
         <version>${org.exoplatform.ecms.version}</version>
         <type>jar</type>
       </dependency>
