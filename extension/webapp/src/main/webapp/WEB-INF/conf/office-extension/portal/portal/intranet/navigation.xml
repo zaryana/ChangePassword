@@ -101,7 +101,15 @@
       <page-reference>portal::intranet::requests</page-reference>
     </node>
   </node>
-  
+
+  <node>
+    <uri>account-settings</uri>
+    <name>account-settings</name>
+    <label>account-settings</label>
+    <visibility>SYSTEM</visibility>
+    <page-reference>portal::intranet::account-settings</page-reference>
+  </node>
+
   <node>
     <uri>people</uri>
     <name>people</name>

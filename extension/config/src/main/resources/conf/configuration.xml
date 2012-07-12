@@ -36,6 +36,9 @@
                 <value>
                   <string>cloud-workspaces-extension</string>
                 </value>
+                <value>
+                  <string>cloud-portlets</string>
+                </value>
               </collection>
             </field>
             <field name="target">

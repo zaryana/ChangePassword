@@ -74,6 +74,21 @@
         <property name="mail.smtp.socketFactory.fallback" value="false" />
       </properties-param>
     </init-params>
-  </component>   
-
+  </component>
+  
+  
+  <!-- EMAIL NOTIFICATION -->
+  
+  <component>
+    <type>com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.EmailNotificationService</type>
+  </component>
+  
+  <component>
+    <type>com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.plugins.UserJoinTenant.UserJoinTenantLog</type>
+  </component>
+  
+  <component>
+    <type>com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.EmailNotificationRestService</type>
+  </component>
+       
 </configuration>

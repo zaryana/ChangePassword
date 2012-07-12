@@ -80,6 +80,18 @@
           <scope>provided</scope>
           <type>war</type>
         </dependency>
+        <dependency>
+          <groupId>com.exoplatform.cloudworkspaces</groupId>
+          <artifactId>cloud-workspaces.extension.portlets.social-portlet</artifactId>
+          <scope>provided</scope>
+          <type>war</type>
+        </dependency>
+        <dependency>
+          <groupId>com.exoplatform.cloudworkspaces</groupId>
+          <artifactId>cloud-workspaces.extension.portlets.cloud-portlets</artifactId>
+          <scope>provided</scope>
+          <type>war</type>
+        </dependency>
 
         <!-- Cloud Workspaces gadgets -->
         <dependency>
@@ -250,6 +262,10 @@
                     <copy
                       file="${project.basedir}/src/main/resources/tomcat/conf/Catalina/localhost/cloud-workspaces-wizard-extension.xml"
                       tofile="${project.build.directory}/platform-cloud-tomcat/conf/Catalina/localhost/cloud-workspaces-wizard-extension.xml"
+                      overwrite="true" />
+                    <copy
+                      file="${project.basedir}/src/main/resources/tomcat/conf/Catalina/localhost/cloud-portlets.xml"
+                      tofile="${project.build.directory}/platform-cloud-tomcat/conf/Catalina/localhost/cloud-portlets.xml"
                       overwrite="true" />
                     <copy
                       file="${project.basedir}/src/main/resources/tomcat/gatein/conf/jcr/jbosscache/local/cache-config.xml"
