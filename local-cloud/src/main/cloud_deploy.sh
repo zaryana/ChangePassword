@@ -60,7 +60,7 @@ echo "Creading tenant demo"
 res=$(curl --connect-timeout 900 -s  -X POST -u cloudadmin:cloudadmin "http://$remote_cwks/rest/private/cloud-admin/tenant-service/create/demo")
 
 is_ready "http://demo.$remote_cwks/portal/intranet/home"
-                                                                                                                                                                                                                 get_answer "http://$2.$remote_cwks/portal/intranet/home" 
+
 sleep 20s
 
 #Create default
