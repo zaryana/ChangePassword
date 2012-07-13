@@ -43,7 +43,7 @@ public class UserJoinTenantNotificationPlugin extends EmailNotificationPlugin{
 				prefix = ", ";
 				Identity userIdentity = idMan.getOrCreateIdentity(OrganizationIdentityProvider.NAME, logEntry.getUserId(), false);
 				Profile userProfile = userIdentity.getProfile();
-				builder.append(builder.append("<a href='" + host + "/" + userProfile.getUrl() + "' target='_blank'>" + userProfile.getFullName() + "</a>"));
+				builder.append("<a href='" + host + "/" + userProfile.getUrl() + "' target='_blank'>" + userProfile.getFullName() + "</a>");
 			}
 			
 			String usersJoined = builder.toString();
