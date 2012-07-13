@@ -8,7 +8,7 @@
   <parent>
     <groupId>com.exoplatform.cloudworkspaces</groupId>
     <artifactId>cloud-workspaces.extension.portlets</artifactId>
-    <version>1.1.0-Beta04-SNAPSHOT</version>
+    <version>1.1.0-Beta04</version>
   </parent>
 
   <artifactId>cloud-workspaces.extension.portlets.cloud-portlets</artifactId>
