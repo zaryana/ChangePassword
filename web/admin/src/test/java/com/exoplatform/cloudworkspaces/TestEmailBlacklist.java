@@ -54,7 +54,13 @@ public class TestEmailBlacklist {
     return new Object[][] { { "test0@exoplatform.com", false }, { "test1@mailinator.com", true },
         { "email@mail.com", true }, { "email@fakemail.gov", true }, { "test@gmail.com", false },
         { "test@vlskdfjavlejqf.com", false }, { "test@banned.mail.prefix", true },
-        { "test@banned.asdf.vz", true }, { "test@banned.com", true }, { "test@banned", false } };
+        { "test@banned.asdf.vz", true }, { "test@banned.com", true }, { "test@banned", false },
+        { "test@MAILinator.com", true } };
+  }
+
+  @Test(dataProvider = "email-blacklist")
+  public void testBlacklistEmails(String email, boolean isBlacklisted) {
+    Assert.assertEquals(emailBlacklist.isInBlackList(email), isBlacklisted);
   }
 
   @Test
