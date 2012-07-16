@@ -29,9 +29,6 @@
     <key>com.exoplatform.cloudworkspaces.cloudlogin.CloudLoginService</key>
     <type>com.exoplatform.cloudworkspaces.cloudlogin.impl.CloudLoginServiceImpl</type>
   </component>
-  <component>
-    <type>com.exoplatform.cloudworkspaces.cloudlogin.rest.CloudLoginRestService</type>
-  </component>
   
   <external-component-plugins>
     <target-component>org.exoplatform.services.jcr.RepositoryService</target-component>
