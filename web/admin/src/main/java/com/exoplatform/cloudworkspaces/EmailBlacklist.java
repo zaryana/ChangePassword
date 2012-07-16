@@ -58,6 +58,7 @@ public class EmailBlacklist implements Startable {
   }
 
   public boolean isInBlackList(String email) {
+    email = email.toLowerCase();
     if (blacklistFile == null) {
       return false;
     }
