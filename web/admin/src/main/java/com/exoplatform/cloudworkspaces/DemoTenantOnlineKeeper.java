@@ -82,7 +82,7 @@ public class DemoTenantOnlineKeeper implements Startable {
         try {
           String demoTenant = cloudIntranetUtils.getDemoTenantName();
           Map<String, String> status = tenantInfoDataManager.getKeyValues(demoTenant);
-          if (status == null) {
+          if (status.isEmpty()) {
             LOG.warn("Demo tenant with name {} not found.", demoTenant);
           } else {
             TenantState state = TenantState.valueOf(status.get(TenantInfoFieldName.PROPERTY_STATE));
