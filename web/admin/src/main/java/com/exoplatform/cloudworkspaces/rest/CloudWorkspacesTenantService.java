@@ -152,7 +152,7 @@ public class CloudWorkspacesTenantService {
       username = userInfo.getUsername();
       tName = userInfo.getTenant();
 
-      if (emailBlacklist.isInBlackList(userMail) && !tName.equals(utils.getSandboxTenantName())) {
+      if (emailBlacklist.isInBlackList(userMail) && !tName.equals(utils.getDemoTenantName())) {
         LOG.info("User " + userMail
             + " rejected. Need work email address. Redirecting to tryagain.jsp...");
         return Response.status(309)
@@ -310,7 +310,7 @@ public class CloudWorkspacesTenantService {
       UserMailInfo userInfo = utils.email2userMailInfo(userMail);
       username = userInfo.getUsername();
       tName = userInfo.getTenant();
-      if (emailBlacklist.isInBlackList(userMail) && !tName.equals(utils.getSandboxTenantName())) {
+      if (emailBlacklist.isInBlackList(userMail) && !tName.equals(utils.getDemoTenantName())) {
         String domain = userMail.substring(userMail.indexOf("@"));
         return Response.status(Status.BAD_REQUEST)
                        .entity("Cannot sign up with an email address " + domain
@@ -822,7 +822,7 @@ public class CloudWorkspacesTenantService {
   @GET
   @Path("usermailinfo/{email}")
   @Produces(MediaType.APPLICATION_JSON)
-  public UserMailInfo tenantname(@PathParam("email") String email) {
+  public UserMailInfo usermailinfo(@PathParam("email") String email) {
     return utils.email2userMailInfo(email);
   }
 

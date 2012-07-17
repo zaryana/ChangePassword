@@ -22,6 +22,7 @@ import com.exoplatform.cloudworkspaces.dao.PropertiesModifiableEmailValidationSt
 import com.exoplatform.cloudworkspaces.http.WorkspacesOrganizationRequestPerformer;
 import com.exoplatform.cloudworkspaces.instance.WorkspacesUserDataGenerator;
 import com.exoplatform.cloudworkspaces.listener.AsyncTenantStarter;
+import com.exoplatform.cloudworkspaces.listener.DemoTenantOnlineListener;
 import com.exoplatform.cloudworkspaces.listener.JoinAllInOnlineServerListener;
 import com.exoplatform.cloudworkspaces.listener.TenantCreatedListener;
 import com.exoplatform.cloudworkspaces.listener.UserLimitSupervisor;
@@ -77,7 +78,6 @@ public class CloudWorkspacesAdminApplicationComposer extends CloudAdminApplicati
     container.addComponent(CLIResourceFactory.class);
     container.addComponent(ResourceBinder.class,
                            servletContext.getAttribute(ResourceBinder.class.getName()));
-
 
     container.addComponent(WorkspacesMailSender.class);
 
@@ -142,6 +142,9 @@ public class CloudWorkspacesAdminApplicationComposer extends CloudAdminApplicati
     container.removeComponent(ServerStateChangesProxyReconfigurationInitiator.class);
     container.addComponent(ServerStateChangesProxyReconfigurationInitiator.class,
                            WorkspacesServerStateChangesProxyReconfigurationInitiator.class);
+
+    container.addComponent(DemoTenantOnlineKeeper.class);
+    container.addComponent(DemoTenantOnlineListener.class);
   }
 
   @Override

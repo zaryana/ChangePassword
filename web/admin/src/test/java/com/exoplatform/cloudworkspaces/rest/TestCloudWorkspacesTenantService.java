@@ -166,7 +166,8 @@ public class TestCloudWorkspacesTenantService {
                .expect()
                .statusCode(Status.OK.getStatusCode())
                .contentType(ContentType.JSON)
-               // TODO add body verifier
+               .body("username", equalTo(USERNAME))
+               .body("tenant", equalTo(TENANT))
                .when()
                .get("/rest/cloud-admin/cloudworkspaces/tenant-service/usermailinfo/{email}");
 
@@ -1193,7 +1194,7 @@ public class TestCloudWorkspacesTenantService {
 
     Mockito.verify(cloudIntranetUtils).validateEmail(EMAIL);
     Mockito.verify(cloudIntranetUtils).email2userMailInfo(EMAIL);
-    Mockito.verify(cloudIntranetUtils).getSandboxTenantName();
+    Mockito.verify(cloudIntranetUtils).getDemoTenantName();
     Mockito.verify(emailBlacklist).isInBlackList(EMAIL);
 
     Mockito.verifyNoMoreInteractions(cloudIntranetUtils, emailBlacklist);

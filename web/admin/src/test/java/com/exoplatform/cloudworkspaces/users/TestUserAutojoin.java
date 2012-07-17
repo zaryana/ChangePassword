@@ -68,14 +68,15 @@ public class TestUserAutojoin {
     cloudAdminConfiguration.setProperty("cloud.admin.tenant.waiting.dir",
                                         "target/test-classes/queue");
     referencesManager = Mockito.mock((ReferencesManager.class));
+    requestPerformer = Mockito.mock(WorkspacesOrganizationRequestPerformer.class);
+    tenantInfoDataManager = Mockito.mock(TenantInfoDataManager.class);
     utils = new CloudIntranetUtils(cloudAdminConfiguration,
                                    referencesManager,
                                    Mockito.mock(EmailBlacklist.class),
-                                   Mockito.mock(WorkspacesOrganizationRequestPerformer.class));
-    requestPerformer = Mockito.mock(WorkspacesOrganizationRequestPerformer.class);
+                                   requestPerformer,
+                                   tenantInfoDataManager);
     UserLimitsStorage userLimitsStorage = Mockito.mock(UserLimitsStorage.class);
     notificationMailSender = Mockito.mock(NotificationMailSender.class);
-    tenantInfoDataManager = Mockito.mock(TenantInfoDataManager.class);
     passwordCipher = Mockito.mock(PasswordCipher.class);
     UserRequestDAO userRequestDao = new UserRequestDAO(cloudAdminConfiguration, passwordCipher);
 

@@ -35,27 +35,38 @@ public class WorkspacesServerOnlineListenersInvoker extends ServerOnlineListener
 
   private static final Logger                           LOG = LoggerFactory.getLogger(WorkspacesServerOnlineListenersInvoker.class);
 
-  protected final ArrayList<ServerBecomeOnlineListener> workspacesOnlineListeners;
+  protected final ArrayList<ServerBecomeOnlineListener> listenersBefore;
+
+  protected final ArrayList<ServerBecomeOnlineListener> listenersAfter;
 
   public WorkspacesServerOnlineListenersInvoker(ServerMaintenanceStateChecker serverMaintenanceStateChecker,
                                                 ServerRemoverInterrupter serverRemoverInterrupter,
                                                 InactiveTenantSuspender inactiveTenantSuspender,
                                                 ServerStateChangesProxyReconfigurationInitiator serverStateChangesProxyReconfigurationInitiator,
-                                                JoinAllInOnlineServerListener joinAllInOnlineServerListener) {
+                                                JoinAllInOnlineServerListener joinAllInOnlineServerListener,
+                                                DemoTenantOnlineListener demoTenantOnlineListener) {
     super(serverMaintenanceStateChecker,
           serverRemoverInterrupter,
           inactiveTenantSuspender,
           serverStateChangesProxyReconfigurationInitiator);
 
-    this.workspacesOnlineListeners = new ArrayList<ServerBecomeOnlineListener>();
-    this.workspacesOnlineListeners.add(joinAllInOnlineServerListener);
+    this.listenersBefore = new ArrayList<ServerBecomeOnlineListener>();
+    this.listenersBefore.add(demoTenantOnlineListener);
+
+    this.listenersAfter = new ArrayList<ServerBecomeOnlineListener>();
+    this.listenersAfter.add(joinAllInOnlineServerListener);
   }
 
   @Override
   public void invoke(String serverAlias, List<TenantInfo> currentTenantStates) {
+    for (ServerBecomeOnlineListener listener : listenersBefore) {
+      LOG.debug("Invoke ServerBecomeOnlineListener {}", listener.getClass().getCanonicalName());
+      listener.onServerBecomeOnline(serverAlias, currentTenantStates);
+    }
+
     super.invoke(serverAlias, currentTenantStates);
 
-    for (ServerBecomeOnlineListener listener : workspacesOnlineListeners) {
+    for (ServerBecomeOnlineListener listener : listenersAfter) {
       LOG.debug("Invoke ServerBecomeOnlineListener {}", listener.getClass().getCanonicalName());
       listener.onServerBecomeOnline(serverAlias, currentTenantStates);
     }

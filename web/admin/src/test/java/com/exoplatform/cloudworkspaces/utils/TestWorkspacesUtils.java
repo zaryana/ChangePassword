@@ -25,6 +25,7 @@ import com.exoplatform.cloudworkspaces.http.WorkspacesOrganizationRequestPerform
 
 import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.Configuration;
+import org.exoplatform.cloudmanagement.admin.dao.TenantInfoDataManager;
 import org.mockito.Mockito;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
@@ -41,10 +42,12 @@ public class TestWorkspacesUtils {
     ReferencesManager referencesManager = new ReferencesManager(cloudAdminConfiguration);
     EmailBlacklist blacklist = Mockito.mock(EmailBlacklist.class);
     WorkspacesOrganizationRequestPerformer organizationRequestPerformer = Mockito.mock(WorkspacesOrganizationRequestPerformer.class);
+    TenantInfoDataManager tenantInfoDataManager = Mockito.mock(TenantInfoDataManager.class);
     utils = new CloudIntranetUtils(cloudAdminConfiguration,
                                    referencesManager,
                                    blacklist,
-                                   organizationRequestPerformer);
+                                   organizationRequestPerformer,
+                                   tenantInfoDataManager);
   }
 
   @DataProvider(name = "emails1")

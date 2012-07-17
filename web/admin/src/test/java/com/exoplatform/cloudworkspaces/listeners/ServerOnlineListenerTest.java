@@ -18,6 +18,7 @@
  */
 package com.exoplatform.cloudworkspaces.listeners;
 
+import com.exoplatform.cloudworkspaces.listener.DemoTenantOnlineListener;
 import com.exoplatform.cloudworkspaces.listener.JoinAllInOnlineServerListener;
 import com.exoplatform.cloudworkspaces.listener.WorkspacesServerOnlineListenersInvoker;
 import com.exoplatform.cloudworkspaces.users.UsersManager;
@@ -56,11 +57,12 @@ public class ServerOnlineListenerTest {
     ServerStateChangesProxyReconfigurationInitiator serverStateChangesProxyReconfigurationInitiator = Mockito.mock(ServerStateChangesProxyReconfigurationInitiator.class);
     usersManager = Mockito.mock(UsersManager.class);
     JoinAllInOnlineServerListener listener = new JoinAllInOnlineServerListener(usersManager);
+    DemoTenantOnlineListener demoTenantOnlineListener = Mockito.mock(DemoTenantOnlineListener.class);
     invoker = new WorkspacesServerOnlineListenersInvoker(checker,
                                                          serverRemoverInterrupter,
                                                          inactiveTenantSuspender,
                                                          serverStateChangesProxyReconfigurationInitiator,
-                                                         listener);
+                                                         listener, demoTenantOnlineListener);
   }
 
   @Test
