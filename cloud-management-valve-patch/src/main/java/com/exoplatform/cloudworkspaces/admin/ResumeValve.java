@@ -21,7 +21,7 @@ package com.exoplatform.cloudworkspaces.admin;
 import org.apache.catalina.connector.Request;
 import org.apache.catalina.connector.Response;
 import org.apache.catalina.valves.ValveBase;
-import org.exoplatform.cloudmanagement.multitenancy.TenantNameResolver;
+import com.exoplatform.cloud.multitenancy.TenantNameResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
