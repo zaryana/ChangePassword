@@ -21,8 +21,8 @@ package com.exoplatform.cloudworkspaces.patch;
 import com.exoplatform.cloudworkspaces.NotificationMailSender;
 
 import org.apache.commons.configuration.Configuration;
-import org.exoplatform.cloudmanagement.admin.WorkspacesMailSender;
-import org.exoplatform.cloudmanagement.admin.configuration.MailConfiguration;
+import com.exoplatform.cloud.admin.WorkspacesMailSender;
+import com.exoplatform.cloud.admin.configuration.MailConfiguration;
 import org.exoplatform.cloudworkspaces.patch.utils.WorkspacesErrorMailSender;
 import org.exoplatform.cloudworkspaces.patch.utils.WorkspacesErrorMailSenderProvider;
 import org.picocontainer.Startable;

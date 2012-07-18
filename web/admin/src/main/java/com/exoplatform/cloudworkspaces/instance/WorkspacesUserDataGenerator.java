@@ -19,11 +19,11 @@
 package com.exoplatform.cloudworkspaces.instance;
 
 import org.apache.commons.configuration.Configuration;
-import org.exoplatform.cloudmanagement.admin.CloudAdminException;
-import org.exoplatform.cloudmanagement.admin.instance.autoscaling.ConfigurationUserDataGenerator;
-import org.exoplatform.cloudmanagement.admin.tenant.DatabaseServerSelectionAlgorithm;
-import org.exoplatform.cloudmanagement.admin.util.AdminConfigurationUtil;
-import org.exoplatform.cloudmanagement.status.DatabaseInfo;
+import com.exoplatform.cloud.admin.CloudAdminException;
+import com.exoplatform.cloud.admin.instance.autoscaling.ConfigurationUserDataGenerator;
+import com.exoplatform.cloud.admin.tenant.DatabaseServerSelectionAlgorithm;
+import com.exoplatform.cloud.admin.util.AdminConfigurationUtil;
+import com.exoplatform.cloud.status.DatabaseInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

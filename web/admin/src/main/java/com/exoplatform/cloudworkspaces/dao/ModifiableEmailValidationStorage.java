@@ -18,8 +18,8 @@
  */
 package com.exoplatform.cloudworkspaces.dao;
 
-import org.exoplatform.cloudmanagement.admin.CloudAdminException;
-import org.exoplatform.cloudmanagement.admin.dao.EmailValidationStorage;
+import com.exoplatform.cloud.admin.CloudAdminException;
+import com.exoplatform.cloud.admin.dao.EmailValidationStorage;
 
 import java.io.IOException;
 import java.util.Map;

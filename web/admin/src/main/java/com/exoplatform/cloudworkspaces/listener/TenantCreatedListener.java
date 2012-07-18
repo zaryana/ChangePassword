@@ -22,9 +22,9 @@ import com.exoplatform.cloudworkspaces.NotificationMailSender;
 import com.exoplatform.cloudworkspaces.RequestState;
 import com.exoplatform.cloudworkspaces.users.UsersManager;
 
-import org.exoplatform.cloudmanagement.admin.CloudAdminException;
-import org.exoplatform.cloudmanagement.admin.status.AbstractTenantStateListener;
-import org.exoplatform.cloudmanagement.admin.tenant.TenantStateDataManager;
+import com.exoplatform.cloud.admin.CloudAdminException;
+import com.exoplatform.cloud.admin.status.AbstractTenantStateListener;
+import com.exoplatform.cloud.admin.tenant.TenantStateDataManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -19,7 +19,7 @@
 package com.exoplatform.cloudworkspaces;
 
 import org.apache.commons.codec.binary.Base64;
-import org.exoplatform.cloudmanagement.admin.CloudAdminException;
+import com.exoplatform.cloud.admin.CloudAdminException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

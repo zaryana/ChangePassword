@@ -19,8 +19,8 @@
 package com.exoplatform.cloudworkspaces.rest;
 
 import org.apache.commons.configuration.Configuration;
-import org.exoplatform.cloudmanagement.admin.configuration.ApplicationServerConfiguration;
-import org.exoplatform.cloudmanagement.admin.configuration.ApplicationServerConfigurationManager;
+import com.exoplatform.cloud.admin.configuration.ApplicationServerConfiguration;
+import com.exoplatform.cloud.admin.configuration.ApplicationServerConfigurationManager;
 
 import java.io.IOException;
 

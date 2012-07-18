@@ -23,17 +23,17 @@ import com.exoplatform.cloudworkspaces.http.WorkspacesOrganizationRequestPerform
 import com.sun.mail.iap.Response;
 
 import org.apache.commons.configuration.Configuration;
-import org.exoplatform.cloudmanagement.admin.CloudAdminException;
-import org.exoplatform.cloudmanagement.admin.TenantRegistrationException;
-import org.exoplatform.cloudmanagement.admin.WorkspacesMailSender;
-import org.exoplatform.cloudmanagement.admin.configuration.MailConfiguration;
-import org.exoplatform.cloudmanagement.admin.configuration.TenantInfoFieldName;
-import org.exoplatform.cloudmanagement.admin.dao.EmailValidationStorage;
-import org.exoplatform.cloudmanagement.admin.dao.TenantInfoDataManager;
-import org.exoplatform.cloudmanagement.admin.tenant.TenantNameValidator;
-import org.exoplatform.cloudmanagement.admin.tenant.UserMailValidator;
-import org.exoplatform.cloudmanagement.admin.util.AdminConfigurationUtil;
-import org.exoplatform.cloudmanagement.status.TenantState;
+import com.exoplatform.cloud.admin.CloudAdminException;
+import com.exoplatform.cloud.admin.TenantRegistrationException;
+import com.exoplatform.cloud.admin.WorkspacesMailSender;
+import com.exoplatform.cloud.admin.configuration.MailConfiguration;
+import com.exoplatform.cloud.admin.configuration.TenantInfoFieldName;
+import com.exoplatform.cloud.admin.dao.EmailValidationStorage;
+import com.exoplatform.cloud.admin.dao.TenantInfoDataManager;
+import com.exoplatform.cloud.admin.tenant.TenantNameValidator;
+import com.exoplatform.cloud.admin.tenant.UserMailValidator;
+import com.exoplatform.cloud.admin.util.AdminConfigurationUtil;
+import com.exoplatform.cloud.status.TenantState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

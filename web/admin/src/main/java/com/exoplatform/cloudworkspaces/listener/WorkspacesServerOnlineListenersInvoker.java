@@ -18,13 +18,13 @@
  */
 package com.exoplatform.cloudworkspaces.listener;
 
-import org.exoplatform.cloudmanagement.admin.mail.ServerMaintenanceStateChecker;
-import org.exoplatform.cloudmanagement.admin.proxy.ServerStateChangesProxyReconfigurationInitiator;
-import org.exoplatform.cloudmanagement.admin.recover.ServerRemoverInterrupter;
-import org.exoplatform.cloudmanagement.admin.status.ServerBecomeOnlineListener;
-import org.exoplatform.cloudmanagement.admin.status.ServerOnlineListenersInvoker;
-import org.exoplatform.cloudmanagement.admin.tenant.InactiveTenantSuspender;
-import org.exoplatform.cloudmanagement.status.TenantInfo;
+import com.exoplatform.cloud.admin.mail.ServerMaintenanceStateChecker;
+import com.exoplatform.cloud.admin.proxy.ServerStateChangesProxyReconfigurationInitiator;
+import com.exoplatform.cloud.admin.recover.ServerRemoverInterrupter;
+import com.exoplatform.cloud.admin.status.ServerBecomeOnlineListener;
+import com.exoplatform.cloud.admin.status.ServerOnlineListenersInvoker;
+import com.exoplatform.cloud.admin.tenant.InactiveTenantSuspender;
+import com.exoplatform.cloud.status.TenantInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
