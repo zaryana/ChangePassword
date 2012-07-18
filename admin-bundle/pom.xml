@@ -39,7 +39,7 @@
       <type>war</type>
     </dependency>
     <dependency>
-      <groupId>org.exoplatform.cloud-management</groupId>
+      <groupId>com.exoplatform.cloud-management</groupId>
       <artifactId>cloud-admin-packaging-war</artifactId>
       <type>war</type>
     </dependency>
@@ -48,7 +48,7 @@
       <artifactId>cloud-management-valve-patch</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.exoplatform.cloud-management</groupId>
+      <groupId>com.exoplatform.cloud-management</groupId>
       <artifactId>cloud-commons</artifactId>
     </dependency>
     <dependency>
@@ -172,7 +172,7 @@
                       <copy file="${project.build.directory}/packager-conf/jar/cloud-management-valve-patch-${project.version}.jar" tofile="${project.build.directory}/admin-tomcat/lib/cloud-management-valve-patch-${project.version}.jar"/>
 
                       <echo message="Copy cloud-services-common.jar"/>
-                      <copy file="${project.build.directory}/packager-conf/jar/cloud-commons-${org.exoplatform.cloud-management.version}.jar" tofile="${project.build.directory}/admin-tomcat/lib/cloud-commons-${org.exoplatform.cloud-management.version}.jar"/>
+                      <copy file="${project.build.directory}/packager-conf/jar/cloud-commons-${com.exoplatform.cloud-management.version}.jar" tofile="${project.build.directory}/admin-tomcat/lib/cloud-commons-${org.exoplatform.cloud-management.version}.jar"/>
 
                       <echo message="Copy tomcat-catalina-jmx-remote.jar"/>
                       <copy file="${project.build.directory}/packager-conf/jar/tomcat-catalina-jmx-remote-${tomcat.version}.jar" tofile="${project.build.directory}/admin-tomcat/lib/tomcat-catalina-jmx-remote-${tomcat.version}.jar"/>
