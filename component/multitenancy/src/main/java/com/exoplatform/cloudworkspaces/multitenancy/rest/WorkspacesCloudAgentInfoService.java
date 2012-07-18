@@ -18,15 +18,16 @@
  */
 package com.exoplatform.cloudworkspaces.multitenancy.rest;
 
-import static org.exoplatform.cloudmanagement.status.TenantInfoBuilder.online;
+import static com.exoplatform.cloud.status.TenantInfoBuilder.online;
 
-import org.exoplatform.cloudmanagement.determinant.TenantDeterminant;
-import org.exoplatform.cloudmanagement.multitenancy.TemporaryTenantStateHolder;
-import org.exoplatform.cloudmanagement.multitenancy.TenantNameResolver;
-import org.exoplatform.cloudmanagement.multitenancy.TenantRepositoryService;
-import org.exoplatform.cloudmanagement.rest.CloudAgentInfoService;
-import org.exoplatform.cloudmanagement.status.TenantInfo;
-import org.exoplatform.cloudmanagement.status.TenantState;
+import com.exoplatform.cloud.determinant.TenantDeterminant;
+import com.exoplatform.cloud.multitenancy.TemporaryTenantStateHolder;
+import com.exoplatform.cloud.multitenancy.TenantNameResolver;
+import com.exoplatform.cloud.multitenancy.TenantRepositoryService;
+import com.exoplatform.cloud.rest.CloudAgentInfoService;
+import com.exoplatform.cloud.statistic.TenantAccessTimeStatisticCollector;
+import com.exoplatform.cloud.status.TenantInfo;
+
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.jcr.config.RepositoryConfigurationException;
@@ -34,7 +35,6 @@ import org.exoplatform.services.jcr.config.RepositoryEntry;
 import org.exoplatform.services.jcr.ext.backup.BackupManager;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
-import org.exoplatform.statistic.TenantAccessTimeStatisticCollector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,7 +43,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.annotation.security.RolesAllowed;
@@ -65,7 +64,7 @@ public class WorkspacesCloudAgentInfoService extends CloudAgentInfoService {
 
   private final OrganizationService        orgService;
 
-  public WorkspacesCloudAgentInfoService(RepositoryService repositoryService,
+  public WorkspacesCloudAgentInfoService(TenantRepositoryService repositoryService,
                                          TemporaryTenantStateHolder temporaryTenantStateHolder,
                                          OrganizationService organizationService,
                                          BackupManager backupManager) {
@@ -111,6 +110,7 @@ public class WorkspacesCloudAgentInfoService extends CloudAgentInfoService {
   @Path("users-list")
   @RolesAllowed("cloud-admin")
   public Map<String, Map<String, String>> getUsersList() throws Exception {
+    // TODO this rest was removed from CM
     Set<String> notAvailableTenants = new HashSet<String>();
     for (String tenant : temporaryTenantStateHolder.getCreatingTenants().keySet())
       notAvailableTenants.add(tenant);
@@ -162,41 +162,21 @@ public class WorkspacesCloudAgentInfoService extends CloudAgentInfoService {
   @Path("statistics")
   @RolesAllowed("cloud-admin")
   public Collection<TenantInfo> getTenantStatistic() {
+    TenantAccessTimeStatisticCollector accessTimeStatisticCollector = TenantAccessTimeStatisticCollector.getInstance();
+
     Map<String, TenantInfo> result = new HashMap<String, TenantInfo>();
+    result.putAll(temporaryTenantStateHolder.getCreatingTenants());
+    result.putAll(temporaryTenantStateHolder.getStartingTenantState());
+    result.putAll(temporaryTenantStateHolder.getStoppingTenants());
 
-    Map<String, TenantInfo> creatingTenants = temporaryTenantStateHolder.getCreatingTenants();
-    for (Entry<String, TenantInfo> entry : creatingTenants.entrySet()) {
-      String tenantName = entry.getKey();
-      TenantInfo tenantInfo = entry.getValue();
-      tenantInfo.setState(TenantState.CREATION);
-      result.put(tenantName, tenantInfo);
-    }
-
-    Map<String, TenantInfo> startingTenants = temporaryTenantStateHolder.getStartingTenantState();
-    for (Entry<String, TenantInfo> entry : startingTenants.entrySet()) {
-      String tenantName = entry.getKey();
-      TenantInfo tenantInfo = entry.getValue();
-      tenantInfo.setState(TenantState.RESUMING);
-      result.put(tenantName, tenantInfo);
-    }
-
-    Map<String, TenantInfo> stoppingTenants = temporaryTenantStateHolder.getStoppingTenants();
-    for (Entry<String, TenantInfo> entry : stoppingTenants.entrySet()) {
-      String tenantName = entry.getKey();
-      TenantInfo tenantInfo = entry.getValue();
-      tenantInfo.setState(TenantState.SUSPENDING);
-      result.put(tenantName, tenantInfo);
-    }
-
-    TenantAccessTimeStatisticCollector accessCollector = TenantAccessTimeStatisticCollector.getInstance();
     String defaultRepoName = repositoryService.getConfig().getDefaultRepositoryName();
 
     for (RepositoryEntry repositoryEntry : repositoryService.getConfig()
                                                             .getRepositoryConfigurations()) {
-      // repository may be available before executing of all Tenant creation
-      // plugins
       String repositoryName = repositoryEntry.getName();
       if (!defaultRepoName.equals(repositoryName)) {
+        // repository may be available before executing of all Tenant creation
+        // plugins
         if (!result.containsKey(repositoryName)) {
 
           TenantInfo tenantInfo = online(repositoryName).info();
@@ -204,11 +184,11 @@ public class WorkspacesCloudAgentInfoService extends CloudAgentInfoService {
 
           // get last access time
           if (defaultRepoName.equals(repositoryName)) {
-            tenantInfo.setLastAccessTime(accessCollector.getAccessTime(TenantDeterminant.DEFAULT_TENANT_NAME));
-            tenantInfo.setSuspendable(false);
+            tenantInfo.setLastAccessTime(accessTimeStatisticCollector.getAccessTime(TenantDeterminant.DEFAULT_TENANT_NAME));
+            tenantInfo.setStoppable(false);
           } else {
-            tenantInfo.setLastAccessTime(accessCollector.getAccessTime(repositoryName));
-            tenantInfo.setSuspendable(true);
+            tenantInfo.setLastAccessTime(accessTimeStatisticCollector.getAccessTime(repositoryName));
+            tenantInfo.setStoppable(true);
           }
         }
       }
