@@ -24,6 +24,9 @@ import com.exoplatform.cloudworkspaces.http.WorkspacesOrganizationRequestPerform
 
 import org.apache.commons.configuration.Configuration;
 import org.exoplatform.cloudmanagement.admin.CloudAdminException;
+import org.exoplatform.cloudmanagement.admin.configuration.TenantInfoFieldName;
+import org.exoplatform.cloudmanagement.admin.dao.TenantInfoDataManager;
+import org.exoplatform.cloudmanagement.status.TenantState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,6 +53,8 @@ public class CloudIntranetUtils {
 
   private final WorkspacesOrganizationRequestPerformer organizationRequestPerformer;
 
+  private final TenantInfoDataManager                  tenantInfoDataManager;
+
   public static final String                           CLOUD_ADMIN_HOSTNAME_FILE = "cloud.admin.hostname.file";
 
   public static final char                             TENANT_NAME_DELIMITER     = '-';
@@ -59,11 +64,13 @@ public class CloudIntranetUtils {
   public CloudIntranetUtils(Configuration cloudAdminConfiguration,
                             ReferencesManager referencesManager,
                             EmailBlacklist emailBlacklist,
-                            WorkspacesOrganizationRequestPerformer organizationRequestPerformer) {
+                            WorkspacesOrganizationRequestPerformer organizationRequestPerformer,
+                            TenantInfoDataManager tenantInfoDataManager) {
     this.cloudAdminConfiguration = cloudAdminConfiguration;
     this.referencesManager = referencesManager;
     this.emailBlacklist = emailBlacklist;
     this.organizationRequestPerformer = organizationRequestPerformer;
+    this.tenantInfoDataManager = tenantInfoDataManager;
   }
 
   public boolean validateEmail(String aEmailAddress) {
@@ -127,37 +134,37 @@ public class CloudIntranetUtils {
     }
   }
 
-  public String getSandboxTenantName() {
-    return cloudAdminConfiguration.getString("cloud.admin.sandbox.tenant.name");
+  public String getDemoTenantName() {
+    return cloudAdminConfiguration.getString("cloud.admin.demo.tenant.name");
   }
 
-  public boolean hasUsernameInSandboxTenant(String email) throws CloudAdminException {
-    try {
-      organizationRequestPerformer.getUserNameByEmail(getSandboxTenantName(), email);
-      return true;
-    } catch (UserNotFoundException e) {
-      return false;
-    }
-  }
-
-  public String getUsernameInSandboxTenant(String email) throws CloudAdminException {
-    return organizationRequestPerformer.getUserNameByEmail(getSandboxTenantName(), email);
+  public String getUsernameInDemoTenant(String email) throws CloudAdminException {
+    return organizationRequestPerformer.getUserNameByEmail(getDemoTenantName(), email);
   }
 
   public UserMailInfo email2userMailInfo(String email) {
     if (emailBlacklist.isInBlackList(email)) {
       try {
-        String defaultTenant = getSandboxTenantName();
-        try {
-          String username = getUsernameInSandboxTenant(email);
-          return new UserMailInfo(username, defaultTenant);
-        } catch (UserNotFoundException e) {
-          // use default algorithm
+        String demoTenant = getDemoTenantName();
+        if (!tenantInfoDataManager.isExists(demoTenant)) {
+          LOG.warn("Demo tenant with name {} not found.", demoTenant);
+        } else {
+          TenantState state = TenantState.valueOf(tenantInfoDataManager.getValue(demoTenant,
+                                                                                 TenantInfoFieldName.PROPERTY_STATE));
+          if (state.equals(TenantState.ONLINE)) {
+            try {
+              String username = getUsernameInDemoTenant(email);
+              return new UserMailInfo(username, demoTenant);
+            } catch (UserNotFoundException e) {
+              // use default algorithm
+            }
+          }
         }
       } catch (CloudAdminException e) {
         LOG.error(e.getLocalizedMessage(), e);
       }
     }
+
     String username = email.substring(0, email.indexOf('@'));
     String hostname = email.substring(email.indexOf("@") + 1).toLowerCase();
     String[] subdomains = hostname.split("\\.");

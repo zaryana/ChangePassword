@@ -28,6 +28,15 @@
       <param-value>com.exoplatform.cloudworkspaces.CloudWorkspacesAdminApplicationComposer</param-value>
    </context-param>
 
+   <filter>
+      <filter-name>NoCachingFilter</filter-name>
+      <filter-class>com.exoplatform.cloudworkspaces.shell.NoCachingFilter</filter-class>
+   </filter>
+   <filter-mapping>
+      <filter-name>NoCachingFilter</filter-name>
+      <url-pattern>/admin-shell/*</url-pattern>
+   </filter-mapping>
+
    
    <filter>
    <filter-name>picoFilter</filter-name>
