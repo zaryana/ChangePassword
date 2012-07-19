@@ -18,7 +18,6 @@
  */
 package com.exoplatform.cloudworkspaces.shell;
 
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,18 +32,16 @@ import javax.ws.rs.core.SecurityContext;
  * This service gives all necessary information for shell application start.
  */
 @Path("/cloud-admin/shell")
-public class ShellConfigurationService
-{
-   @GET
-   @Path("/user")
-   @Produces(MediaType.APPLICATION_JSON)
-   public Map<String, Object> getCurrentUserName(@Context SecurityContext securityContext)
-   {
-      String userName = securityContext.getUserPrincipal().getName();
-      ShellUser shellUser = new ShellUser(userName);
-      Map<String, Object> result = new HashMap<String, Object>(1);
-      result.put("user", shellUser);
+public class ShellConfigurationService {
+  @GET
+  @Path("/user")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Map<String, Object> getCurrentUserName(@Context SecurityContext securityContext) {
+    String userName = securityContext.getUserPrincipal().getName();
+    ShellUser shellUser = new ShellUser(userName);
+    Map<String, Object> result = new HashMap<String, Object>(1);
+    result.put("user", shellUser);
 
-      return result;
-   }
+    return result;
+  }
 }

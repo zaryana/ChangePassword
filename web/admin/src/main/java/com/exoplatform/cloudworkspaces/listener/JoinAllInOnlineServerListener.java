@@ -18,11 +18,11 @@
  */
 package com.exoplatform.cloudworkspaces.listener;
 
-import com.exoplatform.cloudworkspaces.users.UsersManager;
-
 import com.exoplatform.cloud.admin.CloudAdminException;
 import com.exoplatform.cloud.admin.status.ServerBecomeOnlineListener;
 import com.exoplatform.cloud.status.TenantInfo;
+import com.exoplatform.cloudworkspaces.users.UsersManager;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

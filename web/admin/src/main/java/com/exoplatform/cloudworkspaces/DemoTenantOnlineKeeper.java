@@ -18,19 +18,20 @@
  */
 package com.exoplatform.cloudworkspaces;
 
-import org.apache.commons.configuration.Configuration;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
 import com.exoplatform.cloud.admin.CloudAdminException;
 import com.exoplatform.cloud.admin.configuration.AdminConfiguration;
 import com.exoplatform.cloud.admin.configuration.TenantInfoFieldName;
 import com.exoplatform.cloud.admin.dao.TenantInfoDataManager;
 import com.exoplatform.cloud.admin.http.HttpClientManager;
-import com.exoplatform.cloud.admin.tenant.ServerSelectionAlgorithm;
+import com.exoplatform.cloud.admin.tenant.LowestLoadOnlineServerSelector;
 import com.exoplatform.cloud.admin.tenant.TenantStarter;
 import com.exoplatform.cloud.status.TenantState;
+
+import org.apache.commons.configuration.Configuration;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
 import org.picocontainer.Startable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,35 +43,35 @@ import java.util.TimerTask;
 
 public class DemoTenantOnlineKeeper implements Startable {
 
-  private static final Logger            LOG = LoggerFactory.getLogger(DemoTenantOnlineKeeper.class);
+  private static final Logger                  LOG = LoggerFactory.getLogger(DemoTenantOnlineKeeper.class);
 
-  private final Timer                    timer;
+  private final Timer                          timer;
 
-  private final Configuration            cloudAdminConfiguration;
+  private final Configuration                  cloudAdminConfiguration;
 
-  private final TenantStarter            tenantStarter;
+  private final TenantStarter                  tenantStarter;
 
-  private final CloudIntranetUtils       cloudIntranetUtils;
+  private final CloudIntranetUtils             cloudIntranetUtils;
 
-  private final TenantInfoDataManager    tenantInfoDataManager;
+  private final TenantInfoDataManager          tenantInfoDataManager;
 
-  private final HttpClientManager        httpClientManager;
+  private final HttpClientManager              httpClientManager;
 
-  private final ServerSelectionAlgorithm serverSelectionAlgorithm;
+  private final LowestLoadOnlineServerSelector onlineServerSelector;
 
   public DemoTenantOnlineKeeper(Configuration cloudAdminConfiguration,
                                 TenantStarter tenantStarter,
                                 CloudIntranetUtils cloudIntranetUtils,
                                 TenantInfoDataManager tenantInfoDataManager,
                                 HttpClientManager httpClientManager,
-                                ServerSelectionAlgorithm serverSelectionAlgorithm) {
+                                LowestLoadOnlineServerSelector onlineServerSelector) {
     this.cloudAdminConfiguration = cloudAdminConfiguration;
     this.tenantStarter = tenantStarter;
     this.cloudIntranetUtils = cloudIntranetUtils;
     this.tenantInfoDataManager = tenantInfoDataManager;
     this.timer = new Timer();
     this.httpClientManager = httpClientManager;
-    this.serverSelectionAlgorithm = serverSelectionAlgorithm;
+    this.onlineServerSelector = onlineServerSelector;
   }
 
   @Override
@@ -86,13 +87,13 @@ public class DemoTenantOnlineKeeper implements Startable {
             LOG.warn("Demo tenant with name {} not found.", demoTenant);
           } else {
             TenantState state = TenantState.valueOf(status.get(TenantInfoFieldName.PROPERTY_STATE));
-            if (state.equals(TenantState.SUSPENDED)) {
-              if (serverSelectionAlgorithm.selectServers().size() > 0) {
+            if (state.equals(TenantState.STOPPED)) {
+              if (onlineServerSelector.selectServers().size() > 0) {
                 tenantStarter.startTenant(demoTenant);
               }
             } else {
               long lastAccess = Long.parseLong(status.get(TenantInfoFieldName.PROPERTY_LAST_ACCESS_TIME));
-              long suspendTime = cloudAdminConfiguration.getLong(AdminConfiguration.CLOUD_ADMIN_SUSPEND_TIME);
+              long suspendTime = cloudAdminConfiguration.getLong(AdminConfiguration.CLOUD_ADMIN_STOP_TIME);
               double ratio = (double) (System.currentTimeMillis() - lastAccess)
                   / (double) suspendTime;
               if (ratio > 0.5) {

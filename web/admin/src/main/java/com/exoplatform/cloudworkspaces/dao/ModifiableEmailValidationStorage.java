@@ -36,7 +36,7 @@ public interface ModifiableEmailValidationStorage extends EmailValidationStorage
    * @throws CloudAdminException
    */
   boolean setValidationData(String uuid, Map<String, String> validationData) throws CloudAdminException;
-  
+
   /**
    * List of the aliases saved in storage
    */

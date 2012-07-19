@@ -172,7 +172,7 @@
                       <copy file="${project.build.directory}/packager-conf/jar/cloud-management-valve-patch-${project.version}.jar" tofile="${project.build.directory}/admin-tomcat/lib/cloud-management-valve-patch-${project.version}.jar"/>
 
                       <echo message="Copy cloud-services-common.jar"/>
-                      <copy file="${project.build.directory}/packager-conf/jar/cloud-commons-${com.exoplatform.cloud-management.version}.jar" tofile="${project.build.directory}/admin-tomcat/lib/cloud-commons-${org.exoplatform.cloud-management.version}.jar"/>
+                      <copy file="${project.build.directory}/packager-conf/jar/cloud-commons-${com.exoplatform.cloud-management.version}.jar" tofile="${project.build.directory}/admin-tomcat/lib/cloud-commons-${com.exoplatform.cloud-management.version}.jar"/>
 
                       <echo message="Copy tomcat-catalina-jmx-remote.jar"/>
                       <copy file="${project.build.directory}/packager-conf/jar/tomcat-catalina-jmx-remote-${tomcat.version}.jar" tofile="${project.build.directory}/admin-tomcat/lib/tomcat-catalina-jmx-remote-${tomcat.version}.jar"/>

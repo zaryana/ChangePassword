@@ -18,10 +18,10 @@
  */
 package com.exoplatform.cloudworkspaces.listener;
 
+import com.exoplatform.cloud.admin.CloudAdminException;
 import com.exoplatform.cloudworkspaces.users.UserLimitsStorage;
 import com.exoplatform.cloudworkspaces.users.UsersManager;
 
-import com.exoplatform.cloud.admin.CloudAdminException;
 import org.picocontainer.Startable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

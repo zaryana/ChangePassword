@@ -18,9 +18,10 @@
  */
 package com.exoplatform.cloudworkspaces.rest;
 
-import org.apache.commons.configuration.Configuration;
 import com.exoplatform.cloud.admin.configuration.ApplicationServerConfiguration;
 import com.exoplatform.cloud.admin.configuration.ApplicationServerConfigurationManager;
+
+import org.apache.commons.configuration.Configuration;
 
 import java.io.IOException;
 
@@ -28,6 +29,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 
+// TODO use CloudServiceClient to check public host
 @Path("/cloud-admin/cloudworkspaces/info-service")
 public class CloudWorkspacesInfoService {
 

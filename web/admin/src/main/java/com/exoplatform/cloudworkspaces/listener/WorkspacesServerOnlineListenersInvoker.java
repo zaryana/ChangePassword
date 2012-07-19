@@ -23,8 +23,9 @@ import com.exoplatform.cloud.admin.proxy.ServerStateChangesProxyReconfigurationI
 import com.exoplatform.cloud.admin.recover.ServerRemoverInterrupter;
 import com.exoplatform.cloud.admin.status.ServerBecomeOnlineListener;
 import com.exoplatform.cloud.admin.status.ServerOnlineListenersInvoker;
-import com.exoplatform.cloud.admin.tenant.InactiveTenantSuspender;
+import com.exoplatform.cloud.admin.tenant.InactiveTenantStopper;
 import com.exoplatform.cloud.status.TenantInfo;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,13 +42,13 @@ public class WorkspacesServerOnlineListenersInvoker extends ServerOnlineListener
 
   public WorkspacesServerOnlineListenersInvoker(ServerMaintenanceStateChecker serverMaintenanceStateChecker,
                                                 ServerRemoverInterrupter serverRemoverInterrupter,
-                                                InactiveTenantSuspender inactiveTenantSuspender,
+                                                InactiveTenantStopper inactiveTenantStopper,
                                                 ServerStateChangesProxyReconfigurationInitiator serverStateChangesProxyReconfigurationInitiator,
                                                 JoinAllInOnlineServerListener joinAllInOnlineServerListener,
                                                 DemoTenantOnlineListener demoTenantOnlineListener) {
     super(serverMaintenanceStateChecker,
           serverRemoverInterrupter,
-          inactiveTenantSuspender,
+          inactiveTenantStopper,
           serverStateChangesProxyReconfigurationInitiator);
 
     this.listenersBefore = new ArrayList<ServerBecomeOnlineListener>();

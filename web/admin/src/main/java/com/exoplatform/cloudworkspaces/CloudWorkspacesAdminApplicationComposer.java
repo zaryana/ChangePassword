@@ -18,6 +18,15 @@
  */
 package com.exoplatform.cloudworkspaces;
 
+import com.exoplatform.cloud.admin.dao.EmailValidationStorage;
+import com.exoplatform.cloud.admin.instance.CloudAdminUserDataGenerator;
+import com.exoplatform.cloud.admin.mail.TenantOperationMailSenderInitiator;
+import com.exoplatform.cloud.admin.mail.WorkspacesTenantOperationMailSenderInitiator;
+import com.exoplatform.cloud.admin.rest.CloudAdminApplicationComposer;
+import com.exoplatform.cloud.admin.rest.TenantCreator;
+import com.exoplatform.cloud.admin.status.ServerOnlineListenersInvoker;
+import com.exoplatform.cloud.admin.util.ServerStatusMailer;
+import com.exoplatform.cloud.admin.util.WorkspacesServerStatusMailer;
 import com.exoplatform.cloudworkspaces.dao.PropertiesModifiableEmailValidationStorage;
 import com.exoplatform.cloudworkspaces.http.WorkspacesOrganizationRequestPerformer;
 import com.exoplatform.cloudworkspaces.instance.WorkspacesUserDataGenerator;
@@ -27,7 +36,6 @@ import com.exoplatform.cloudworkspaces.listener.JoinAllInOnlineServerListener;
 import com.exoplatform.cloudworkspaces.listener.TenantCreatedListener;
 import com.exoplatform.cloudworkspaces.listener.UserLimitSupervisor;
 import com.exoplatform.cloudworkspaces.listener.WorkspacesServerOnlineListenersInvoker;
-import com.exoplatform.cloudworkspaces.patch.WorkspacesErrorMailSenderImpl;
 import com.exoplatform.cloudworkspaces.rest.CloudWorkspacesInfoService;
 import com.exoplatform.cloudworkspaces.rest.CloudWorkspacesTenantService;
 import com.exoplatform.cloudworkspaces.shell.ShellConfigurationService;
@@ -35,28 +43,6 @@ import com.exoplatform.cloudworkspaces.users.UserLimitsStorage;
 import com.exoplatform.cloudworkspaces.users.UsersManager;
 
 import org.everrest.core.ResourceBinder;
-import com.exoplatform.cloud.admin.WorkspacesMailSender;
-import com.exoplatform.cloud.admin.dao.EmailValidationStorage;
-import com.exoplatform.cloud.admin.instance.UserDataGenerator;
-import com.exoplatform.cloud.admin.instance.autoscaling.AutoscalingAlgorithm;
-import com.exoplatform.cloud.admin.instance.autoscaling.WorkspacesFreeSpaceRatioAutoscalingAlgorithm;
-import com.exoplatform.cloud.admin.mail.TenantOperationMailSenderInitiator;
-import com.exoplatform.cloud.admin.mail.WorkspacesTenantOperationMailSenderInitiator;
-import com.exoplatform.cloud.admin.proxy.ProxyLoadBalancerConfigurator;
-import com.exoplatform.cloud.admin.proxy.ServerStateChangesProxyReconfigurationInitiator;
-import com.exoplatform.cloud.admin.proxy.WorkspacesProxyLoadBalancerConfigurator;
-import com.exoplatform.cloud.admin.proxy.WorkspacesServerStateChangesProxyReconfigurationInitiator;
-import com.exoplatform.cloud.admin.rest.CloudAdminApplicationComposer;
-import com.exoplatform.cloud.admin.rest.TenantCreator;
-import com.exoplatform.cloud.admin.rest.TenantService;
-import com.exoplatform.cloud.admin.rest.WorkspacesTenantService;
-import com.exoplatform.cloud.admin.status.ServerOnlineListenersInvoker;
-import com.exoplatform.cloud.admin.tenant.ServerSelectionAlgorithm;
-import com.exoplatform.cloud.admin.tenant.TenantSuspender;
-import com.exoplatform.cloud.admin.tenant.WorkspacesLowestLoadFactorServerSelectionAlgorithm;
-import com.exoplatform.cloud.admin.tenant.WorkspacesTenantSuspender;
-import com.exoplatform.cloud.admin.util.ServerStatusMailer;
-import com.exoplatform.cloud.admin.util.WorkspacesServerStatusMailer;
 import org.exoplatform.ide.shell.server.CLIResourceFactory;
 import org.exoplatform.ide.shell.server.rest.CLIResourcesService;
 import org.picocontainer.MutablePicoContainer;
@@ -78,8 +64,6 @@ public class CloudWorkspacesAdminApplicationComposer extends CloudAdminApplicati
     container.addComponent(CLIResourceFactory.class);
     container.addComponent(ResourceBinder.class,
                            servletContext.getAttribute(ResourceBinder.class.getName()));
-
-    container.addComponent(WorkspacesMailSender.class);
 
     container.addComponent(UserLimitsStorage.class);
     container.addComponent(WorkspacesOrganizationRequestPerformer.class);
@@ -110,38 +94,34 @@ public class CloudWorkspacesAdminApplicationComposer extends CloudAdminApplicati
 
     container.addComponent(TenantCreator.class);
 
-    container.removeComponent(AutoscalingAlgorithm.class);
-    container.addComponent(AutoscalingAlgorithm.class,
-                           WorkspacesFreeSpaceRatioAutoscalingAlgorithm.class);
-
     container.removeComponent(TenantOperationMailSenderInitiator.class);
     container.addComponent(WorkspacesTenantOperationMailSenderInitiator.class);
 
-    container.removeComponent(UserDataGenerator.class);
-    container.addComponent(UserDataGenerator.class, WorkspacesUserDataGenerator.class);
+    container.removeComponent(CloudAdminUserDataGenerator.class);
+    container.addComponent(CloudAdminUserDataGenerator.class, WorkspacesUserDataGenerator.class);
 
     container.removeComponent(ServerStatusMailer.class);
     container.addComponent(ServerStatusMailer.class, WorkspacesServerStatusMailer.class);
 
-    container.removeComponent(TenantSuspender.class);
-    container.addComponent(TenantSuspender.class, WorkspacesTenantSuspender.class);
+    /*
+     * // configure CM patch utils
+     * container.addComponent(WorkspacesErrorMailSenderImpl.class);
+     */
 
-    container.removeComponent(ServerSelectionAlgorithm.class);
-    container.addComponent(ServerSelectionAlgorithm.class,
-                           WorkspacesLowestLoadFactorServerSelectionAlgorithm.class);
+    /*
+     * // CLDINT-618
+     * container.removeComponent(ProxyLoadBalancerConfigurator.class);
+     * container.addComponent(ProxyLoadBalancerConfigurator.class,
+     * WorkspacesProxyLoadBalancerConfigurator.class);
+     */
 
-    // configure CM patch utils
-    container.addComponent(WorkspacesErrorMailSenderImpl.class);
-
-    // CLDINT-618
-    container.removeComponent(ProxyLoadBalancerConfigurator.class);
-    container.addComponent(ProxyLoadBalancerConfigurator.class,
-                           WorkspacesProxyLoadBalancerConfigurator.class);
-
-    // CLDINT-614
-    container.removeComponent(ServerStateChangesProxyReconfigurationInitiator.class);
-    container.addComponent(ServerStateChangesProxyReconfigurationInitiator.class,
-                           WorkspacesServerStateChangesProxyReconfigurationInitiator.class);
+    /*
+     * // CLDINT-614
+     * container.removeComponent(ServerStateChangesProxyReconfigurationInitiator
+     * .class);
+     * container.addComponent(ServerStateChangesProxyReconfigurationInitiator
+     * .class, WorkspacesServerStateChangesProxyReconfigurationInitiator.class);
+     */
 
     container.addComponent(DemoTenantOnlineKeeper.class);
     container.addComponent(DemoTenantOnlineListener.class);
@@ -154,13 +134,6 @@ public class CloudWorkspacesAdminApplicationComposer extends CloudAdminApplicati
     container.addComponent(CloudWorkspacesInfoService.class);
     container.addComponent(ShellConfigurationService.class);
     container.addComponent(CLIResourcesService.class);
-    container.addComponent(StatisticAllTenants.class);
-
-    container.removeComponent(TenantService.class);
-    container.addComponent(WorkspacesTenantService.class);
-    /*
-     * container.addComponent(TenantCreatorWithEmailAuthorization.class);
-     */
   }
 
 }

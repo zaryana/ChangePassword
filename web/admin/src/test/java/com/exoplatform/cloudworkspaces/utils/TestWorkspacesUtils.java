@@ -18,6 +18,7 @@
  */
 package com.exoplatform.cloudworkspaces.utils;
 
+import com.exoplatform.cloud.admin.dao.TenantInfoDataManager;
 import com.exoplatform.cloudworkspaces.CloudIntranetUtils;
 import com.exoplatform.cloudworkspaces.EmailBlacklist;
 import com.exoplatform.cloudworkspaces.ReferencesManager;
@@ -25,7 +26,6 @@ import com.exoplatform.cloudworkspaces.http.WorkspacesOrganizationRequestPerform
 
 import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.Configuration;
-import org.exoplatform.cloudmanagement.admin.dao.TenantInfoDataManager;
 import org.mockito.Mockito;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;

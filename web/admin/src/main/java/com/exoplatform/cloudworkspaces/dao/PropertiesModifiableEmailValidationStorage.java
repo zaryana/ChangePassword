@@ -20,9 +20,10 @@ package com.exoplatform.cloudworkspaces.dao;
 
 import static com.exoplatform.cloud.admin.configuration.AdminConfiguration.CLOUD_ADMIN_TENANT_QUEUE_DIR;
 
-import org.apache.commons.configuration.Configuration;
 import com.exoplatform.cloud.admin.CloudAdminException;
 import com.exoplatform.cloud.admin.dao.file.PropertiesStorage;
+
+import org.apache.commons.configuration.Configuration;
 
 import java.io.File;
 import java.io.IOException;
@@ -44,11 +45,10 @@ public class PropertiesModifiableEmailValidationStorage implements ModifiableEma
   /**
    * List of the aliases saved in storage
    */
-  public Set<String> getAliases() throws IOException
-  {
+  public Set<String> getAliases() throws IOException {
     return storage.getAliases();
   }
-  
+
   /**
    * @see com.exoplatform.cloud.admin.dao.EmailValidationStorage#setValidationData(java.util.Map)
    */

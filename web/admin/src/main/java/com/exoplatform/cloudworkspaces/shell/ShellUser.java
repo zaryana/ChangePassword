@@ -22,22 +22,18 @@ package com.exoplatform.cloudworkspaces.shell;
  * Contains all information about current user for initialization of shell
  * application.
  */
-public class ShellUser
-{
-   private String userId;
+public class ShellUser {
+  private String userId;
 
-   public ShellUser(String userId)
-   {
-      this.userId = userId;
-   }
+  public ShellUser(String userId) {
+    this.userId = userId;
+  }
 
-   public String getUserId()
-   {
-      return userId;
-   }
+  public String getUserId() {
+    return userId;
+  }
 
-   public void setUserId(String userId)
-   {
-      this.userId = userId;
-   }
+  public void setUserId(String userId) {
+    this.userId = userId;
+  }
 }

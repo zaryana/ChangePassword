@@ -21,6 +21,14 @@ package com.exoplatform.cloudworkspaces.rest;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 
+import com.exoplatform.cloud.admin.CloudAdminException;
+import com.exoplatform.cloud.admin.TenantAlreadyExistException;
+import com.exoplatform.cloud.admin.configuration.AdminConfiguration;
+import com.exoplatform.cloud.admin.configuration.TenantInfoFieldName;
+import com.exoplatform.cloud.admin.dao.TenantDataManagerException;
+import com.exoplatform.cloud.admin.dao.TenantInfoDataManager;
+import com.exoplatform.cloud.admin.rest.TenantCreator;
+import com.exoplatform.cloud.status.TenantState;
 import com.exoplatform.cloudworkspaces.ChangePasswordManager;
 import com.exoplatform.cloudworkspaces.CloudIntranetUtils;
 import com.exoplatform.cloudworkspaces.EmailBlacklist;
@@ -39,14 +47,6 @@ import com.jayway.restassured.http.ContentType;
 
 import org.apache.commons.configuration.Configuration;
 import org.everrest.assured.EverrestJetty;
-import org.exoplatform.cloudmanagement.admin.CloudAdminException;
-import org.exoplatform.cloudmanagement.admin.TenantAlreadyExistException;
-import org.exoplatform.cloudmanagement.admin.configuration.AdminConfiguration;
-import org.exoplatform.cloudmanagement.admin.configuration.TenantInfoFieldName;
-import org.exoplatform.cloudmanagement.admin.dao.TenantDataManagerException;
-import org.exoplatform.cloudmanagement.admin.dao.TenantInfoDataManager;
-import org.exoplatform.cloudmanagement.admin.rest.TenantCreator;
-import org.exoplatform.cloudmanagement.status.TenantState;
 import org.mockito.InjectMocks;
 import org.mockito.Matchers;
 import org.mockito.Mock;
@@ -525,7 +525,7 @@ public class TestCloudWorkspacesTenantService {
            .thenReturn(new UserMailInfo(USERNAME, TENANT));
     Mockito.when(tenantInfoDataManager.isExists(TENANT)).thenReturn(true);
     Mockito.when(tenantInfoDataManager.getValue(TENANT, TenantInfoFieldName.PROPERTY_STATE))
-           .thenReturn(TenantState.SUSPENDED.toString());
+           .thenReturn(TenantState.STOPPED.toString());
 
     Mockito.when(cloudAdminConfiguration.getString(AdminConfiguration.CLOUD_ADMIN_FRONT_END_SERVER_HOST))
            .thenReturn("cloud-workspaces");
@@ -828,7 +828,7 @@ public class TestCloudWorkspacesTenantService {
     Mockito.when(cloudIntranetUtils.email2userMailInfo(EMAIL))
            .thenReturn(new UserMailInfo(USERNAME, TENANT));
     Mockito.when(tenantInfoDataManager.getValue(TENANT, TenantInfoFieldName.PROPERTY_STATE))
-           .thenReturn(TenantState.SUSPENDED.toString());
+           .thenReturn(TenantState.STOPPED.toString());
 
     Mockito.when(cloudAdminConfiguration.getString(AdminConfiguration.CLOUD_ADMIN_FRONT_END_SERVER_HOST))
            .thenReturn("cloud-workspaces");
@@ -1441,7 +1441,7 @@ public class TestCloudWorkspacesTenantService {
     Mockito.when(tenantCreator.createTenantWithEmailConfirmation(TENANT, EMAIL))
            .thenThrow(TenantAlreadyExistException.class);
     Mockito.when(tenantInfoDataManager.getValue(TENANT, TenantInfoFieldName.PROPERTY_STATE))
-           .thenReturn(TenantState.SUSPENDED.toString());
+           .thenReturn(TenantState.STOPPED.toString());
 
     Mockito.when(cloudAdminConfiguration.getString(AdminConfiguration.CLOUD_ADMIN_FRONT_END_SERVER_HOST))
            .thenReturn("cloud-workspaces");

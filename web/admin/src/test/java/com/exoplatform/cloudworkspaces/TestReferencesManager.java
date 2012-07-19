@@ -18,9 +18,10 @@
  */
 package com.exoplatform.cloudworkspaces;
 
+import com.exoplatform.cloud.admin.CloudAdminException;
+
 import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.Configuration;
-import org.exoplatform.cloudmanagement.admin.CloudAdminException;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
