@@ -66,7 +66,7 @@ SECURITY_OPTS="-Djava.security.auth.login.config=../conf/jaas.conf"
 EXO_OPTS="-Dexo.product.developing=false -Dexo.conf.dir.name=gatein/conf"
 IDE_OPTS="-Djavasrc=$JAVA_HOME/src.zip -Djre.lib=$JAVA_HOME/jre/lib"
 
-EXO_CLOUD_OPTS="-javaagent:../lib/cloud-agent-instrument-1.1-M6.jar=../gatein/conf/cloud/agent-configuration.xml \
+EXO_CLOUD_OPTS="-javaagent:../lib/cloud-agent-instrument-1.1-M8.jar=../gatein/conf/cloud/agent-configuration.xml \
     -Dgroovy.script.method.iteration.time=60000 \
     -Dtenant.masterhost=$TENANT_MASTERHOST \
     -Dtenant.repository.name=$TENANT_REPOSITORY \
@@ -77,7 +77,7 @@ EXO_CLOUD_OPTS="-javaagent:../lib/cloud-agent-instrument-1.1-M6.jar=../gatein/co
     -Dexo.backup.dir=$EXO_BACKUP_DIR \
     -Dlogback.configurationFile=$CATALINA_HOME/conf/logback.xml"
 
-EXO_CLOUD_SECURITY_OPTS="-Djava.security.manager=org.exoplatform.cloudmanagement.security.TenantSecurityManager \
+EXO_CLOUD_SECURITY_OPTS="-Djava.security.manager=com.exoplatform.cloud.security.TenantSecurityManager \
     -Djava.security.policy==../conf/catalina.policy"
 
 MAILING_OPTS="-Dgatein.mail.smtp.from=$EMAIL_SMTP_FROM \
@@ -102,5 +102,5 @@ REMOTE_DEBUG=""
 
 export JAVA_OPTS="$EXO_JAVA_OPTS $JAVA_OPTS $LOG_OPTS $SECURITY_OPTS $EXO_OPTS $IDE_OPTS $EXO_CLOUD_OPTS $EXO_CLOUD_SECURITY_OPTS $EXO_CLOUD_ADMIN_OPTS $MAILING_OPTS $JMX_OPTS $REMOTE_DEBUG $EXO_PROFILES"
 
-export CLASSPATH="$CATALINA_HOME/lib/cloud-agent-security-1.1-M6.jar:$CATALINA_HOME/conf/:$CATALINA_HOME/lib/jul-to-slf4j-1.5.8.jar:$CATALINA_HOME/lib/slf4j-api-1.5.8.jar:$CATALINA_HOME/lib/security-logback-logging-1.1-M6.jar:$CATALINA_HOME/lib/logback-classic-0.9.20.jar:$CATALINA_HOME/lib/logback-core-0.9.20.jar"
+export CLASSPATH="$CATALINA_HOME/lib/cloud-agent-security-1.1-M8.jar:$CATALINA_HOME/conf/:$CATALINA_HOME/lib/jul-to-slf4j-1.5.8.jar:$CATALINA_HOME/lib/slf4j-api-1.5.8.jar:$CATALINA_HOME/lib/security-logback-logging-1.1-M8.jar:$CATALINA_HOME/lib/logback-classic-0.9.20.jar:$CATALINA_HOME/lib/logback-core-0.9.20.jar"
 

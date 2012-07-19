@@ -22,28 +22,23 @@ import static com.exoplatform.cloud.status.TenantInfoBuilder.online;
 
 import com.exoplatform.cloud.determinant.TenantDeterminant;
 import com.exoplatform.cloud.multitenancy.TemporaryTenantStateHolder;
-import com.exoplatform.cloud.multitenancy.TenantNameResolver;
 import com.exoplatform.cloud.multitenancy.TenantRepositoryService;
 import com.exoplatform.cloud.rest.CloudAgentInfoService;
 import com.exoplatform.cloud.statistic.TenantAccessTimeStatisticCollector;
 import com.exoplatform.cloud.status.TenantInfo;
 
-import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.jcr.config.RepositoryConfigurationException;
 import org.exoplatform.services.jcr.config.RepositoryEntry;
 import org.exoplatform.services.jcr.ext.backup.BackupManager;
 import org.exoplatform.services.organization.OrganizationService;
-import org.exoplatform.services.organization.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
@@ -103,58 +98,6 @@ public class WorkspacesCloudAgentInfoService extends CloudAgentInfoService {
   @RolesAllowed("cloud-admin")
   public List<String> getTemplateList() {
     return super.getTemplateList();
-  }
-
-  @GET
-  @Produces(MediaType.APPLICATION_JSON)
-  @Path("users-list")
-  @RolesAllowed("cloud-admin")
-  public Map<String, Map<String, String>> getUsersList() throws Exception {
-    // TODO this rest was removed from CM
-    Set<String> notAvailableTenants = new HashSet<String>();
-    for (String tenant : temporaryTenantStateHolder.getCreatingTenants().keySet())
-      notAvailableTenants.add(tenant);
-    for (String tenant : temporaryTenantStateHolder.getStartingTenantState().keySet())
-      notAvailableTenants.add(tenant);
-    for (String tenant : temporaryTenantStateHolder.getStoppingTenants().keySet())
-      notAvailableTenants.add(tenant);
-    try {
-      Map<String, Map<String, String>> userMapForServer = new HashMap<String, Map<String, String>>();
-
-      List<RepositoryEntry> repos = repositoryService.getConfig().getRepositoryConfigurations();
-
-      for (RepositoryEntry repo : repos) {
-        if (!notAvailableTenants.contains(repo.getName())) {
-          Map<String, String> userMapForTenant = new HashMap<String, String>();
-          userMapForServer.put(repo.getName(), userMapForTenant);
-          repositoryService.setCurrentRepositoryName(repo.getName());
-
-          ListAccess<User> allUsers;
-          allUsers = orgService.getUserHandler().findAllUsers();
-          if (allUsers != null && allUsers.getSize() > 0) {
-            User[] users = allUsers.load(0, allUsers.getSize());
-            for (User user : users) {
-              userMapForTenant.put(user.getUserName(), user.getEmail());
-            }
-          }
-        }
-      }
-      return userMapForServer;
-    } finally {
-      if (repositoryService instanceof TenantRepositoryService) {
-        ((TenantRepositoryService) repositoryService).resetCurrentRepository();
-      } else {
-        try {
-          LOG.warn("Unable to reset current repository. "
-              + "org.exoplatform.cloudmanagement.multitenancy.TenantRepositoryService.resetCurrentRepository()"
-              + " should be used");
-          repositoryService.setCurrentRepositoryName(TenantNameResolver.getDefaultTenantRepositoryName());
-        } catch (RepositoryConfigurationException rce) {
-          LOG.error("Impossible to set current repository name", rce);
-        }
-
-      }
-    }
   }
 
   @GET
