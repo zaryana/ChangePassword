@@ -19,8 +19,11 @@
 package com.exoplatform.cloud.admin.rest;
 
 import static com.exoplatform.cloud.admin.configuration.AdminConfiguration.CLOUD_ADMIN_TENANT_BACKUP_ID;
+import static com.exoplatform.cloud.admin.configuration.MailConfiguration.CLOUD_ADMIN_MAIL_CONFIRMATION_SUBJECT;
+import static com.exoplatform.cloud.admin.configuration.MailConfiguration.CLOUD_ADMIN_MAIL_CONFIRMATION_TEMPLATE;
 
 import com.exoplatform.cloud.admin.CloudAdminException;
+import com.exoplatform.cloud.admin.TenantRegistrationException;
 import com.exoplatform.cloud.admin.TenantValidationException;
 import com.exoplatform.cloud.admin.configuration.TenantInfoFieldName;
 import com.exoplatform.cloud.admin.dao.EmailValidationStorage;
@@ -28,10 +31,15 @@ import com.exoplatform.cloud.admin.dao.TenantInfoDataManager;
 import com.exoplatform.cloud.admin.tenant.TenantNameValidator;
 import com.exoplatform.cloud.admin.tenant.TenantStateDataManager;
 import com.exoplatform.cloud.admin.tenant.UserMailValidator;
+import com.exoplatform.cloud.admin.util.AdminConfigurationUtil;
 import com.exoplatform.cloud.admin.util.MailSender;
+import com.exoplatform.cloud.admin.util.MailSender.MailHeaders;
 import com.exoplatform.cloud.status.TenantState;
+import com.google.common.collect.ImmutableMap;
 
 import org.apache.commons.configuration.Configuration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -45,6 +53,9 @@ import javax.ws.rs.core.Response;
 @Path("/cloud-admin/public-tenant-service")
 public class TenantCreator extends TenantCreatorWithEmailAuthorization
 {
+
+   private static final Logger LOG = LoggerFactory.getLogger(TenantCreator.class);
+
    public TenantCreator(EmailValidationStorage emailValidationStorage, TenantStateDataManager tenantStateDataManager,
       TenantNameValidator tenantNameValidator, UserMailValidator userMailValidator,
       TenantInfoDataManager tenantInfoDataManager, Configuration cloudAdminConfiguration, MailSender mailSender)
@@ -67,7 +78,42 @@ public class TenantCreator extends TenantCreatorWithEmailAuthorization
    public Response createTenantWithEmailConfirmation(@PathParam("tenantname") String tenantName,
       @PathParam("user-mail") String userMail) throws CloudAdminException
    {
-      return super.createTenantWithEmailConfirmation(tenantName, userMail);
+      LOG.info("Received tenant creation request for {} from {}", tenantName, userMail);
+      Map<String, String> validationData = new HashMap<String, String>();
+      validationData.put(TenantInfoFieldName.PROPERTY_TENANT_NAME, tenantName);
+      validationData.put(TenantInfoFieldName.PROPERTY_USER_MAIL, userMail);
+      validationData.put(TenantInfoFieldName.PROPERTY_STATE, TenantState.VALIDATING_EMAIL.toString());
+      validationData.put(TenantInfoFieldName.PROPERTY_TEMPLATE_ID,
+         adminConfiguration.getString(CLOUD_ADMIN_TENANT_BACKUP_ID));
+
+      tenantNameValidator.validateTenantName(tenantName);
+      userMailValidator.validateUserMail(userMail);
+      if (tenantInfoDataManager.isExists(tenantName))
+      {
+         throw new TenantValidationException(" This domain is already in use. If you are the owner,"
+            + " check your email for further instructions; otherwise, please select a different domain name.");
+      }
+      String validationId = emailValidationStorage.setValidationData(validationData);
+
+      //send email
+      String mailTemplate = adminConfiguration.getString(CLOUD_ADMIN_MAIL_CONFIRMATION_TEMPLATE);
+      if (mailTemplate == null)
+      {
+         throw new TenantRegistrationException(500, "Mail template configuration not found. Please contact support.");
+      }
+
+      Map<String, String> props = new HashMap<String, String>();
+      props.put("tenant.masterhost", AdminConfigurationUtil.getMasterHost(adminConfiguration));
+      props.put("tenant.name", tenantName);
+      props.put("user.mail", userMail);
+      props.put("id", validationId);
+
+      Map<MailHeaders, String> mailHeaders =
+         ImmutableMap.<MailHeaders, String> of(MailHeaders.TO, userMail, MailHeaders.SUBJECT,
+            adminConfiguration.getString(CLOUD_ADMIN_MAIL_CONFIRMATION_SUBJECT));
+      mailSender.sendMail(mailHeaders, mailTemplate, props);
+
+      return Response.ok(validationId).build();
    }
 
    /**

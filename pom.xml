@@ -39,7 +39,7 @@
     <org.exoplatform.jcr.version>1.14.8-GA-SNAPSHOT</org.exoplatform.jcr.version>
     <org.exoplatform.jcr-services.version>1.14.8-GA-SNAPSHOT</org.exoplatform.jcr-services.version>
     <com.exoplatform.cloud-management.version>1.1-M8</com.exoplatform.cloud-management.version>
-    <org.exoplatform.ide.version>1.2.0-M4</org.exoplatform.ide.version>
+    <org.exoplatform.ide.version>1.2.0-M8</org.exoplatform.ide.version>
     <org.exoplatform.portal.version>3.2.5-PLF-SNAPSHOT</org.exoplatform.portal.version>
     <org.exoplatform.cs.version>2.2.10-SNAPSHOT</org.exoplatform.cs.version>
     <org.exoplatform.ks.version>2.2.10-SNAPSHOT</org.exoplatform.ks.version>
@@ -84,7 +84,7 @@
     <ch.qos.logback.version>1.0.0</ch.qos.logback.version>
     <log4j.version>1.2.16</log4j.version>
 
-    <everrest.version>1.0.2</everrest.version>
+    <everrest.version>1.0.4</everrest.version>
 
     <!-- test -->
     <testng.version>6.3.1</testng.version>

@@ -19,7 +19,6 @@
 package com.exoplatform.cloudworkspaces.rest;
 
 import com.exoplatform.cloud.admin.CloudAdminException;
-import com.exoplatform.cloud.admin.TenantAlreadyExistException;
 import com.exoplatform.cloud.admin.configuration.TenantInfoFieldName;
 import com.exoplatform.cloud.admin.dao.TenantDataManagerException;
 import com.exoplatform.cloud.admin.dao.TenantInfoDataManager;
@@ -139,30 +138,30 @@ public class CloudWorkspacesTenantService {
     LOG.info("Received Signup request from " + userMail);
     String tName = null;
     String username = null;
-    try {
-      if (!utils.validateEmail(userMail)) {
-        LOG.info("User " + userMail + " rejected. Need valid email address.");
-        return Response.status(Status.BAD_REQUEST)
-                       .entity("Please enter a valid email address.")
-                       .type(MediaType.TEXT_PLAIN)
-                       .build();
-      }
+    if (!utils.validateEmail(userMail)) {
+      LOG.info("User " + userMail + " rejected. Need valid email address.");
+      return Response.status(Status.BAD_REQUEST)
+                     .entity("Please enter a valid email address.")
+                     .type(MediaType.TEXT_PLAIN)
+                     .build();
+    }
 
-      UserMailInfo userInfo = utils.email2userMailInfo(userMail);
-      username = userInfo.getUsername();
-      tName = userInfo.getTenant();
+    UserMailInfo userInfo = utils.email2userMailInfo(userMail);
+    username = userInfo.getUsername();
+    tName = userInfo.getTenant();
 
-      if (emailBlacklist.isInBlackList(userMail) && !tName.equals(utils.getDemoTenantName())) {
-        LOG.info("User " + userMail
-            + " rejected. Need work email address. Redirecting to tryagain.jsp...");
-        return Response.status(309)
-                       .header("Location",
-                               "http://"
-                                   + AdminConfigurationUtil.getMasterHost(cloudAdminConfiguration)
-                                   + "/tryagain.jsp")
-                       .build();
-      }
+    if (emailBlacklist.isInBlackList(userMail) && !tName.equals(utils.getDemoTenantName())) {
+      LOG.info("User " + userMail
+          + " rejected. Need work email address. Redirecting to tryagain.jsp...");
+      return Response.status(309)
+                     .header("Location",
+                             "http://"
+                                 + AdminConfigurationUtil.getMasterHost(cloudAdminConfiguration)
+                                 + "/tryagain.jsp")
+                     .build();
+    }
 
+    if (!tenantInfoDataManager.isExists(tName)) {
       if (requestDao.searchByEmail(userMail) == null) {
         Response resp = tenantCreator.createTenantWithEmailConfirmation(tName, userMail);
         referencesManager.putEmail(userMail, (String) resp.getEntity());
@@ -173,7 +172,7 @@ public class CloudWorkspacesTenantService {
                        .type(MediaType.TEXT_PLAIN)
                        .build();
       }
-    } catch (TenantAlreadyExistException ex) {
+    } else {
       Map<String, String> props = new HashMap<String, String>();
       props.put("tenant.masterhost", AdminConfigurationUtil.getMasterHost(cloudAdminConfiguration));
       props.put("tenant.repository.name", tName);
@@ -299,26 +298,26 @@ public class CloudWorkspacesTenantService {
     LOG.info("Received Signup Link request for " + userMail);
     String tName = null;
     String username = null;
-    try {
-      if (!utils.validateEmail(userMail)) {
-        return Response.status(Status.BAD_REQUEST)
-                       .entity("Invalid email address.")
-                       .type(MediaType.TEXT_PLAIN)
-                       .build();
-      }
+    if (!utils.validateEmail(userMail)) {
+      return Response.status(Status.BAD_REQUEST)
+                     .entity("Invalid email address.")
+                     .type(MediaType.TEXT_PLAIN)
+                     .build();
+    }
 
-      UserMailInfo userInfo = utils.email2userMailInfo(userMail);
-      username = userInfo.getUsername();
-      tName = userInfo.getTenant();
-      if (emailBlacklist.isInBlackList(userMail) && !tName.equals(utils.getDemoTenantName())) {
-        String domain = userMail.substring(userMail.indexOf("@"));
-        return Response.status(Status.BAD_REQUEST)
-                       .entity("Cannot sign up with an email address " + domain
-                           + ". Require work email.")
-                       .type(MediaType.TEXT_PLAIN)
-                       .build();
-      }
+    UserMailInfo userInfo = utils.email2userMailInfo(userMail);
+    username = userInfo.getUsername();
+    tName = userInfo.getTenant();
+    if (emailBlacklist.isInBlackList(userMail) && !tName.equals(utils.getDemoTenantName())) {
+      String domain = userMail.substring(userMail.indexOf("@"));
+      return Response.status(Status.BAD_REQUEST)
+                     .entity("Cannot sign up with an email address " + domain
+                         + ". Require work email.")
+                     .type(MediaType.TEXT_PLAIN)
+                     .build();
+    }
 
+    if (!tenantInfoDataManager.isExists(tName)) {
       if (requestDao.searchByEmail(userMail) == null) {
         String uuid = tenantCreator.createTenant(tName, userMail);
         referencesManager.putEmail(userMail, uuid);
@@ -338,7 +337,7 @@ public class CloudWorkspacesTenantService {
                        .type(MediaType.TEXT_PLAIN)
                        .build();
       }
-    } catch (TenantAlreadyExistException ex) {
+    } else {
       try {
         TenantState tState = TenantState.valueOf(tenantInfoDataManager.getValue(tName,
                                                                                 TenantInfoFieldName.PROPERTY_STATE));
@@ -634,7 +633,7 @@ public class CloudWorkspacesTenantService {
     }
     String tName = utils.email2userMailInfo(userMail).getTenant();
 
-    try {
+    if (!tenantInfoDataManager.isExists(tName)) {
       Response resp = tenantCreator.createTenantWithConfirmedEmail(uuid);
       if (resp.getStatus() != 200) {
         notificationMailSender.sendAdminErrorEmail("Tenant " + tName + " creation admin error: "
@@ -657,11 +656,11 @@ public class CloudWorkspacesTenantService {
       requestDao.put(req);
       referencesManager.removeEmail(userMail);
       return Response.ok().build();
-    } catch (TenantAlreadyExistException e) {
+    } else {
       LOG.warn(" Duplicate creation request for tenant " + tName + " from " + userMail);
       referencesManager.removeEmail(userMail);
       return Response.status(Status.BAD_REQUEST)
-                     .entity(e.getMessage())
+                     .entity("Tenant with name " + tName + "already exists")
                      .type(MediaType.TEXT_PLAIN)
                      .build();
     }
