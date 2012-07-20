@@ -1,4 +1,4 @@
-<!-- script src="http://munchkin.marketo.net/js/munchkin.js"></script -->// Do not include it statically!
+<!-- script src="http://munchkin.marketo.net/js/munchkin.js"></script -->
 <script type="text/javascript" src="<%=request.getContextPath()%>/js/script.js"></script>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js"></script>
 <script type="text/javascript" src="<%=request.getContextPath()%>/js/jquery.validate.min-1.8.1.js"></script>
