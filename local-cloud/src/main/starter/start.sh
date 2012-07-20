@@ -43,8 +43,15 @@ cd admin-tomcat/bin
 sleep 30s
 
 # Starting first AS
-as_name=$(curl --connect-timeout 900 -s  -X POST -u cloudadmin:cloudadmin http://localhost:8080/rest/private/cloud-admin/application-service/start-server?type=local-cloud-agent)
+
+#Block autoscaling
+res=$(curl --connect-timeout 900 -s  -X POST -u cloudadmin:cloudadmin http://localhost:8080/rest/private/cloud-admin/autoscaling-service/block-autoscaling)
+
+as_name=$(curl --connect-timeout 900 -s  -X POST -u cloudadmin:cloudadmin http://localhost:8080/rest/private/cloud-admin/instance-service/start-server?type=local-cloud-agent)
 echo "Started app server $as_name"
+
+#Allow autoscaling
+res=$(curl --connect-timeout 900 -s  -X POST -u cloudadmin:cloudadmin http://localhost:8080/rest/private/cloud-admin/autoscaling-service/allow-autoscaling)
 
 #That's it!
 exit 0

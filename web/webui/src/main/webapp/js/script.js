@@ -29,7 +29,7 @@ var mktURL = "http://learn.cloud-workspaces.com/index.php/leadCapture/save";
 var loopfuseURL = "http://lfov.net/webrecorder/f";
 
 if (location.port) {
-  prefixUrl += ':' + location.port;
+  prefixUrl += ":" + location.port;
 }
 var user;
 var auth = null;
@@ -37,8 +37,8 @@ var auth = null;
 /* Init function */
 
 Tenants.prototype.init = function() {
-  accessUrl = prefixUrl + '/rest/cloud-admin';
-  accessSecureUrl = prefixUrl + '/rest/private/cloud-admin';
+  accessUrl = prefixUrl + "/rest/cloud-admin";
+  accessSecureUrl = prefixUrl + "/rest/private/cloud-admin";
   tenantServicePath = accessUrl + "/cloudworkspaces/tenant-service";
   tenantSecureServicePath = accessSecureUrl + "/cloudworkspaces/tenant-service";
   $.extend({

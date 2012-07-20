@@ -29,7 +29,10 @@
  */
 
 
-if (typeof jQuery === 'undefined') {
+var MARKETO_TRACKER_ID = "577-PCT-880";
+var TARGET_DOMAIN_NAME_FOR_TRACKING = "cloud-workspaces.com";
+
+if (typeof jQuery === "undefined") {
 	var script = document.createElement('script');
 	script.src = 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js';
 	script.type = 'text/javascript';
@@ -37,18 +40,16 @@ if (typeof jQuery === 'undefined') {
 }
 
 
-
-var targetDomainNameForTracking = "cloud-workspaces.com";
-if (testDomainPrefix(targetDomainNameForTracking)){
-   sendDataToGoogleAnalyticsTracker();
-   sendDataToMarketoTracker();
+if (testDomainPrefix(TARGET_DOMAIN_NAME_FOR_TRACKING)){
+   loadGoogleAnalyticsTracker();
+   loadMarketoTracker();
 }
 
 
 /**
  *  Send data to Google Analytics
  */
-function sendDataToGoogleAnalyticsTracker()
+function loadGoogleAnalyticsTracker()
 {
    (function() {
      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
@@ -61,7 +62,7 @@ function sendDataToGoogleAnalyticsTracker()
 /**
  *  Send data to Marketo
  */
-function sendDataToMarketoTracker(){
+function loadMarketoTracker(){
    if (jQuery){
       jQuery.ajax({
          url : document.location.protocol + '//munchkin.marketo.net/munchkin.js',
@@ -69,14 +70,14 @@ function sendDataToMarketoTracker(){
          cache : true,
          success : function()
          {
-            Munchkin.init('577-PCT-880');
+            Munchkin.init(MARKETO_TRACKER_ID);
          }
       });
    } else {
       (function(){
          function initMunchkin()
          {
-            Munchkin.init('577-PCT-880');
+            Munchkin.init(MARKETO_TRACKER_ID);
          }
          var s = document.createElement('script');
          s.type = 'text/javascript';
