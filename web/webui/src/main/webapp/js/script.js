@@ -832,6 +832,11 @@ function onlyNumbers(evt) {
 }
 
 function sendDataToMarketo(data, afterSubmitCallback) {
+  if (data["_mkt_trk"] == "")
+  {
+     afterSubmitCallback();
+     return;
+  }
   var mktOutputIframeId = "mktOutput";
   var mktOutputIframeName = "mktOutput";
   var mktFormId = "mktForm";
