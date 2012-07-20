@@ -134,9 +134,10 @@
                     <exclude name="**/WEB-INF/**"/>
                     <exclude name="**/gwt/**"/>
                     <exclude name="**/index.html"/>
-                    <exclude name="**/Shell.html"/>
+                    <!--exclude name="**/Shell.html"/-->
                   </fileset>
                 </copy>
+                <move file="${project.build.directory}/${project.artifactId}-${project.version}/admin-shell/Shell.html" tofile="${project.build.directory}/${project.artifactId}-${project.version}/admin-shell/shell.html"/>
               </tasks>
             </configuration>
             <goals>

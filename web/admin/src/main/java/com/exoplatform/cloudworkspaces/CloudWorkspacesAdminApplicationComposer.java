@@ -42,6 +42,9 @@ import com.exoplatform.cloudworkspaces.users.UserLimitsStorage;
 import com.exoplatform.cloudworkspaces.users.UsersManager;
 
 import org.everrest.core.ResourceBinder;
+import org.exoplatform.ide.shell.server.CLIResourceFactory;
+import org.exoplatform.ide.shell.server.rest.CLIResourcesService;
+import org.exoplatform.ide.shell.server.rest.DummyConfigurationService;
 import org.picocontainer.MutablePicoContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,6 +61,7 @@ public class CloudWorkspacesAdminApplicationComposer extends CloudAdminApplicati
   @Override
   protected void doComposeApplication(MutablePicoContainer container, ServletContext servletContext) {
     super.doComposeApplication(container, servletContext);
+    container.addComponent(CLIResourceFactory.class);
     container.addComponent(ResourceBinder.class,
                            servletContext.getAttribute(ResourceBinder.class.getName()));
 
@@ -128,6 +132,9 @@ public class CloudWorkspacesAdminApplicationComposer extends CloudAdminApplicati
     super.doComposeRequest(container);
     container.addComponent(CloudWorkspacesTenantService.class);
     container.addComponent(CloudWorkspacesInfoService.class);
+
+    container.addComponent(DummyConfigurationService.class);
+    container.addComponent(CLIResourcesService.class);
   }
 
 }
