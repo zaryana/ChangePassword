@@ -40,15 +40,15 @@ if (typeof jQuery === 'undefined') {
 
 var targetDomainNameForTracking = "cloud-workspaces.com";
 if (testDomainPrefix(targetDomainNameForTracking)){
-   sendDataToGoogleAnalyticsTracker();
-   sendDataToMarketoTracker();
+   loadGoogleAnalyticsTracker();
+   loadMarketoTracker();
 }
 
 
 /**
  *  Send data to Google Analytics
  */
-function sendDataToGoogleAnalyticsTracker()
+function loadGoogleAnalyticsTracker()
 {
    (function() {
      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
@@ -61,7 +61,7 @@ function sendDataToGoogleAnalyticsTracker()
 /**
  *  Send data to Marketo
  */
-function sendDataToMarketoTracker(){
+function loadMarketoTracker(){
    if (jQuery){
       jQuery.ajax({
          url : document.location.protocol + '//munchkin.marketo.net/munchkin.js',

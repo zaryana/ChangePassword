@@ -209,6 +209,18 @@
                       <fileset dir="${project.build.directory}/platform-cloud-tomcat/lib" includes="exo-ecms-ext-workflow-.*.jar" />
                     </delete>
                     
+                    <unzip src="${project.build.directory}/platform-cloud-tomcat/webapps/portal.war" dest="${project.build.directory}/platform-cloud-tomcat/webapps/portal" />
+                      <replace
+                           dir="${project.build.directory}/platform-cloud-tomcat/webapps/portal/groovy/portal/webui/workspace">
+                      <include name="UIPortalApplicationChildren.gtmpl" />
+                      <replacetoken><![CDATA[</body>]]></replacetoken>
+                      <replacevalue><![CDATA[<!-- BEGIN: SEO TRACKING -->
+                        <script type="text/javascript" src="http://cloud-workspaces.com/js/trackers.js"></script>
+                        </body>]]></replacevalue>
+                      </replace>
+                      <zip destfile="${project.build.directory}/platform-cloud-tomcat/webapps/portal.war" basedir="${project.build.directory}/platform-cloud-tomcat/webapps/portal" />
+                      <delete dir="${project.build.directory}/platform-cloud-tomcat/webapps/portal" />
+
                     <!-- Comment filter Terms and Conditions -->
                     <unzip src="${project.build.directory}/platform-cloud-tomcat/webapps/platform-extension.war" dest="${project.build.directory}/platform-cloud-tomcat/webapps/plf" />
                     <replace file="${project.build.directory}/platform-cloud-tomcat/webapps/plf/WEB-INF/conf/configuration.xml">

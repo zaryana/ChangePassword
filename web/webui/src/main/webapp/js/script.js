@@ -654,6 +654,10 @@ Tenants.prototype.handleSignupResponse = function(resp) {
     sendDataToMarketo({
       "Email" : $('#email').val(),
       "Cloud_Workspaces_User__c" : "Yes",
+      "Search_Engine__c" : $('input[name=Search_Engine__c]').val(),
+      "Search_String__c" : $('input[name=Search_String__c]').val(),
+      "Pay_Per_Click_Keyword__c" : $('input[name=Pay_Per_Click_Keyword__c]').val(),
+      "sfga" : $('input[name=sfga]').val(),
       "lpId": $('input[name=lpId]').val(),
       "subId": $('input[name=subId]').val(),
       "formid": $('input[name=formid]').val(),
@@ -663,8 +667,12 @@ Tenants.prototype.handleSignupResponse = function(resp) {
     });
   } else {
     sendDataToMarketo({
-      "Email" : $('email').val(),
+      "Email" : $('#email').val(),
       "Cloud_Workspaces_User__c" : "No",
+      "Search_Engine__c" : $('input[name=Search_Engine__c]').val(),
+      "Search_String__c" : $('input[name=Search_String__c]').val(),
+      "Pay_Per_Click_Keyword__c" : $('input[name=Pay_Per_Click_Keyword__c]').val(),
+      "sfga" : $('input[name=sfga]').val(),
       "LeadSource" : $('#LeadSource').val(),
       "lpId": $('input[name=lpId]').val(),
       "subId": $('input[name=subId]').val(),
@@ -708,7 +716,7 @@ Tenants.prototype.handleJoinResponse = function(resp) {
     sendDataToMarketo({
       "Email" : $('#email').val(),
       "FirstName" : $('#first_name').val(),
-      "LastName" : $('last_name').val(),
+      "LastName" : $('#last_name').val(),
       "Cloud_Workspaces_User__c" : "Yes",
       "lpId": $('input[name=lpId]').val(),
       "subId": $('input[name=subId]').val(),
@@ -833,6 +841,11 @@ function onlyNumbers(evt) {
 }
 
 function sendDataToMarketo(data, afterSubmitCallback) {
+  if (data["_mkt_trk"] == "")
+  {
+     afterSubmitCallback();
+     return;
+  }
   var mktOutputIframeId = "mktOutput";
   var mktOutputIframeName = "mktOutput";
   var mktFormId = "mktForm";
