@@ -18,6 +18,11 @@
  */
 package com.exoplatform.cloudworkspaces.listeners;
 
+import com.exoplatform.cloud.admin.dao.TenantDataManagerException;
+import com.exoplatform.cloud.admin.dao.TenantInfoDataManager;
+import com.exoplatform.cloud.admin.tenant.TenantStateDataManager;
+import com.exoplatform.cloud.status.TenantInfo;
+import com.exoplatform.cloud.status.TenantState;
 import com.exoplatform.cloudworkspaces.NotificationMailSender;
 import com.exoplatform.cloudworkspaces.RequestState;
 import com.exoplatform.cloudworkspaces.listener.TenantCreatedListener;
@@ -25,59 +30,57 @@ import com.exoplatform.cloudworkspaces.users.UsersManager;
 
 import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.Configuration;
-import org.exoplatform.cloudmanagement.admin.dao.TenantDataManagerException;
-import org.exoplatform.cloudmanagement.admin.dao.TenantInfoDataManager;
-import org.exoplatform.cloudmanagement.admin.tenant.TenantStateDataManager;
-import org.exoplatform.cloudmanagement.status.TenantInfo;
-import org.exoplatform.cloudmanagement.status.TenantState;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
- * Created with IntelliJ IDEA.
- * User: makis mshaposhnik@exoplatform.com
- * Date: 4/18/12
- * Time: 2:25 PM
+ * Created with IntelliJ IDEA. User: makis mshaposhnik@exoplatform.com Date:
+ * 4/18/12 Time: 2:25 PM
  */
 public class TenantCreatedListenerTest {
 
+  TenantCreatedListener  listener;
 
-  TenantCreatedListener listener;
-  UsersManager usersManager;
+  UsersManager           usersManager;
+
   TenantStateDataManager tenantStateDataManager;
-  TenantInfo info =     Mockito.mock(TenantInfo.class);
+
+  TenantInfo             info = Mockito.mock(TenantInfo.class);
 
   @BeforeMethod
   public void initMocks() throws TenantDataManagerException {
     Configuration cloudAdminConfiguration = new CompositeConfiguration();
     usersManager = Mockito.mock(UsersManager.class);
-    TenantInfoDataManager tenantInfoDataManager =  Mockito.mock(TenantInfoDataManager.class);
-    tenantStateDataManager = new TenantStateDataManager(cloudAdminConfiguration, tenantInfoDataManager);
+    TenantInfoDataManager tenantInfoDataManager = Mockito.mock(TenantInfoDataManager.class);
+    tenantStateDataManager = new TenantStateDataManager(cloudAdminConfiguration,
+                                                        tenantInfoDataManager);
     NotificationMailSender notificationMailSender = Mockito.mock(NotificationMailSender.class);
-    this.listener = new TenantCreatedListener(tenantStateDataManager,notificationMailSender, usersManager);
+    this.listener = new TenantCreatedListener(tenantStateDataManager,
+                                              notificationMailSender,
+                                              usersManager);
     tenantStateDataManager.addTenantStateListener(listener);
   }
 
   @Test
   public void testOnTenantCreated() throws Exception {
 
-   Mockito.when(info.getTenantName()).thenReturn("aaa");
-   Mockito.when(info.getState()).thenReturn(TenantState.ONLINE);
-   tenantStateDataManager.created(info);
-   Mockito.verify(usersManager, Mockito.atLeastOnce()).joinAll(Matchers.eq("aaa"),
-                                                          Matchers.eq(RequestState.WAITING_JOIN));
+    Mockito.when(info.getTenantName()).thenReturn("aaa");
+    Mockito.when(info.getState()).thenReturn(TenantState.ONLINE);
+    tenantStateDataManager.created(info);
+    Mockito.verify(usersManager, Mockito.atLeastOnce())
+           .joinAll(Matchers.eq("aaa"), Matchers.eq(RequestState.WAITING_JOIN));
 
   }
 
   @Test
-  public void testOnTenantResumed() throws Exception {
+  public void testOnTenantStarted() throws Exception {
     Mockito.when(info.getTenantName()).thenReturn("aaa");
     Mockito.when(info.getState()).thenReturn(TenantState.ONLINE);
-    tenantStateDataManager.resumed(info.getTenantName());
-    Mockito.verify(usersManager, Mockito.atLeastOnce()).joinAll(Matchers.eq("aaa"),
-                                                                Matchers.eq(RequestState.WAITING_JOIN));
+    tenantStateDataManager.started(info.getTenantName());
+    Mockito.verify(usersManager, Mockito.atLeastOnce())
+           .joinAll(Matchers.eq("aaa"), Matchers.eq(RequestState.WAITING_JOIN));
 
   }
 }

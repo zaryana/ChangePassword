@@ -29,9 +29,9 @@ import com.exoplatform.cloudworkspaces.http.WorkspacesOrganizationRequestPerform
 
 import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.Configuration;
-import org.exoplatform.cloudmanagement.admin.CloudAdminException;
-import org.exoplatform.cloudmanagement.admin.dao.TenantDataManagerException;
-import org.exoplatform.cloudmanagement.admin.dao.TenantInfoDataManager;
+import com.exoplatform.cloud.admin.CloudAdminException;
+import com.exoplatform.cloud.admin.dao.TenantDataManagerException;
+import com.exoplatform.cloud.admin.dao.TenantInfoDataManager;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 import org.testng.annotations.BeforeMethod;

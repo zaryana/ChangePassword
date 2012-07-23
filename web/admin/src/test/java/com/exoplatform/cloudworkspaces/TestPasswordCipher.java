@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (C) 2012 eXo Platform SAS.
  *
  * This is free software; you can redistribute it and/or modify it
@@ -18,7 +18,8 @@
  */
 package com.exoplatform.cloudworkspaces;
 
-import org.exoplatform.cloudmanagement.admin.CloudAdminException;
+import com.exoplatform.cloud.admin.CloudAdminException;
+
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -30,7 +31,7 @@ public class TestPasswordCipher {
   private String         plainText;
 
   @BeforeMethod
-  public void init() throws CloudAdminException  {
+  public void init() throws CloudAdminException {
     passwordCipher = new PasswordCipher();
     plainText = "Test PasswordCipher 2012";
   }

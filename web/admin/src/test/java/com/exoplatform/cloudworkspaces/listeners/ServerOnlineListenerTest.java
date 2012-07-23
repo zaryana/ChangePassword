@@ -18,18 +18,18 @@
  */
 package com.exoplatform.cloudworkspaces.listeners;
 
+import com.exoplatform.cloud.admin.dao.TenantDataManagerException;
+import com.exoplatform.cloud.admin.mail.ServerMaintenanceStateChecker;
+import com.exoplatform.cloud.admin.proxy.ServerStateChangesProxyReconfigurationInitiator;
+import com.exoplatform.cloud.admin.recover.ServerRemoverInterrupter;
+import com.exoplatform.cloud.admin.tenant.InactiveTenantStopper;
+import com.exoplatform.cloud.status.TenantInfo;
+import com.exoplatform.cloud.status.TenantState;
 import com.exoplatform.cloudworkspaces.listener.DemoTenantOnlineListener;
 import com.exoplatform.cloudworkspaces.listener.JoinAllInOnlineServerListener;
 import com.exoplatform.cloudworkspaces.listener.WorkspacesServerOnlineListenersInvoker;
 import com.exoplatform.cloudworkspaces.users.UsersManager;
 
-import org.exoplatform.cloudmanagement.admin.dao.TenantDataManagerException;
-import org.exoplatform.cloudmanagement.admin.mail.ServerMaintenanceStateChecker;
-import org.exoplatform.cloudmanagement.admin.proxy.ServerStateChangesProxyReconfigurationInitiator;
-import org.exoplatform.cloudmanagement.admin.recover.ServerRemoverInterrupter;
-import org.exoplatform.cloudmanagement.admin.tenant.InactiveTenantSuspender;
-import org.exoplatform.cloudmanagement.status.TenantInfo;
-import org.exoplatform.cloudmanagement.status.TenantState;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 import org.testng.annotations.BeforeMethod;
@@ -38,31 +38,32 @@ import org.testng.annotations.Test;
 import java.util.ArrayList;
 
 /**
- * Created with IntelliJ IDEA.
- * User: makis mshaposhnik@exoplatform.com
- * Date: 4/18/12
- * Time: 4:59 PM
+ * Created with IntelliJ IDEA. User: makis mshaposhnik@exoplatform.com Date:
+ * 4/18/12 Time: 4:59 PM
  */
 public class ServerOnlineListenerTest {
 
-  UsersManager usersManager;
+  UsersManager                           usersManager;
+
   WorkspacesServerOnlineListenersInvoker invoker;
-  TenantInfo info =     Mockito.mock(TenantInfo.class);
+
+  TenantInfo                             info = Mockito.mock(TenantInfo.class);
 
   @BeforeMethod
   public void initMocks() throws TenantDataManagerException {
     ServerMaintenanceStateChecker checker = Mockito.mock(ServerMaintenanceStateChecker.class);
     ServerRemoverInterrupter serverRemoverInterrupter = Mockito.mock(ServerRemoverInterrupter.class);
-    InactiveTenantSuspender inactiveTenantSuspender =   Mockito.mock(InactiveTenantSuspender.class);
+    InactiveTenantStopper inactiveTenantStopper = Mockito.mock(InactiveTenantStopper.class);
     ServerStateChangesProxyReconfigurationInitiator serverStateChangesProxyReconfigurationInitiator = Mockito.mock(ServerStateChangesProxyReconfigurationInitiator.class);
     usersManager = Mockito.mock(UsersManager.class);
     JoinAllInOnlineServerListener listener = new JoinAllInOnlineServerListener(usersManager);
     DemoTenantOnlineListener demoTenantOnlineListener = Mockito.mock(DemoTenantOnlineListener.class);
     invoker = new WorkspacesServerOnlineListenersInvoker(checker,
                                                          serverRemoverInterrupter,
-                                                         inactiveTenantSuspender,
+                                                         inactiveTenantStopper,
                                                          serverStateChangesProxyReconfigurationInitiator,
-                                                         listener, demoTenantOnlineListener);
+                                                         listener,
+                                                         demoTenantOnlineListener);
   }
 
   @Test

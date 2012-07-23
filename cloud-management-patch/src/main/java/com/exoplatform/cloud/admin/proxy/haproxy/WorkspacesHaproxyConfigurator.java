@@ -16,28 +16,38 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package com.exoplatform.cloudworkspaces.shell;
+package com.exoplatform.cloud.admin.proxy.haproxy;
 
-/**
- * Contains all information about current user for initialization of shell
- * application.
- */
-public class ShellUser
+public class WorkspacesHaproxyConfigurator extends HaproxyConfigurator
 {
-   private String userId;
 
-   public ShellUser(String userId)
+   private boolean isReady = false;
+
+   /**
+    * @param haproxyDriver
+    * @param configurationGenerator
+    */
+   public WorkspacesHaproxyConfigurator(HaproxyDriver haproxyDriver,
+      HaproxyConfigurationGenerator configurationGenerator)
    {
-      this.userId = userId;
+      super(haproxyDriver, configurationGenerator);
    }
 
-   public String getUserId()
+   /**
+    * @see com.exoplatform.cloud.admin.proxy.ProxyConfigurator#reconfigure()
+    */
+   @Override
+   public synchronized void reconfigure()
    {
-      return userId;
+      if (isReady)
+      {
+         super.reconfigure();
+      }
    }
 
-   public void setUserId(String userId)
+   public void setReady(boolean isReady)
    {
-      this.userId = userId;
+      this.isReady = isReady;
    }
+
 }

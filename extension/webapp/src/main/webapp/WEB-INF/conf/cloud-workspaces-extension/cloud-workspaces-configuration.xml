@@ -26,7 +26,7 @@
 
   <!-- Overriding cloud agent app from cloud-extension -->
   <component>
-    <key>org.exoplatform.cloudmanagement.CloudAgentApplication</key>
+    <key>com.exoplatform.cloud.CloudAgentApplication</key>
     <type>com.exoplatform.cloudworkspaces.multitenancy.application.CloudAgentApplication</type>
   </component>
 </configuration>

@@ -124,7 +124,7 @@
 
         <!-- Cloud Management -->
         <dependency>
-          <groupId>org.exoplatform.cloud-management</groupId>
+          <groupId>com.exoplatform.cloud-management</groupId>
           <artifactId>cloud-rest-everrest</artifactId>
           <scope>provided</scope>
           <type>jar</type>
@@ -188,7 +188,6 @@
                     <delete file="${project.build.directory}/platform-cloud-tomcat/conf/Catalina/localhost/cloud-admin.xml" />
                     <delete dir="${project.build.directory}/platform-cloud-tomcat/gatein/conf/cloud/cloud-admin" />
                     <delete dir="${project.build.directory}/platform-cloud-tomcat/webapps/ROOT" />
-                    <delete file="${project.build.directory}/platform-cloud-tomcat/lib/cloud-admin-valve-tomcat-${org.exoplatform.cloud-management.version}.jar" />
                     <delete file="${project.build.directory}/platform-cloud-tomcat/webapps/cloud-admin.war" />
 
                     <!-- Delete binaries -->

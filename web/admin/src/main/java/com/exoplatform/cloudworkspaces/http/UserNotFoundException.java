@@ -18,7 +18,7 @@
  */
 package com.exoplatform.cloudworkspaces.http;
 
-import org.exoplatform.cloudmanagement.admin.CloudAdminException;
+import com.exoplatform.cloud.admin.CloudAdminException;
 
 public class UserNotFoundException extends CloudAdminException {
 
