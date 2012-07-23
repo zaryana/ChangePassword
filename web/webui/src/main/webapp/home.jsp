@@ -6,6 +6,9 @@
     <%@ include file="common/headStyle.jsp"%>
     <%@ include file="common/headScript.jsp"%>
     <link rel="stylesheet" href="/lightbox/css/lightbox.css" type="text/css" media="screen" />
+    <script type="text/javascript" src="/js/jQueryString-2.0.2-Min.js"></script>
+    <script type="text/javascript" src="/js/jquery.cookie.js"></script>
+    <script type="text/javascript" src="/js/marketo.cookies.js"></script>
     <script type="text/javascript" src="/lightbox/jquery.lightbox.js"></script>
     <script type="text/javascript">
      $(function()
@@ -74,6 +77,10 @@
                 <form class="UIForm" action="javascript:void(0);"   method="POST" name="cloud-workspaces-profile" id="signupForm">
                   <!-- Marketo input hidden fields -->
                   <input name="Cloud_Workspaces_User__c" id="Cloud_Workspaces_User__c" type='hidden' value="yes" />
+                  <input name="Search_Engine__c" id="Search_Engine__c" type='hidden' value="" />
+                  <input name="Search_String__c" id="Search_String__c" type='hidden' value="" />
+                  <input  name="Pay_Per_Click_Keyword__c" id="Pay_Per_Click_Keyword__c" type='hidden' value="" />
+                  <input name="sfga" id="sfga" type='hidden' value="00DA0000000Hp6u" />
                   <input name="LeadSource" id="LeadSource" type='hidden' value="Web - Cloud Workspaces" />
                   <input type="hidden" name="_marketo_comments" value="" />
                   <input type="hidden" name="lpId" value="1047" />
