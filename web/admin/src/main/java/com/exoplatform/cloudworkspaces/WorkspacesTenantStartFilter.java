@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 eXo Platform SAS.
+ * Copyright (C) 2012 eXo Platform SAS.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -16,14 +16,9 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package com.exoplatform.cloudworkspaces.admin;
+package com.exoplatform.cloudworkspaces;
 
-import org.apache.catalina.connector.Request;
-import org.apache.catalina.connector.Response;
-import org.apache.catalina.valves.ValveBase;
 import com.exoplatform.cloud.multitenancy.TenantNameResolver;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -32,34 +27,32 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
 
-/**
- * Valve configuration: <Valve
- * className="com.exoplatform.cloudworkspaces.admin.ResumeValve"
- * resumeTimeout="30000"
- * serversOverloadUrl="http://h1.exoplatform.org/overloaded.html"
- * resumeRestServiceUrl
- * ="http://localhost:8080/rest/cloud-admin/tenant-service/resume/"/>
- */
-public class ResumeValve extends ValveBase {
-  private static final Logger LOG          = LoggerFactory.getLogger(ResumeValve.class);
+public class WorkspacesTenantStartFilter implements Filter {
 
-  private String              resumingPage = "http://${tenant.masterhost}/resuming-hide.jsp";
+  private String resumingPage = "http://${tenant.masterhost}/resuming-hide.jsp";
 
-  public String getResumingPage() {
-    return resumingPage;
-  }
-
-  public void setResumingPage(String resumingPage) {
-    this.resumingPage = resumingPage;
+  @Override
+  public void init(FilterConfig filterConfig) throws ServletException {
+    String resumingPageParam = filterConfig.getInitParameter("resumingPage");
+    if (resumingPageParam == null || resumingPageParam.trim().isEmpty())
+      this.resumingPage = resumingPageParam;
   }
 
   @Override
-  public void invoke(Request request, Response response) throws IOException, ServletException {
-    String url = request.getRequestURL().toString();
+  public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
+                                                                                           ServletException {
+    HttpServletRequest httpRequest = (HttpServletRequest) request;
+    String url = httpRequest.getRequestURL().toString();
     if (url.contains("/rest/cloud-admin") || url.contains("/rest/private/cloud-admin")) {
-      getNext().invoke(request, response);
+      chain.doFilter(httpRequest, response);
     } else {
       String tenant = TenantNameResolver.getTenantName(url);
 
@@ -102,8 +95,7 @@ public class ResumeValve extends ValveBase {
           String headTemplate = "<head>";
           String baseTag = "<base href=\"http://" + System.getProperty("tenant.masterhost")
               + "\"></base>";
-          String tenantTag = "<span id='tenantname' style='display: none'>" + tenant
-              + "</span>";
+          String tenantTag = "<span id='tenantname' style='display: none'>" + tenant + "</span>";
           String contactUsFrom = "onclick=\"showContactUsForm('/contact-us.jsp');\"";
           String contactUsTo = "target=\"blank\" href=\"/index.jsp\"";
 
@@ -123,9 +115,17 @@ public class ResumeValve extends ValveBase {
         }
 
       } else {
-        getNext().invoke(request, response);
+        chain.doFilter(httpRequest, response);
       }
     }
+
+    // TODO Auto-generated method stub
+
+  }
+
+  @Override
+  public void destroy() {
+    // do nothing
   }
 
 }

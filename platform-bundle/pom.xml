@@ -188,7 +188,6 @@
                     <delete file="${project.build.directory}/platform-cloud-tomcat/conf/Catalina/localhost/cloud-admin.xml" />
                     <delete dir="${project.build.directory}/platform-cloud-tomcat/gatein/conf/cloud/cloud-admin" />
                     <delete dir="${project.build.directory}/platform-cloud-tomcat/webapps/ROOT" />
-                    <delete file="${project.build.directory}/platform-cloud-tomcat/lib/cloud-admin-valve-tomcat-${com.exoplatform.cloud-management.version}.jar" />
                     <delete file="${project.build.directory}/platform-cloud-tomcat/webapps/cloud-admin.war" />
 
                     <!-- Delete binaries -->

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+<?xml version="1.0" encoding="UTF-8"?> <!--
     Copyright (C) 2011 eXo Platform SAS.
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -147,12 +146,6 @@
       </dependency>
       <dependency>
         <groupId>com.exoplatform.cloudworkspaces</groupId>
-        <artifactId>cloud-management-valve-patch</artifactId>
-        <version>${project.version}</version>
-        <type>jar</type>
-      </dependency>
-      <dependency>
-        <groupId>com.exoplatform.cloudworkspaces</groupId>
         <artifactId>cloud-workspaces-extension-webapp</artifactId>
         <version>${project.version}</version>
         <type>war</type>
@@ -237,12 +230,6 @@
       <dependency>
         <groupId>com.exoplatform.cloud-management</groupId>
         <artifactId>cloud-services-common</artifactId>
-        <version>${com.exoplatform.cloud-management.version}</version>
-        <type>jar</type>
-      </dependency>
-      <dependency>
-        <groupId>com.exoplatform.cloud-management</groupId>
-        <artifactId>cloud-admin-valve-tomcat</artifactId>
         <version>${com.exoplatform.cloud-management.version}</version>
         <type>jar</type>
       </dependency>
@@ -547,7 +534,6 @@
 
   <modules>
     <module>cloud-management-patch</module>
-    <module>cloud-management-valve-patch</module>
     <module>component</module>
     <module>web</module>
     <module>admin-bundle</module>
