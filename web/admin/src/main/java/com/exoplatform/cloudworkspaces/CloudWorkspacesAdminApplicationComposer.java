@@ -22,6 +22,10 @@ import com.exoplatform.cloud.admin.dao.EmailValidationStorage;
 import com.exoplatform.cloud.admin.instance.CloudAdminUserDataGenerator;
 import com.exoplatform.cloud.admin.mail.TenantOperationMailSenderInitiator;
 import com.exoplatform.cloud.admin.mail.WorkspacesTenantOperationMailSenderInitiator;
+import com.exoplatform.cloud.admin.proxy.ProxyConfigurator;
+import com.exoplatform.cloud.admin.proxy.ServerStateChangesProxyReconfigurationInitiator;
+import com.exoplatform.cloud.admin.proxy.WorkspacesServerStateChangesProxyReconfigurationInitiator;
+import com.exoplatform.cloud.admin.proxy.haproxy.WorkspacesHaproxyConfigurator;
 import com.exoplatform.cloud.admin.rest.CloudAdminApplicationComposer;
 import com.exoplatform.cloud.admin.rest.TenantCreator;
 import com.exoplatform.cloud.admin.status.ServerOnlineListenersInvoker;
@@ -102,6 +106,13 @@ public class CloudWorkspacesAdminApplicationComposer extends CloudAdminApplicati
 
     container.removeComponent(ServerStatusMailer.class);
     container.addComponent(ServerStatusMailer.class, WorkspacesServerStatusMailer.class);
+
+    container.removeComponent(ProxyConfigurator.class);
+    container.addComponent(ProxyConfigurator.class, WorkspacesHaproxyConfigurator.class);
+
+    container.removeComponent(ServerStateChangesProxyReconfigurationInitiator.class);
+    container.addComponent(ServerStateChangesProxyReconfigurationInitiator.class,
+                           WorkspacesServerStateChangesProxyReconfigurationInitiator.class);
 
     /*
      * // configure CM patch utils
