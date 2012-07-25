@@ -92,31 +92,33 @@ public class DemoTenantOnlineKeeper implements Startable {
                 tenantStarter.startTenant(demoTenant);
               }
             } else {
-              long lastAccess = Long.parseLong(status.get(TenantInfoFieldName.PROPERTY_LAST_ACCESS_TIME));
-              long suspendTime = cloudAdminConfiguration.getLong(AdminConfiguration.CLOUD_ADMIN_STOP_TIME);
-              double ratio = (double) (System.currentTimeMillis() - lastAccess)
-                  / (double) suspendTime;
-              if (ratio > 0.5) {
-                String alias = status.get(TenantInfoFieldName.PROPERTY_APSERVER_ALIAS);
-                HttpClient httpClient = httpClientManager.getHttpClient(alias);
-                HttpGet request = new HttpGet("http://" + demoTenant + "."
-                    + System.getProperty("tenant.masterhost"));
-                HttpResponse response = null;
-                try {
-                  response = httpClient.execute(request);
-                } catch (ClientProtocolException e) {
-                  LOG.error("Error happened until sending request to demo tenant", e);
-                } catch (IOException e) {
-                  LOG.error("Error happened until sending request to demo tenant", e);
-                } finally {
-                  if (response != null)
-                    try {
-                      response.getEntity().getContent().close();
-                    } catch (IllegalStateException e) {
-                      LOG.error("Error happened until sending request to demo tenant", e);
-                    } catch (IOException e) {
-                      LOG.error("Error happened until sending request to demo tenant", e);
-                    }
+              if (state.equals(TenantState.ONLINE)) {
+                long lastAccess = Long.parseLong(status.get(TenantInfoFieldName.PROPERTY_LAST_ACCESS_TIME));
+                long suspendTime = cloudAdminConfiguration.getLong(AdminConfiguration.CLOUD_ADMIN_STOP_TIME);
+                double ratio = (double) (System.currentTimeMillis() - lastAccess)
+                    / (double) suspendTime;
+                if (ratio > 0.5) {
+                  String alias = status.get(TenantInfoFieldName.PROPERTY_APSERVER_ALIAS);
+                  HttpClient httpClient = httpClientManager.getHttpClient(alias);
+                  HttpGet request = new HttpGet("http://" + demoTenant + "."
+                      + System.getProperty("tenant.masterhost"));
+                  HttpResponse response = null;
+                  try {
+                    response = httpClient.execute(request);
+                  } catch (ClientProtocolException e) {
+                    LOG.error("Error happened until sending request to demo tenant", e);
+                  } catch (IOException e) {
+                    LOG.error("Error happened until sending request to demo tenant", e);
+                  } finally {
+                    if (response != null)
+                      try {
+                        response.getEntity().getContent().close();
+                      } catch (IllegalStateException e) {
+                        LOG.error("Error happened until sending request to demo tenant", e);
+                      } catch (IOException e) {
+                        LOG.error("Error happened until sending request to demo tenant", e);
+                      }
+                  }
                 }
               }
             }
