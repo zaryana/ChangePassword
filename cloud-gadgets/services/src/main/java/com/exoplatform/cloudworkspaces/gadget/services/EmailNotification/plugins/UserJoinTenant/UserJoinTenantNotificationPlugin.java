@@ -1,9 +1,9 @@
 package com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.plugins.UserJoinTenant;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.groovyscript.GroovyTemplate;
@@ -15,6 +15,9 @@ import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvide
 import org.exoplatform.social.core.manager.IdentityManager;
 
 import com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.EmailNotificationPlugin;
+import com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.EmailNotificationStorage;
+import com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.Event;
+import com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.Plugin;
 import com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.utils.MessagesCache;
 
 public class UserJoinTenantNotificationPlugin extends EmailNotificationPlugin{
@@ -31,17 +34,18 @@ public class UserJoinTenantNotificationPlugin extends EmailNotificationPlugin{
 			LOG.debug("UserJoinTenantNotificationPlugin running for " + userId);
 
 			IdentityManager idMan = (IdentityManager) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(IdentityManager.class);
-			UserJoinTenantLog joinLog = (UserJoinTenantLog) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(UserJoinTenantLog.class);
-			List<UserJoinTenantLogEntry> logEntries = joinLog.getLog();
-
+			
+			EmailNotificationStorage notificationStorage = (EmailNotificationStorage) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(EmailNotificationStorage.class);      
+      Set<Event> events = notificationStorage.getEvents(Plugin.USER_JOIN_TENANT, null);
+      
 			StringBuilder builder = new StringBuilder();
 			String host = context.get("repoName") + "." + System.getProperty("tenant.masterhost");
 			String prefix = "";
-			for(UserJoinTenantLogEntry logEntry:logEntries) {
-				if(logEntry.getJoinDate() < lastRun) continue; // bypass if the entry was already reported
+			for(Event event:events) {
+				if(event.getCreatedDate() < lastRun) continue; // bypass if the entry was already reported
 				builder.append(prefix);
 				prefix = ", ";
-				Identity userIdentity = idMan.getOrCreateIdentity(OrganizationIdentityProvider.NAME, logEntry.getUserId(), false);
+				Identity userIdentity = idMan.getOrCreateIdentity(OrganizationIdentityProvider.NAME, event.getIdentity(), false);
 				Profile userProfile = userIdentity.getProfile();
 				builder.append("<a href='" + host + "/" + userProfile.getUrl() + "' target='_blank'>" + userProfile.getFullName() + "</a>");
 			}

@@ -63,6 +63,15 @@ public class EmailNotificationJob extends MultiTenancyJob {
     mailService.sendMessage(message);
   }
 
+  private static long nextMinuteOf(long date) {
+    Calendar now = Calendar.getInstance();
+    now.setTimeInMillis(date);
+    now.add(Calendar.MINUTE, 1);
+    now.set(Calendar.SECOND, 0);
+    now.set(Calendar.MILLISECOND, 0);
+    return now.getTimeInMillis();
+  }
+  
   private static long nextDayOf(long date) {
     Calendar now = Calendar.getInstance();
     now.setTimeInMillis(date);
@@ -153,14 +162,14 @@ public class EmailNotificationJob extends MultiTenancyJob {
                 notificationPlugins.append(plugin.getName());
               }
             }
-            emailNotificationRestService.setUserPrefs(userId, setting.getProperty("defaultInterval", "week"), notificationPlugins.toString());
+            emailNotificationRestService.setUserPrefs(userId, false, setting.getProperty("defaultInterval", "week"), notificationPlugins.toString());
             isServiceRegistered = true;
           }
 
           if (isServiceRegistered) {
             Node emailNotificationPrefs = userPrivateNode.getNode(EmailNotificationService.PREFS);
             String interval = emailNotificationPrefs.getProperty("Interval").getString();
-
+            Boolean isSummaryMail = emailNotificationPrefs.getProperty("isSummaryMail").getBoolean();
             if (!emailNotificationPrefs.hasProperty("LastRun")) {
               emailNotificationPrefs.setProperty("LastRun", System.currentTimeMillis());
               emailNotificationPrefs.save();
@@ -169,14 +178,18 @@ public class EmailNotificationJob extends MultiTenancyJob {
             long lastRun = emailNotificationPrefs.getProperty("LastRun").getLong();
             long nextRun = lastRun;
 
-            if (interval.equals("never")) {
-              continue;
-            } else if (interval.equals("day")) {
-              nextRun = nextDayOf(lastRun);
-            } else if (interval.equals("week")) {
-              nextRun = nextMondayOf(lastRun);
-            } else if (interval.equals("month")) {
-              nextRun = nextMonthOf(lastRun);
+            if (isSummaryMail) {
+              if (interval.equals("never")) {
+                continue;
+              } else if (interval.equals("day")) {
+                nextRun = nextDayOf(lastRun);
+              } else if (interval.equals("week")) {
+                nextRun = nextMondayOf(lastRun);
+              } else if (interval.equals("month")) {
+                nextRun = nextMonthOf(lastRun);
+              }
+            } else {
+              nextRun = nextMinuteOf(lastRun);
             }
 
             if (System.currentTimeMillis() < nextRun) {

@@ -45,6 +45,12 @@
           <type>com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.plugins.SpaceNotificationPlugin</type>
           <description>Space request notification plugin</description>      
     </component-plugin>
+    <component-plugin>
+          <name>RequestToJoinSpacePlugin</name>
+          <set-method>addNotificationPlugin</set-method>
+          <type>com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.plugins.RequestToJoinSpacePlugin</type>
+          <description>Request to join space plugin</description>      
+    </component-plugin>
   </external-component-plugins>
   
   <external-component-plugins>
@@ -71,7 +77,7 @@
           <property name="jobName" value="EmailNotificationJob" />
           <property name="groupName" value="EmailNotificationJobGroup" />
           <property name="job" value="com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.EmailNotificationJob" />
-          <property name="expression" value="0 0 0,12 * * ?" />
+          <property name="expression" value="0 * * * * ?" />
         </properties-param>
       </init-params>
     </component-plugin>
