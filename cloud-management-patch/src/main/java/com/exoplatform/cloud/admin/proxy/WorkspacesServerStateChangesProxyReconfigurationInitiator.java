@@ -104,6 +104,7 @@ public class WorkspacesServerStateChangesProxyReconfigurationInitiator extends
       if (aliases.isEmpty())
       {
          ((WorkspacesHaproxyConfigurator)proxyConfigurator).setReady(true);
+         proxyConfigurator.reconfigure();
       }
    }
 
