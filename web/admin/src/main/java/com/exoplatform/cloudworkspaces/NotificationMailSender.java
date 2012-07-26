@@ -32,15 +32,12 @@ import com.exoplatform.cloud.admin.util.MailSender.MailHeaders;
 import com.exoplatform.cloud.status.TenantState;
 import com.exoplatform.cloudworkspaces.dao.ModifiableEmailValidationStorage;
 import com.exoplatform.cloudworkspaces.http.WorkspacesOrganizationRequestPerformer;
-
 import org.apache.commons.configuration.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -119,20 +116,21 @@ public class NotificationMailSender {
                           props);
 
       Map<String, String> adminEmails = workspacesOrganizationRequestPerformer.getTenantAdministrators(tName);
-      Iterator<String> it = adminEmails.keySet().iterator();
-      while (it.hasNext()) {
-        String username = it.next();
+      for (String username : adminEmails.keySet()) {
         if (username.equals("root"))// Dont send those emails to root CLDINT-184
+        {
           continue;
+        }
         String adminEmail = adminEmails.get(username);
         props.put("admin.firstname", username);
-        if (adminEmail != null)
+        if (adminEmail != null) {
           mailSender.sendMail(buildSupportHeaders(adminEmail,
-                                                  cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_JOIN_CLOSED_OWNER_SUBJECT)
-                                                                         .replace("${company}",
-                                                                                  props.get("tenant.repository.name"))),
-                              ownerTemplate,
-                              props);
+            cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_JOIN_CLOSED_OWNER_SUBJECT)
+              .replace("${company}",
+                props.get("tenant.repository.name"))),
+            ownerTemplate,
+            props);
+        }
       }
     } catch (CloudAdminException e) {
       sendAdminErrorEmail("Configuration error - join rejected emails is not send", e);
@@ -158,15 +156,16 @@ public class NotificationMailSender {
                                                                      .replace("${company}", tName)),
                           userTemplate,
                           props);
-      Iterator<String> it = adminEmails.keySet().iterator();
-      while (it.hasNext()) {
-        String username = it.next();
+      for (String username : adminEmails.keySet()) {
         if (username.equals("root"))// Dont send those emails to root CLDINT-184
+        {
           continue;
+        }
         String adminEmail = adminEmails.get(username);
         props.put("admin.firstname", username);
-        if (adminEmail != null)
+        if (adminEmail != null) {
           mailSender.sendMail(buildSupportHeaders(adminEmail, ownerSubject), ownerTemplate, props);
+        }
       }
     } catch (CloudAdminException e) {
       sendAdminErrorEmail("Configuration error - user joined but notification emails is not send.",
@@ -291,18 +290,18 @@ public class NotificationMailSender {
 
     int counter = 0;
     StringBuilder info = new StringBuilder();
-    Set<String> setAliasses = new HashSet<String>();
+    Set<String> aliases = new HashSet<String>();
 
     final String confDir = System.getProperty("cloud.admin.configuration.dir");
 
     LOG.info("Sending custom email '" + subject + "' to users from validation queue.");
 
     try {
-      setAliasses = modifiableEmailValidationStorage.getAliases();
+      aliases = modifiableEmailValidationStorage.getAliases();
     } catch (IOException e) {
       throw new CloudAdminException("Cannot read aliases.", e);
     }
-    for (String uuid : setAliasses) {
+    for (String uuid : aliases) {
 
       Map<String, String> validationData = emailValidationStorage.getValidationData(uuid);
 

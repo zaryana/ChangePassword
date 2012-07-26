@@ -24,9 +24,6 @@ public class UserMailInfo {
 
   private String tenant;
 
-  public UserMailInfo() {
-  }
-
   public UserMailInfo(String username, String tenant) {
     this.username = username;
     this.tenant = tenant;

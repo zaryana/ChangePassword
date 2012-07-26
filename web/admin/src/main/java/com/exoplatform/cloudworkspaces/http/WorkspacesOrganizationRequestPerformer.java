@@ -18,10 +18,6 @@
  */
 package com.exoplatform.cloudworkspaces.http;
 
-import static java.net.HttpURLConnection.HTTP_CREATED;
-import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
-import static java.net.HttpURLConnection.HTTP_OK;
-
 import com.exoplatform.cloud.admin.CloudAdminException;
 import com.exoplatform.cloud.admin.configuration.ApplicationServerConfigurationManager;
 import com.exoplatform.cloud.admin.configuration.TenantInfoFieldName;
@@ -29,7 +25,6 @@ import com.exoplatform.cloud.admin.dao.TenantInfoDataManager;
 import com.exoplatform.cloud.admin.http.HttpClientManager;
 import com.exoplatform.cloudworkspaces.UserAlreadyExistsException;
 import com.exoplatform.cloudworkspaces.users.UserLimitsStorage;
-
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -39,13 +34,14 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicNameValuePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Map;
+
+import static java.net.HttpURLConnection.*;
 
 public class WorkspacesOrganizationRequestPerformer {
 
@@ -106,19 +102,19 @@ public class WorkspacesOrganizationRequestPerformer {
       if (response.getStatusLine().getStatusCode() != HTTP_CREATED) {
         LOG.error("Unable to add user to workspace {} ({}) - HTTP status: {}", new Object[] {
             tName, alias, response.getStatusLine().getStatusCode() });
-        throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
+        throw new CloudAdminException("An problem happened during processing this request. It was reported to developers. Please, try again later.");
       }
     } catch (UnsupportedEncodingException e) {
       LOG.error(e.getMessage(), e);
-      throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.",
+      throw new CloudAdminException("An problem happened during processing this request. It was reported to developers. Please, try again later.",
                                     e);
     } catch (ClientProtocolException e) {
       LOG.error(e.getMessage(), e);
-      throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.",
+      throw new CloudAdminException("An problem happened during processing this request. It was reported to developers. Please, try again later.",
                                     e);
     } catch (IOException e) {
       LOG.error(e.getMessage(), e);
-      throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.",
+      throw new CloudAdminException("An problem happened during processing this request. It was reported to developers. Please, try again later.",
                                     e);
     } finally {
       if (response != null) {
@@ -151,7 +147,7 @@ public class WorkspacesOrganizationRequestPerformer {
       params.add(new BasicNameValuePair("password", java.net.URLEncoder.encode(password, "utf-8")));
     } catch (UnsupportedEncodingException e) {
       LOG.error(e.getMessage(), e);
-      throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
+      throw new CloudAdminException("An problem happened during processing this request. It was reported to developers. Please, try again later.");
     }
 
     HttpPost request = new HttpPost(strUrl.toString());
@@ -162,11 +158,11 @@ public class WorkspacesOrganizationRequestPerformer {
       if (response.getStatusLine().getStatusCode() != HTTP_OK) {
         LOG.error("Unable to change password user {} to workspace {} - HTTP status: {}",
                   new Object[] { email, tName, response.getStatusLine().getStatusCode() });
-        throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
+        throw new CloudAdminException("An problem happened during processing this request. It was reported to developers. Please, try again later.");
       }
     } catch (IOException e) {
       LOG.error(e.getMessage(), e);
-      throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
+      throw new CloudAdminException("An problem happened during processing this request. It was reported to developers. Please, try again later.");
     } finally {
       if (response != null) {
         try {
@@ -190,9 +186,12 @@ public class WorkspacesOrganizationRequestPerformer {
     HttpClient httpClient = httpClientManager.getHttpClient(alias);
 
     strUrl.append(baseUri);
-    strUrl.append(ORGANIZATION_SERVICE_PATH + "/users/" + tName);
+    strUrl.append(ORGANIZATION_SERVICE_PATH);
+    strUrl.append("/users/");
+    strUrl.append(tName);
     strUrl.append('?');
-    strUrl.append("administratorsonly=" + isAdministratorsOnly);
+    strUrl.append("administratorsonly=");
+    strUrl.append(isAdministratorsOnly);
 
     HttpGet request = new HttpGet(strUrl.toString());
     try {
@@ -201,12 +200,12 @@ public class WorkspacesOrganizationRequestPerformer {
       LOG.error("Unable to get users list from workspace {} - Reason: {}",
                 tName,
                 e.getLocalizedMessage());
-      throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
+      throw new CloudAdminException("An problem happened during processing this request. It was reported to developers. Please, try again later.");
     } catch (IOException e) {
       LOG.error("Unable to get users list from workspace {} - Reason: {}",
                 tName,
                 e.getLocalizedMessage());
-      throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
+      throw new CloudAdminException("An problem happened during processing this request. It was reported to developers. Please, try again later.");
     }
   }
 
@@ -246,7 +245,8 @@ public class WorkspacesOrganizationRequestPerformer {
 
     StringBuilder strUrl = new StringBuilder();
     strUrl.append(baseUri);
-    strUrl.append(ORGANIZATION_SERVICE_PATH + "/usernamebyemail/");
+    strUrl.append(ORGANIZATION_SERVICE_PATH);
+    strUrl.append("/usernamebyemail/");
     strUrl.append(tName);
     strUrl.append('/');
     strUrl.append(email);
@@ -263,7 +263,7 @@ public class WorkspacesOrganizationRequestPerformer {
       if (status != HTTP_OK) {
         LOG.error("Unable to check user in workspace {} ({}) - HTTP status: {}", new Object[] {
             tName, alias, response.getStatusLine().getStatusCode() });
-        throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
+        throw new CloudAdminException("An problem happened during processing this request. It was reported to developers. Please, try again later.");
       }
 
       InputStream stream = response.getEntity().getContent();
@@ -283,11 +283,11 @@ public class WorkspacesOrganizationRequestPerformer {
 
     } catch (ClientProtocolException e) {
       LOG.error(e.getMessage(), e);
-      throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.",
+      throw new CloudAdminException("An problem happened during processing this request. It was reported to developers. Please, try again later.",
                                     e);
     } catch (IOException e) {
       LOG.error(e.getMessage(), e);
-      throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.",
+      throw new CloudAdminException("An problem happened during processing this request. It was reported to developers. Please, try again later.",
                                     e);
     } finally {
       if (response != null) {

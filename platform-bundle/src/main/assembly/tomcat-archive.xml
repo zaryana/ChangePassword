@@ -125,7 +125,7 @@
          <include>com.exoplatform.cloudworkspaces:cloud-workspaces-gadget-services</include>
          <include>com.exoplatform.cloudworkspaces:cloud-workspaces-gadget-config</include>
          <include>com.exoplatform.cloudworkspaces:cloud-workspaces-extension-config</include>
-         <include>org.exoplatform.cloud-management:cloud-rest-everrest</include>
+         <include>com.exoplatform.cloud-management:cloud-rest-everrest</include>
          <include>org.everrest:everrest-groovy</include>
          <include>com.exoplatform.cloudworkspaces:cloud-workspaces-wizard-extension-config</include>
        </includes>

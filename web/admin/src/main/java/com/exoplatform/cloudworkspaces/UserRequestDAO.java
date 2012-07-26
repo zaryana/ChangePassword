@@ -1,7 +1,7 @@
 package com.exoplatform.cloudworkspaces;
 
-import org.apache.commons.configuration.Configuration;
 import com.exoplatform.cloud.admin.CloudAdminException;
+import org.apache.commons.configuration.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.io.File;
@@ -130,6 +130,12 @@ public class UserRequestDAO {
       return null;
 
     File[] list = folder.listFiles();
+    if (list == null)
+    {
+      String msg = "Tenant queuing error: failed to read list files of " + folder.getName();
+      LOG.error(msg);
+      throw new CloudAdminException("A problem happened during processing request . It was reported to developers. Please, try again later.");
+    }
     for (File one : list) {
       try {
         FileInputStream io = new FileInputStream(one);

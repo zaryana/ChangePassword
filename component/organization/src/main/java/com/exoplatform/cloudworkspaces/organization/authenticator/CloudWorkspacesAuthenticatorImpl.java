@@ -19,8 +19,9 @@
 
 package com.exoplatform.cloudworkspaces.organization.authenticator;
 
-import org.exoplatform.services.log.ExoLogger;
-import org.exoplatform.services.log.Log;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.security.Credential;
 import org.exoplatform.services.security.PasswordCredential;
@@ -37,8 +38,7 @@ import javax.security.auth.login.LoginException;
 
 public class CloudWorkspacesAuthenticatorImpl extends OrganizationAuthenticatorImpl
 {
-   protected static Log log = ExoLogger
-      .getLogger("org.exoplatform.platform.cloud.services.authentication.IntranetAuthenticatorImpl");
+   protected static Logger log = LoggerFactory.getLogger(CloudWorkspacesAuthenticatorImpl.class);
 
    private static final String ROOT_USER = "root";
 
@@ -102,9 +102,7 @@ public class CloudWorkspacesAuthenticatorImpl extends OrganizationAuthenticatorI
       Properties properties = new Properties();
       properties.load(io);
       String value = properties.getProperty(ROOT_USER);
-      if (value == null)
-        return false;
-      return value.equals(password);
+      return value != null && value.equals(password);
     } catch (final Throwable e) {
       LoginException le = new LoginException(e.getMessage());
       le.initCause(e);

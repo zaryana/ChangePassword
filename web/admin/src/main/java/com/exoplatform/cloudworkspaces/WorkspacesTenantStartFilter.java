@@ -119,8 +119,6 @@ public class WorkspacesTenantStartFilter implements Filter {
       }
     }
 
-    // TODO Auto-generated method stub
-
   }
 
   @Override
