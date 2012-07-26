@@ -18,15 +18,12 @@
  */
 package com.exoplatform.cloudworkspaces.multitenancy.rest;
 
-import static com.exoplatform.cloud.status.TenantInfoBuilder.online;
-
 import com.exoplatform.cloud.determinant.TenantDeterminant;
 import com.exoplatform.cloud.multitenancy.TemporaryTenantStateHolder;
 import com.exoplatform.cloud.multitenancy.TenantRepositoryService;
 import com.exoplatform.cloud.rest.CloudAgentInfoService;
 import com.exoplatform.cloud.statistic.TenantAccessTimeStatisticCollector;
 import com.exoplatform.cloud.status.TenantInfo;
-
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.jcr.config.RepositoryConfigurationException;
 import org.exoplatform.services.jcr.config.RepositoryEntry;
@@ -34,12 +31,10 @@ import org.exoplatform.services.jcr.ext.backup.BackupManager;
 import org.exoplatform.services.organization.OrganizationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -47,6 +42,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import static com.exoplatform.cloud.status.TenantInfoBuilder.online;
 
 @Path("/cloud-agent/info-service")
 public class WorkspacesCloudAgentInfoService extends CloudAgentInfoService {
@@ -57,15 +54,12 @@ public class WorkspacesCloudAgentInfoService extends CloudAgentInfoService {
 
   private final TemporaryTenantStateHolder temporaryTenantStateHolder;
 
-  private final OrganizationService        orgService;
-
   public WorkspacesCloudAgentInfoService(TenantRepositoryService repositoryService,
                                          TemporaryTenantStateHolder temporaryTenantStateHolder,
                                          OrganizationService organizationService,
                                          BackupManager backupManager) {
     super(repositoryService, temporaryTenantStateHolder, organizationService, backupManager);
     this.repositoryService = repositoryService;
-    this.orgService = organizationService;
     this.temporaryTenantStateHolder = temporaryTenantStateHolder;
   }
 

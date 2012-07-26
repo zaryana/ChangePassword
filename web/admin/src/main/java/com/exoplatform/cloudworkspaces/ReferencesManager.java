@@ -55,7 +55,7 @@ public class ReferencesManager {
     String hashFileName = getReferencesFolder();
     File hashDir = new File(hashFileName);
     if (!hashDir.exists())
-      hashDir.mkdir();
+      return null;
     try {
       File file = new File(hashDir + "/" + referenceFilename);
       if (!file.exists())
@@ -67,7 +67,7 @@ public class ReferencesManager {
       return properties.getProperty(email);
     } catch (IOException e) {
       LOG.error("I/O exception getting hash from email " + email, e);
-      throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
+      throw new CloudAdminException("An problem happened during processing this request. It was reported to developers. Please, try again later.");
     }
   }
 
@@ -75,7 +75,7 @@ public class ReferencesManager {
     String hashFileName = getReferencesFolder();
     File hashDir = new File(hashFileName);
     if (!hashDir.exists())
-      hashDir.mkdir();
+      return null;
     try {
       File file = new File(hashDir + "/" + referenceFilename);
       if (!file.exists())
@@ -92,7 +92,7 @@ public class ReferencesManager {
       }
     } catch (IOException e) {
       LOG.error("I/O exception getting email from hash " + hash, e);
-      throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
+      throw new CloudAdminException("An problem happened during processing this request. It was reported to developers. Please, try again later.");
     }
     return null;
   }
@@ -117,7 +117,7 @@ public class ReferencesManager {
       return uuid;
     } catch (IOException e) {
       LOG.error("I/O exception writing email " + email + " , uuid: " + uuid, e);
-      throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
+      throw new CloudAdminException("An problem happened during processing this request. It was reported to developers. Please, try again later.");
     }
 
   }
@@ -141,7 +141,7 @@ public class ReferencesManager {
       }
     } catch (IOException e) {
       LOG.error("I/O exception removing email " + email, e);
-      throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
+      throw new CloudAdminException("An problem happened during processing this request. It was reported to developers. Please, try again later.");
     }
   }
 
@@ -149,7 +149,7 @@ public class ReferencesManager {
     String folder = cloudAdminConfiguration.getString(CLOUD_ADMIN_REFERENCES_DIR, null);
     if (folder == null || referenceFilename == null) {
       LOG.error("References dir is not defined in the admin configuration");
-      throw new CloudAdminException("An problem happened during processsing this request. It was reported to developers. Please, try again later.");
+      throw new CloudAdminException("An problem happened during processing this request. It was reported to developers. Please, try again later.");
     }
     return folder;
   }

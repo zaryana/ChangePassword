@@ -154,17 +154,6 @@ public class WorkspacesSpaceService
       page.setTitle("Getting Started Guide");
       Attachment content = page.getContent();
       content.setText(readInputStreamAsString(getClass().getResourceAsStream("/wiki/content.txt")));
-
-      //Notify listeners
-//      List<PageWikiListener> listeners = wikiService.getPageListeners();
-//        for (PageWikiListener l : listeners) {
-//          try {
-//            l.postUpdatePage(wikiType, wikiOwner, "WikiHome", page);
-//          } catch (Exception e) {
-//              LOG.warn(String.format("Notify listener [%s] failed", l.toString()), e);
-//          }
-//       }
-
     } catch (Exception e) {
       String error = "Cannot create wiki page: " + e.getMessage();
       LOG.error(error, e);

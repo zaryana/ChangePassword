@@ -18,26 +18,23 @@
  */
 package com.exoplatform.cloudworkspaces.http;
 
-import static java.net.HttpURLConnection.HTTP_OK;
-
 import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.ResponseHandler;
 import org.everrest.core.impl.provider.json.JsonException;
 import org.everrest.core.impl.provider.json.JsonParser;
 import org.everrest.core.impl.provider.json.ObjectValue;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import static java.net.HttpURLConnection.HTTP_OK;
+
 public class WorkspacesUsersListResponseHandler implements ResponseHandler<Map<String, String>> {
 
   @Override
-  public Map<String, String> handleResponse(HttpResponse response) throws ClientProtocolException,
-                                                                  IOException {
+  public Map<String, String> handleResponse(HttpResponse response) throws IOException {
 
     if (response.getStatusLine().getStatusCode() != HTTP_OK) {
       throw new IOException(response.getStatusLine().toString());

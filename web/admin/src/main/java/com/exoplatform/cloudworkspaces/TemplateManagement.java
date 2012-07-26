@@ -18,21 +18,18 @@
  */
 package com.exoplatform.cloudworkspaces;
 
-import static com.exoplatform.cloud.admin.configuration.AdminConfiguration.CLOUD_ADMIN_TENANT_BACKUP_ID;
-import static com.exoplatform.cloud.admin.configuration.AdminConfiguration.CLOUD_ADMIN_TENANT_QUEUE_DIR;
-
-import com.exoplatform.cloudworkspaces.dao.ModifiableEmailValidationStorage;
-
-import org.apache.commons.configuration.Configuration;
 import com.exoplatform.cloud.admin.CloudAdminException;
 import com.exoplatform.cloud.admin.configuration.TenantInfoFieldName;
 import com.exoplatform.cloud.admin.dao.TenantDataManagerException;
-import com.exoplatform.cloud.admin.dao.TenantInfoDataManager;
+import com.exoplatform.cloudworkspaces.dao.ModifiableEmailValidationStorage;
+import org.apache.commons.configuration.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.io.File;
 import java.util.Map;
+
+import static com.exoplatform.cloud.admin.configuration.AdminConfiguration.CLOUD_ADMIN_TENANT_BACKUP_ID;
+import static com.exoplatform.cloud.admin.configuration.AdminConfiguration.CLOUD_ADMIN_TENANT_QUEUE_DIR;
 
 public class TemplateManagement {
 
@@ -43,7 +40,6 @@ public class TemplateManagement {
   private final ModifiableEmailValidationStorage modifiableEmailValidationStorage;
 
   public TemplateManagement(Configuration cloudAdminConfiguration,
-                            TenantInfoDataManager tenantInfoDataManager,
                             ModifiableEmailValidationStorage modifiableEmailValidationStorage) {
     this.cloudAdminConfiguration = cloudAdminConfiguration;
     this.modifiableEmailValidationStorage = modifiableEmailValidationStorage;

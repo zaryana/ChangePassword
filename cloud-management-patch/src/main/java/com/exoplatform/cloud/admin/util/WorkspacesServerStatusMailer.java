@@ -123,7 +123,7 @@ public class WorkspacesServerStatusMailer extends ServerStatusMailer
       }
 
       Map<MailHeaders, String> mailHeaders =
-         ImmutableMap.<MailHeaders, String> of(MailHeaders.TO, recipients.toString(), MailHeaders.SUBJECT, mailSubject);
+         ImmutableMap.of(MailHeaders.TO, recipients.toString(), MailHeaders.SUBJECT, mailSubject);
 
       mailSender.sendMailQuietly(mailHeaders, mailTemplate, props);
    }

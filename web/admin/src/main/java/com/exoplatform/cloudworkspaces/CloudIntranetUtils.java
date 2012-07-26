@@ -78,7 +78,7 @@ public class CloudIntranetUtils {
       return false;
     boolean result = true;
     try {
-      InternetAddress emailAddr = new InternetAddress(aEmailAddress);
+      new InternetAddress(aEmailAddress);
       if (!hasNameAndDomain(aEmailAddress)) {
         result = false;
       }
@@ -96,10 +96,7 @@ public class CloudIntranetUtils {
 
   public boolean validateUUID(String aEmailAddress, String UUID) throws CloudAdminException {
     String hash = referencesManager.getHash(aEmailAddress);
-    if (hash == null)
-      return false;
-    else
-      return hash.equals(UUID);
+    return hash != null && hash.equals(UUID);
   }
 
   public boolean validateName(String aName) throws CloudAdminException {

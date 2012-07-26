@@ -48,7 +48,7 @@ public class WorkspacesServerStateChangesProxyReconfigurationInitiator extends
    private final HashSet<String> aliases = new HashSet<String>();
 
    /**
-    * @param proxyConfigurator
+    * @param proxyConfigurator ProxyConfigurator
     */
    public WorkspacesServerStateChangesProxyReconfigurationInitiator(ProxyConfigurator proxyConfigurator,
       ApplicationServerStatusManager applicationServerStatusManager)

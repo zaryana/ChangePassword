@@ -35,14 +35,11 @@ public class WorkspacesUserDataGenerator extends CloudAdminUserDataGenerator {
 
   private static final Logger                    LOG = LoggerFactory.getLogger(WorkspacesUserDataGenerator.class);
 
-  private final Configuration                    cloudAdminConfiguration;
-
   private final DatabaseServerSelectionAlgorithm databaseServerSelectionAlgorithm;
 
   public WorkspacesUserDataGenerator(Configuration cloudAdminConfiguration,
                                      DatabaseServerSelectionAlgorithm databaseServerSelectionAlgorithm) {
     super(cloudAdminConfiguration);
-    this.cloudAdminConfiguration = cloudAdminConfiguration;
     this.databaseServerSelectionAlgorithm = databaseServerSelectionAlgorithm;
   }
 

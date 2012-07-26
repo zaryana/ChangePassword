@@ -49,30 +49,11 @@ public class MailingProperties {
 
   public static final String CLOUD_ADMIN_MAIL_USER_INTRANET_CREATED_SUBJECT      = "cloud.admin.mail.intranet.created.user.subject";
 
-  public static final String CLOUD_ADMIN_MAIL_OWNER_INTRANET_CREATED_TEMPLATE    = "cloud.admin.mail.intranet.created.owner.template";
-
-  public static final String CLOUD_ADMIN_MAIL_OWNER_INTRANET_CREATED_SUBJECT     = "cloud.admin.mail.intranet.created.owner.subject";
-
   public static final String CLOUD_ADMIN_MAIL_CONTACT_TEMPLATE                   = "cloud.admin.mail.contact.template";
 
   public static final String CLOUD_ADMIN_MAIL_PASSWORD_RESTORE_TEMPLATE          = "cloud.admin.mail.password.reset.template";
 
   public static final String CLOUD_ADMIN_MAIL_PASSWORD_RESTORE_SUBJECT           = "cloud.admin.mail.password.reset.subject";
 
-  public static final String CLOUD_ADMIN_MAIL_REQUEST_QUEUED_TEMPLATE            = "cloud.admin.mail.request.queued.template";
-
-  public static final String CLOUD_ADMIN_MAIL_REQUEST_QUEUED_SUBJECT             = "cloud.admin.mail.request.queued.subject";
-
-  public static final String CLOUD_ADMIN_MAIL_REQUEST_QUEUED_DEVELOPERS_TEMPLATE = "cloud.admin.mail.request.queued.developers.template";
-
-  public static final String CLOUD_ADMIN_MAIL_REQUEST_QUEUED_DEVELOPERS_SUBJECT  = "cloud.admin.mail.request.queued.developers.subject";
-
-  public static final String CLOUD_ADMIN_MAIL_REQUEST_REJECTED_TEMPLATE          = "cloud.admin.mail.request.rejected.template";
-
   public static final String CLOUD_ADMIN_MAIL_SUPPOR_EMAIL                       = "cloud.admin.mail.support.email";
-
-  public static final String CLOUD_ADMIN_MAIL_MARKETING_EMAIL                    = "cloud.admin.mail.marketing.email";
-
-  public static final String CLOUD_ADMIN_MAIL_REQUEST_REJECTED_SUBJECT           = "cloud.admin.mail.request.rejected.subject";
-
 }
