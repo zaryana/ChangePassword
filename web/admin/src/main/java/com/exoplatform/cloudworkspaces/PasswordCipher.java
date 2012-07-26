@@ -94,9 +94,9 @@ public class PasswordCipher {
   public synchronized String decrypt(String codedText) throws CloudAdminException {
     String decrypt = "";
     try {
-      byte[] encypted = coder.decode(codedText.getBytes());
+      byte[] encrypted = coder.decode(codedText.getBytes());
       cipher.init(Cipher.DECRYPT_MODE, key);
-      byte[] decrypted = cipher.doFinal(encypted);
+      byte[] decrypted = cipher.doFinal(encrypted);
       decrypt = new String(decrypted);
     } catch (InvalidKeyException e) {
       throw new CloudAdminException("Cannot decrypt password", e);

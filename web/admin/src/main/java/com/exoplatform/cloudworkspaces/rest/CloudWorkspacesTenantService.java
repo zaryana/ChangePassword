@@ -288,7 +288,7 @@ public class CloudWorkspacesTenantService {
    * Internal Server Error.</li>
    * </ul>
    * 
-   * @param String userMail email address of user to signup/join.
+   * @param  userMail email address of user to signup/join.
    * @return Response with URL for a registration/join or with a client error.
    * @throws CloudAdminException if error occurs
    */
@@ -669,10 +669,9 @@ public class CloudWorkspacesTenantService {
   /**
    * Retrieves status string of the given tenant.
    * 
-   * @param tenantName
+   * @param tenantName  String tenantName
    * @return Response
    * @throws TenantDataManagerException
-   * @throws CloudAdminException
    */
   @GET
   @Path("/status/{tenantname}")

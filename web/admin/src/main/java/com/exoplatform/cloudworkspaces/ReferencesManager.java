@@ -19,17 +19,15 @@
 package com.exoplatform.cloudworkspaces;
 
 import com.exoplatform.cloud.admin.CloudAdminException;
-
 import org.apache.commons.configuration.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Enumeration;
 import java.util.Properties;
+import java.util.Set;
 
 public class ReferencesManager {
 
@@ -41,9 +39,9 @@ public class ReferencesManager {
 
   private String              referenceFilename;
 
-  private static final Logger LOG                         = LoggerFactory.getLogger(ReferencesManager.class);
+  private static final Logger LOG                   = LoggerFactory.getLogger(ReferencesManager.class);
 
-  private static Object       obj                         = new Object();
+  private static final Object obj                   = new Object();
 
   public ReferencesManager(Configuration cloudAdminConfiguration) {
     this.cloudAdminConfiguration = cloudAdminConfiguration;
@@ -84,9 +82,8 @@ public class ReferencesManager {
       Properties properties = new Properties();
       properties.load(io);
       io.close();
-      Enumeration<String> propKeys = (Enumeration<String>) properties.propertyNames();
-      while (propKeys.hasMoreElements()) {
-        String one = propKeys.nextElement();
+      Set<String> propKeys = properties.stringPropertyNames();
+      for (String one : propKeys) {
         if (properties.getProperty(one).equals(hash))
           return one;
       }
