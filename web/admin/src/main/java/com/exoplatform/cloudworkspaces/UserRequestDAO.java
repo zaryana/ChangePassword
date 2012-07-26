@@ -22,10 +22,7 @@ public class UserRequestDAO {
 
   public UserRequestDAO(Configuration cloudAdminConfiguration, PasswordCipher passwordCipher) {
     this.cloudAdminConfiguration = cloudAdminConfiguration;
-    if (System.getProperty("cloud.admin.crypt.registration.password") != null
-        && System.getProperty("cloud.admin.crypt.registration.password").equals("true")) {
-      this.passwordCipher = passwordCipher;
-    }
+    this.passwordCipher = passwordCipher;
   }
 
   public void put(UserRequest req) throws CloudAdminException {
@@ -50,7 +47,8 @@ public class UserRequestDAO {
     properties.setProperty("last-name", req.getLastName());
     properties.setProperty("company-name", req.getCompanyName());
     properties.setProperty("phone", req.getPhone());
-    if (passwordCipher != null) {
+    if (System.getProperty("cloud.admin.crypt.registration.password") != null
+      && System.getProperty("cloud.admin.crypt.registration.password").equals("true")) {
       properties.setProperty("password", passwordCipher.encrypt(req.getPassword()));
     } else {
       properties.setProperty("password", req.getPassword());
