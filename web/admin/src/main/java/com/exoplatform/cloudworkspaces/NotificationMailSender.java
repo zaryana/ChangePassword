@@ -18,22 +18,22 @@
  */
 package com.exoplatform.cloudworkspaces;
 
+import com.exoplatform.cloud.admin.CloudAdminException;
+import com.exoplatform.cloud.admin.TenantRegistrationException;
+import com.exoplatform.cloud.admin.configuration.MailConfiguration;
+import com.exoplatform.cloud.admin.configuration.TenantInfoFieldName;
+import com.exoplatform.cloud.admin.dao.EmailValidationStorage;
+import com.exoplatform.cloud.admin.dao.TenantInfoDataManager;
+import com.exoplatform.cloud.admin.tenant.TenantNameValidator;
+import com.exoplatform.cloud.admin.tenant.UserMailValidator;
+import com.exoplatform.cloud.admin.util.AdminConfigurationUtil;
+import com.exoplatform.cloud.admin.util.MailSender;
+import com.exoplatform.cloud.admin.util.MailSender.MailHeaders;
+import com.exoplatform.cloud.status.TenantState;
 import com.exoplatform.cloudworkspaces.dao.ModifiableEmailValidationStorage;
 import com.exoplatform.cloudworkspaces.http.WorkspacesOrganizationRequestPerformer;
-import com.sun.mail.iap.Response;
 
 import org.apache.commons.configuration.Configuration;
-import org.exoplatform.cloudmanagement.admin.CloudAdminException;
-import org.exoplatform.cloudmanagement.admin.TenantRegistrationException;
-import org.exoplatform.cloudmanagement.admin.WorkspacesMailSender;
-import org.exoplatform.cloudmanagement.admin.configuration.MailConfiguration;
-import org.exoplatform.cloudmanagement.admin.configuration.TenantInfoFieldName;
-import org.exoplatform.cloudmanagement.admin.dao.EmailValidationStorage;
-import org.exoplatform.cloudmanagement.admin.dao.TenantInfoDataManager;
-import org.exoplatform.cloudmanagement.admin.tenant.TenantNameValidator;
-import org.exoplatform.cloudmanagement.admin.tenant.UserMailValidator;
-import org.exoplatform.cloudmanagement.admin.util.AdminConfigurationUtil;
-import org.exoplatform.cloudmanagement.status.TenantState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,15 +44,13 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import javax.ws.rs.core.Response.Status;
-
 public class NotificationMailSender {
 
   private static final Logger                          LOG = LoggerFactory.getLogger(NotificationMailSender.class);
 
   private final Configuration                          cloudAdminConfiguration;
 
-  private final WorkspacesMailSender                   mailSender;
+  private final MailSender                             mailSender;
 
   private final WorkspacesOrganizationRequestPerformer workspacesOrganizationRequestPerformer;
 
@@ -67,7 +65,7 @@ public class NotificationMailSender {
   private final ModifiableEmailValidationStorage       modifiableEmailValidationStorage;
 
   public NotificationMailSender(Configuration cloudAdminConfiguration,
-                                WorkspacesMailSender mailSender,
+                                MailSender mailSender,
                                 WorkspacesOrganizationRequestPerformer workspacesOrganizationRequestPerformer,
                                 EmailValidationStorage emailValidationStorage,
                                 TenantNameValidator tenantNameValidator,
@@ -88,11 +86,10 @@ public class NotificationMailSender {
     String mailTemplate = cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_JOIN_TEMPLATE,
                                                             null);
     try {
-      mailSender.sendMail(userMail,
-                          cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_JOIN_SUBJECT),
+      mailSender.sendMail(buildSupportHeaders(userMail,
+                                              cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_JOIN_SUBJECT)),
                           mailTemplate,
-                          props,
-                          false);
+                          props);
     } catch (CloudAdminException e) {
       sendAdminErrorEmail("Configuration error - join email not send.", e);
       LOG.error("Configuration error - join email not send.", e);
@@ -110,18 +107,16 @@ public class NotificationMailSender {
                                                              null);
 
     try {
-      mailSender.sendMail(userMail,
-                          cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_JOIN_CLOSED_USER_SUBJECT),
+      mailSender.sendMail(buildSupportHeaders(userMail,
+                                              cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_JOIN_CLOSED_USER_SUBJECT)),
                           userTemplate,
-                          props,
-                          false);
-      mailSender.sendMail(salesEmail,
-                          cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_JOIN_CLOSED_SALES_SUBJECT)
-                                                 .replace("${company}",
-                                                          props.get("tenant.repository.name")),
+                          props);
+      mailSender.sendMail(buildAdminHeaders(salesEmail,
+                                              cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_JOIN_CLOSED_SALES_SUBJECT)
+                                                                     .replace("${company}",
+                                                                              props.get("tenant.repository.name"))),
                           salesTemplate,
-                          props,
-                          true);
+                          props);
 
       Map<String, String> adminEmails = workspacesOrganizationRequestPerformer.getTenantAdministrators(tName);
       Iterator<String> it = adminEmails.keySet().iterator();
@@ -132,13 +127,12 @@ public class NotificationMailSender {
         String adminEmail = adminEmails.get(username);
         props.put("admin.firstname", username);
         if (adminEmail != null)
-          mailSender.sendMail(adminEmail,
-                              cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_JOIN_CLOSED_OWNER_SUBJECT)
-                                                     .replace("${company}",
-                                                              props.get("tenant.repository.name")),
+          mailSender.sendMail(buildSupportHeaders(adminEmail,
+                                                  cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_JOIN_CLOSED_OWNER_SUBJECT)
+                                                                         .replace("${company}",
+                                                                                  props.get("tenant.repository.name"))),
                               ownerTemplate,
-                              props,
-                              false);
+                              props);
       }
     } catch (CloudAdminException e) {
       sendAdminErrorEmail("Configuration error - join rejected emails is not send", e);
@@ -159,12 +153,11 @@ public class NotificationMailSender {
     ownerSubject = ownerSubject.replace("${firstname}", firstName);
     try {
       Map<String, String> adminEmails = workspacesOrganizationRequestPerformer.getTenantAdministrators(tName);
-      mailSender.sendMail(userMail,
-                          cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_USER_JOINED_SUBJECT)
-                                                 .replace("${company}", tName),
+      mailSender.sendMail(buildSupportHeaders(userMail,
+                                              cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_USER_JOINED_SUBJECT)
+                                                                     .replace("${company}", tName)),
                           userTemplate,
-                          props,
-                          false);
+                          props);
       Iterator<String> it = adminEmails.keySet().iterator();
       while (it.hasNext()) {
         String username = it.next();
@@ -173,7 +166,7 @@ public class NotificationMailSender {
         String adminEmail = adminEmails.get(username);
         props.put("admin.firstname", username);
         if (adminEmail != null)
-          mailSender.sendMail(adminEmail, ownerSubject, ownerTemplate, props, false);
+          mailSender.sendMail(buildSupportHeaders(adminEmail, ownerSubject), ownerTemplate, props);
       }
     } catch (CloudAdminException e) {
       sendAdminErrorEmail("Configuration error - user joined but notification emails is not send.",
@@ -186,13 +179,12 @@ public class NotificationMailSender {
     String userTemplate = cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_USER_INTRANET_CREATED_TEMPLATE,
                                                             null);
     try {
-      mailSender.sendMail(userMail,
-                          cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_USER_INTRANET_CREATED_SUBJECT)
-                                                 .replace("${company}",
-                                                          props.get("tenant.repository.name")),
+      mailSender.sendMail(buildSupportHeaders(userMail,
+                                              cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_USER_INTRANET_CREATED_SUBJECT)
+                                                                     .replace("${company}",
+                                                                              props.get("tenant.repository.name"))),
                           userTemplate,
-                          props,
-                          false);
+                          props);
     } catch (CloudAdminException e) {
       sendAdminErrorEmail("Configuration error - workspace created but owner email in not send", e);
       LOG.error("Configuration error - workspace created but owner email in not send", e);
@@ -232,7 +224,7 @@ public class NotificationMailSender {
       for (String email : cloudAdminConfiguration.getStringArray(MailConfiguration.CLOUD_ADMIN_MAIL_ADMIN_EMAIL))
       // .split(","))
       {
-        mailSender.sendMail(email.trim(), mailSubject, mailTemplate, props, true);
+        mailSender.sendMail(buildAdminHeaders(email.trim(), mailSubject), mailTemplate, props);
       }
     } catch (CloudAdminException ex) {
       LOG.error("Cannot send mail message to admin. Message was '" + msg + "' it is caused by '"
@@ -252,12 +244,11 @@ public class NotificationMailSender {
     props.put("user.name", firstName);
     props.put("message", text);
     try {
-      mailSender.sendMail(email,
-                          "Contact-Us message submitted: " + subject,
+      mailSender.sendMail(buildSupportHeaders(email,
+                                              "Contact-Us message submitted: " + subject,
+                                              userMail),
                           mailTemplate,
-                          props,
-                          false,
-                          userMail);
+                          props);
     } catch (CloudAdminException ex) {
       String msg = ("Cannot send mail contactUs message. Message was : <<" + text
           + ">>. Sender email is: " + userMail);
@@ -276,12 +267,11 @@ public class NotificationMailSender {
     props.put("tenant.masterhost", AdminConfigurationUtil.getMasterHost(cloudAdminConfiguration));
     props.put("tenant.repository.name", tName);
     try {
-      mailSender.sendMail(email,
-                          cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_PASSWORD_RESTORE_SUBJECT),
+      mailSender.sendMail(buildSupportHeaders(email,
+                                              cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_PASSWORD_RESTORE_SUBJECT),
+                                              "noreply@cloud-workspaces.com"),
                           mailTemplate,
-                          props,
-                          false,
-                          "noreply@cloud-workspaces.com");
+                          props);
     } catch (CloudAdminException ex) {
       String msg = ("Cannot send mail password restore message. Requestor email is: " + email);
       LOG.error(msg);
@@ -370,7 +360,7 @@ public class NotificationMailSender {
     props.put("user.mail", userMail);
     props.put("id", uuid);
 
-    mailSender.sendMail(userMail, subject, emailTemplate, props, false);
+    mailSender.sendMail(buildSupportHeaders(userMail, subject), emailTemplate, props);
   }
 
   /**
@@ -426,4 +416,33 @@ public class NotificationMailSender {
       throw new CloudAdminException(400, "Wrong state.");
     }
   }
+
+  private Map<MailHeaders, String> buildSupportHeaders(String to, String subject) {
+    Map<MailHeaders, String> headers = new HashMap<MailHeaders, String>();
+    headers.put(MailHeaders.TO, to);
+    headers.put(MailHeaders.SUBJECT, subject);
+    headers.put(MailHeaders.FROM,
+                cloudAdminConfiguration.getString("cloud.admin.mail.support.sender"));
+    return headers;
+  }
+
+  private Map<MailHeaders, String> buildSupportHeaders(String to, String subject, String replyTo) {
+    Map<MailHeaders, String> headers = new HashMap<MailHeaders, String>();
+    headers.put(MailHeaders.TO, to);
+    headers.put(MailHeaders.SUBJECT, subject);
+    headers.put(MailHeaders.FROM,
+                cloudAdminConfiguration.getString("cloud.admin.mail.support.sender"));
+    headers.put(MailHeaders.REPLY_TO, replyTo);
+    return headers;
+  }
+
+  private Map<MailHeaders, String> buildAdminHeaders(String to, String subject) {
+    Map<MailHeaders, String> headers = new HashMap<MailHeaders, String>();
+    headers.put(MailHeaders.TO, to);
+    headers.put(MailHeaders.SUBJECT, subject);
+    headers.put(MailHeaders.FROM,
+                cloudAdminConfiguration.getString(MailConfiguration.CLOUD_ADMIN_MAIL_SENDER));
+    return headers;
+  }
+
 }

@@ -18,9 +18,6 @@
  */
 package com.exoplatform.cloudworkspaces;
 
-public enum RequestState
-{
-   WAITING_CREATION,
-   WAITING_JOIN,
-   WAITING_LIMIT
+public enum RequestState {
+  WAITING_CREATION, WAITING_JOIN, WAITING_LIMIT
 }

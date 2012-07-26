@@ -50,7 +50,7 @@
   </component>
 
   <component>
-    <key>org.exoplatform.cloudmanagement.multitenancy.CreateNewRepositoryPlugin</key>
+    <key>com.exoplatform.cloud.multitenancy.plugin.CreateNewRepositoryPlugin</key>
     <!-- type>org.exoplatform.cloudmanagement.multitenancy.CreateNewRepositoryPlugin</type -->
     <!-- impl with support of JCR Value storages -->
     <type>com.exoplatform.platform.cloud.services.multitenancy.CreateNewRepositoryPlugin</type>

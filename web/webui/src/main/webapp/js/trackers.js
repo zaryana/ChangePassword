@@ -69,14 +69,14 @@ function loadMarketoTracker(){
          cache : true,
          success : function()
          {
-            Munchkin.init('577-PCT-880');
+            Munchkin.init(MARKETO_TRACKER_ID);
          }
       });
    } else {
       (function(){
          function initMunchkin()
          {
-            Munchkin.init('577-PCT-880');
+            Munchkin.init(MARKETO_TRACKER_ID);
          }
          var s = document.createElement('script');
          s.type = 'text/javascript';

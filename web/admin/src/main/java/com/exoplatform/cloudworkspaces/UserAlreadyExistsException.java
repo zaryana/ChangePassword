@@ -18,7 +18,7 @@
  */
 package com.exoplatform.cloudworkspaces;
 
-import org.exoplatform.cloudmanagement.admin.CloudAdminException;
+import com.exoplatform.cloud.admin.CloudAdminException;
 
 public class UserAlreadyExistsException extends CloudAdminException {
 

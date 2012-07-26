@@ -18,29 +18,38 @@
  */
 package com.exoplatform.cloudworkspaces.rest;
 
+import com.exoplatform.cloud.admin.CloudAdminException;
+import com.exoplatform.cloud.admin.configuration.ApplicationServerConfiguration;
+import com.exoplatform.cloud.admin.configuration.ApplicationServerConfigurationManager;
+import com.exoplatform.cloud.admin.instance.CloudServerClient;
+
 import org.apache.commons.configuration.Configuration;
-import org.exoplatform.cloudmanagement.admin.configuration.ApplicationServerConfiguration;
-import org.exoplatform.cloudmanagement.admin.configuration.ApplicationServerConfigurationManager;
 
 import java.io.IOException;
+import java.util.Map;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 
+// TODO use CloudServiceClient to check public host
 @Path("/cloud-admin/cloudworkspaces/info-service")
 public class CloudWorkspacesInfoService {
 
   private final ApplicationServerConfigurationManager applicationServerConfigurationManager;
 
-  public CloudWorkspacesInfoService(ApplicationServerConfigurationManager applicationServerConfigurationManager) {
+  private final CloudServerClient                     cloudServerClient;
+
+  public CloudWorkspacesInfoService(ApplicationServerConfigurationManager applicationServerConfigurationManager,
+                                    CloudServerClient cloudServerClient) {
     this.applicationServerConfigurationManager = applicationServerConfigurationManager;
+    this.cloudServerClient = cloudServerClient;
   }
 
   @GET
   @Path("/server-logs")
   @RolesAllowed({ "cloud-admin", "cloud-manager" })
-  public String serverLogs() throws IOException {
+  public String serverLogs() throws IOException, CloudAdminException {
     StringBuilder result = new StringBuilder();
     for (Configuration server : applicationServerConfigurationManager.getAllLoadedConfiguration()
                                                                      .values()) {
@@ -64,10 +73,12 @@ public class CloudWorkspacesInfoService {
     return html.toString();
   }
 
-  private String generateServerLogUrl(Configuration server) {
+  private String generateServerLogUrl(Configuration server) throws CloudAdminException {
+    Map<String, Object> description = cloudServerClient.describeInstanceInRegion(null,
+                                                                                 server.getString(ApplicationServerConfiguration.ALIAS_PARAMETER));
     StringBuilder url = new StringBuilder();
     url.append("https://");
-    url.append(server.getString("public.host"));
+    url.append(description.get("dnsName"));
     url.append(':');
     url.append(System.getProperty("application.server.logs.port"));
     url.append("/logs/");

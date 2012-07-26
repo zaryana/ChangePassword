@@ -18,9 +18,10 @@
  */
 package com.exoplatform.cloudworkspaces.multitenancy.valve;
 
+import com.exoplatform.cloud.multitenancy.TenantNameResolver;
+
 import org.apache.catalina.connector.Request;
 import org.apache.catalina.connector.Response;
-import org.exoplatform.cloudmanagement.multitenancy.TenantNameResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,7 +37,7 @@ import javax.servlet.ServletException;
  * @version $Id: SetCurrentRepositoryValve
  */
 public class SetCurrentRepositoryValve extends
-                                      org.exoplatform.cloud.tomcat.SetCurrentRepositoryValve {
+                                      com.exoplatform.cloud.tomcat.SetCurrentRepositoryValve {
 
   private static final Logger LOG = LoggerFactory.getLogger(SetCurrentRepositoryValve.class);
 

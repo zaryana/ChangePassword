@@ -29,7 +29,7 @@ var mktURL = "http://learn.cloud-workspaces.com/index.php/leadCapture/save";
 var loopfuseURL = "http://lfov.net/webrecorder/f";
 
 if (location.port) {
-  prefixUrl += ':' + location.port;
+  prefixUrl += ":" + location.port;
 }
 var user;
 var auth = null;
@@ -37,11 +37,10 @@ var auth = null;
 /* Init function */
 
 Tenants.prototype.init = function() {
-  accessUrl = prefixUrl + '/rest/cloud-admin';
-  accessSecureUrl = prefixUrl + '/rest/private/cloud-admin';
+  accessUrl = prefixUrl + "/rest/cloud-admin";
+  accessSecureUrl = prefixUrl + "/rest/private/cloud-admin";
   tenantServicePath = accessUrl + "/cloudworkspaces/tenant-service";
   tenantSecureServicePath = accessSecureUrl + "/cloudworkspaces/tenant-service";
-  infoServicePath = accessSecureUrl + "/info-service/";
   $.extend({
   getUrlVars: function(){
     var vars = [], hash;
@@ -281,7 +280,7 @@ Tenants.prototype.initResumingHidePage = function() {
 
 function tryResume(workspace) {
   $.ajax({
-    url : accessUrl + "/tenant-service/resume?tenant=" + workspace,
+    url : accessUrl + "/tenant-service/start?tenant=" + workspace,
     async : true,
     success : function(data) {
       waitReadyWorkspace(workspace, function() {

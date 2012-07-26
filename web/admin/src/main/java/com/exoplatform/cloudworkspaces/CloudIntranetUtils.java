@@ -19,14 +19,14 @@
  */
 package com.exoplatform.cloudworkspaces;
 
+import com.exoplatform.cloud.admin.CloudAdminException;
+import com.exoplatform.cloud.admin.configuration.TenantInfoFieldName;
+import com.exoplatform.cloud.admin.dao.TenantInfoDataManager;
+import com.exoplatform.cloud.status.TenantState;
 import com.exoplatform.cloudworkspaces.http.UserNotFoundException;
 import com.exoplatform.cloudworkspaces.http.WorkspacesOrganizationRequestPerformer;
 
 import org.apache.commons.configuration.Configuration;
-import org.exoplatform.cloudmanagement.admin.CloudAdminException;
-import org.exoplatform.cloudmanagement.admin.configuration.TenantInfoFieldName;
-import org.exoplatform.cloudmanagement.admin.dao.TenantInfoDataManager;
-import org.exoplatform.cloudmanagement.status.TenantState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

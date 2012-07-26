@@ -18,11 +18,12 @@
  */
 package com.exoplatform.cloudworkspaces.dao;
 
-import static org.exoplatform.cloudmanagement.admin.configuration.AdminConfiguration.CLOUD_ADMIN_TENANT_QUEUE_DIR;
+import static com.exoplatform.cloud.admin.configuration.AdminConfiguration.CLOUD_ADMIN_TENANT_QUEUE_DIR;
+
+import com.exoplatform.cloud.admin.CloudAdminException;
+import com.exoplatform.cloud.admin.dao.file.PropertiesStorage;
 
 import org.apache.commons.configuration.Configuration;
-import org.exoplatform.cloudmanagement.admin.CloudAdminException;
-import org.exoplatform.cloudmanagement.admin.dao.file.PropertiesStorage;
 
 import java.io.File;
 import java.io.IOException;
@@ -44,13 +45,12 @@ public class PropertiesModifiableEmailValidationStorage implements ModifiableEma
   /**
    * List of the aliases saved in storage
    */
-  public Set<String> getAliases() throws IOException
-  {
+  public Set<String> getAliases() throws IOException {
     return storage.getAliases();
   }
-  
+
   /**
-   * @see org.exoplatform.cloudmanagement.admin.dao.EmailValidationStorage#setValidationData(java.util.Map)
+   * @see com.exoplatform.cloud.admin.dao.EmailValidationStorage#setValidationData(java.util.Map)
    */
   @Override
   public boolean setValidationData(String uuid, Map<String, String> validationData) throws CloudAdminException {
@@ -64,7 +64,7 @@ public class PropertiesModifiableEmailValidationStorage implements ModifiableEma
   }
 
   /**
-   * @see org.exoplatform.cloudmanagement.admin.dao.EmailValidationStorage#setValidationData(java.util.Map)
+   * @see com.exoplatform.cloud.admin.dao.EmailValidationStorage#setValidationData(java.util.Map)
    */
   @Override
   public String setValidationData(Map<String, String> validationData) throws CloudAdminException {
@@ -78,7 +78,7 @@ public class PropertiesModifiableEmailValidationStorage implements ModifiableEma
   }
 
   /**
-   * @see org.exoplatform.cloudmanagement.admin.dao.EmailValidationStorage#getValidationData(java.lang.String)
+   * @see com.exoplatform.cloud.admin.dao.EmailValidationStorage#getValidationData(java.lang.String)
    */
   @Override
   public Map<String, String> getValidationData(String uuid) throws CloudAdminException {
@@ -90,7 +90,7 @@ public class PropertiesModifiableEmailValidationStorage implements ModifiableEma
   }
 
   /**
-   * @see org.exoplatform.cloudmanagement.admin.dao.EmailValidationStorage#isValid(java.lang.String)
+   * @see com.exoplatform.cloud.admin.dao.EmailValidationStorage#isValid(java.lang.String)
    */
   @Override
   public boolean isValid(String uuid) {
@@ -98,7 +98,7 @@ public class PropertiesModifiableEmailValidationStorage implements ModifiableEma
   }
 
   /**
-   * @see org.exoplatform.cloudmanagement.admin.dao.EmailValidationStorage#remove(java.lang.String)
+   * @see com.exoplatform.cloud.admin.dao.EmailValidationStorage#remove(java.lang.String)
    */
   @Override
   public boolean remove(String uuid) throws CloudAdminException {
@@ -106,7 +106,7 @@ public class PropertiesModifiableEmailValidationStorage implements ModifiableEma
   }
 
   /**
-   * @see org.exoplatform.cloudmanagement.admin.dao.EmailValidationStorage#getStorageSize()
+   * @see com.exoplatform.cloud.admin.dao.EmailValidationStorage#getStorageSize()
    */
   @Override
   public int getStorageSize() {

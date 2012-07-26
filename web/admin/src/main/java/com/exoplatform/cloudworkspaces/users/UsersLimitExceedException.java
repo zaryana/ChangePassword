@@ -18,7 +18,7 @@
  */
 package com.exoplatform.cloudworkspaces.users;
 
-import org.exoplatform.cloudmanagement.admin.CloudAdminException;
+import com.exoplatform.cloud.admin.CloudAdminException;
 
 public class UsersLimitExceedException extends CloudAdminException {
 

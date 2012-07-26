@@ -16,7 +16,7 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.exoplatform.cloud-management</groupId>
+      <groupId>com.exoplatform.cloud-management</groupId>
       <artifactId>cloud-admin</artifactId>
       <scope>compile</scope>
       <type>jar</type>
