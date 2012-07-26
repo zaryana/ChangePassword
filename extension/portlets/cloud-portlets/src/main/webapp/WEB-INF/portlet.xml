@@ -33,4 +33,32 @@
             <keywords>Cloud Portlets</keywords>
         </portlet-info>
     </portlet>
+
+    <portlet>
+        <description>User feedback</description>
+        <portlet-name>FeedbackPortlet</portlet-name>
+        <display-name>Feedback</display-name>
+
+        <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
+        <init-param>
+          <name>webui.configuration</name>
+          <value>/WEB-INF/conf/portlet/FeedbackPortlet/webui/configuration.xml</value>
+        </init-param>    
+        <expiration-cache>0</expiration-cache>
+
+        <supports>
+            <mime-type>text/html</mime-type>
+            <portlet-mode>VIEW</portlet-mode>
+        </supports>
+
+        <supported-locale>en</supported-locale>
+        <resource-bundle>locale.portlet.FeedbackPortlet.FeedbackPortlet</resource-bundle>
+
+        <portlet-info>
+            <title>Feedback</title>
+            <short-title>Feedback</short-title>
+            <keywords>Cloudws Portlets</keywords>
+        </portlet-info>
+    </portlet>
+
 </portlet-app>

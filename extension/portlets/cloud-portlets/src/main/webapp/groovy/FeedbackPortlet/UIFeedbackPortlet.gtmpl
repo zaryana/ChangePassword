@@ -1,0 +1,104 @@
+<%
+import com.exoplatform.cloudworkspaces.portlet.FeedbackPortlet.*;
+%>
+
+<link rel="stylesheet" type="text/css" href="/cloud-portlets/skin/FeedbackPortlet/DefaultStylesheet.css" />
+<script language="javascript" type="text/javascript" src="/cloud-portlets/javascript/CloudwsPortletUtils.js"></script>
+
+<div class="UIFeedBack" style="display:none">
+    <div class="TitleFeedBack">
+        <span class="Icon ExpandIcon"></span>
+        <span style="cursor: pointer;"><%=_ctx.appRes(uicomponent.getId() + ".label.Feedback")%></span>
+    </div>
+    <%uicomponent.renderChild(UIFeedbackMainContainer);%>
+</div>
+
+<script>
+    (function(){
+        CloudwsPortletUtils.loadIfUndefined("jQuery", "https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js", init);
+ 
+        function init(){
+            jQuery.noConflict();
+            (function(j){
+                j(function(){                                                
+                    var fb = jQuery(".UIFeedBack");
+                    
+                    var adjustPortletLocation = function(){
+                        fb.css({position:"absolute", top:(j(window).scrollTop() +j(window).height()-fb.height()) + "px", 
+                                                     left:(j(window).width()-fb.width()) + "px"});
+                    }
+
+                    fb.maximize = function(){
+                        j(".UIFeedBack .Icon").removeClass("ExpandIcon");
+                        j(".UIFeedBack .Icon").addClass("CollapseIcon");
+                        j("#UIFeedbackMainContainer").show();
+
+                        j(".txtThank").hide();
+
+                        j("#uiTxtFeedback").val('<%=_ctx.appRes("UIFeedbackForm.label.YourComment")%>');
+                        j("#uiTxtFeedback").addClass("UIFeedBack TextArea").css({width:"199px", height:"100px", color:"lightgray", "font-size":"small"});                            
+                        j("#FeedbackFormContainer").show();
+
+                        adjustPortletLocation();                                                
+                        fb.isMaximized = true;
+                        fb.isSent = false;
+                    }
+                    
+                    fb.minimize = function(){
+                        j(".UIFeedBack .Icon").removeClass("CollapseIcon");
+                        j(".UIFeedBack .Icon").addClass("ExpandIcon");
+                        j("#UIFeedbackMainContainer").hide();
+
+                        adjustPortletLocation();
+                        fb.isMaximized = false;
+                    }
+                    
+                    //j(".UIFeedBack .Icon").toggle(fb.maximize, fb.minimize);
+                    j(".TitleFeedBack").live("click", function(){
+                        if(!fb.isMaximized){
+                            fb.maximize();
+                        } else {
+                            fb.minimize();
+                        }
+                    });
+                    
+                    j("#btnSend").live("click", function(){
+                        if("" == j("#uiTxtFeedback").val().trim()){
+                            return;
+                        }
+                        UIFeedbackForm_SendFeedback();
+                        
+                        setTimeout(function(){
+                            j(".txtThank").show();
+                            j("#FeedbackFormContainer").hide();                                                    
+                            adjustPortletLocation();
+                            fb.isSent = true;                            
+                        }, 1000);
+                    });
+
+                    fb.mouseleave(function(){
+                        if(fb.isSent) fb.minimize();
+                    });
+                    
+                    j("#uiTxtFeedback").live("focus", function(){
+                        var self = j(this);
+                        if("rgb(0, 0, 0)" != self.css("color")) self.val(""); //clear old feedback
+                        self.css({color:"black"});
+                        self.mouseup(function() {
+                            self.unbind("mouseup");
+                            return false;
+                        });
+                    });
+
+
+                    j(window).resize(adjustPortletLocation).scroll(adjustPortletLocation);
+
+                    adjustPortletLocation();
+                    fb.fadeIn(500);
+                });
+                
+            })(jQuery);        
+        }
+        
+    })();        
+</script>

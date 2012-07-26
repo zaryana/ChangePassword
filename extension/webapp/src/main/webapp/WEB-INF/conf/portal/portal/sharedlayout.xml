@@ -121,7 +121,20 @@
 			</container>
 		</container>
 
+		<container id="FeedbackPortlet" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+			<access-permissions>*:/platform/users</access-permissions>
+			<portlet-application>
+				<portlet>
+					<application-ref>cloud-portlets</application-ref>
+					<portlet-ref>FeedbackPortlet</portlet-ref>
+				</portlet>
+				<access-permissions>Everyone</access-permissions>
+				<show-info-bar>false</show-info-bar>
+			</portlet-application>
+		</container>
+			
 	</container>
 
 	<site-body/>
+
 </container>

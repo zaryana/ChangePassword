@@ -207,7 +207,29 @@
                       <fileset dir="${project.build.directory}/platform-cloud-tomcat/webapps" includes="workflow.war" />
                       <fileset dir="${project.build.directory}/platform-cloud-tomcat/lib" includes="exo-ecms-ext-workflow-.*.jar" />
                     </delete>
-                    
+                    <unzip src="${project.build.directory}/platform-cloud-tomcat/webapps/portal.war" dest="${project.build.directory}/platform-cloud-tomcat/webapps/portal" />
+                      <replace
+                           dir="${project.build.directory}/platform-cloud-tomcat/webapps/portal/groovy/portal/webui/workspace">
+                      <include name="UIPortalApplicationChildren.gtmpl" />
+                      <replacetoken><![CDATA[</body>]]></replacetoken>
+                      <replacevalue><![CDATA[<!-- BEGIN: SEO TRACKING -->
+                        <!-- Begin Inspectlet Embed Code -->
+                        <script type="text/javascript" id="inspectletjs">
+                          var __insp = __insp || [];
+                          __insp.push(['wid', 2511960504]);
+                          (function() {
+                            var a = window.onload;
+                            function __ldinsp(){var insp = document.createElement('script'); insp.type = 'text/javascript'; insp.async = true; insp.id = "inspsync"; insp.src = ('https:' == document.location.protocol ? 'https' : 'http') + '://www.inspectlet.com/inspect/2511960504.js'; document.getElementsByTagName("head")[0].appendChild(insp); }
+                            window.onload = (typeof window.onload != 'function') ? __ldinsp() : function() { a(); __ldinsp(); };
+                          })();
+                       </script>
+                       <!-- End Inspectlet Embed Code -->
+                       <script type="text/javascript" src="http://cloud-workspaces.com/js/trackers.js"></script>
+                       </body>]]></replacevalue>
+                      </replace>
+                      <zip destfile="${project.build.directory}/platform-cloud-tomcat/webapps/portal.war" basedir="${project.build.directory}/platform-cloud-tomcat/webapps/portal" />
+                      <delete dir="${project.build.directory}/platform-cloud-tomcat/webapps/portal" />
+
                     <!-- Comment filter Terms and Conditions -->
                     <unzip src="${project.build.directory}/platform-cloud-tomcat/webapps/platform-extension.war" dest="${project.build.directory}/platform-cloud-tomcat/webapps/plf" />
                     <replace file="${project.build.directory}/platform-cloud-tomcat/webapps/plf/WEB-INF/conf/configuration.xml">
