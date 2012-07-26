@@ -24,6 +24,9 @@
 				  <td class="Field">Your email:</td><td> <input class="required InputText" type="text" name="email" id="email" value="" /></td>
 				 </tr>
 				 <tr>
+				  <td class="Field">Phone:</td><td> <input class="required InputText" type="text" name="Phone" id="Phone" /></td>
+				</tr>
+				 <tr>
 				  <td class="Field">Subject:</td><td> <input class="required InputText" type="text" name="subject" id="subject" /></td>
 				 </tr>
 				 <tr>
