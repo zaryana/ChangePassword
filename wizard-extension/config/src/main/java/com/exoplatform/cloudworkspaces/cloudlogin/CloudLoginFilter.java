@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2012 eXo Platform SAS.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ */
+
 package com.exoplatform.cloudworkspaces.cloudlogin;
 
 import java.io.IOException;
@@ -25,6 +42,7 @@ public class CloudLoginFilter implements Filter {
 
   private static final String LOGIN_URI = "/login";
   private static final String DOLOGIN_URI = "/dologin";
+  private static final String REST_URI = "rest";
 
   private CloudLoginService cloudLoginService;
   public CloudLoginService getCloudLoginService() {
@@ -45,8 +63,9 @@ public class CloudLoginFilter implements Filter {
     String loginRequestUri = httpServletRequest.getContextPath() + LOGIN_URI;
     String dologinRequestUri = httpServletRequest.getContextPath() + DOLOGIN_URI;
     boolean isLoginUri = (requestUri.contains(loginRequestUri) || requestUri.contains(dologinRequestUri));
+    boolean isRestUri = (requestUri.contains(REST_URI));
     
-    if(! isLoginUri && CloudLoginStatus.INITIATED.equals(getCloudLoginService().getStatus(user))) {
+    if(! isLoginUri && !isRestUri && CloudLoginStatus.INITIATED.equals(getCloudLoginService().getStatus(user))) {
 
       // Get full url
       String reqUri = httpServletRequest.getRequestURI().toString();
