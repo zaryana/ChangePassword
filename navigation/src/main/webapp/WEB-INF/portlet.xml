@@ -200,6 +200,9 @@
          <title>Browse Toolbar Portlet</title>
          <short-title>Browse Toolbar</short-title>
       </portlet-info>
+      <supported-processing-event>
+         <name>NavigationChange</name>
+      </supported-processing-event>      
    </portlet>
 
 	<event-definition>

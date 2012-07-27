@@ -18,6 +18,7 @@ package org.exoplatform.platform.component;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.portal.config.UserPortalConfig;
@@ -32,13 +33,22 @@ import org.exoplatform.services.organization.User;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
+import org.exoplatform.portal.mop.user.UserNodeFilterConfig;
+import org.exoplatform.platform.common.space.statistic.SpaceAccessService;
+import org.exoplatform.social.core.service.LinkProvider;
+import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.webui.config.annotation.EventConfig;
+import org.exoplatform.webui.event.Event;
+import org.exoplatform.webui.event.EventListener;
 
 /**
  * Portlet manages profile.<br>
  */
 @ComponentConfig(lifecycle = UIApplicationLifecycle.class,
-
-template = "app:/groovy/platformNavigation/portlet/UIBrowsePlatformToolBarPortlet/UIBrowsePlatformToolBarPortlet.gtmpl")
+                 template = "app:/groovy/platformNavigation/portlet/UIBrowsePlatformToolBarPortlet/UIBrowsePlatformToolBarPortlet.gtmpl", 
+                 events = { @EventConfig(listeners = UIBrowsePlatformToolBarPortlet.NavigationChangeActionListener.class) })
+                 
 public class UIBrowsePlatformToolBarPortlet extends UIPortletApplication {
 
   private String currentPortalName = null;
@@ -77,4 +87,25 @@ public class UIBrowsePlatformToolBarPortlet extends UIPortletApplication {
     }
     return socialPortal;
   }
+  
+  public List<String> getLastVisitedSpaces() {
+    String userId = Util.getPortalRequestContext().getRemoteUser();
+    SpaceAccessService spaceAccessService = getApplicationComponent(SpaceAccessService.class);
+    List<String> lastVisitedSpace = spaceAccessService.getSpaceAccessList(userId);
+    return lastVisitedSpace;
+  }
+  
+  public String getSpaceDisplayName(String spacePrettyName) {
+    SpaceService spaceService = getApplicationComponent(SpaceService.class);
+    Space space = spaceService.getSpaceByPrettyName(spacePrettyName);
+    if (space != null) return space.getDisplayName();
+    return null;
+  }
+  
+  public static class NavigationChangeActionListener extends EventListener<UIBrowsePlatformToolBarPortlet> {
+    @Override
+    public void execute(Event<UIBrowsePlatformToolBarPortlet> event) throws Exception {
+    }
+  }
+    
 }

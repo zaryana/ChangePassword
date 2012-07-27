@@ -23,6 +23,11 @@
    xsi:schemaLocation="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd http://www.exoplatform.org/xml/ns/kernel_1_2.xsd"
    xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
 
+  <component>
+    <key>org.exoplatform.platform.common.space.statistic.SpaceAccessService</key>
+    <type>com.exoplatform.cloudworkspaces.social.space.statistic.VisitedSpaceService</type>
+  </component>
+
   <external-component-plugins>
     <target-component>org.exoplatform.social.core.manager.ActivityManager</target-component>
     <component-plugin>
