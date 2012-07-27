@@ -16,7 +16,8 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-require(["cloud/tenant", "cloud/marketo", "cloud/marketo.cookies", "cloud/trackers", "cloud/support", "jquery.lightbox", "thickbox"], function(tenant, marketo, marketoCookies, trackers, support) {
+require([ "cloud/tenant", "cloud/marketo", "cloud/marketo.cookies", "cloud/trackers", "cloud/support",
+		"jquery.lightbox", "thickbox" ], function(tenant, marketo, marketoCookies, trackers, support) {
 
 	function signup() {
 		var userMail = $('#email').val();
@@ -33,7 +34,7 @@ require(["cloud/tenant", "cloud/marketo", "cloud/marketo.cookies", "cloud/tracke
 		$("#t_submit").val("Wait...");
 		$("#t_submit").attr('disabled', 'disabled');
 
-		//tenants.xmlhttpPost(url, tenants.handleSignupResponse, tenants.getquerystringSignup, null); -->
+		// tenants.xmlhttpPost(url, tenants.handleSignupResponse, tenants.getquerystringSignup, null); -->
 		tenant.signup({
 			userMail : userMail,
 			done : function(resp) {
@@ -54,20 +55,15 @@ require(["cloud/tenant", "cloud/marketo", "cloud/marketo.cookies", "cloud/tracke
 					});
 				} else {
 					// TODO don't need Marketo here, see wrongEmail callback below
-					/*marketo.send({
-					 "Email" : $('#email').val(),
-					 "Cloud_Workspaces_User__c" : "No",
-					 "Search_Engine__c" : $('input[name=Search_Engine__c]').val(),
-					 "Search_String__c" : $('input[name=Search_String__c]').val(),
-					 "Pay_Per_Click_Keyword__c" : $('input[name=Pay_Per_Click_Keyword__c]').val(),
-					 "sfga" : $('input[name=sfga]').val(),
-					 "LeadSource" : $('#LeadSource').val(),
-					 "lpId" : $('input[name=lpId]').val(),
-					 "subId" : $('input[name=subId]').val(),
-					 "formid" : $('input[name=formid]').val(),
-					 "_mkt_trk" : $('input[name=_mkt_trk]').val()
-					 }, function() {
-					 });*/
+					/*
+					 * marketo.send({ "Email" : $('#email').val(), "Cloud_Workspaces_User__c" : "No", "Search_Engine__c" :
+					 * $('input[name=Search_Engine__c]').val(), "Search_String__c" :
+					 * $('input[name=Search_String__c]').val(), "Pay_Per_Click_Keyword__c" :
+					 * $('input[name=Pay_Per_Click_Keyword__c]').val(), "sfga" : $('input[name=sfga]').val(),
+					 * "LeadSource" : $('#LeadSource').val(), "lpId" : $('input[name=lpId]').val(), "subId" :
+					 * $('input[name=subId]').val(), "formid" : $('input[name=formid]').val(), "_mkt_trk" :
+					 * $('input[name=_mkt_trk]').val() }, function() { });
+					 */
 					$("#messageString").html('<span class="WarningIcon">' + resp + '</span>');
 				}
 			},
@@ -87,8 +83,7 @@ require(["cloud/tenant", "cloud/marketo", "cloud/marketo.cookies", "cloud/tracke
 					"subId" : $('input[name=subId]').val(),
 					"formid" : $('input[name=formid]').val(),
 					"_mkt_trk" : $('input[name=_mkt_trk]').val()
-				}, function() {
-				});
+				}, function() {});
 				$("#messageString").html('<span class="WarningIcon">' + message + '</span>');
 			},
 			serverError : function(err) {
@@ -103,7 +98,7 @@ require(["cloud/tenant", "cloud/marketo", "cloud/marketo.cookies", "cloud/tracke
 	}
 
 	// init page
-	//domReady(function () { // RequireJS way of an init
+	// domReady(function () { // RequireJS way of an init
 	$(function() {
 		$("#t_submit").click(signup);
 
@@ -119,7 +114,7 @@ require(["cloud/tenant", "cloud/marketo", "cloud/marketo.cookies", "cloud/tracke
 
 		// preload images to display in lightbox immediately
 		var links = document.getElementsByTagName("a");
-		for (var i in links) {
+		for ( var i in links) {
 			var link = links[i];
 			if (link.className && link.className === "lightbox" && link.href) {
 				preload(link.href);

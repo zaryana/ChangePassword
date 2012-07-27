@@ -13,10 +13,19 @@
  */
 package com.exoplatform.cloudworkspaces.multitenancy.rest;
 
+import org.exoplatform.services.jcr.RepositoryService;
+import org.exoplatform.services.jcr.config.RepositoryConfigurationException;
+import org.exoplatform.services.jcr.ext.backup.BackupConfigurationException;
+import org.exoplatform.services.jcr.ext.backup.BackupManager;
+import org.exoplatform.services.jcr.ext.backup.BackupOperationException;
+import org.exoplatform.services.jcr.ext.backup.RepositoryBackupChain;
+import org.exoplatform.services.jcr.ext.backup.RepositoryBackupChainLog;
+import org.exoplatform.services.jcr.ext.backup.RepositoryBackupConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.annotation.security.RolesAllowed;
 import javax.jcr.RepositoryException;
 import javax.ws.rs.DELETE;
@@ -28,18 +37,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-
-import org.exoplatform.services.jcr.RepositoryService;
-import org.exoplatform.services.jcr.config.RepositoryConfigurationException;
-import org.exoplatform.services.jcr.ext.backup.BackupConfigurationException;
-import org.exoplatform.services.jcr.ext.backup.BackupManager;
-import org.exoplatform.services.jcr.ext.backup.BackupOperationException;
-import org.exoplatform.services.jcr.ext.backup.RepositoryBackupChain;
-import org.exoplatform.services.jcr.ext.backup.RepositoryBackupChainLog;
-import org.exoplatform.services.jcr.ext.backup.RepositoryBackupConfig;
-import org.exoplatform.services.jcr.ext.backup.server.bean.response.ShortInfo;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Service responsible for tenant template management and synchronization on
@@ -145,8 +142,7 @@ public class WorkspaceTenantTemplateService {
   @RolesAllowed("cloud-admin")
   @Path("/template/{id}")
   @Produces(MediaType.TEXT_PLAIN)
-  public Response deleteTemplate(@PathParam("id")
-  String templateId) {
+  public Response deleteTemplate(@PathParam("id")  String templateId) {
 
     return Response.status(Status.BAD_REQUEST).entity("Not implemented").build();
   }

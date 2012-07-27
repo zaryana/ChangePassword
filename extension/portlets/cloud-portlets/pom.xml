@@ -14,7 +14,7 @@
   <artifactId>cloud-workspaces.extension.portlets.cloud-portlets</artifactId>
   <packaging>war</packaging>
   <name>eXo Cloud Workspaces :: Extension Portlets - cloud-portlets</name>
-  <description>Email Notification Setting portet</description>
+  <description>Cloud Workspaces portlets</description>
 
   <properties>
     <org.codehaus.jackson.version>1.9.7</org.codehaus.jackson.version>
@@ -24,10 +24,11 @@
     <dependency>
       <groupId>org.exoplatform.portal</groupId>
       <artifactId>exo.portal.webui.eXo</artifactId>
-      <version>${org.exoplatform.portal.version}</version>
-      <type>jar</type>
-      <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.webui.portal</artifactId>
+    </dependency>       
     <dependency>
       <groupId>org.codehaus.jackson</groupId>
       <artifactId>jackson-core-asl</artifactId>

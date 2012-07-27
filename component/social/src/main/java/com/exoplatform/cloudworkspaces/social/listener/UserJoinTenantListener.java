@@ -1,8 +1,5 @@
 package com.exoplatform.cloudworkspaces.social.listener;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.portal.config.UserACL;
@@ -21,6 +18,8 @@ import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.webui.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.util.HashMap;
+import java.util.Map;
 
 public class UserJoinTenantListener extends UserEventListener {
 
@@ -77,9 +76,7 @@ public class UserJoinTenantListener extends UserEventListener {
     ApplicationsIdentityProvider appIdentityProvider = new ApplicationsIdentityProvider();
     appIdentityProvider.addApplication(app);
     identityManager.addIdentityProvider(appIdentityProvider);
-    //Identity identity = identityManager.getOrCreateIdentity(ApplicationsIdentityProvider.NAME, app.getId(), true);
-    Identity identity = identityManager.getOrCreateIdentity(ApplicationsIdentityProvider.NAME, app.getId(), true);
-    return identity;
+    return identityManager.getOrCreateIdentity(ApplicationsIdentityProvider.NAME, app.getId(), true);
   }
   
   private Application getApp() {

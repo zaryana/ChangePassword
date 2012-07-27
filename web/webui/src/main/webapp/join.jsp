@@ -47,7 +47,9 @@
               <tr>
                 <td class="Field">Last name:</td><td> <input class="required InputText" type="text" name="last_name" id="last_name" /><span class="Star">*</span></td>
               </tr>
-              
+              <tr>
+                <td class="Field">Last name:</td><td> <input class="required InputText" type="text" name="Phone" id="Phone" /><span class="Star">*</span></td>
+              </tr>              
               <tr>
                 <td class="Field">Password:</td><td> <input class="required InputText" type="password" name="password" id="password" /><span class="Star">*</span></td>
               </tr>

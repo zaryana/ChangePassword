@@ -38,14 +38,17 @@ public class NoCachingFilter implements Filter {
 
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
                                                                                            ServletException {
+
+    if (response instanceof HttpServletResponse) {
+
     HttpServletResponse httpResponse = (HttpServletResponse) response;
+      httpResponse.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0, post-check=0, pre-check=0");
+      httpResponse.setDateHeader("Expires", 0);
+      httpResponse.setHeader("Pragma", "no-cache");
+      httpResponse.setDateHeader("Max-Age", 0);
+    }
 
     chain.doFilter(request, response);
-
-    httpResponse.setHeader("Cache-Control", "no-cache");
-    httpResponse.setDateHeader("Expires", 0);
-    httpResponse.setHeader("Pragma", "no-cache");
-    httpResponse.setDateHeader("Max-Age", 0);
 
   }
 }

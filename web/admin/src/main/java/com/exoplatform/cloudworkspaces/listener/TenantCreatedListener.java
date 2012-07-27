@@ -39,7 +39,9 @@ public class TenantCreatedListener extends AbstractTenantStateListener {
   private final UsersManager           usersManager;
 
   /**
-   * @param tenantStateDataManager
+   * @param tenantStateDataManager   TenantStateDataManager
+   * @param notificationMailSender   NotificationMailSender
+   * @param usersManager UsersManager
    */
   public TenantCreatedListener(TenantStateDataManager tenantStateDataManager,
                                NotificationMailSender notificationMailSender,

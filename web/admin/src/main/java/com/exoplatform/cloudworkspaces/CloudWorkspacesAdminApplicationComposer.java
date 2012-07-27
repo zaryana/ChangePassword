@@ -44,23 +44,17 @@ import com.exoplatform.cloudworkspaces.rest.CloudWorkspacesInfoService;
 import com.exoplatform.cloudworkspaces.rest.CloudWorkspacesTenantService;
 import com.exoplatform.cloudworkspaces.users.UserLimitsStorage;
 import com.exoplatform.cloudworkspaces.users.UsersManager;
-
 import org.everrest.core.ResourceBinder;
 import org.exoplatform.ide.shell.server.CLIResourceFactory;
 import org.exoplatform.ide.shell.server.rest.CLIResourcesService;
 import org.exoplatform.ide.shell.server.rest.DummyConfigurationService;
 import org.picocontainer.MutablePicoContainer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javax.servlet.ServletContext;
 
 /**
- * cloud-ide.com specific composer
+ * cloud-workspaces.com specific composer
  */
 public class CloudWorkspacesAdminApplicationComposer extends CloudAdminApplicationComposer {
-
-  private static final Logger LOG = LoggerFactory.getLogger(CloudWorkspacesAdminApplicationComposer.class);
 
   @Override
   protected void doComposeApplication(MutablePicoContainer container, ServletContext servletContext) {

@@ -121,6 +121,7 @@ public class UserRequest implements Cloneable {
     return password;
   }
 
+  @Override
   public UserRequest clone() {
     try {
       return (UserRequest) super.clone();

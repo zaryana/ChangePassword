@@ -1,0 +1,13 @@
+<script>
+    function UIFeedbackForm_SendFeedback(){
+        <%=uiform.event("FeedbackSent")%>;
+    }
+</script>
+
+<!--this container is for controlling UIFeedbackForm's visibility-->
+<div id="FeedbackFormContainer" style="display: none">
+    <%uiform.begin()%>    
+        <%uiform.renderField("uiTxtFeedback");%>
+        <span id="btnSend" class="Button"><%=_ctx.appRes(uicomponent.getId() + ".label.Send")%></span>
+    <%uiform.end()%>    
+</div>

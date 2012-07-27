@@ -43,10 +43,11 @@ function setCookie(name, value, minutes) {
 function getCookie(name) {
 	var nameEQ = name + "=";
 	var ca = document.cookie.split(';');
-	for (var i = 0; i < ca.length; i++) {
+	for ( var i = 0; i < ca.length; i++) {
 		var c = ca[i];
-		while (c.charAt(0) == ' ')
-		c = c.substring(1, c.length);
+		while (c.charAt(0) == ' ') {
+			c = c.substring(1, c.length);
+		}
 		if (c.indexOf(nameEQ) == 0) {
 			return c.substring(nameEQ.length, c.length);
 		}
@@ -57,7 +58,8 @@ function getCookie(name) {
 function onlyNumbers(evt) {
 	var charCode = (evt.which) ? evt.which : evt.keyCode;
 
-	if (charCode > 31 && ((charCode < 48 || charCode > 57) && charCode != 45 && charCode != 40 && charCode != 41 && charCode != 43)) {
+	if (charCode > 31
+			&& ((charCode < 48 || charCode > 57) && charCode != 45 && charCode != 40 && charCode != 41 && charCode != 43)) {
 		return false;
 	}
 
@@ -100,10 +102,10 @@ function encode64(input) {
  * Log to browser console if can found a such.
  */
 function logError(err) {
-	//The error has a list of modules that failed
+	// The error has a list of modules that failed
 	var failedId = err.requireModules && err.requireModules[0];
-	//Log it if we can
-	if ( typeof console != "undefined" && typeof console.log != "undefined") {
+	// Log it if we can
+	if (typeof console != "undefined" && typeof console.log != "undefined") {
 		if (failedId) {
 			console.log("Cannot load module " + failedId + ". Error: " + err);
 		} else {
@@ -128,18 +130,18 @@ var require = {
 	},
 
 	shim : {
-		'jquery.validate' : ["jquery"],
-		'jquery.string' : ["jquery"],
-		'jquery.cookie' : ["jquery"],
-		'jquery.lightbox' : ["jquery"],
-		"thickbox" : ["jquery"],
+		'jquery.validate' : [ "jquery" ],
+		'jquery.string' : [ "jquery" ],
+		'jquery.cookie' : [ "jquery" ],
+		'jquery.lightbox' : [ "jquery" ],
+		"thickbox" : [ "jquery" ],
 		"marketo.form" : {
-			deps : ["jquery"],
+			deps : [ "jquery" ],
 			exports : "Mkto"
 		}
 	},
 
-	deps : ["jquery", "jquery.validate", "jquery.string", "jquery.cookie"],
+	deps : [ "jquery", "jquery.validate", "jquery.string", "jquery.cookie" ],
 
 	callback : function() {
 		// Call after all the dependencies are loaded.
@@ -148,7 +150,7 @@ var require = {
 			getUrlVars : function() {
 				var vars = [], hash;
 				var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-				for (var i = 0; i < hashes.length; i++) {
+				for ( var i = 0; i < hashes.length; i++) {
 					hash = hashes[i].split('=');
 					vars.push(hash[0]);
 					vars[hash[0]] = hash[1];

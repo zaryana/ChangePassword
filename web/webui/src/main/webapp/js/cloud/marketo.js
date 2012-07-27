@@ -16,26 +16,28 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-define(["jquery", "marketo.form"], function(jQuery, Mkto) {
+
+define([ "jquery", "marketo.form" ], function(jQuery, Mkto) {
 
 	function Marketo() {
-		
 		var leadCaptureUrl = "http://learn.cloud-workspaces.com/index.php/leadCapture/save";
-		
+
 		var isResponseReceived = function(iframeId) {
 			try {
-				return !document.getElementById(iframeId) || document.getElementById(iframeId).contentWindow.location.href != "about:blank";
+				return !document.getElementById(iframeId)
+						|| document.getElementById(iframeId).contentWindow.location.href != "about:blank";
 			} catch (e) {
 				// check for permission of
 				return true;
 			}
 		};
-		
+
 		this.send = function(data, afterSubmitCallback) {
 			if (data["_mkt_trk"] == "") {
 				afterSubmitCallback();
 				return;
 			}
+
 			var mktOutputIframeId = "mktOutput";
 			var mktOutputIframeName = "mktOutput";
 			var mktFormId = "mktForm";
@@ -50,13 +52,12 @@ define(["jquery", "marketo.form"], function(jQuery, Mkto) {
 				"returnURL" : "",
 				"retURL" : "",
 				"_mkt_disp" : "return"
-			}
+			};
 
 			if (jQuery && document.getElementById(mktOutputIframeId)) {
 				jQuery('#' + mktFormId).remove();
 				jQuery('#' + mktOutputIframeId).attr('src', "");
 				// clear iframe
-
 				jQuery('body').append(jQuery('<form/>', {
 					id : mktFormId,
 					name : mktFormName,
@@ -66,7 +67,7 @@ define(["jquery", "marketo.form"], function(jQuery, Mkto) {
 					enctype : 'application/x-www-form-urlencoded'
 				}));
 
-				for (var i in data) {
+				for ( var i in data) {
 					jQuery('#' + mktFormId).append(jQuery('<input/>', {
 						type : 'hidden',
 						name : i,
@@ -74,7 +75,7 @@ define(["jquery", "marketo.form"], function(jQuery, Mkto) {
 					}));
 				}
 
-				for (var i in commonData) {
+				for ( var i in commonData) {
 					jQuery('#' + mktFormId).append(jQuery('<input/>', {
 						type : 'hidden',
 						name : i,
@@ -94,11 +95,12 @@ define(["jquery", "marketo.form"], function(jQuery, Mkto) {
 						jQuery('#' + mktFormId).remove();
 						jQuery('#' + mktOutputIframeId).attr('src', "");
 						// clear iframe
-					}
+					};
 				}, 10);
 			}
 		};
 	}
 
-	return new Marketo();
+	var m = new Marketo();
+	return m;
 });

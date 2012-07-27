@@ -63,8 +63,6 @@ import javax.ws.rs.core.Response.Status;
 public class WorkspacesRESTOrganizationServiceImpl {
   protected static final Logger       LOG          = LoggerFactory.getLogger(WorkspacesRESTOrganizationServiceImpl.class);
 
-  protected static final String       ROOT_USER    = "root";
-
   protected Format                    dateFormater = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss SSS");
 
   protected final RepositoryService   repositoryService;

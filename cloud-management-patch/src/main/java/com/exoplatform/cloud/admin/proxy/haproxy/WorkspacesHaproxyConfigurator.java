@@ -24,8 +24,8 @@ public class WorkspacesHaproxyConfigurator extends HaproxyConfigurator
    private boolean isReady = false;
 
    /**
-    * @param haproxyDriver
-    * @param configurationGenerator
+    * @param haproxyDriver   HaproxyDriver
+    * @param configurationGenerator  HaproxyConfigurationGenerator
     */
    public WorkspacesHaproxyConfigurator(HaproxyDriver haproxyDriver,
       HaproxyConfigurationGenerator configurationGenerator)

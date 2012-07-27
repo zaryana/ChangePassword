@@ -16,13 +16,13 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-define(["jquery", "jquery.string", "cloud/marketo"], function() {
+define([ "jquery", "jquery.string", "cloud/marketo" ], function() {
 
 	function Trackers() {
-		
+
 		/**
-		 * Sends data to Marketo and Google Analytics if this is page from
-		 * domain with TARGET_DOMAIN_NAME_FOR_TRACKING
+		 * Sends data to Marketo and Google Analytics if this is page from domain
+		 * with TARGET_DOMAIN_NAME_FOR_TRACKING
 		 */
 		var MARKETO_TRACKER_ID = "577-PCT-880";
 		var TARGET_DOMAIN_NAME_FOR_TRACKING = "cloud-workspaces.com";
@@ -48,17 +48,18 @@ define(["jquery", "jquery.string", "cloud/marketo"], function() {
 			$.ajax({
 				url : document.location.protocol + '//munchkin.marketo.net/munchkin.js',
 				dataType : 'script',
-				cache : true
-			}).done(function() {
-				Munchkin.init(MARKETO_TRACKER_ID);
+				cache : true,
+				success : function() {
+					Munchkin.init(MARKETO_TRACKER_ID);
+				}
 			});
 		};
-		
+
 		/**
-		 * Return true if document has href with certain domain prefix, for
-		 * example "cloud-ide.com" prefix in href
-		 * "http://tenant1.cloud-ide.com:8080/cloud/profile.jsp" SYNTAX
-		 * RULES FOR DOMAIN NAMES: http://www.nic.cl/CL-IDN-policy.html
+		 * Return true if document has href with certain domain prefix, for example
+		 * "cloud-ide.com" prefix in href
+		 * "http://tenant1.cloud-ide.com:8080/cloud/profile.jsp" SYNTAX RULES FOR
+		 * DOMAIN NAMES: http://www.nic.cl/CL-IDN-policy.html
 		 */
 		var testDomainPrefix = function(domainPrefix) {
 			var pattern = new RegExp("^http[s]?:\/\/([a-z0-9]([a-z0-9\-]{0,61}[a-z0-9])[.])*" + domainPrefix + ".*$", "i");
@@ -72,7 +73,8 @@ define(["jquery", "jquery.string", "cloud/marketo"], function() {
 				loadMarketoTracker();
 			}
 		};
-	};
+	}
+	;
 
 	return new Trackers();
 });

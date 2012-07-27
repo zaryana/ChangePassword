@@ -44,11 +44,10 @@
       <type>jar</type>
     </dependency>
 
-    <!-- used own patch of ec2 connector from cloud-management-patch -->
-    <!--dependency>
+    <dependency>
       <groupId>com.exoplatform.cloud-management</groupId>
       <artifactId>cloud-admin-connector-ec2</artifactId>
-    </dependency-->
+    </dependency>
     <!--dependency>
       <groupId>com.exoplatform.cloudworkspaces</groupId>
       <artifactId>cloud-workspaces-web-statistic</artifactId>
