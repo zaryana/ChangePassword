@@ -3,6 +3,7 @@
 # JAVA_OPTS override jvm options for example: Xmx, Xms etc.
 
 # custom JAVA options
+CATALINA_TMPDIR="/tmp" # temporarily until CM will not fix 1.1M8
 [ -z "$EXO_JAVA_OPTS" ]  && EXO_JAVA_OPTS="-Xmx96m"
 [ -z "$JMXACC" ] && JMXACC="$CATALINA_HOME/conf/jmxremote.access"
 [ -z "$JMXPAS" ] && JMXPAS="$CATALINA_HOME/conf/jmxremote.password"

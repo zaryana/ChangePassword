@@ -27,7 +27,7 @@
     </div>
     </noscript>
   </head>
-  <body onLoad="tenants.init();">
+  <body>
     <div class="UIPageContainer">
       <!--begin header-->
       <%@ include file="common/header.jsp"%>
@@ -71,7 +71,6 @@
         </object>
       </div>
     </div>
-    
    
     <script type="text/javascript" src="/js/trackers.js"></script>
     <!-- Google Analytics conversion tracking code for Initial Signup: Cloud Workspaces Conversion Page -->

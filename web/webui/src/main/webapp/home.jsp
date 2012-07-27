@@ -5,46 +5,16 @@
     <% String pageName = "Sign Up to Cloud Workspaces"; %>
     <%@ include file="common/headStyle.jsp"%>
     <%@ include file="common/headScript.jsp"%>
+
     <link rel="stylesheet" href="/lightbox/css/lightbox.css" type="text/css" media="screen" />
-    <script type="text/javascript" src="/js/jQueryString-2.0.2-Min.js"></script>
-    <script type="text/javascript" src="/js/jquery.cookie.js"></script>
-    <script type="text/javascript" src="/js/marketo.cookies.js"></script>
-    <script type="text/javascript" src="/lightbox/jquery.lightbox.js"></script>
-    <script type="text/javascript">
-     $(function()
-      {
-       $('.lightbox').lightbox({
-        fitToScreen : true,
-        imageClickClose : false,
-        fileLoadingImage : '/lightbox/images/loading.gif',
-        fileBottomNavCloseImage : '/lightbox/images/closelabel.gif'
-      });
-
-     // preload images to display in lightbox immediately
-     var links = document.getElementsByTagName("a");
-     for ( var i in links)
-      {
-       var link = links[i];
-       if (link.className && link.className === "lightbox" && link.href)
-        {
-         preload(link.href);
-       }
-      }
-
-     function preload(imageSrc)
-     {
-      var imageObj = new Image();
-      imageObj.src = imageSrc;
-     }
-    });
-</script>
     <!-- load ThickBox to display video (http://jquery.com/demo/thickbox/) -->
     <link rel="stylesheet" href="/thickbox/thickbox.css" type="text/css" media="screen" />
-    <script src="/thickbox/thickbox.js" type="text/javascript"></script>    
-    <script type="text/javascript">var tb_pathToImage = "/background/img_video.png";</script>
+    <!-- script type="text/javascript">var tb_pathToImage = "/background/img_video.png";</script -->
+    <script type="text/javascript" src="/js/common.js"></script>
+    <script type="text/javascript" data-main="home" src="/js/require-2.0.4.js"></script>
     <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
   </head>
-  <body onLoad="tenants.init();">
+  <body">
     <div class="UIPageContainer">
       <!--begin header-->
       <%@ include file="common/header.jsp"%>
@@ -96,7 +66,7 @@
                   <input type="hidden" name="_mkt_trk" value="" />
                   <div id="messageString" class="TenantFormMsg"></div>
                   <input class="InputText" type="text" name="email" id="email" value="Enter your professional email" onclick="this.value='';" />
-                  <input class="Button" type="submit" id="t_submit"  value="Sign Up" onClick="tenants.doSingupRequest();" />
+                  <input class="Button" type="submit" id="t_submit"  value="Sign Up" />
                 </form>
                   <div class="SocialBox">
                     <div id="fb-root"></div>
@@ -206,7 +176,7 @@
     <!-- marketo response container -->
     <iframe id="mktOutput" name="mktOutput" style='display:none; visibility:hidden'></iframe>
     <!-- BEGIN: MARKETO TRACKING -->
-    <script type="text/javascript" src="/js/mktFormSupport.js"></script>
-    <script type="text/javascript" src="/js/trackers.js"></script>
+    <!-- script type="text/javascript" src="/js/mktFormSupport.js"></script -->
+    <!-- script type="text/javascript" src="/js/trackers.js"></script -->
   </body>
 </html>

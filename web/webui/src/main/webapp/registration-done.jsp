@@ -10,7 +10,7 @@
     <script src="/thickbox/thickbox.js" type="text/javascript"></script>
     <script type="text/javascript">var tb_pathToImage = "/background/img_video.png";</script>
   </head>
-  <body onLoad="tenants.init();">
+  <body">
     <div class="UIPageContainer">
       <!--begin header-->
       <%@ include file="common/header.jsp"%>
