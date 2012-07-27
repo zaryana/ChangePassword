@@ -34,16 +34,24 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public class WorkspacesTenantStartFilter implements Filter {
 
   private String resumingPage = "http://${tenant.masterhost}/resuming-hide.jsp";
 
+  private String notFoundPage = "http://${tenant.masterhost}/home.jsp";
+
   @Override
   public void init(FilterConfig filterConfig) throws ServletException {
     String resumingPageParam = filterConfig.getInitParameter("resumingPage");
-    if (resumingPageParam == null || resumingPageParam.trim().isEmpty())
+    if (resumingPageParam != null && !resumingPageParam.trim().isEmpty()) {
       this.resumingPage = resumingPageParam;
+    }
+    String notFoundPageParam = filterConfig.getInitParameter("notFoundPage");
+    if (notFoundPageParam != null && !notFoundPageParam.trim().isEmpty()) {
+      this.notFoundPage = notFoundPageParam;
+    }
   }
 
   @Override
@@ -68,57 +76,95 @@ public class WorkspacesTenantStartFilter implements Filter {
           return;
         }
 
-        // resume tenant
-        HttpURLConnection connection = null;
-        URL resuming = new URL(resumingPage.replace("${tenant.masterhost}",
-                                                    System.getProperty("tenant.masterhost")));
-        connection = (HttpURLConnection) resuming.openConnection();
-        connection.setRequestMethod("GET");
+        if (isTenantExists(tenant)) {
+          // resume tenant
+          HttpURLConnection connection = null;
+          URL resuming = new URL(resumingPage.replace("${tenant.masterhost}",
+                                                      System.getProperty("tenant.masterhost")));
+          connection = (HttpURLConnection) resuming.openConnection();
+          connection.setRequestMethod("GET");
 
-        connection.connect();
+          connection.connect();
 
-        if (connection.getResponseCode() == 200) {
-          InputStream content = (InputStream) connection.getContent();
-          ByteArrayOutputStream bout = new ByteArrayOutputStream();
-          try {
-            int length = 0;
-            byte[] buf = new byte[10 * 1024];
-            while (length >= 0) {
-              bout.write(buf, 0, length);
-              length = content.read(buf);
+          if (connection.getResponseCode() == 200) {
+            InputStream content = (InputStream) connection.getContent();
+            ByteArrayOutputStream bout = new ByteArrayOutputStream();
+            try {
+              int length = 0;
+              byte[] buf = new byte[10 * 1024];
+              while (length >= 0) {
+                bout.write(buf, 0, length);
+                length = content.read(buf);
+              }
+            } finally {
+              content.close();
+              bout.close();
             }
-          } finally {
-            content.close();
-            bout.close();
-          }
-          String html = new String(bout.toByteArray());
-          String headTemplate = "<head>";
-          String baseTag = "<base href=\"http://" + System.getProperty("tenant.masterhost")
-              + "\"></base>";
-          String tenantTag = "<span id='tenantname' style='display: none'>" + tenant + "</span>";
-          String contactUsFrom = "onclick=\"showContactUsForm('/contact-us.jsp');\"";
-          String contactUsTo = "target=\"blank\" href=\"/index.jsp\"";
+            String html = new String(bout.toByteArray());
+            String headTemplate = "<head>";
+            String baseTag = "<base href=\"http://" + System.getProperty("tenant.masterhost")
+                + "\"></base>";
+            String tenantTag = "<span id='tenantname' style='display: none'>" + tenant + "</span>";
+            String contactUsFrom = "onclick=\"showContactUsForm('/contact-us.jsp');\"";
+            String contactUsTo = "target=\"blank\" href=\"/index.jsp\"";
 
-          OutputStream stream = response.getOutputStream();
-          try {
-            int head = html.indexOf(headTemplate);
-            stream.write(html.substring(0, head + headTemplate.length()).getBytes());
-            stream.write(baseTag.getBytes());
-            stream.write(tenantTag.getBytes());
-            int contactUs = html.indexOf(contactUsFrom);
-            stream.write(html.substring(head + headTemplate.length(), contactUs).getBytes());
-            stream.write(contactUsTo.getBytes());
-            stream.write(html.substring(contactUs + contactUsFrom.length()).getBytes());
-          } finally {
-            stream.close();
+            OutputStream stream = response.getOutputStream();
+            try {
+              int head = html.indexOf(headTemplate);
+              stream.write(html.substring(0, head + headTemplate.length()).getBytes());
+              stream.write(baseTag.getBytes());
+              stream.write(tenantTag.getBytes());
+              int contactUs = html.indexOf(contactUsFrom);
+              stream.write(html.substring(head + headTemplate.length(), contactUs).getBytes());
+              stream.write(contactUsTo.getBytes());
+              stream.write(html.substring(contactUs + contactUsFrom.length()).getBytes());
+            } finally {
+              stream.close();
+            }
           }
+        } else {
+          ((HttpServletResponse) response).sendRedirect(notFoundPage.replace("${tenant.masterhost}",
+                                                                             System.getProperty("tenant.masterhost"))
+                                                                    .replace("${tenant}", tenant));
         }
 
       } else {
         chain.doFilter(httpRequest, response);
       }
     }
+  }
 
+  public boolean isTenantExists(String tenant) throws IOException {
+
+    HttpURLConnection connection = null;
+    StringBuilder tenantStatusUrlBuilder = new StringBuilder();
+    tenantStatusUrlBuilder.append("http://");
+    tenantStatusUrlBuilder.append(System.getProperty("tenant.masterhost"));
+    tenantStatusUrlBuilder.append("/rest/cloud-admin/tenant-service/tenant-status?tenant=");
+    tenantStatusUrlBuilder.append(tenant);
+    URL tenantStatusUrl = new URL(tenantStatusUrlBuilder.toString());
+    connection = (HttpURLConnection) tenantStatusUrl.openConnection();
+    connection.setRequestMethod("GET");
+    connection.connect();
+    if (connection.getResponseCode() == 200) {
+      InputStream content = (InputStream) connection.getContent();
+      ByteArrayOutputStream bout = new ByteArrayOutputStream();
+      try {
+        int length = 0;
+        byte[] buf = new byte[10 * 1024];
+        while (length >= 0) {
+          bout.write(buf, 0, length);
+          length = content.read(buf);
+        }
+      } finally {
+        content.close();
+        bout.close();
+      }
+      String response = new String(bout.toByteArray());
+      return !response.replaceAll("\\s", "").equals("{}");
+    } else {
+      return false;
+    }
   }
 
   @Override
