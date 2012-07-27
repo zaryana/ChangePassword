@@ -5,6 +5,7 @@
     <% String pageName = "Join Cloud Workspaces"; %>
     <%@ include file="common/headStyle.jsp"%>
     <%@ include file="common/headScript.jsp"%>
+    <script type="text/javascript" data-main="registration" src="/js/require-2.0.4.min.js"></script>
   </head>
   <body onLoad="tenants.initJoinPage();">
     <div class="UIPageContainer">
@@ -69,7 +70,5 @@
     </div>
     <!--  marketo response container  -->
     <iframe id="mktOutput" name="mktOutput" style='display:none; visibility:hidden'></iframe>
-    <script type="text/javascript" src="/js/mktFormSupport.js"></script>
-    <script type="text/javascript" src="/js/trackers.js"></script>
   </body>
 </html>

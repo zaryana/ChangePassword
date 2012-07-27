@@ -4,14 +4,11 @@
   <head>
     <% String pageName = "Sign Up to Cloud Workspaces"; %>
     <%@ include file="common/headStyle.jsp"%>
-    <%@ include file="common/headScript.jsp"%>
-
     <link rel="stylesheet" href="/lightbox/css/lightbox.css" type="text/css" media="screen" />
     <!-- load ThickBox to display video (http://jquery.com/demo/thickbox/) -->
     <link rel="stylesheet" href="/thickbox/thickbox.css" type="text/css" media="screen" />
-    <!-- script type="text/javascript">var tb_pathToImage = "/background/img_video.png";</script -->
-    <script type="text/javascript" src="/js/common.js"></script>
-    <script type="text/javascript" data-main="home" src="/js/require-2.0.4.js"></script>
+    <%@ include file="common/headScript.jsp"%>
+    <script type="text/javascript" data-main="signup" src="/js/require-2.0.4.min.js"></script>
     <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
   </head>
   <body">

@@ -92,6 +92,35 @@ define(["jquery"], function() {
 		};
 		
 		this.status = function(settings) {
+			if (settings.tenantName && settings.tenantName.length > 0) {
+				var self = this;
+				var request = $.ajax({
+					type : "POST",
+					url : tenantServicePath + "/status/" + settings.tenantName,
+					dataType : 'text'
+				});
+				request.fail(function(jqXHR, textStatus, err) {
+					// general error handling (all other errors) 
+					if (settings.serverError) {
+						settings.serverError(textStatus);
+					}
+				});
+				request.done(function(data, textStatus, jqXHR) {
+					if (settings.done) {
+						settings.done(data);
+					}
+				});
+				request.always(function(jqXHR, textStatus) {
+					if (settings.always) {
+						settings.always();
+					}
+				});
+			} else {
+				logError("Tenant.status(): need tenant name");
+			}
+		}
+		
+		this.status0 = function(settings) {
 			var self = this;
 			$.ajax({
 				url : tenantServicePath + "/status/" + settings.tenantName,
@@ -124,7 +153,7 @@ define(["jquery"], function() {
 				dataType : 'text'
 			});
 		};
-
+		
 		this.isUserExists = function(settings) {
 			$.ajax({
 				url : tenantServicePath + "/isuserexist/" + settings.tenantName + "/" + settings.userName,

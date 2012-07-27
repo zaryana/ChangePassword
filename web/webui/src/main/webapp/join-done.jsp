@@ -4,16 +4,10 @@
   <head>
     <% String pageName = "Welcome to Cloud Workspaces"; %>
     <%@ include file="common/headStyle.jsp"%>
-    <%@ include file="common/headScript.jsp"%>
     <!-- load ThickBox to display video (http://jquery.com/demo/thickbox/) -->
     <link rel="stylesheet" href="/thickbox/thickbox.css" type="text/css" media="screen" />
-    <script src="/thickbox/thickbox.js" type="text/javascript"></script>
-    <script type="text/javascript">var tb_pathToImage = "/background/img_video.png";
-      var email = location.hash.substring(1);
-      var split = email.split('@');
-      tenants.init();
-      var tName = getUserMailInfo(email).tenant;
-    </script>
+    <%@ include file="common/headScript.jsp"%>
+    <script type="text/javascript" data-main="done" src="/js/require-2.0.4.min.js"></script>
   </head>
   <body onLoad="tenants.initDonePage();">
     <div class="UIPageContainer">
@@ -23,7 +17,6 @@
       <!--begin ThanksPages-->
       <div class="UIPageBodyContainer">
         <div class="UIPageBody ThanksPages ClearFix">
-          <!-- h1>Welcome to <script type="text/javascript">document.write(tName);</script>  Workspace</h1 -->
           <h1><a style="color:#2882A3;" id="sign_link"></a></h1>
           <p class="FillProfileInfo">Get started with Cloud Workspaces by checking out these helpful resources:</p>
           <div class="LeftContent FL">

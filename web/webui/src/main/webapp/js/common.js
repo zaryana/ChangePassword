@@ -109,7 +109,7 @@ function logError(err) {
 		if (failedId) {
 			console.log("Cannot load module " + failedId + ". Error: " + err);
 		} else {
-			console.log("Error " + err);
+			console.log("Error: " + err);
 		}
 	} // otherwise go silently
 }
