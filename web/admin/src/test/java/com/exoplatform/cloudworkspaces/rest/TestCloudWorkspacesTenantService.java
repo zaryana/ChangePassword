@@ -18,9 +18,6 @@
  */
 package com.exoplatform.cloudworkspaces.rest;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
-
 import com.exoplatform.cloud.admin.CloudAdminException;
 import com.exoplatform.cloud.admin.configuration.AdminConfiguration;
 import com.exoplatform.cloud.admin.configuration.TenantInfoFieldName;
@@ -43,7 +40,6 @@ import com.exoplatform.cloudworkspaces.listener.AsyncTenantStarter;
 import com.exoplatform.cloudworkspaces.users.UserLimitsStorage;
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.http.ContentType;
-
 import org.apache.commons.configuration.Configuration;
 import org.everrest.assured.EverrestJetty;
 import org.mockito.InjectMocks;
@@ -54,12 +50,13 @@ import org.mockito.testng.MockitoTestNGListener;
 import org.testng.ITestContext;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
-
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
 
 @Listeners(value = { EverrestJetty.class, MockitoTestNGListener.class })
 public class TestCloudWorkspacesTenantService {
@@ -798,7 +795,7 @@ public class TestCloudWorkspacesTenantService {
                .formParam("confirmation-id", UUID)
                .port((Integer) context.getAttribute(EverrestJetty.JETTY_PORT))
                .expect()
-               .statusCode(Status.OK.getStatusCode())
+               .statusCode(309)
                .when()
                .post("/rest/cloud-admin/cloudworkspaces/tenant-service/join");
 
