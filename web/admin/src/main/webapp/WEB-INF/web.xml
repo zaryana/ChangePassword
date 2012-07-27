@@ -44,6 +44,10 @@
          <param-name>resumingPage</param-name>
          <param-value>http://${tenant.masterhost}/resuming-hide.jsp</param-value>
       </init-param>
+      <init-param>
+         <param-name>notFoundPage</param-name>
+         <param-value>http://${tenant.masterhost}/home.jsp</param-value>
+      </init-param>
    </filter>
 
    
