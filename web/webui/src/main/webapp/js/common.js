@@ -17,12 +17,15 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-var prefixUrl = location.protocol + "//" + location.hostname;
+var hostName = location.hostname.indexOf("www") == 0 ? location.hostname.substring(4) : location.hostname;
 var queryString = location.search;
 
 if (location.port) {
-	prefixUrl += ":" + location.port;
+	hostName += ":" + location.port;
 }
+
+var prefixUrl = location.protocol + "//" + hostName;
+
 var user;
 var auth = null;
 

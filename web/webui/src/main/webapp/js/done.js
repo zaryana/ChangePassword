@@ -23,8 +23,12 @@ require([ "cloud/tenant", "cloud/marketo", "cloud/trackers", "cloud/support", "t
 	$(function() {
 		var email = location.hash.substring(1);
 		if (email) {
+			// load trackers
+			trackers.load();
+			
 	    var split = email.split('@');
 	    var tenantName = getUserMailInfo(email).tenant; // TODO
+	    var userName = ""; // TODO
 	  
 	    tenant.status({
 	    	tenantName : tenantName,
@@ -32,33 +36,32 @@ require([ "cloud/tenant", "cloud/marketo", "cloud/trackers", "cloud/support", "t
 						var search = "ONLINE";
 						if (resp.substring(0, search.length) === search) {
 							tenant.isUserExists({
-								userName : split[0], // TODO split[0] ?
 								tenantName : tenantName,
-								onSuccess : function(resp) {
-									var search = "true";
-									if (resp.substring(0, search.length) === search) {
-										$("#sign_link").html("You can now <span style=\"color:#19BBE7;\"><u>sign-in</u></span> the " + tName + "  Workspace.");
-										$("#sign_link").attr("href", "/signin.jsp?email=" + email);
-									} else {
-										$("#sign_link").html("<span style=\"color:#b81919;\">We cannot add you to the " + tName + " Workspace at the moment. The Workspace administrator has been notified of your attempt to join.</span>");
-									}
+								userName : userName, 
+								exists : function() {
+									var tenantUrl = tenant.getLoginUrl(tenantName, null, null);		
+									$("#sign_link").html("You can now <span style=\"color:#19BBE7;\"><u>sign-in</u></span> the " + tenantName + "  Workspace.");
+									$("#sign_link").attr("href", tenantUrl);
 								},
-								onError : function(request, status, error) {
-									$("#sign_link").html("The " + tName + " Workspace is beind created.<br/> We will inform you by email when ready.");
+								notExists : function() {
+									$("#sign_link").html("<span style=\"color:#b81919;\">We cannot add you to the " + tenantName + " Workspace at the moment. The Workspace administrator has been notified of your attempt to join.</span>");
+								},
+								serverError : function(err) {
+									logError("User exist '" + userName +	"@" + tenantName + "' service failed. " + err); // for debug
+									$("#sign_link").html("The " + tenantName + " Workspace is beind created.<br/> We will inform you by email when ready.");
 								}
 							});
 						} else {
-							$("#sign_link").html("The " + tName + " Workspace is beind created.<br/> We will inform you by email when ready.");
+							$("#sign_link").html("The " + tenantName + " Workspace is beind created.<br/> We will inform you by email when ready.");
 						}
 				},
 				serverError : function(err) {
-					logError("Tenant status failed. " + err); // for debug
+					logError("Tenant status '" + tenantName + "' service failed. " + err); // for debug
 					$("#sign_link").html("The " + tenantName + " Workspace is beind created.<br/> We will inform you by email when ready.");
 				} 
 				//, always : function() {}
 			});
 		}
-		// load trackers
-		trackers.load();
+		
 	});
 });

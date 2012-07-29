@@ -93,7 +93,6 @@ define(["jquery"], function() {
 		
 		this.status = function(settings) {
 			if (settings.tenantName && settings.tenantName.length > 0) {
-				var self = this;
 				var request = $.ajax({
 					type : "POST",
 					url : tenantServicePath + "/status/" + settings.tenantName,
@@ -118,40 +117,6 @@ define(["jquery"], function() {
 			} else {
 				logError("Tenant.status(): need tenant name");
 			}
-		}
-		
-		this.status0 = function(settings) {
-			var self = this;
-			$.ajax({
-				url : tenantServicePath + "/status/" + settings.tenantName,
-				success : function(data) {
-					var search = "ONLINE";
-					if (data.substring(0, search.length) === search) {
-						tenant.isUserExists({
-							userName : split[0], // TODO split[0] ?
-							tenantName : tenantName,
-							onSuccess : function(data) {
-								var search = "true";
-								if (data.substring(0, search.length) === search) {
-									$("#sign_link").html("You can now <span style=\"color:#19BBE7;\"><u>sign-in</u></span> the " + tName + "  Workspace.");
-									$("#sign_link").attr("href", "/signin.jsp?email=" + email);
-								} else {
-									$("#sign_link").html("<span style=\"color:#b81919;\">We cannot add you to the " + tName + " Workspace at the moment. The Workspace administrator has been notified of your attempt to join.</span>");
-								}
-							},
-							onError : function(request, status, error) {
-								$("#sign_link").html("The " + tName + " Workspace is beind created.<br/> We will inform you by email when ready.");
-							}
-						});
-					} else {
-						$("#sign_link").html("The " + tName + " Workspace is beind created.<br/> We will inform you by email when ready.");
-					}
-				},
-				error : function(request, status, error) {
-					$("#sign_link").html("The " + tName + " Workspace is beind created.<br/> We will inform you by email when ready.");
-				},
-				dataType : 'text'
-			});
 		};
 		
 		this.isUserExists = function(settings) {
@@ -161,6 +126,18 @@ define(["jquery"], function() {
 				error : settings.onError,
 				dataType : 'text'
 			});
+		};
+		
+		this.getLoginUrl = function (tenantName, userName, password) {
+			var loginUrl = location.protocol + "//" + tenantName + '.' + hostName + "/portal";
+			
+			if (userName) {
+		  	loginUrl += "/login?username=" + userName + "&password=" + password + "&";
+		  } else {
+		  	loginUrl += "/dologin?";
+		  }
+		  
+		  loginUrl += 'initialURI=/portal/intranet/welcome';
 		};
 	};
 	
