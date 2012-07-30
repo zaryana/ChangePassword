@@ -1,10 +1,10 @@
 package com.exoplatform.cloudworkspaces.social.space.statistic;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import javax.jcr.RepositoryException;
 
 import javax.jcr.Node;
 
@@ -19,6 +19,9 @@ import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.platform.common.space.statistic.SpaceAccess;
 import org.exoplatform.platform.common.space.statistic.SpaceAccessService;
+import org.exoplatform.services.jcr.RepositoryService;
+import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.services.jcr.config.RepositoryConfigurationException;
 
 public class VisitedSpaceService extends SpaceAccessService {
 
@@ -35,19 +38,35 @@ public class VisitedSpaceService extends SpaceAccessService {
   private ChromatticLifeCycle lifeCycle;
   private NodeHierarchyCreator nodeHierarchyCreator;
   private Executor executor;
+  private String currentRepo;
+  private RepositoryService repoService;
   
   public VisitedSpaceService(ChromatticManager chromatticManager, NodeHierarchyCreator nodeHierarchyCreator) {
     super(chromatticManager, nodeHierarchyCreator);
     this.lifeCycle = chromatticManager.getLifeCycle(CHROMATTIC_LIFECYCLE_NAME);
     this.executor = Executors.newCachedThreadPool();
     this.nodeHierarchyCreator = nodeHierarchyCreator;
+    this.repoService = (RepositoryService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(RepositoryService.class);
   }
 
   public void incrementSpaceAccess(final String spaceId, final String userId) {
+  
+    try {
+      this.currentRepo = repoService.getCurrentRepository().getConfiguration().getName();
+    } catch (RepositoryException e) {
+      LOG.error("Repository not found.", e);
+    }
+    
     executor.execute(new Runnable() {
       public void run() {
         if (lifeCycle.getContext() == null) {
           lifeCycle.openContext();
+          
+          try {          
+            repoService.setCurrentRepositoryName(currentRepo);
+          } catch (RepositoryConfigurationException e){
+            LOG.error("Impossible to set current repository name.", e);
+          }
         }
         
         String parentNodePath = null;
@@ -68,7 +87,7 @@ public class VisitedSpaceService extends SpaceAccessService {
           getSession().save();
           spaceAccess = getSession().findByPath(SpaceAccess.class, parentNodePath + "/" + SPACE_ACCESS_NODE_NAME, false);
         }
-        
+
         String[] spaces = spaceAccess.getMostAccessedSpaces();
         String prettyName = spaceId.split("/")[1];
         if (spaces == null || spaces.length == 0) {
@@ -81,15 +100,24 @@ public class VisitedSpaceService extends SpaceAccessService {
         int i = 0;
         while (i < spaces.length) {
           String spaceAccessEntryTmp = spaces[i];
-	  if (spaceAccessEntryTmp.equals(prettyName)) return;
+	  if (spaceAccessEntryTmp.equals(prettyName)) {
+	    if (i == (spaces.length - 1)) return;
+	      else {
+		spaces[i] = spaces[spaces.length-1];
+		spaces[spaces.length-1] = spaceAccessEntryTmp;
+		spaceAccess.setMostAccessedSpaces(spaces);
+	        getSession().save();
+		return;
+	      }
+	  }
 	  i++;
 	}
           
         if (spaces.length == LAST_VISITED_SPACES_NUMBER_TO_DISPLAY) {
-	  spaces = (String[]) ArrayUtils.remove(spaces, 0);
-	}
+          spaces = (String[]) ArrayUtils.remove(spaces, 0);
+        }
 
-       	spaces = (String[]) ArrayUtils.add(spaces, prettyName);
+        spaces = (String[]) ArrayUtils.add(spaces, prettyName);
         spaceAccess.setMostAccessedSpaces(spaces);
         getSession().save();
       }

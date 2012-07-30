@@ -57,7 +57,7 @@ void renderSpacesList() {
 		        <li class="MenuItem ArrowIcon ">
 		            <a class="ItemIcon SiteIcon" href="$spaceLink">$labelSpace</a>
 		            <ul class="MenuItemContainer" style="position: absolute; display:none">
-		               <li class="MenuItem "><a class="ItemIcon DefaultPageIcon" style="font-weight: bold; padding: 0px 22px; text-decoration: none;">$labelLastVisited</a></li>
+		               <li class="MenuItem "><a class="ItemIcon DefaultPageIcon" style="font-weight: bold; padding: 0px 22px; text-decoration: none; cursor: default;">$labelLastVisited</a></li>
 		               <% renderSpacesList(); %>
 		            </ul>
 		        </li>    
