@@ -58,13 +58,15 @@
   </head>
   <body onLoad="CloudLogin.initCloudLogin(<%=CloudLoginRestService.MAX_AVATAR_LENGTH%>, '<%=CloudLoginRestService.AVATAR_UPLOAD_ID%>', '<%=CloudLoginServiceImpl.getAvatarUriPath()%>', '<%=CloudLoginRestService.getProfileWsPath()%>');">
   <div class="GetStartedPage">
+  <div id="wrapper">
+    <div id="mask">
   
   
     <div class="UIFormBox StartedStep" style="display: block;" name="" id="StepProfile" >
       <h1 class="StartedBarBG">Welcome to Cloud Workspaces - Get started in 3 easy steps</h1>
       <div class="Steps" id="">
         <span class="StepBG"></span>
-        <a href="#" onclick="CloudLogin.doNothing(event);" class="StepSelectIcon" style="left: 60px;">1</a><a href="#" onclick="CloudLogin.validateStepProfile(event);" class="StartedIcon" style="left: 310px;" >2</a><a href="#" onclick="CloudLogin.doNothing(event);" class="StepIcon" style="left: 569px;">3</a>
+        <a href="#StepProfile" onclick="CloudLogin.doNothing(event);" class="StepSelectIcon panel" style="left: 60px;">1</a><a href="#StepSpace" class="StepIcon panel" onclick="CloudLogin.validateStepProfile(event);" style="left: 310px;" >2</a><a href="#StepEmail" onclick="CloudLogin.doNothing(event);" class="StepIcon panel" style="left: 569px;">3</a>
       </div>
       <h3>Step 1: Complete your profile</h3>
       <table class="BorderDot" cols="2">
@@ -86,7 +88,7 @@
               <div class="ClearFix HelpText" id="fileDropZone">
                 <span class="FR"><img alt="" src="<%=request.getContextPath()%>/background/img_avt.png" id="avatarImage" style="width: 80px;height: 77px;" /></span>
                 <div class="LeftAvt">
-                  <p>Drag an image here or</p>
+                  <p style="text-align: center;">Drag an image here or</p>
                   <span class="fileinput-button">
                     <div class="BTBrowse">Browse</div>
                     <input type="file" name="datafile" id="datafile" />
@@ -99,8 +101,8 @@
         </tbody>
       </table>
       <div class="ClearFix StartTip">
-        <a href="#" class="FR RightStartTip"><img width="264" src="<%=request.getContextPath()%>/background/img_st.png" alt=""/></a>
-        <p class="LeftStartTip"><strong>Tip:</strong> Tip: Find and connect with your colleagues to see their latest updates in your activity stream.</p>
+        <a href="#" class="FR RightStartTip"><img width="264" src="<%=request.getContextPath()%>/background/wizard_1.png" alt=""/></a>
+        <p class="LeftStartTip"><strong>Tip:</strong> Find and connect with your colleagues to see their latest updates in your activity stream.</p>
       </div>
       <div class="Link"><a href="#" onclick="CloudLogin.exit();" class="Link">Skip to homepage >></a></div>
     </div>
@@ -109,10 +111,10 @@
       <h1 class="StartedBarBG">Welcome to Cloud Workspaces - Get started in 3 easy steps</h1>
       <div class="Steps" id="">
         <span class="StepBG"></span>
-        <a href="#" onclick="CloudLogin.showStepProfile(event);" class="StartedIcon" style="left: 60px;">1</a><a href="#" onclick="CloudLogin.doNothing(event);" class="StepSelectIcon" style="left: 310px;" >2</a><a href="#" onclick="CloudLogin.validateStepSpace(event);" class="StartedIcon" style="left: 569px;">3</a>
+        <a href="#" onclick="CloudLogin.showStepProfile(event);" class="StartedIcon" style="left: 60px;">1</a><a href="#" onclick="CloudLogin.doNothing(event);" class="StepSelectIcon" style="left: 310px;" >2</a><a href="#" onclick="CloudLogin.validateStepSpace(event);" class="StepIcon" style="left: 569px;">3</a>
       </div>
-      <h3>Step 2:  Join Spaces</h3>
-      <p>Create your own dedicated collaboration spaces for your team or specific projects. We've set up your first space to help you get started.</p>
+      <h3>Step 2: Join Spaces</h3>
+      <p>Create your own collaboration spaces for teams or specific projects. We've set up your first space to help you get started.</p>
       <table class="BorderDot" cols="2">
         <tbody>
           <tr>
@@ -128,20 +130,20 @@
         </tbody>
       </table>
       <div class="ClearFix StartTip">
-        <a href="#" class="FR RightStartTip"><img width="264" src="<%=request.getContextPath()%>/background/img_st.png" alt=""/></a>
+        <a href="#" class="FR RightStartTip"><img width="264" src="<%=request.getContextPath()%>/background/wizard_2.png" alt=""/></a>
         <p class="LeftStartTip"><strong>Tip:</strong> Spaces provide the tools to make your internal work more productive, including wikis, forums, group calendars and more.</p>
       </div>
       <div class="Link"><a href="#" onclick="CloudLogin.exit();">Skip to homepage &gt;&gt;</a></div>
-    </form>
+  </form>
   
     <form class="UIFormBox StartedStep StepEmail" style="display: none;" name="" id="StepEmail" method="POST" action="javascript:void(0);" >
       <h1 class="StartedBarBG">Welcome to Cloud Workspaces - Get started in 3 easy steps</h1>
       <div class="Steps" id="">
         <span class="StepBG"></span>
-        <a href="#" onclick="CloudLogin.doNothing(event);" class="StepIcon" style="left: 60px;">1</a><a href="#" onclick="CloudLogin.doNothing(event);" class="StepIcon" style="left: 310px;" >2</a><a href="#" onclick="CloudLogin.doNothing(event);" class="StepSelectIcon" style="left: 569px;">3</a>
+        <a href="#" onclick="CloudLogin.doNothing(event);" class="StartedIcon" style="left: 60px;">1</a><a href="#" onclick="CloudLogin.doNothing(event);" class="StartedIcon" style="left: 310px;" >2</a><a href="#" onclick="CloudLogin.doNothing(event);" class="StepSelectIcon" style="left: 569px;">3</a>
       </div>
       <h3>Step 3: Invite Coworkers</h3>
-      <p class="ST3"><strong>Send email invitations to your coworkers to connect with them in your social intranet.</strong><br/>(note: Only @ email addresses will be invited to your workspace. Other addresses will receive an invitation to discover Cloud Workspaces)</p>
+      <p class="ST3"><strong>Send email invitations to your coworkers to connect with them in your social intranet.</strong><br/>(note: Only people with the same email @domain name will be invited to your social intranet. Other addresses will receive an invitation to discover Cloud Workspaces)</p>
       
       <div id="messageString" class="TenantFormMsg" style="display:none"></div>
       <table class="BorderDot">
@@ -150,20 +152,20 @@
             <td class="FormInput">
               <textarea id="email" name="" class="required InputText"></textarea>
             </td>
-            <td class="FormButton"> <input type="button" onclick="CloudLogin.validateStepEmail(event);" value="Skip" id="t_submit_email" class="Button" /></td>
+            <td class="FormButton"> <input type="button" onclick="CloudLogin.validateStepEmail(event);" value="Finish" id="t_submit_email" class="Button" /></td>
           </tr>
         </tbody>
       </table>
       <div class="ClearFix StartTip">
-        <a href="#" class="FR RightStartTip"><img width="264" src="<%=request.getContextPath()%>/background/img_st.png" alt=""/></a>
-        <p class="LeftStartTipST3"><strong>Tip:</strong> Easily access your documents on your iPhone, iPad or Android device with the eXo mobile app. You can keep files private, share them with specific coworkers or publish them in a dedicated space.</p>
+        <a href="#" class="FR RightStartTip" ><img height="140px" style="padding-right: 60px" src="<%=request.getContextPath()%>/background/wizard_3.png" alt=""/></a>
+        <p class="LeftStartTipST3" style="margin-right: 355px"><strong>Tip:</strong> Easily access your documents on your iPhone, iPad or Android device with the eXo mobile app.</p>
       </div>
       <div class="Link"><a href="#" onclick="CloudLogin.exit();" class="Link">Skip to homepage >></a></div>
-    </form>
+  </form>
     
 
-    
-    
+  </div>  
+  </div>
   </div>
   <!--end code body here-->
   

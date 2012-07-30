@@ -372,11 +372,12 @@ p {
     height: 18px;
     padding: 6px 0;
     width: 260px;
-	margin-bottom: 10px;
+	  margin-bottom: 10px;
+    padding-left: 5px;
 }
 
 .GetStartedPage .BorderDot .FieldMini input {
-    width: 125px;
+    width: 120px;
     margin-right: 8px;
 }
 
@@ -395,15 +396,16 @@ p {
     color: #3D3D3D;
     font-weight: bold;
     padding: 4px 24px;
+    text-align: center;
 }
 
 /**
  * Some classes to have a fileinput customized
  */
 .fileinput-button {
+  display: block;
   position: relative;
   overflow: hidden;
-  float: left;
   margin-right: 4px;
 }
 .fileinput-button input {
@@ -1348,7 +1350,7 @@ hr {
 
 .StartedStep .LeftStartTip{
 	margin: 0px 386px 12px 62px;
-	padding-top: 30px;
+	padding-top: 5px;
 }
 
 .StartedStep .LeftStartTipST3{

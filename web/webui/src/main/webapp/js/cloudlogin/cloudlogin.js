@@ -139,12 +139,25 @@ CloudLogin.initUploadFile = function() {
       },
       done: function (e, data) {
         console.log("upload done !");
-        // Upload is done we update uri of image
+
+        /* Only supported by HTML5 browser */
+
+        if (typeof window.FileReader != 'undefined'){
+            var file = data.files[0],
+            reader = new FileReader();
+            reader.onload = function () {
+                $("#avatarImage").attr("src", event.target.result);
+            }
+            reader.readAsDataURL(file);
+        }
+
+        /** Upload is done we update uri of image
         var imgUri = CloudLogin.AVATAR_URI_PATH + "/" + data.files[0].name;
         // Save file name
         CloudLogin.AVATAR_FILE_NAME = data.files[0].name;
         // Display avatar
         $("#avatarImage").attr("src", imgUri);
+        */
       },
       fail: function (e, data) {
         console.log("upload fails !");
@@ -251,9 +264,9 @@ CloudLogin.unlockProfile= function() {
  *        STEP SPACES
  *===========================================================================================================*/
  
-CloudLogin.WS_SPACES_URL = "rest/gadgets/spaces/public/",
-CloudLogin.WS_JOIN_SPACE_URL = "rest/gadgets/spaces/join/";
-CloudLogin.WS_JOIN_RESPONSE_OK = "Join";
+CloudLogin.WS_SPACES_URL = "/rest/gadgets/spaces/public/",
+CloudLogin.WS_JOIN_SPACE_URL = "/rest/gadgets/spaces/join/";
+CloudLogin.WS_JOIN_RESPONSE_OK = "{}";
 CloudLogin.SPACES_SELECTED = new Array();
 CloudLogin.NB_SPACES_OK = 0;
 CloudLogin.NB_SPACES_REQUESTED = 0;
