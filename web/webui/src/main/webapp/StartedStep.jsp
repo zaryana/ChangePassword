@@ -20,6 +20,8 @@
 --%>
 <%@ page import="com.exoplatform.cloudworkspaces.cloudlogin.CloudLoginServlet"%>
 <%@ page import="com.exoplatform.cloudworkspaces.cloudlogin.CloudLoginService"%>
+<%@ page import="com.exoplatform.cloudworkspaces.cloudlogin.rest.CloudLoginRestService"%>
+<%@ page import="com.exoplatform.cloudworkspaces.cloudlogin.impl.CloudLoginServiceImpl"%>
 <%@ page import="org.exoplatform.container.PortalContainer"%>
 <%@ page language="java" %>
 <%
@@ -27,9 +29,11 @@
   String lang = request.getLocale().getLanguage();
 
   String uri = (String)request.getAttribute(CloudLoginServlet.INITIAL_URI_ATTRIBUTE);
+  String firstName = (String)request.getAttribute(CloudLoginServlet.USER_PROFILE_FIRSTNAME);
+  String lastName = (String)request.getAttribute(CloudLoginServlet.USER_PROFILE_LASTNAME);
   
-  CloudLoginService cloudLoginService = (CloudLoginService) PortalContainer.getCurrentInstance(session.getServletContext()).getComponentInstanceOfType(CloudLoginService.class);
-  String tenantDomain = cloudLoginService.getCloudTenantDomain();
+  /*CloudLoginService cloudLoginService = (CloudLoginService) PortalContainer.getCurrentInstance(session.getServletContext()).getComponentInstanceOfType(CloudLoginService.class);
+  String tenantDomain = cloudLoginService.getCloudTenantDomain();*/
   
   response.setCharacterEncoding("UTF-8"); 
   response.setContentType("text/html; charset=UTF-8");
@@ -37,6 +41,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<%=lang%>" lang="<%=lang%>" dir="ltr">
   <head>
+    <!--script type="text/javascript" src="https://getfirebug.com/firebug-lite-debug.js"></script-->
     <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
     <% String pageName = "Welcome to Cloud Workspaces"; %>
     <%@ include file="common/headStyle.jsp"%>
@@ -44,21 +49,101 @@
     
     <%@ include file="common/headScript.jsp"%>
     
+    <script type="text/javascript" src="<%=request.getContextPath()%>/js/jquery-file-upload/vendor/jquery.ui.widget.js"></script>
+    <script type="text/javascript" src="<%=request.getContextPath()%>/js/jquery-file-upload/jquery.iframe-transport.js"></script>
+    <script type="text/javascript" src="<%=request.getContextPath()%>/js/jquery-file-upload/jquery.fileupload.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/js/cloudlogin/textext-1.3.0.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/js/cloudlogin/cloudlogin.js"></script>
     
   </head>
-  <body onLoad="CloudLogin.initCloudLogin();">
-  
+  <body onLoad="CloudLogin.initCloudLogin(<%=CloudLoginRestService.MAX_AVATAR_LENGTH%>, '<%=CloudLoginRestService.AVATAR_UPLOAD_ID%>', '<%=CloudLoginServiceImpl.getAvatarUriPath()%>', '<%=CloudLoginRestService.getProfileWsPath()%>');">
   <div class="GetStartedPage">
-    <form class="UIFormBox StartedStep" style="display: block;" name="" id="StartedStep1" method="POST" action="javascript:void(0);" >
-      <h1 class="StartedBarBG">Welcome to Cloud Workspaces</h1>
-      <!--div class="Steps" id="">
+  <div id="wrapper">
+    <div id="mask">
+  
+  
+    <div class="UIFormBox StartedStep" style="display: block;" name="" id="StepProfile" >
+      <h1 class="StartedBarBG">Welcome to Cloud Workspaces - Get started in 3 easy steps</h1>
+      <div class="Steps" id="">
         <span class="StepBG"></span>
-        <a href="#" class="StepSelectIcon" style="left: 60px;">1</a><a href="#" class="StepIcon" style="left: 310px;" >2</a><a href="#" class="StepIcon" style="left: 569px;">3</a>
-      </div-->
-      <h3>Invite Coworkers in Your Social Intranet</h3>
-      <p><strong>Send email invitations to your coworkers to connect with them in your social intranet.</strong><br/>(note: Only @<%= tenantDomain %> email addresses will be invited to your workspace. Other addresses will receive an invitation to discover Cloud Workspaces)</p>
+        <a href="#StepProfile" onclick="CloudLogin.doNothing(event);" class="StepSelectIcon panel" style="left: 60px;">1</a><a href="#StepSpace" class="StepIcon panel" onclick="CloudLogin.validateStepProfile(event);" style="left: 310px;" >2</a><a href="#StepEmail" onclick="CloudLogin.doNothing(event);" class="StepIcon panel" style="left: 569px;">3</a>
+      </div>
+      <h3>Step 1: Complete your profile</h3>
+      <table class="BorderDot" cols="2">
+        <tbody>
+          <tr>
+            <td class="FieldLabel UserInput">First and Last name:</td>
+            <td class="FieldComment FieldMini" colspan='2'>
+              <input type="text" id="firstNameProfile" value="<%=(firstName!=null ? firstName : "")%>">
+              <input type="text" id="lastNameProfile" value="<%=(lastName!=null ? lastName : "")%>">
+            </td>
+          </tr>
+          <tr>
+            <td class="FieldLabel UserInput">Your current position:</td>
+            <td class="FieldComment" colspan='2'><input type="text" id="posProfile"></td>
+          </tr>
+          <tr>
+            <td class="FieldLabel UserInput">Add a profile picture:</td>
+            <td class="FormInput">
+              <div class="ClearFix HelpText" id="fileDropZone">
+                <span class="FR"><img alt="" src="<%=request.getContextPath()%>/background/img_avt.png" id="avatarImage" style="width: 80px;height: 77px;" /></span>
+                <div class="LeftAvt">
+                  <p style="text-align: center;">Drag an image here or</p>
+                  <span class="fileinput-button">
+                    <div class="BTBrowse">Browse</div>
+                    <input type="file" name="datafile" id="datafile" />
+                  </span>
+                </div>
+              </div>
+            </td>
+            <td class="FormButton"> <input type="button" onclick="CloudLogin.validateStepProfile(event);" value="Next" id="t_submit_profile" class="Button" /></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="ClearFix StartTip">
+        <a href="#" class="FR RightStartTip"><img width="264" src="<%=request.getContextPath()%>/background/wizard_1.png" alt=""/></a>
+        <p class="LeftStartTip"><strong>Tip:</strong> Find and connect with your colleagues to see their latest updates in your activity stream.</p>
+      </div>
+      <div class="Link"><a href="#" onclick="CloudLogin.exit();" class="Link">Skip to homepage >></a></div>
+    </div>
+  
+    <form class="UIFormBox StartedStep" style="display: none;" name="" id="StepSpace" method="POST" action="javascript:void(0);" >
+      <h1 class="StartedBarBG">Welcome to Cloud Workspaces - Get started in 3 easy steps</h1>
+      <div class="Steps" id="">
+        <span class="StepBG"></span>
+        <a href="#" onclick="CloudLogin.showStepProfile(event);" class="StartedIcon" style="left: 60px;">1</a><a href="#" onclick="CloudLogin.doNothing(event);" class="StepSelectIcon" style="left: 310px;" >2</a><a href="#" onclick="CloudLogin.validateStepSpace(event);" class="StepIcon" style="left: 569px;">3</a>
+      </div>
+      <h3>Step 2: Join Spaces</h3>
+      <p>Create your own collaboration spaces for teams or specific projects. We've set up your first space to help you get started.</p>
+      <table class="BorderDot" cols="2">
+        <tbody>
+          <tr>
+            <td class="FormInput CheckBox" id="SpacesContainer" style="display: none;">
+              <ul id="SpacesContent" class="ClearFix">
+              </ul>
+            </td>
+            <td class="FormInput CheckBox" id="SpacesLoader">
+              <img src="<%=request.getContextPath()%>/background/loader.gif" />
+            </td>
+            <td class="FormButton"> <input type="button" onclick="CloudLogin.validateStepSpace(event);" value="Next" id="t_submit_space" class="Button" /></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="ClearFix StartTip">
+        <a href="#" class="FR RightStartTip"><img width="264" src="<%=request.getContextPath()%>/background/wizard_2.png" alt=""/></a>
+        <p class="LeftStartTip"><strong>Tip:</strong> Spaces provide the tools to make your internal work more productive, including wikis, forums, group calendars and more.</p>
+      </div>
+      <div class="Link"><a href="#" onclick="CloudLogin.exit();">Skip to homepage &gt;&gt;</a></div>
+  </form>
+  
+    <form class="UIFormBox StartedStep StepEmail" style="display: none;" name="" id="StepEmail" method="POST" action="javascript:void(0);" >
+      <h1 class="StartedBarBG">Welcome to Cloud Workspaces - Get started in 3 easy steps</h1>
+      <div class="Steps" id="">
+        <span class="StepBG"></span>
+        <a href="#" onclick="CloudLogin.doNothing(event);" class="StartedIcon" style="left: 60px;">1</a><a href="#" onclick="CloudLogin.doNothing(event);" class="StartedIcon" style="left: 310px;" >2</a><a href="#" onclick="CloudLogin.doNothing(event);" class="StepSelectIcon" style="left: 569px;">3</a>
+      </div>
+      <h3>Step 3: Invite Coworkers</h3>
+      <p class="ST3"><strong>Send email invitations to your coworkers to connect with them in your social intranet.</strong><br/>(note: Only people with the same email @domain name will be invited to your social intranet. Other addresses will receive an invitation to discover Cloud Workspaces)</p>
       
       <div id="messageString" class="TenantFormMsg" style="display:none"></div>
       <table class="BorderDot">
@@ -67,77 +152,20 @@
             <td class="FormInput">
               <textarea id="email" name="" class="required InputText"></textarea>
             </td>
-            <td class="FormButton"> <input type="button" onclick="CloudLogin.validateStep1();" value="Skip" id="t_submit" class="Button" /></td>
+            <td class="FormButton"> <input type="button" onclick="CloudLogin.validateStepEmail(event);" value="Finish" id="t_submit_email" class="Button" /></td>
           </tr>
         </tbody>
       </table>
       <div class="ClearFix StartTip">
-        <a href="#" class="FR RightStartTip"><img width="264" src="<%=request.getContextPath()%>/background/img_st.png" alt=""/></a>
-        <p class="LeftStartTip"><strong>Tip:</strong> Connecting with your colleagues will allow you to share documents, calendars, wiki pages and view their latest updates in your activity stream.</p>
-      </div>
-      <!--div class="Link"><a href="#" onclick="CloudLogin.exit();" class="Link">Skip to homepage >></a></div-->
-    </form>
-    
-
-    <form class="UIFormBox StartedStep" style="display: none;" name="" id="StartedStep2" method="POST" action="javascript:void(0);" >
-      <div class="Steps" id="">
-        <span class="StepBG"></span>
-        <a href="#" class="StartedIcon" style="left: 60px;">1</a><a href="#" class="StepSelectIcon" style="left: 310px;" >2</a><a href="#" class="StepIcon" style="left: 569px;">3</a>
-      </div>
-      <h3>Step 2:  Add Documents</h3>
-      <p><strong>Securely manage your work files in the cloud - add a few to get started.</strong></p>
-      <table class="BorderDot" cols="2">
-        <tbody>
-          <tr>
-            <td class="FormInput"><div class="HelpText">Drag and drop a document to add it to your private folder</div></td>
-            <td class="FormButton"> <input type="button" onclick="CloudLogin.validateStep2();" value="Next" id="t_submit" class="Button" /></td>
-          </tr>
-        </tbody>
-      </table>
-      <div class="ClearFix StartTip">
-        <a href="#" class="FR RightStartTip"><img width="264" src="<%=request.getContextPath()%>/background/img_st.png" alt=""/></a>
-        <p class="LeftStartTip"><strong>Tip:</strong> Easily access your documents on your iPhone, iPad or Android device with the eXo mobile app. You can keep files private, share them with specific coworkers or publish them in a dedicated space.</p>
+        <a href="#" class="FR RightStartTip" ><img height="140px" style="padding-right: 60px" src="<%=request.getContextPath()%>/background/wizard_3.png" alt=""/></a>
+        <p class="LeftStartTipST3" style="margin-right: 355px"><strong>Tip:</strong> Easily access your documents on your iPhone, iPad or Android device with the eXo mobile app.</p>
       </div>
       <div class="Link"><a href="#" onclick="CloudLogin.exit();" class="Link">Skip to homepage >></a></div>
-    </form>
+  </form>
     
-    <form class="UIFormBox StartedStep" style="display: none;" name="" id="StartedStep3" method="POST" action="javascript:void(0);" >
-      <h1 class="StartedBarBG">Welcome to Cloud Workspaces - Get started in 3 easy steps</h1>
-      <div class="Steps" id="">
-        <span class="StepBG"></span>
-        <a href="#" class="StartedIcon" style="left: 60px;">1</a><a href="#" class="StartedIcon" style="left: 310px;" >2</a><a href="#" class="StepSelectIcon" style="left: 569px;">3</a>
-      </div>
-      <h3>Step 3:  Join the Welcome Space</h3>
-      <p>Create your own dedicated collaboration spaces for your team or specific projects. We've set up your first space to help you get started.</p>
-      <table class="BorderDot" cols="2">
-        <tbody>
-          <tr>
-            <td class="FormInput CheckBox">
-              <ul class="ClearFix">
-                <li class="FL">
-                  <input type="checkbox" />Marketing <br/>
-                  <input type="checkbox" />Sales
-                </li>
-                <li class="FL">
-                  <input type="checkbox" />Finance<br/>
-                  <input type="checkbox" />IT 
-                </li>
-                <li class="FL">
-                  <input type="checkbox" />Accountant<br/>
-                  <input type="checkbox" />Design
-                </li>
-              </ul>
-            </td>
-            <td class="FormButton"> <input type="button" onclick="CloudLogin.validateStep3();" value="Next" id="t_submit" class="Button" /></td>
-          </tr>
-        </tbody>
-      </table>
-      <div class="ClearFix StartTip">
-        <a href="#" class="FR RightStartTip"><img width="264" src="<%=request.getContextPath()%>/background/img_st.png" alt=""/></a>
-        <p class="LeftStartTip"><strong>Tip:</strong> Easily access your documents on your iPhone, iPad or Android device with the eXo mobile app. You can keep files private, share them with specific coworkers or publish them in a dedicated space.</p>
-      </div>
-      <div class="Link"><a href="#" onclick="CloudLogin.exit();">Skip to homepage &gt;&gt;</a></div>
-    </form>
+
+  </div>  
+  </div>
   </div>
   <!--end code body here-->
   
@@ -148,7 +176,7 @@
     <input type="hidden" name="<%= CloudLoginServlet.CLOUD_PROCESS_DISPLAYED %>" id="<%= CloudLoginServlet.CLOUD_PROCESS_DISPLAYED %>" value="true" />
   </form>
  
-  <script type="text/javascript" src="/js/trackers.js"></script>
+  <!--script type="text/javascript" src="/js/trackers.js"></script-->
      
   </body>
 </html>
