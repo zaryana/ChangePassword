@@ -37,33 +37,36 @@
                   <li><a href="/about.jsp">About</a></li>
                 </ul>
               </div>
+              <form><input/></form>
               <div class="FormBox">
                 <div class="BoxContent ClearFix">
                 <div class="ribbon">Beta</div>
                 <div class="ribbon-triangle"></div>
-                <form class="UIForm" action="javascript:void(0);"   method="POST" name="cloud-workspaces-profile" id="signupForm">
+                <form class="UIForm" action="javascript:void(0);" method="post" name="cloud-workspaces-profile" id="signupForm">
                   <!-- Marketo input hidden fields -->
-                  <input name="Cloud_Workspaces_User__c" id="Cloud_Workspaces_User__c" type='hidden' value="yes" />
-                  <input name="Search_Engine__c" id="Search_Engine__c" type='hidden' value="" />
-                  <input name="Search_String__c" id="Search_String__c" type='hidden' value="" />
-                  <input  name="Pay_Per_Click_Keyword__c" id="Pay_Per_Click_Keyword__c" type='hidden' value="" />
-                  <input name="sfga" id="sfga" type='hidden' value="00DA0000000Hp6u" />
-                  <input name="LeadSource" id="LeadSource" type='hidden' value="Web - Cloud Workspaces" />
-                  <input type="hidden" name="_marketo_comments" value="" />
-                  <input type="hidden" name="lpId" value="1047" />
-                  <input type="hidden" name="subId" value="46" />
-                  <input type="hidden" name="kw" value="" />
-                  <input type="hidden" name="cr" value="" />
-                  <input type="hidden" name="searchstr" value="" />
-                  <input type="hidden" name="lpurl" value="http://learn.cloud-workspaces.com/Cloud-Workspaces-Sign-Up-English.html?cr={creative}&kw={keyword}" />
-                  <input type="hidden" name="formid" value="1035" />
-                  <input type="hidden" name="returnURL" value="" />
-                  <input type="hidden" name="retURL" value="" />
-                  <input type="hidden" name="_mkt_disp" value="return" />
-                  <input type="hidden" name="_mkt_trk" value="" />
-                  <div id="messageString" class="TenantFormMsg"></div>
-                  <input class="InputText" type="text" name="email" id="email" value="Enter your professional email" onclick="this.value='';" />
-                  <input class="Button" type="submit" id="t_submit"  value="Sign Up" />
+                  <div>
+                    <input name="Cloud_Workspaces_User__c" id="Cloud_Workspaces_User__c" type='hidden' value="yes" />
+                    <input name="Search_Engine__c" id="Search_Engine__c" type='hidden' value="" />
+                    <input name="Search_String__c" id="Search_String__c" type='hidden' value="" />
+                    <input  name="Pay_Per_Click_Keyword__c" id="Pay_Per_Click_Keyword__c" type='hidden' value="" />
+                    <input name="sfga" id="sfga" type='hidden' value="00DA0000000Hp6u" />
+                    <input name="LeadSource" id="LeadSource" type='hidden' value="Web - Cloud Workspaces" />
+                    <input type="hidden" name="_marketo_comments" value="" />
+                    <input type="hidden" name="lpId" value="1047" />
+                    <input type="hidden" name="subId" value="46" />
+                    <input type="hidden" name="kw" value="" />
+                    <input type="hidden" name="cr" value="" />
+                    <input type="hidden" name="searchstr" value="" />
+                    <input type="hidden" name="lpurl" value="http://learn.cloud-workspaces.com/Cloud-Workspaces-Sign-Up-English.html?cr={creative}&kw={keyword}" />
+                    <input type="hidden" name="formid" value="1035" />
+                    <input type="hidden" name="returnURL" value="" />
+                    <input type="hidden" name="retURL" value="" />
+                    <input type="hidden" name="_mkt_disp" value="return" />
+                    <input type="hidden" name="_mkt_trk" value="" />
+                    <div id="messageString" class="TenantFormMsg"></div>
+                    <input class="InputText" type="text" name="email" id="email" value="Enter your professional email" onclick="this.value='';" />
+                    <input class="Button" type="submit" id="t_submit"  value="Sign Up" />
+                  </div>
                 </form>
                   <div class="SocialBox">
                     <div id="fb-root"></div>
@@ -172,8 +175,5 @@
 
     <!-- marketo response container -->
     <iframe id="mktOutput" name="mktOutput" style='display:none; visibility:hidden'></iframe>
-    <!-- BEGIN: MARKETO TRACKING -->
-    <!-- script type="text/javascript" src="/js/mktFormSupport.js"></script -->
-    <!-- script type="text/javascript" src="/js/trackers.js"></script -->
   </body>
 </html>

@@ -101,6 +101,5 @@ define([ "jquery", "marketo.form" ], function(jQuery, Mkto) {
 		};
 	}
 
-	var m = new Marketo();
-	return m;
+	return new Marketo();
 });

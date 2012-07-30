@@ -128,7 +128,7 @@ public class CloudWorkspacesTenantService {
    * Sign-up the Cloud. Result is an email with instructions on creation or
    * joining a tenant.
    * 
-   * @param  userMail email address of user to signup
+   * @param userMail email address of user to signup
    * @return Response OK with details message or an error.
    * @throws CloudAdminException if error occurs
    */
@@ -288,7 +288,7 @@ public class CloudWorkspacesTenantService {
    * Internal Server Error.</li>
    * </ul>
    * 
-   * @param  userMail email address of user to signup/join.
+   * @param userMail email address of user to signup/join.
    * @return Response with URL for a registration/join or with a client error.
    * @throws CloudAdminException if error occurs
    */
@@ -517,13 +517,13 @@ public class CloudWorkspacesTenantService {
             + " join was put in waiting state after join - tenant state WAITING_CREATION.");
         referencesManager.removeEmail(userMail);
         return Response.status(309)
-          .header("Location",
-            new StringBuilder().append("http://")
-                               .append(AdminConfigurationUtil.getMasterHost(cloudAdminConfiguration))
-                               .append("/join-done.jsp#")
-                               .append(userMail)
-                               .toString())
-          .build();
+                       .header("Location",
+                               new StringBuilder().append("http://")
+                                                  .append(AdminConfigurationUtil.getMasterHost(cloudAdminConfiguration))
+                                                  .append("/join-done.jsp#")
+                                                  .append(userMail)
+                                                  .toString())
+                       .build();
       }
       case STARTING:
       case STOPPING:
@@ -677,7 +677,7 @@ public class CloudWorkspacesTenantService {
   /**
    * Retrieves status string of the given tenant.
    * 
-   * @param tenantName  String tenantName
+   * @param tenantName String tenantName
    * @return Response
    * @throws TenantDataManagerException
    */
@@ -727,13 +727,14 @@ public class CloudWorkspacesTenantService {
   @Produces(MediaType.TEXT_PLAIN)
   public Response uuid(@PathParam("uuid") String uuid) throws CloudAdminException {
     String email = referencesManager.getEmail(uuid);
-    if (email != null)
+    if (email != null) {
       return Response.ok(email).build();
-    else
+    } else {
       return Response.status(Status.BAD_REQUEST)
                      .entity("Warning! You are using broken link to the Registration Page. Please sign up again.")
                      .type(MediaType.TEXT_PLAIN)
                      .build();
+    }
   }
 
   @GET
@@ -813,7 +814,7 @@ public class CloudWorkspacesTenantService {
    * "Does the given email's domain address is blacklisted?". Used in Invitation
    * gadget.
    * 
-   * @param  email String email to check
+   * @param email String email to check
    * @return String, TRUE or FALSE - the answer on the question
    *         "Does the given email's domain address is blackisted?"
    */
@@ -862,8 +863,8 @@ public class CloudWorkspacesTenantService {
    * ....
    * </pre>
    * 
-   * @param  mailTemplate mail template to be send to given users
-   * @param  mailSubject subject for a mail message
+   * @param mailTemplate mail template to be send to given users
+   * @param mailSubject subject for a mail message
    * @return Response OK with details message or an error.
    * @throws Exception if cannot send send custom email
    */

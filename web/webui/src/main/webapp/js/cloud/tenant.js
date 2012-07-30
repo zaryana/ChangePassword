@@ -22,37 +22,13 @@ define(["jquery"], function() {
 		var accessUrl = prefixUrl + "/rest/cloud-admin";
 		var accessSecureUrl = prefixUrl + "/rest/private/cloud-admin";
 		var tenantServicePath = accessUrl + "/cloudworkspaces/tenant-service";
-		var	tenantSecureServicePath = accessSecureUrl + "/cloudworkspaces/tenant-service";
-		
-		/*this.init = function() {
-		$.extend({
-			getUrlVars : function() {
-				var vars = [], hash;
-				var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-				for (var i = 0; i < hashes.length; i++) {
-					hash = hashes[i].split('=');
-					vars.push(hash[0]);
-					vars[hash[0]] = hash[1];
-				}
-				return vars;
-			},
-			getUrlVar : function(name) {
-				return $.getUrlVars()[name];
-			}
-		});
+		var tenantSecureServicePath = accessSecureUrl + "/cloudworkspaces/tenant-service";
 
-		// jQuery.validator
-		$.validator.addMethod('regexp', function(value, element, regexp) {
-			var re = new RegExp(regexp);
-			return this.optional(element) || re.test(value);
-		}, "Such name cannot be used.");
-		};*/
-		
 		this.signup = function(settings) {
 			var request = $.ajax({
 				type : "POST",
 				url : tenantServicePath + "/signup",
-				//contentType: "application/x-www-form-urlencoded",
+				// contentType: "application/x-www-form-urlencoded",
 				statusCode : {
 					309 : function(data, textStatus, jqXHR) {
 						// custom redirect
@@ -61,7 +37,7 @@ define(["jquery"], function() {
 							settings.redirect(location);
 						}
 					},
-					
+
 					400 : function(jqXHR, textStatus, err) {
 						// wrong (non company) email
 						if (settings.wrongEmail) {
@@ -74,7 +50,7 @@ define(["jquery"], function() {
 				}
 			});
 			request.fail(function(jqXHR, textStatus, err) {
-				// general error handling (all other errors) 
+				// general error handling (all other errors)
 				if (settings.serverError) {
 					settings.serverError(textStatus);
 				}
@@ -90,7 +66,7 @@ define(["jquery"], function() {
 				}
 			});
 		};
-		
+
 		this.status = function(settings) {
 			if (settings.tenantName && settings.tenantName.length > 0) {
 				var request = $.ajax({
@@ -99,7 +75,7 @@ define(["jquery"], function() {
 					dataType : 'text'
 				});
 				request.fail(function(jqXHR, textStatus, err) {
-					// general error handling (all other errors) 
+					// general error handling (all other errors)
 					if (settings.serverError) {
 						settings.serverError(textStatus);
 					}
@@ -115,31 +91,80 @@ define(["jquery"], function() {
 					}
 				});
 			} else {
-				logError("Tenant.status(): need tenant name");
+				logError("Tenant.status(): tenant name required");
 			}
 		};
-		
+
 		this.isUserExists = function(settings) {
-			$.ajax({
+			var request = $.ajax({
 				url : tenantServicePath + "/isuserexist/" + settings.tenantName + "/" + settings.userName,
-				success : settings.onSuccess,
-				error : settings.onError,
 				dataType : 'text'
 			});
+			request.fail(function(jqXHR, textStatus, err) {
+				// general error handling (all other errors)
+				if (settings.serverError) {
+					settings.serverError(textStatus);
+				}
+			});
+			request.done(function(data, textStatus, jqXHR) {
+				if (data == "true") {
+					if (settings.exists) {
+						settings.exists();
+					}
+				} else if (data == "false") {
+					if (settings.notExists) {
+						settings.notExists();
+					}
+				}
+			});
+			request.always(function(jqXHR, textStatus) {
+				if (settings.always) {
+					settings.always();
+				}
+			});
 		};
-		
-		this.getLoginUrl = function (tenantName, userName, password) {
-			var loginUrl = location.protocol + "//" + tenantName + '.' + hostName + "/portal";
-			
-			if (userName) {
-		  	loginUrl += "/login?username=" + userName + "&password=" + password + "&";
-		  } else {
-		  	loginUrl += "/dologin?";
-		  }
-		  
-		  loginUrl += 'initialURI=/portal/intranet/welcome';
+
+		this.getLoginUrl = function(settings) {
+			if (settings.tenantName) {
+				var loginUrl = location.protocol + "//" + settings.tenantName + '.' + hostName + "/portal";
+
+				if (settings.userName && settings.password) {
+					loginUrl += "/login?username=" + settings.userName + "&password=" + settings.password + "&";
+				} else {
+					loginUrl += "/dologin?";
+				}
+
+				loginUrl += "initialURI=/portal/intranet/welcome";
+				return loginUrl;
+			} else {
+				logError("Tenant.getLoginUrl(): tenant name required");
+				throw "Tenant name required";
+			}
+		};
+
+		this.getEmail = function(settings) {
+			var request = $.ajax({
+				url : var checkURL = tenantServicePath + "/uuid/" + settings.uuid,
+				dataType : "text"
+			});
+			request.fail(function(jqXHR, textStatus, err) {
+				// general error handling (all other errors)
+				if (settings.serverError) {
+					settings.serverError(textStatus);
+				}
+			});
+			request.done(function(data, textStatus, jqXHR) {
+				if (settings.onEmail) {
+						settings.onEmail(data);
+				}
+			});
+			request.always(function(jqXHR, textStatus) {
+				if (settings.always) {
+					settings.always();
+				}
+			});
 		};
 	};
-	
+
 	return new Tenant();
 });

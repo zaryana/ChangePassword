@@ -16,8 +16,8 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-require([ "cloud/tenant", "cloud/marketo", "cloud/marketo.cookies", "cloud/trackers", "cloud/support",
-		"jquery.lightbox", "thickbox" ], function(tenant, marketo, marketoCookies, trackers, support) {
+require([ "cloud/tenant", "cloud/marketo", "cloud/marketo.cookies", "cloud/trackers", "cloud/support", "jquery.lightbox",
+		"thickbox" ], function(tenant, marketo, marketoCookies, trackers, support) {
 
 	function signup() {
 		var userMail = $('#email').val();
@@ -57,12 +57,10 @@ require([ "cloud/tenant", "cloud/marketo", "cloud/marketo.cookies", "cloud/track
 					// TODO don't need Marketo here, see wrongEmail callback below
 					/*
 					 * marketo.send({ "Email" : $('#email').val(), "Cloud_Workspaces_User__c" : "No", "Search_Engine__c" :
-					 * $('input[name=Search_Engine__c]').val(), "Search_String__c" :
-					 * $('input[name=Search_String__c]').val(), "Pay_Per_Click_Keyword__c" :
-					 * $('input[name=Pay_Per_Click_Keyword__c]').val(), "sfga" : $('input[name=sfga]').val(),
-					 * "LeadSource" : $('#LeadSource').val(), "lpId" : $('input[name=lpId]').val(), "subId" :
-					 * $('input[name=subId]').val(), "formid" : $('input[name=formid]').val(), "_mkt_trk" :
-					 * $('input[name=_mkt_trk]').val() }, function() { });
+					 * $('input[name=Search_Engine__c]').val(), "Search_String__c" : $('input[name=Search_String__c]').val(),
+					 * "Pay_Per_Click_Keyword__c" : $('input[name=Pay_Per_Click_Keyword__c]').val(), "sfga" : $('input[name=sfga]').val(),
+					 * "LeadSource" : $('#LeadSource').val(), "lpId" : $('input[name=lpId]').val(), "subId" : $('input[name=subId]').val(),
+					 * "formid" : $('input[name=formid]').val(), "_mkt_trk" : $('input[name=_mkt_trk]').val() }, function() { });
 					 */
 					$("#messageString").html('<span class="WarningIcon">' + resp + '</span>');
 				}
@@ -133,11 +131,11 @@ require([ "cloud/tenant", "cloud/marketo", "cloud/marketo.cookies", "cloud/track
 
 		// load trackers
 		trackers.load();
-		
-		// init if it's Try Again page  
+
+		// init if it's Try Again page
 		var tryagainMessage = getCookie("tryagainMessage");
-	  if (tryagainMessage != null) {
-	    $('#tryAgainNote').html("Sorry, we really need a company email address.");
-	  }
+		if (tryagainMessage != null) {
+			$('#tryAgainNote').html("Sorry, we really need a company email address.");
+		}
 	});
 });

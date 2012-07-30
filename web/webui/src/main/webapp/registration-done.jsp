@@ -4,11 +4,10 @@
   <head>
     <% String pageName = "Registration Request Sent"; %>
     <%@ include file="common/headStyle.jsp"%>
-    <%@ include file="common/headScript.jsp"%>
     <!-- load ThickBox to display video (http://jquery.com/demo/thickbox/) -->
     <link rel="stylesheet" href="/thickbox/thickbox.css" type="text/css" media="screen" />
-    <script src="/thickbox/thickbox.js" type="text/javascript"></script>
-    <script type="text/javascript">var tb_pathToImage = "/background/img_video.png";</script>
+    <%@ include file="common/headScript.jsp"%>
+    <script type="text/javascript" data-main="done" src="/js/require-2.0.4.min.js"></script>
   </head>
   <body">
     <div class="UIPageContainer">
@@ -54,8 +53,5 @@
         </object>
       </div>
     </div>
-
-
-    <script type="text/javascript" src="/js/trackers.js"></script>
   </body>
 </html>

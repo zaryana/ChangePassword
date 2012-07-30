@@ -53,8 +53,5 @@
         </object>
       </div>
     </div>
-    
-
-    <script type="text/javascript" src="/js/trackers.js"></script>
    </body>
 </html>

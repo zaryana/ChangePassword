@@ -8,7 +8,7 @@
  *
  * This software is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNUjr
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
@@ -21,12 +21,12 @@ require([ "cloud/tenant", "cloud/marketo", "cloud/trackers", "cloud/support", "t
 
 	// init *done page
 	$(function() {
+		// load trackers
+		trackers.load();
+		
 		var email = location.hash.substring(1);
 		if (email) {
-			// load trackers
-			trackers.load();
-			
-	    var split = email.split('@');
+			var split = email.split('@');
 	    var tenantName = getUserMailInfo(email).tenant; // TODO
 	    var userName = ""; // TODO
 	  
@@ -39,7 +39,9 @@ require([ "cloud/tenant", "cloud/marketo", "cloud/trackers", "cloud/support", "t
 								tenantName : tenantName,
 								userName : userName, 
 								exists : function() {
-									var tenantUrl = tenant.getLoginUrl(tenantName, null, null);		
+									var tenantUrl = tenant.getLoginUrl({ 
+										tenantName : tenantName
+									});		
 									$("#sign_link").html("You can now <span style=\"color:#19BBE7;\"><u>sign-in</u></span> the " + tenantName + "  Workspace.");
 									$("#sign_link").attr("href", tenantUrl);
 								},
