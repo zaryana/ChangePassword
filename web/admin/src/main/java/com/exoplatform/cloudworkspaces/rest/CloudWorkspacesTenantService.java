@@ -515,7 +515,15 @@ public class CloudWorkspacesTenantService {
         requestDao.put(req);
         LOG.info("User " + userMail
             + " join was put in waiting state after join - tenant state WAITING_CREATION.");
-        break;
+        referencesManager.removeEmail(userMail);
+        return Response.status(309)
+          .header("Location",
+            new StringBuilder().append("http://")
+                               .append(AdminConfigurationUtil.getMasterHost(cloudAdminConfiguration))
+                               .append("/join-done.jsp#")
+                               .append(userMail)
+                               .toString())
+          .build();
       }
       case STARTING:
       case STOPPING:
