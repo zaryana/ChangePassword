@@ -1,17 +1,16 @@
 <%--
+    Copyright (C) 2012 eXo Platform SAS.
 
-    Copyright (C) 2009 eXo Platform SAS.
-    
     This is free software; you can redistribute it and/or modify it
     under the terms of the GNU Lesser General Public License as
     published by the Free Software Foundation; either version 2.1 of
     the License, or (at your option) any later version.
-    
+
     This software is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
     Lesser General Public License for more details.
-    
+
     You should have received a copy of the GNU Lesser General Public
     License along with this software; if not, write to the Free
     Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
@@ -46,22 +45,21 @@
     <% String pageName = "Welcome to Cloud Workspaces"; %>
     <%@ include file="common/headStyle.jsp"%>
     <link href="<%=request.getContextPath()%>/css/cloudlogin/textext-1.3.0.css" rel="stylesheet" type="text/css" />
-    
+
     <%@ include file="common/headScript.jsp"%>
-    
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/js/jquery-file-upload/vendor/jquery.ui.widget.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/js/jquery-file-upload/jquery.iframe-transport.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/js/jquery-file-upload/jquery.fileupload.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/js/cloudlogin/textext-1.3.0.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/js/cloudlogin/cloudlogin.js"></script>
-    
+
   </head>
   <body onLoad="CloudLogin.initCloudLogin(<%=CloudLoginRestService.MAX_AVATAR_LENGTH%>, '<%=CloudLoginRestService.AVATAR_UPLOAD_ID%>', '<%=CloudLoginServiceImpl.getAvatarUriPath()%>', '<%=CloudLoginRestService.getProfileWsPath()%>');">
   <div class="GetStartedPage">
   <div id="wrapper">
     <div id="mask">
-  
-  
+
     <div class="UIFormBox StartedStep" style="display: block;" name="" id="StepProfile" >
       <h1 class="StartedBarBG">Welcome to Cloud Workspaces - Get started in 3 easy steps</h1>
       <div class="Steps" id="">
@@ -106,7 +104,7 @@
       </div>
       <div class="Link"><a href="#" onclick="CloudLogin.exit();" class="Link">Skip to homepage >></a></div>
     </div>
-  
+
     <form class="UIFormBox StartedStep" style="display: none;" name="" id="StepSpace" method="POST" action="javascript:void(0);" >
       <h1 class="StartedBarBG">Welcome to Cloud Workspaces - Get started in 3 easy steps</h1>
       <div class="Steps" id="">
@@ -135,7 +133,7 @@
       </div>
       <div class="Link"><a href="#" onclick="CloudLogin.exit();">Skip to homepage &gt;&gt;</a></div>
   </form>
-  
+
     <form class="UIFormBox StartedStep StepEmail" style="display: none;" name="" id="StepEmail" method="POST" action="javascript:void(0);" >
       <h1 class="StartedBarBG">Welcome to Cloud Workspaces - Get started in 3 easy steps</h1>
       <div class="Steps" id="">
@@ -144,7 +142,7 @@
       </div>
       <h3>Step 3: Invite Coworkers</h3>
       <p class="ST3"><strong>Send email invitations to your coworkers to connect with them in your social intranet.</strong><br/>(note: Only people with the same email @domain name will be invited to your social intranet. Other addresses will receive an invitation to discover Cloud Workspaces)</p>
-      
+
       <div id="messageString" class="TenantFormMsg" style="display:none"></div>
       <table class="BorderDot">
         <tbody>
@@ -162,21 +160,17 @@
       </div>
       <div class="Link"><a href="#" onclick="CloudLogin.exit();" class="Link">Skip to homepage >></a></div>
   </form>
-    
 
-  </div>  
+  </div>
   </div>
   </div>
   <!--end code body here-->
-  
+
   <form class="UIFormBox StartedStep" style="display: none;" name="CloudExitForm" id="CloudExitForm" method="POST" action="<%= CloudLoginServlet.CL_SERVLET_CTX + CloudLoginServlet.CL_SERVLET_URL %>" >
     <% if (uri != null) { %>
     <input type="hidden" name="<%= CloudLoginServlet.CLOUD_REQUESTED_URI %>" id="<%= CloudLoginServlet.CLOUD_REQUESTED_URI %>" value="<%= uri %>" />
     <% } %>
     <input type="hidden" name="<%= CloudLoginServlet.CLOUD_PROCESS_DISPLAYED %>" id="<%= CloudLoginServlet.CLOUD_PROCESS_DISPLAYED %>" value="true" />
   </form>
- 
-  <!--script type="text/javascript" src="/js/trackers.js"></script-->
-     
   </body>
 </html>
