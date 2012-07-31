@@ -22,9 +22,9 @@ define([ "jquery" ], function() {
 		var accessUrl = prefixUrl + "/rest/cloud-admin";
 		var accessSecureUrl = prefixUrl + "/rest/private/cloud-admin";
 		var tenantServicePath = accessUrl + "/cloudworkspaces/tenant-service";
-		var tenantSecureServicePath = accessSecureUrl + "/cloudworkspaces/tenant-service";
+		var tenantSecureServicePath = accessSecureUrl + "/cloudworkspaces/tenant-service"; // TODO remove
 
-		var initRequestDefaults(request, callbacks) {
+		var initRequestDefaults = function(request, callbacks) {
 			request.fail(function(jqXHR, textStatus, err) {
 				// general error handling (all other errors)
 				if (callbacks.fail) {
@@ -41,7 +41,7 @@ define([ "jquery" ], function() {
 					callbacks.always();
 				}
 			});
-		}
+		};
 		
 		this.signup = function(data, callbacks) {
 			var request = $.ajax({
@@ -79,6 +79,25 @@ define([ "jquery" ], function() {
 			
 			initRequestDefaults(request, callbacks);
 		};
+		
+		this.join = function(data, callbacks) {
+			var request = $.ajax({
+				type : "POST",
+				url : tenantServicePath + "/join",
+				data : data,
+				statusCode : {
+					309 : function(data, textStatus, jqXHR) {
+						// custom redirect
+						if (callbacks.redirect) {
+							var location = jqXHR.getResponseHeader("Location");
+							callbacks.redirect(location);
+						}
+					}
+				}
+			});
+			
+			initRequestDefaults(request, callbacks);
+		};
 
 		this.status = function(data, callbacks) {
 			if (settings.tenantName && settings.tenantName.length > 0) {
@@ -105,10 +124,10 @@ define([ "jquery" ], function() {
 
 		this.getLoginUrl = function(data) {
 			if (data.tenantName) {
-				var loginUrl = location.protocol + "//" + data.tenantName + '.' + hostName + "/portal";
+				var loginUrl = location.protocol + "//" + data.tenantname + '.' + hostName + "/portal";
 
 				if (data.userName && data.password) {
-					loginUrl += "/login?username=" + data.userName + "&password=" + data.password + "&";
+					loginUrl += "/login?username=" + data.username + "&password=" + data.password + "&";
 				} else {
 					loginUrl += "/dologin?";
 				}
@@ -123,7 +142,7 @@ define([ "jquery" ], function() {
 
 		this.getEmail = function(data, callbacks) {
 			var request = $.ajax({
-				url : var checkURL = tenantServicePath + "/uuid/" + data.uuid,
+				url : tenantServicePath + "/uuid/" + data.uuid,
 				dataType : "text"
 			});
 			
@@ -144,9 +163,7 @@ define([ "jquery" ], function() {
 				throw "Application error: cannot process user record. Please contact support.";
 			});
 			request.done(function(data, textStatus, jqXHR) {
-				function(data) {
 					info =  data;
-        }
 			});
 			
 			return info;

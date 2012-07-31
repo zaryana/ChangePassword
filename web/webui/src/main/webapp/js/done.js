@@ -35,7 +35,7 @@ require([ "cloud/tenant", "cloud/marketo", "cloud/trackers", "cloud/support", "t
 					if (status.substring(0, search.length) === search) {
 						tenant.isUserExists({
 							tenantname : userinfo.tenant,
-							username : userinfo.username,
+							username : userinfo.username
 						}, {
 							done : function(result) {
 								if (result == "true") {

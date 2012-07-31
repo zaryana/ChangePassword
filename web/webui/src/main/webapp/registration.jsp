@@ -59,7 +59,7 @@
                     <td class="Field">Confirm password:</td><td> <input class="required InputText" type="password" name="password2" id="password2" /><span class="Star">*</span></td>
                   </tr>
                   <tr>
-                    <td class="Field"></td><td> <input class="Button" type="submit" id="t_submit" value="Create" onClick="tenants.doCreationRequest();" /></td>
+                    <td class="Field"></td><td> <input class="Button" type="submit" id="t_submit" value="Create" /></td>
                   </tr>
                 </table>
                 <input type="hidden" name="confirmation-id" id="confirmation-id" />

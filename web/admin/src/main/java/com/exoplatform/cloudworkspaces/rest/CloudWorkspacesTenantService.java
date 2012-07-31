@@ -561,7 +561,7 @@ public class CloudWorkspacesTenantService {
       }
 
     } catch (CloudAdminException e) {
-      LOG.warn("User " + username + " join failed, put him in join queue.");
+      LOG.warn("User " + username + " join failed with error '" + e + "', put him in join queue.");
       UserRequest req = new UserRequest("",
                                         tName,
                                         userMail,
