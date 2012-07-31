@@ -61,8 +61,7 @@ function getCookie(name) {
 function onlyNumbers(evt) {
 	var charCode = (evt.which) ? evt.which : evt.keyCode;
 
-	if (charCode > 31
-			&& ((charCode < 48 || charCode > 57) && charCode != 45 && charCode != 40 && charCode != 41 && charCode != 43)) {
+	if (charCode > 31 && ((charCode < 48 || charCode > 57) && charCode != 45 && charCode != 40 && charCode != 41 && charCode != 43)) {
 		return false;
 	}
 

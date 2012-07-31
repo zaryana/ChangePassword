@@ -16,7 +16,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-define(["jquery"], function() {
+define([ "jquery" ], function() {
 
 	function Tenant() {
 		var accessUrl = prefixUrl + "/rest/cloud-admin";
@@ -24,112 +24,91 @@ define(["jquery"], function() {
 		var tenantServicePath = accessUrl + "/cloudworkspaces/tenant-service";
 		var tenantSecureServicePath = accessSecureUrl + "/cloudworkspaces/tenant-service";
 
-		this.signup = function(settings) {
+		var initRequestDefaults(request, callbacks) {
+			request.fail(function(jqXHR, textStatus, err) {
+				// general error handling (all other errors)
+				if (callbacks.fail) {
+					callbacks.fail(textStatus);
+				}
+			});
+			request.done(function(data, textStatus, jqXHR) {
+				if (callbacks.done) {
+					callbacks.done(data);
+				}
+			});
+			request.always(function(jqXHR, textStatus) {
+				if (callbacks.always) {
+					callbacks.always();
+				}
+			});
+		}
+		
+		this.signup = function(data, callbacks) {
 			var request = $.ajax({
 				type : "POST",
 				url : tenantServicePath + "/signup",
+				data : data,
 				// contentType: "application/x-www-form-urlencoded",
 				statusCode : {
 					309 : function(data, textStatus, jqXHR) {
 						// custom redirect
-						if (settings.redirect) {
+						if (callbacks.redirect) {
 							var location = jqXHR.getResponseHeader("Location");
-							settings.redirect(location);
+							callbacks.redirect(location);
 						}
 					},
 
 					400 : function(jqXHR, textStatus, err) {
 						// wrong (non company) email
-						if (settings.wrongEmail) {
-							settings.wrongEmail(jqXHR.responseText);
+						if (callbacks.wrongEmail) {
+							callbacks.wrongEmail(jqXHR.responseText);
 						}
 					}
-				},
-				data : {
-					"user-mail" : settings.userMail
 				}
 			});
-			request.fail(function(jqXHR, textStatus, err) {
-				// general error handling (all other errors)
-				if (settings.serverError) {
-					settings.serverError(textStatus);
-				}
+			
+			initRequestDefaults(request, callbacks);
+		};
+		
+		this.create = function(data, callbacks) {
+			var request = $.ajax({
+				type : "POST",
+				url : tenantServicePath + "/create",
+				data : data
 			});
-			request.done(function(data, textStatus, jqXHR) {
-				if (settings.done) {
-					settings.done(data);
-				}
-			});
-			request.always(function(jqXHR, textStatus) {
-				if (settings.always) {
-					settings.always();
-				}
-			});
+			
+			initRequestDefaults(request, callbacks);
 		};
 
-		this.status = function(settings) {
+		this.status = function(data, callbacks) {
 			if (settings.tenantName && settings.tenantName.length > 0) {
 				var request = $.ajax({
 					type : "POST",
-					url : tenantServicePath + "/status/" + settings.tenantName,
+					url : tenantServicePath + "/status/" + data.tenantname,
 					dataType : 'text'
 				});
-				request.fail(function(jqXHR, textStatus, err) {
-					// general error handling (all other errors)
-					if (settings.serverError) {
-						settings.serverError(textStatus);
-					}
-				});
-				request.done(function(data, textStatus, jqXHR) {
-					if (settings.done) {
-						settings.done(data);
-					}
-				});
-				request.always(function(jqXHR, textStatus) {
-					if (settings.always) {
-						settings.always();
-					}
-				});
+				
+				initRequestDefaults(request, callbacks);
 			} else {
 				logError("Tenant.status(): tenant name required");
 			}
 		};
 
-		this.isUserExists = function(settings) {
+		this.isUserExists = function(data, callbacks) {
 			var request = $.ajax({
-				url : tenantServicePath + "/isuserexist/" + settings.tenantName + "/" + settings.userName,
+				url : tenantServicePath + "/isuserexist/" + data.tenantname + "/" + data.username,
 				dataType : 'text'
 			});
-			request.fail(function(jqXHR, textStatus, err) {
-				// general error handling (all other errors)
-				if (settings.serverError) {
-					settings.serverError(textStatus);
-				}
-			});
-			request.done(function(data, textStatus, jqXHR) {
-				if (data == "true") {
-					if (settings.exists) {
-						settings.exists();
-					}
-				} else if (data == "false") {
-					if (settings.notExists) {
-						settings.notExists();
-					}
-				}
-			});
-			request.always(function(jqXHR, textStatus) {
-				if (settings.always) {
-					settings.always();
-				}
-			});
+			
+			initRequestDefaults(request, callbacks);
 		};
 
-		this.getLoginUrl = function(settings) {
-			if (settings.tenantName) {
-				var loginUrl = location.protocol + "//" + settings.tenantName + '.' + hostName + "/portal";
+		this.getLoginUrl = function(data) {
+			if (data.tenantName) {
+				var loginUrl = location.protocol + "//" + data.tenantName + '.' + hostName + "/portal";
 
-				if (settings.userName && settings.password) {
-					loginUrl += "/login?username=" + settings.userName + "&password=" + settings.password + "&";
+				if (data.userName && data.password) {
+					loginUrl += "/login?username=" + data.userName + "&password=" + data.password + "&";
 				} else {
 					loginUrl += "/dologin?";
 				}
@@ -142,31 +121,19 @@ define(["jquery"], function() {
 			}
 		};
 
-		this.getEmail = function(settings) {
+		this.getEmail = function(data, callbacks) {
 			var request = $.ajax({
-				url : var checkURL = tenantServicePath + "/uuid/" + settings.uuid,
+				url : var checkURL = tenantServicePath + "/uuid/" + data.uuid,
 				dataType : "text"
 			});
-			request.fail(function(jqXHR, textStatus, err) {
-				// general error handling (all other errors)
-				if (settings.serverError) {
-					settings.serverError(textStatus);
-				}
-			});
-			request.done(function(data, textStatus, jqXHR) {
-				if (settings.onEmail) {
-						settings.onEmail(data);
-				}
-			});
-			request.always(function(jqXHR, textStatus) {
-				if (settings.always) {
-					settings.always();
-				}
-			});
+			
+			initRequestDefaults(request, callbacks);
+			
 		};
 		
 		this.getUserInfo = function(email) {
 			var info;
+			// ask synchronously
 			var request = $.ajax({
 				async: false,
 				url : tenantServicePath + "/usermailinfo/" + email,
@@ -178,7 +145,7 @@ define(["jquery"], function() {
 			});
 			request.done(function(data, textStatus, jqXHR) {
 				function(data) {
-          result =  data;
+					info =  data;
         }
 			});
 			

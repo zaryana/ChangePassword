@@ -16,54 +16,54 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-require([ "cloud/tenant", "cloud/marketo", "cloud/trackers", "cloud/support", "thickbox" ], function(tenant, marketo, trackers,
-		support) {
+require([ "cloud/tenant", "cloud/marketo", "cloud/trackers", "cloud/support", "thickbox" ], function(tenant, marketo, trackers, support) {
 
 	// init *done page
 	$(function() {
 		// load trackers
 		trackers.load();
-		
+
 		var email = location.hash.substring(1);
 		if (email) {
-			var split = email.split('@');
-	    var tenantName = getUserMailInfo(email).tenant; // TODO
-	    var userName = ""; // TODO
-	  
-	    tenant.status({
-	    	tenantName : tenantName,
-				done : function(resp) {
-						var search = "ONLINE";
-						if (resp.substring(0, search.length) === search) {
-							tenant.isUserExists({
-								tenantName : tenantName,
-								userName : userName, 
-								exists : function() {
-									var tenantUrl = tenant.getLoginUrl({ 
-										tenantName : tenantName
-									});		
-									$("#sign_link").html("You can now <span style=\"color:#19BBE7;\"><u>sign-in</u></span> the " + tenantName + "  Workspace.");
+			var userinfo = tenant.getUserInfo(email);
+
+			tenant.status({
+				tenantname : userinfo.tenant
+			}, {
+				done : function(status) {
+					var search = "ONLINE";
+					if (status.substring(0, search.length) === search) {
+						tenant.isUserExists({
+							tenantname : userinfo.tenant,
+							username : userinfo.username,
+						}, {
+							done : function(result) {
+								if (result == "true") {
+									var tenantUrl = tenant.getLoginUrl({
+										tenantName : userinfo.tenant
+									});
+									$("#sign_link").html("You can now <span style=\"color:#19BBE7;\"><u>sign-in</u></span> the " + userinfo.tenant + "  Workspace.");
 									$("#sign_link").attr("href", tenantUrl);
-								},
-								notExists : function() {
-									$("#sign_link").html("<span style=\"color:#b81919;\">We cannot add you to the " + tenantName + " Workspace at the moment. The Workspace administrator has been notified of your attempt to join.</span>");
-								},
-								serverError : function(err) {
-									logError("User exist '" + userName +	"@" + tenantName + "' service failed. " + err); // for debug
-									$("#sign_link").html("The " + tenantName + " Workspace is beind created.<br/> We will inform you by email when ready.");
+								} else if (result == "false") {
+									$("#sign_link").html("<span style=\"color:#b81919;\">We cannot add you to the " + userinfo.tenant + " Workspace at the moment. The Workspace administrator has been notified of your attempt to join.</span>");
 								}
-							});
-						} else {
-							$("#sign_link").html("The " + tenantName + " Workspace is beind created.<br/> We will inform you by email when ready.");
-						}
+							},
+							fail : function(err) {
+								logError("User exist '" + userinfo.username + "@" + userinfo.tenant + "' service failed. " + err); // for
+								// debug
+								$("#sign_link").html("The " + userinfo.tenant + " Workspace is beind created.<br/> We will inform you by email when ready.");
+							}
+						});
+					} else {
+						$("#sign_link").html("The " + userinfo.tenant + " Workspace is beind created.<br/> We will inform you by email when ready.");
+					}
 				},
-				serverError : function(err) {
-					logError("Tenant status '" + tenantName + "' service failed. " + err); // for debug
-					$("#sign_link").html("The " + tenantName + " Workspace is beind created.<br/> We will inform you by email when ready.");
-				} 
-				//, always : function() {}
+				fail : function(err) {
+					logError("Tenant status '" + userinfo.tenant + "' service failed. " + err); // for debug
+					$("#sign_link").html("The " + userinfo.tenant + " Workspace is beind created.<br/> We will inform you by email when ready.");
+				}
 			});
 		}
-		
 	});
+
 });

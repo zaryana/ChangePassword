@@ -7,7 +7,7 @@
     <%@ include file="common/headScript.jsp"%>
     <script type="text/javascript" data-main="user" src="/js/require-2.0.4.min.js"></script>
   </head>
-  <body onLoad="tenants.initJoinPage();">
+  <body>
     <div class="UIPageContainer">
       <!--begin header-->
       <%@ include file="common/header.jsp"%>
@@ -18,9 +18,9 @@
           <div id="messageString" class="TenantFormMsg"></div>
           <form class="UIForm" action="javascript:void(0);"  method="post" name="cloud-workspaces-profile" id="joinForm">
 	        <!-- Marketo input hidden fields -->
-            <div>
-              <input name="Cloud_Workspaces_User__c" id="Cloud_Workspaces_User__c" type='hidden' value="yes" />
-              <input name="LeadSource" id="LeadSource" type='hidden' value="Web - Cloud Workspaces" />
+            <div id="formDisplay">
+              <input type="hidden" name="Cloud_Workspaces_User__c" id="Cloud_Workspaces_User__c" value="yes" />
+              <input type="hidden" name="LeadSource" id="LeadSource" value="Web - Cloud Workspaces" />
               <input type="hidden" name="_marketo_comments" value="" />
               <input type="hidden" name="lpId" value="1114" />
               <input type="hidden" name="subId" value="46" />
@@ -62,7 +62,7 @@
                   <td class="Field"></td><td> <input class="Button" type="submit"  id="t_submit" value="Submit" onClick="tenants.doJoinRequest();" /></td>
                 </tr>
               </table>
-              <input type="hidden"  id="rfid" name="rfid"/>
+              <input type="hidden" id="confirmation-id" name="confirmation-id"/>
             </div>
           </form>
         </div>

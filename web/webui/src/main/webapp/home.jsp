@@ -37,7 +37,6 @@
                   <li><a href="/about.jsp">About</a></li>
                 </ul>
               </div>
-              <form><input/></form>
               <div class="FormBox">
                 <div class="BoxContent ClearFix">
                 <div class="ribbon">Beta</div>

@@ -16,11 +16,11 @@
         <div class="UIPageBody FormPages">
           <h1>Create Your Company's Social Intranet</h1>
           <div id="messageString" class="TenantFormMsg"></div>
-            <form class="UIForm" action="javascript:void(0);"  method="POST" name="cloud-workspaces-profile" id="registrationForm">
-              <div>
+            <form class="UIForm" action="javascript:void(0);"  method="post" name="cloud-workspaces-profile" id="registrationForm">
+              <div id="formDisplay">
                 <!-- Marketo input hidden fields -->
-                <input name="Cloud_Workspaces_User__c" id="Cloud_Workspaces_User__c" type='hidden' value="yes" />
-                <input name="LeadSource" id="LeadSource" type='hidden' value="Web - Cloud Workspaces" />
+                <input type="hidden" name="Cloud_Workspaces_User__c" id="Cloud_Workspaces_User__c" value="yes" />
+                <input type="hidden" name="LeadSource" id="LeadSource" value="Web - Cloud Workspaces" />
                 <input type="hidden" name="_marketo_comments" value="" />
                 <input type="hidden" name="lpId" value="1027" />
                 <input type="hidden" name="subId" value="46" />

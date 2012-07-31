@@ -16,8 +16,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-require([ "cloud/tenant", "cloud/marketo", "cloud/marketo.cookies", "cloud/trackers", "cloud/support", "jquery.lightbox",
-		"thickbox" ], function(tenant, marketo, marketoCookies, trackers, support) {
+require([ "cloud/tenant", "cloud/marketo", "cloud/marketo.cookies", "cloud/trackers", "cloud/support", "jquery.lightbox", "thickbox" ], function(tenant, marketo, marketoCookies, trackers, support) {
 
 	function signup() {
 		var userMail = $('#email').val();
@@ -36,7 +35,8 @@ require([ "cloud/tenant", "cloud/marketo", "cloud/marketo.cookies", "cloud/track
 
 		// tenants.xmlhttpPost(url, tenants.handleSignupResponse, tenants.getquerystringSignup, null); -->
 		tenant.signup({
-			userMail : userMail,
+			"user-mail" : userMail
+		}, {
 			done : function(resp) {
 				if (resp == "") {
 					marketo.send({
@@ -89,7 +89,7 @@ require([ "cloud/tenant", "cloud/marketo", "cloud/marketo.cookies", "cloud/track
 				});
 				$("#messageString").html('<span class="WarningIcon">' + message + '</span>');
 			},
-			serverError : function(err) {
+			fail : function(err) {
 				$("#messageString").html('<span class="WarningIcon">' + err + '</span>');
 			},
 			always : function() {

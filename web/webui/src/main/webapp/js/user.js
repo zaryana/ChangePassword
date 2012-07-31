@@ -16,100 +16,140 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-require(["cloud/tenant", "cloud/marketo", "cloud/marketo.cookies", "cloud/trackers", "cloud/support" ], 
-		function(tenant, marketo, marketoCookies, trackers, support) {
+require([ "cloud/tenant", "cloud/marketo", "cloud/marketo.cookies", "cloud/trackers", "cloud/support" ], function(tenant, marketo, marketoCookies, trackers, support) {
 
-	function fillForm(email) {
-		try {
-			var user = tenant.getUserInfo(email);
-			var userName = user.username; 
-			$("#email").val(email);
-			$("#username").val(userName);
-			if (userName.indexOf(".") > -1) {
-				var splittedName = userName.split('.');
-				$("#first_name").val(splittedName[0].capitalize());
-				$("#last_name").val(splittedName[1].capitalize());
-			} else {
-				$("#first_name").val(userName);
-			}
-		} catch(err) {
-			logError("user.fillForm(): " + err.message);
-			$("#messageString").html("Application error: registration is not found. Please contact support.");
-		}
-	}
-
-	function setConfirmationId(uuid) {
+	function fillForm(uuid) {
 		if (uuid != "") {
-			$("#confirmation-id").val(uuid);
+			tenant.getEmail({
+				uuid : id
+			}, {
+				done : function(email) {
+					if (email != null && email != "") {
+						try {
+							var user = tenant.getUserInfo(email);
+							var userName = user.username;
+							$("#email").val(email);
+							$("#username").val(userName);
+							if (userName.indexOf(".") > -1) {
+								var splittedName = userName.split('.');
+								$("#first_name").val(splittedName[0].capitalize());
+								$("#last_name").val(splittedName[1].capitalize());
+							} else {
+								$("#first_name").val(userName);
+							}
+
+							$("#confirmation-id").val(uuid);
+						} catch (err) {
+							logError("user.fillForm(): " + err.message);
+							formError("Application error: user record not found for " + email + ". Please contact support.");
+						}
+					} else {
+						formError("Application error: email is not found. Please contact support.");
+					}
+				},
+				fail : function(err) {
+					formError(err); // using error from the server
+					/*
+					 * var email = $.getUrlVar("email"); if (email != null && email != "") { fillForm(email, id); } else { formError(err); //
+					 * using error from the server }
+					 */
+				}
+			});
 		} else {
-			$("#messageString").html("Application error: damaged confirmation id. Please contact support.");
+			formError("Application error: damaged confirmation id. Please contact support.");
 		}
 	}
-	
-	function initRegistrationForm(uuid) {
-		tenant.getEmail({
-			uuid : uuid,
-			onEmail : function(email) {
-				if (email != null && email != "") {
-					fillForm(email);
-				} else {
-					$("#messageString").html("Application error: email is not found. Please contact support.");
-				}
-				setConfirmationId(uuid);
+
+	function formError(message) {
+		$("#messageString").html(message);
+		$("#formDisplay").html("<br><center><a class='BackIcon' href='index.jsp'>Home</a></center>");
+	}
+
+	function userError(message) {
+		$("#messageString").html(message);
+	}
+
+	function createTenant() {
+		if ($("#confirmation-id").val().length == 0) {
+			// $("#messageString").html("Cannot process request, confirmation ID is not set.");
+			formError("Sorry, we cannot process this request. Please <a class='TenantFormMsg' href='index.jsp'><u>sign up</u></a> again.");
+			return;
+		}
+
+		jQuery.validator.setDefaults({
+			errorPlacement : function(error, element) {
+				error.appendTo(element.next());
 			},
-			serverError : function(err) {
-				var email = $.getUrlVar("email");
-				if (email != null && email != "") {
-					fillForm(email);
-				} else {
-					// $("#messageString").html("Warning! You are using broken link to the Registration Page. Please sign up again.");
-					$("#messageString").html(err); // using error from the server
+		});
+
+		$("#registrationForm").validate({
+			rules : {
+				password : {
+					required : true,
+					minlength : 6,
+				},
+				password2 : {
+					required : true,
+					minlength : 6,
+					equalTo : "#password"
+				},
+				company : {
+					required : true,
+					regexp : "^[A-Za-z][\u0000-\u007F\u0080-\u00FFa-zA-Z0-9 '&-.]*[A-Za-z0-9]$"
+				},
+				first_name : {
+					required : true,
+					regexp : "^[A-Za-z][\u0000-\u007F\u0080-\u00FFa-zA-Z0-9 '&-.]*[A-Za-z0-9]$"
+				},
+				last_name : {
+					required : true,
+					regexp : "^[A-Za-z][\u0000-\u007F\u0080-\u00FFa-zA-Z0-9 '&-.]*[A-Za-z0-9]$"
 				}
-				setConfirmationId(uuid);
 			}
 		});
+
+		var valid = $("#registrationForm").valid();
+		if (valid) {
+			$("#t_submit").val("Wait...");
+			$("#t_submit").attr('disabled', 'disabled');
+			// tenants.xmlhttpPost(url, tenants.handleCreationResponse, tenants.getquerystringCreate, null);
+
+			tenant.create({
+				"user-mail" : settings.userMail,
+				"first-name" : settings.firstName,
+				"last-name" : settings.lastName,
+				"password" : settings.password,
+				"phone" : settings.phone,
+				"company-name" : settings.companyName,
+				"confirmation-id" : settings.confirmationId
+			}, {
+
+			});
+		}
 	}
-	
-	function initJoinForm(rfid, email) {
-				
-				try {
-					var userinfo = tennat.getUserInfo(email);
-					$('#email').val(email);
-	        var prefix = userinfo.username;
-	        $('#username').val(prefix);
-	        if (prefix.indexOf('.') > -1) {
-	          var splittedName = prefix.split('.');
-	          $('#first_name').val(splittedName[0].capitalize());
-	          $('#last_name').val(splittedName[1].capitalize());
-	        } else {
-	          $('#first_name').val(prefix.capitalize());
-	        }
-	        $('#workspace').val(userinfo.tenant);
-	        $('#rfid').val(rfid);
-				} catch(err) {
-					$("#messageString").html("Application error: email is not found. Please contact support.");
-				}
-        
-      } else {
-        $("#messageString").html("Application error: email is not found. Please contact support.");
-      }
-    }
+
+	function joinTenant() {
+
 	}
 
 	$(function() {
 		if (queryString != null && queryString != "") {
-			var id = $.getUrlVar("id");
-			if (id) {
-				initRegistrationForm(id);
-			} else {
+			if ($("registrationForm").length > 0) {
+				var id = $.getUrlVar("id");
+				if (id) {
+					fillForm(id);
+					$("#t_submit").click(createTenant);
+				} else {
+					formError("Sorry, it's wrong registration link. Please <a class='TenantFormMsg' href='index.jsp'><u>sign up</u></a> again.");
+				}
+			} else if ($("joinForm").length > 0) {
 				var rfid = $.getUrlVar("rfid");
 				if (rfid) {
-					initJoinForm(rfid);
+					fillForm(rfid);
+					$("#t_submit").click(joinTenant);
 				} else {
-		      $("#joinForm").html("<br><center><a class='BackIcon' href='index.jsp'>Home</a></center>");
-		      $("#messageString").html("Sorry, your registration link has expired. Please <a class='TenantFormMsg' href='index.jsp'><u>sign up</u></a> again.");
-		      return;
-		    }
+					formError("Sorry, it's wrong registration link. Please <a class='TenantFormMsg' href='index.jsp'><u>sign up</u></a> again.");
+				}
 			}
 		}
 	});
