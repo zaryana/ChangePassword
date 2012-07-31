@@ -80,8 +80,8 @@ Tenants.prototype.initRegistrationPage = function() {
             // alert(data);
             email = data;
             if (email != null && email != "") {
-              var split = email.split('@');
-              var prefix = split[0];
+              userinfo = getUserMailInfo(email);
+              var prefix = userinfo.username;
               $('#email').val(email);
               $('#username').val(prefix);
               if (prefix.indexOf('.') > -1) {
@@ -103,8 +103,8 @@ Tenants.prototype.initRegistrationPage = function() {
        error : function(request, status, error) {
             email = $.getUrlVar('email');
             if (email != null && email != "") {
-              var split = email.split('@');
-              var prefix = split[0];
+              userinfo = getUserMailInfo(email);
+              var prefix = userinfo.username;
               $('#email').val(email);
               $('#username').val(prefix);
               if (prefix.indexOf('.') > -1) {
