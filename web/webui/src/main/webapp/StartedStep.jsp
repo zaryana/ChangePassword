@@ -47,7 +47,6 @@
     <link href="<%=request.getContextPath()%>/css/cloudlogin/textext-1.3.0.css" rel="stylesheet" type="text/css" />
 
     <%@ include file="common/headScript.jsp"%>
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/js/jquery-file-upload/vendor/jquery.ui.widget.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/js/jquery-file-upload/jquery.iframe-transport.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/js/jquery-file-upload/jquery.fileupload.js"></script>
