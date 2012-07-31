@@ -20,16 +20,21 @@ require(["cloud/tenant", "cloud/marketo", "cloud/marketo.cookies", "cloud/tracke
 		function(tenant, marketo, marketoCookies, trackers, support) {
 
 	function fillForm(email) {
-		var split = email.split("@");
-		var prefix = split[0];
-		$("#email").val(email);
-		$("#username").val(prefix);
-		if (prefix.indexOf(".") > -1) {
-			var splittedName = prefix.split('.');
-			$("#first_name").val(splittedName[0].capitalize());
-			$("#last_name").val(splittedName[1].capitalize());
-		} else {
-			$("#first_name").val(prefix);
+		try {
+			var user = tenant.getUserInfo(email);
+			var userName = user.username; 
+			$("#email").val(email);
+			$("#username").val(userName);
+			if (userName.indexOf(".") > -1) {
+				var splittedName = userName.split('.');
+				$("#first_name").val(splittedName[0].capitalize());
+				$("#last_name").val(splittedName[1].capitalize());
+			} else {
+				$("#first_name").val(userName);
+			}
+		} catch(err) {
+			logError("user.fillForm(): " + err.message);
+			$("#messageString").html("Application error: registration is not found. Please contact support.");
 		}
 	}
 
@@ -66,19 +71,25 @@ require(["cloud/tenant", "cloud/marketo", "cloud/marketo.cookies", "cloud/tracke
 	}
 	
 	function initJoinForm(rfid, email) {
-        userinfo = getUserMailInfo(email); // TODO
-        $('#email').val(email);
-        var prefix = userinfo.username;
-        $('#username').val(prefix);
-        if (prefix.indexOf('.') > -1) {
-          var splittedName = prefix.split('.');
-          $('#first_name').val(splittedName[0].capitalize());
-          $('#last_name').val(splittedName[1].capitalize());
-        } else {
-          $('#first_name').val(prefix.capitalize());
-        }
-        $('#workspace').val(userinfo.tenant);
-        $('#rfid').val(rfid);
+				
+				try {
+					var userinfo = tennat.getUserInfo(email);
+					$('#email').val(email);
+	        var prefix = userinfo.username;
+	        $('#username').val(prefix);
+	        if (prefix.indexOf('.') > -1) {
+	          var splittedName = prefix.split('.');
+	          $('#first_name').val(splittedName[0].capitalize());
+	          $('#last_name').val(splittedName[1].capitalize());
+	        } else {
+	          $('#first_name').val(prefix.capitalize());
+	        }
+	        $('#workspace').val(userinfo.tenant);
+	        $('#rfid').val(rfid);
+				} catch(err) {
+					$("#messageString").html("Application error: email is not found. Please contact support.");
+				}
+        
       } else {
         $("#messageString").html("Application error: email is not found. Please contact support.");
       }

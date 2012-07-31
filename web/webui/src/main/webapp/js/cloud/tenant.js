@@ -165,7 +165,7 @@ define(["jquery"], function() {
 			});
 		};
 		
-		this.getUserMailInfo = function(email) {
+		this.getUserInfo = function(email) {
 			var info;
 			var request = $.ajax({
 				async: false,
@@ -173,8 +173,8 @@ define(["jquery"], function() {
 				dataType : 'json'
 			});
 			request.fail(function(jqXHR, textStatus, err) {
-				logError("Tenant.getUserMailInfo(): Cannot get user mail info for " + email);
-				throw "Application error: cannot get tenant name. Please contact support.";
+				logError("Tenant.getUserMailInfo(): cannot process user record for " + email);
+				throw "Application error: cannot process user record. Please contact support.";
 			});
 			request.done(function(data, textStatus, jqXHR) {
 				function(data) {
@@ -183,20 +183,6 @@ define(["jquery"], function() {
 			});
 			
 			return info;
-			
-      $.ajax({
-          url : tenantServicePath + "/usermailinfo/" + email,
-          async: false,
-          success : function(data) {
-          result =  data;
-          },
-          error : function(request, status, error) {
-             _gel("messageString").innerHTML = "Application error: cannot get tenant name. Please contact support."
-           },
-          dataType : 'json'
-          });
-
-          
 		}
 	};
 

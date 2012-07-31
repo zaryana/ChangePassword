@@ -158,7 +158,7 @@ public class CloudIntranetUtils {
           }
         }
       } catch (CloudAdminException e) {
-        LOG.error(e.getLocalizedMessage(), e);
+        LOG.error(e.getMessage(), e);
       }
     }
 

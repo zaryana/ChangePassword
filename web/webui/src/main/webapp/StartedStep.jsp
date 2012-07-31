@@ -147,8 +147,5 @@
     <% } %>
     <input type="hidden" name="<%= CloudLoginServlet.CLOUD_PROCESS_DISPLAYED %>" id="<%= CloudLoginServlet.CLOUD_PROCESS_DISPLAYED %>" value="true" />
   </form>
- 
-  <script type="text/javascript" src="/js/trackers.js"></script>
-     
   </body>
 </html>
