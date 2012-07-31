@@ -164,6 +164,40 @@ define(["jquery"], function() {
 				}
 			});
 		};
+		
+		this.getUserMailInfo = function(email) {
+			var info;
+			var request = $.ajax({
+				async: false,
+				url : tenantServicePath + "/usermailinfo/" + email,
+				dataType : 'json'
+			});
+			request.fail(function(jqXHR, textStatus, err) {
+				logError("Tenant.getUserMailInfo(): Cannot get user mail info for " + email);
+				throw "Application error: cannot get tenant name. Please contact support.";
+			});
+			request.done(function(data, textStatus, jqXHR) {
+				function(data) {
+          result =  data;
+        }
+			});
+			
+			return info;
+			
+      $.ajax({
+          url : tenantServicePath + "/usermailinfo/" + email,
+          async: false,
+          success : function(data) {
+          result =  data;
+          },
+          error : function(request, status, error) {
+             _gel("messageString").innerHTML = "Application error: cannot get tenant name. Please contact support."
+           },
+          dataType : 'json'
+          });
+
+          
+		}
 	};
 
 	return new Tenant();
