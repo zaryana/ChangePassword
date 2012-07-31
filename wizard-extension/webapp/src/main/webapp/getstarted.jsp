@@ -40,18 +40,20 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<%=lang%>" lang="<%=lang%>" dir="ltr">
   <head>
-    <!--script type="text/javascript" src="https://getfirebug.com/firebug-lite-debug.js"></script-->
     <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-    <% String pageName = "Welcome to Cloud Workspaces"; %>
-    <%@ include file="common/headStyle.jsp"%>
-    <link href="<%=request.getContextPath()%>/css/cloudlogin/textext-1.3.0.css" rel="stylesheet" type="text/css" />
+    
+    <title>Welcome to Cloud Workspaces</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link href="<%=request.getContextPath()%>/css/Style.css" rel="stylesheet" type="text/css" />
+    <link href="<%=request.getContextPath()%>/css/textext-1.3.0.css" rel="stylesheet" type="text/css" />
+    <link rel="shortcut icon" type="image/png" href="<%=request.getContextPath()%>/favicon.png" />
 
-    <%@ include file="common/headScript.jsp"%>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/js/jquery-file-upload/vendor/jquery.ui.widget.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/js/jquery-file-upload/jquery.iframe-transport.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/js/jquery-file-upload/jquery.fileupload.js"></script>
-    <script type="text/javascript" src="<%=request.getContextPath()%>/js/cloudlogin/textext-1.3.0.js"></script>
-    <script type="text/javascript" src="<%=request.getContextPath()%>/js/cloudlogin/cloudlogin.js"></script>
+    <script type="text/javascript" src="<%=request.getContextPath()%>/js/textext-1.3.0.js"></script>
+    <script type="text/javascript" src="<%=request.getContextPath()%>/js/cloudlogin.js"></script>
 
   </head>
   <body onLoad="CloudLogin.initCloudLogin(<%=CloudLoginRestService.MAX_AVATAR_LENGTH%>, '<%=CloudLoginRestService.AVATAR_UPLOAD_ID%>', '<%=CloudLoginServiceImpl.getAvatarUriPath()%>', '<%=CloudLoginRestService.getProfileWsPath()%>');">
@@ -165,7 +167,7 @@
   </div>
   <!--end code body here-->
 
-  <form class="UIFormBox StartedStep" style="display: none;" name="CloudExitForm" id="CloudExitForm" method="POST" action="<%= CloudLoginServlet.CL_SERVLET_CTX + CloudLoginServlet.CL_SERVLET_URL %>" >
+  <form class="UIFormBox StartedStep" style="display: none;" name="CloudExitForm" id="CloudExitForm" method="POST" action="/<%= CloudLoginServlet.CL_SERVLET_CTX + CloudLoginServlet.CL_SERVLET_URL %>" >
     <% if (uri != null) { %>
     <input type="hidden" name="<%= CloudLoginServlet.CLOUD_REQUESTED_URI %>" id="<%= CloudLoginServlet.CLOUD_REQUESTED_URI %>" value="<%= uri %>" />
     <% } %>

@@ -1227,6 +1227,172 @@ hr {
 }
 
 
+/*================started=============*/
+.GetStartedPage {
+	background: url(../background/GrayPattern.png) repeat center center;
+	margin: 0 auto;
+	padding: 60px 0;
+	height: 100%;
+}
+
+.GetStartedPage .StartedStep {
+	background: white;
+	border-radius: 8px;
+	box-shadow: 1px 3px 5px #BDBDCE;
+	border: none;
+	width: 676px;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+}
+
+.StartedStep .StartedBarBG{
+	background: url(../background/StartedBarBG.png) repeat-x top center;
+	border-radius: 8px 8px 0 0;
+	border-radius: 8px 8px 0 0;
+	color: white;
+    font-family: 'Helvetica', Arial, Helvetica, Tahoma, sans-serif;
+    font-size: 22px;
+    font-weight: normal;
+    line-height: 94px;
+	margin: 0 0 35px;
+	padding: 0 40px;
+}
+
+.StartedStep .Steps{
+	position: relative;
+}
+
+.StartedStep .StepBG{
+	border-radius: 4px 4px 4px 4px;
+    box-shadow: 1px 1px 4px #B7B7B7 inset;
+    background: #E2E2E2;
+    display: block;
+    height: 16px;
+    margin: 12px 25px;
+	
+}
+
+.StartedStep .StepSelectIcon{
+	background: url(../background/StepSelectIcon.png) no-repeat center;
+	color: white;
+    font-family: arial, helvetica,sans-serif;
+    font-size: 26px;
+    font-weight: bold;
+    padding: 10px 17px;
+    position: absolute;
+    top: -18px;
+	text-shadow: -1px -1px 0px #999;
+}
+
+.StartedStep .StartedIcon{
+	background: url(../background/StartedIcon.png) no-repeat center;
+	color: white;
+    font-family: arial, helvetica,sans-serif;
+    font-size: 26px;
+    font-weight: bold;
+    padding: 10px 17px;
+    position: absolute;
+    top: -18px;
+	text-shadow: -1px -1px 0px #999;
+}
+
+.StartedStep .StepIcon{
+	background: url(../background/StepIcon.png) no-repeat center;
+	color: white;
+    font-family: arial, helvetica,sans-serif;
+    font-size: 26px;
+    font-weight: bold;
+    padding: 10px 17px;
+    position: absolute;
+    top: -18px;
+	text-shadow: -1px -1px 0px #999;
+}
+
+.StartedStep h3{
+	margin: 30px 0 12px 62px;
+	color: #3d3d3d;
+}
+
+.StartedStep p {
+	color: #3d3d3d;
+	margin: 4px 64px 17px 62px;
+	line-height: 20px;
+}
+
+.StartedStep .FormInput{
+	padding: 0px 0px 20px 0px;
+}
+
+.StartedStep .BorderDot .CheckBox{
+	border-radius: 3px 3px 3px 3px;
+    box-shadow: 0 5px 8px #F4F4F4 inset;
+    border: 1px solid #DDDDDD;
+    display: block;
+    margin: 0 0 20px;
+    padding: 13px 0px 5px 0px;
+    width: 432px;
+	overflow: auto;
+}
+
+.StartedStep .BorderDot .CheckBox input{
+	width: 16px;
+	vertical-align: middle;
+	margin: 4px 6px 10px 23px;
+}
+
+.StepEmail .FormInput input, .StepEmail .FormInput textarea {
+	width: 414px;
+}
+
+.StartedStep .FormButton{
+	padding: 0px 0px 20px 12px;
+	vertical-align: bottom;
+}
+
+.StartedStep .LeftStartTip{
+	margin: 0px 386px 12px 62px;
+	padding-top: 5px;
+}
+
+.StartedStep .LeftStartTipST3{
+	margin: 0px 386px 12px 62px;
+	padding-top: 5px;
+}
+
+.StartedStep .RightStartTip{
+	margin: 0px 57px 8px 0px;
+}
+
+.StartedStep .StartTip{
+	margin-top: 20px;
+}
+
+.StartedStep .Link {
+	text-align: right;
+	font-size: 11px;
+	padding: 0 29px 17px 0;
+}
+
+.StartedStep .Link a {
+	color: #8b8b8b;
+}
+
+.StartedStep .ST3 {
+	margin: 36px 64px 41px 62px;
+}
+
+.StartedStep .BorderDot{
+	margin-left: 62px;
+	border-bottom: 1px dotted #ccc;
+}
+
+.StartedStep .HelpText{
+	border: 2px dashed #FFE08B;
+    padding: 14px 17px 14px 17px;
+    width: 224px;
+	border-radius: 12px;
+}
+
+
 /**********  Blacklist-Homepage  ***********/
 
 

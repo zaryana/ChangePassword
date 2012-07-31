@@ -34,4 +34,18 @@
     <listener-class>org.exoplatform.container.web.PortalContainerConfigOwner</listener-class>
   </listener>
   
+  <!-- ================================================================== -->
+  <!--           SERVLET                                                  -->
+  <!-- ================================================================== -->
+  
+  <servlet>
+    <servlet-name>CloudLoginServlet</servlet-name>
+    <servlet-class>com.exoplatform.cloudworkspaces.cloudlogin.CloudLoginServlet</servlet-class>
+    <load-on-startup>0</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>CloudLoginServlet</servlet-name>
+    <url-pattern>/cloudlogin</url-pattern>
+  </servlet-mapping>
+  
 </web-app>
