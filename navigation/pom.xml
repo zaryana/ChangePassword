@@ -50,6 +50,12 @@
       <version>${org.exoplatform.social.version}</version>
       <scope>provided</scope>
     </dependency>    
-
+    <dependency>
+      <groupId>com.exoplatform.cloudworkspaces</groupId>
+      <artifactId>cloud-workspaces-component-social</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
+      <type>jar</type>
+    </dependency>
   </dependencies>
 </project>

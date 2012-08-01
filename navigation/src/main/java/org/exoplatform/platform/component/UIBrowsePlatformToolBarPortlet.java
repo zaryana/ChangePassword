@@ -34,13 +34,14 @@ import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 import org.exoplatform.portal.mop.user.UserNodeFilterConfig;
-import org.exoplatform.platform.common.space.statistic.SpaceAccessService;
 import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
+import com.exoplatform.cloudworkspaces.social.space.statistic.VisitedSpaceService;
+import org.exoplatform.social.core.service.LinkProvider;
 
 /**
  * Portlet manages profile.<br>
@@ -90,8 +91,13 @@ public class UIBrowsePlatformToolBarPortlet extends UIPortletApplication {
   
   public List<String> getLastVisitedSpaces() {
     String userId = Util.getPortalRequestContext().getRemoteUser();
-    SpaceAccessService spaceAccessService = getApplicationComponent(SpaceAccessService.class);
-    List<String> lastVisitedSpace = spaceAccessService.getSpaceAccessList(userId);
+    VisitedSpaceService visitedSpaceService = getApplicationComponent(VisitedSpaceService.class);
+    List<String> lastVisitedSpace = visitedSpaceService.getVisitedSpacesList(userId);
+    SpaceService spaceService = getApplicationComponent(SpaceService.class);
+    for (int i=0; i<lastVisitedSpace.size(); i++){
+      Space space = spaceService.getSpaceByPrettyName((String) lastVisitedSpace.get(i));
+      if (space == null) lastVisitedSpace.remove(i);
+    }
     return lastVisitedSpace;
   }
   
