@@ -37,8 +37,8 @@
            <tr>
             <td class="Field"></td>
             <td>
-            <input class="Button" type="submit"  id="submitButton" value="Send" onClick="tenants.doContactRequest();" />
-            <input class="Button ButtonGray" type="" id="cancelButton" value="Cancel" />
+            <input class="Button" type="submit" id="submitButton" value="Send" onClick="tenants.doContactRequest();" />
+            <input class="Button ButtonGray" type="submit" id="cancelButton" value="Cancel" />
             </td>
            </tr>
           </table>

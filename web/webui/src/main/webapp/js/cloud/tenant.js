@@ -101,7 +101,7 @@ define([ "jquery" ], function() {
 		this.start = function(data, callbacks) {
 			var request = $.ajax({
 				url : accessUrl + "/tenant-service/start?tenant=" + data.tenantname,
-				async : true,
+				async : true
 			});
 
 			initRequestDefaults(request, callbacks);
@@ -160,6 +160,7 @@ define([ "jquery" ], function() {
 
 		this.getUserInfo = function(email) {
 			var info;
+			var err;
 			// ask synchronously
 			var request = $.ajax({
 				async : false,
@@ -168,13 +169,17 @@ define([ "jquery" ], function() {
 			});
 			request.fail(function(jqXHR, textStatus, err) {
 				logError("Tenant.getUserMailInfo(): cannot process user record for " + email);
-				throw "Application error: cannot process user record. Please contact support.";
+				err = "Application error: cannot process user record. Please contact support.";
 			});
 			request.done(function(data, textStatus, jqXHR) {
 				info = data;
 			});
 
-			return info;
+			if (err) {
+				throw err;
+			} else {
+				return info;
+			}
 		}
 	};
 
