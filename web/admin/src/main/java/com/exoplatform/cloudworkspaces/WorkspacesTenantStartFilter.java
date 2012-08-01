@@ -38,7 +38,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public class WorkspacesTenantStartFilter implements Filter {
 
-  private String resumingPage = "http://${tenant.masterhost}/resuming-hide.jsp";
+  private String resumingPage = "http://${tenant.masterhost}/resuming.jsp";
 
   private String notFoundPage = "http://${tenant.masterhost}/home.jsp";
 
@@ -106,7 +106,7 @@ public class WorkspacesTenantStartFilter implements Filter {
                 + "\"></base>";
             String tenantTag = "<span id='tenantname' style='display: none'>" + tenant + "</span>";
             String contactUsFrom = "onclick=\"showContactUsForm('/contact-us.jsp');\"";
-            String contactUsTo = "target=\"blank\" href=\"/index.jsp\"";
+            String contactUsTo = "target='blank' href='/index.jsp'";
 
             OutputStream stream = response.getOutputStream();
             try {

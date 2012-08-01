@@ -26,9 +26,8 @@ define([ "jquery" ], function() {
 
 		var initRequestDefaults = function(request, callbacks) {
 			request.fail(function(jqXHR, textStatus, err) {
-				// general error handling (all other errors)
 				if (callbacks.fail) {
-					callbacks.fail(textStatus);
+					callbacks.fail(jqXHR.responseText, err); // return response body and textual portion of the HTTP status
 				}
 			});
 			request.done(function(data, textStatus, jqXHR) {
@@ -42,7 +41,7 @@ define([ "jquery" ], function() {
 				}
 			});
 		};
-		
+
 		this.signup = function(data, callbacks) {
 			var request = $.ajax({
 				type : "POST",
@@ -66,20 +65,20 @@ define([ "jquery" ], function() {
 					}
 				}
 			});
-			
+
 			initRequestDefaults(request, callbacks);
 		};
-		
+
 		this.create = function(data, callbacks) {
 			var request = $.ajax({
 				type : "POST",
 				url : tenantServicePath + "/create",
 				data : data
 			});
-			
+
 			initRequestDefaults(request, callbacks);
 		};
-		
+
 		this.join = function(data, callbacks) {
 			var request = $.ajax({
 				type : "POST",
@@ -95,7 +94,16 @@ define([ "jquery" ], function() {
 					}
 				}
 			});
-			
+
+			initRequestDefaults(request, callbacks);
+		};
+
+		this.start = function(data, callbacks) {
+			var request = $.ajax({
+				url : accessUrl + "/tenant-service/start?tenant=" + data.tenantname,
+				async : true,
+			});
+
 			initRequestDefaults(request, callbacks);
 		};
 
@@ -106,7 +114,7 @@ define([ "jquery" ], function() {
 					url : tenantServicePath + "/status/" + data.tenantname,
 					dataType : 'text'
 				});
-				
+
 				initRequestDefaults(request, callbacks);
 			} else {
 				logError("Tenant.status(): tenant name required");
@@ -118,15 +126,15 @@ define([ "jquery" ], function() {
 				url : tenantServicePath + "/isuserexist/" + data.tenantname + "/" + data.username,
 				dataType : 'text'
 			});
-			
+
 			initRequestDefaults(request, callbacks);
 		};
 
 		this.getLoginUrl = function(data) {
-			if (data.tenantName) {
+			if (data.tenantname) {
 				var loginUrl = location.protocol + "//" + data.tenantname + '.' + hostName + "/portal";
 
-				if (data.userName && data.password) {
+				if (data.username && data.password) {
 					loginUrl += "/login?username=" + data.username + "&password=" + data.password + "&";
 				} else {
 					loginUrl += "/dologin?";
@@ -145,16 +153,16 @@ define([ "jquery" ], function() {
 				url : tenantServicePath + "/uuid/" + data.uuid,
 				dataType : "text"
 			});
-			
+
 			initRequestDefaults(request, callbacks);
-			
+
 		};
-		
+
 		this.getUserInfo = function(email) {
 			var info;
 			// ask synchronously
 			var request = $.ajax({
-				async: false,
+				async : false,
 				url : tenantServicePath + "/usermailinfo/" + email,
 				dataType : 'json'
 			});
@@ -163,9 +171,9 @@ define([ "jquery" ], function() {
 				throw "Application error: cannot process user record. Please contact support.";
 			});
 			request.done(function(data, textStatus, jqXHR) {
-					info =  data;
+				info = data;
 			});
-			
+
 			return info;
 		}
 	};
