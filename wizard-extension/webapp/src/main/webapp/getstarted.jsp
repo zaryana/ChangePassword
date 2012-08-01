@@ -56,7 +56,7 @@
     <script type="text/javascript" src="<%=request.getContextPath()%>/js/cloudlogin.js"></script>
 
   </head>
-  <body onLoad="CloudLogin.initCloudLogin(<%=CloudLoginRestService.MAX_AVATAR_LENGTH%>, '<%=CloudLoginRestService.AVATAR_UPLOAD_ID%>', '<%=CloudLoginServiceImpl.getAvatarUriPath()%>', '<%=CloudLoginRestService.getProfileWsPath()%>');">
+  <body onLoad="CloudLogin.initCloudLogin(<%=CloudLoginRestService.MAX_AVATAR_LENGTH%>, '<%=CloudLoginRestService.AVATAR_UPLOAD_ID%>', '<%=CloudLoginServiceImpl.getAvatarUriPath()%>', '<%=CloudLoginRestService.getProfileWsPath()%>', '<%=request.getContextPath()%>');">
   <div class="GetStartedPage">
   <div id="wrapper">
     <div id="mask">
@@ -85,7 +85,9 @@
             <td class="FieldLabel UserInput">Add a profile picture:</td>
             <td class="FormInput">
               <div class="ClearFix HelpText" id="fileDropZone">
-                <span class="FR"><img alt="" src="<%=request.getContextPath()%>/background/img_avt.png" id="avatarImage" style="width: 80px;height: 77px;" /></span>
+                <span class="FR">
+                  <img id="avatarImage" alt="" src="<%=request.getContextPath()%>/background/img_avt.png" style="width: 80px;height: 77px;" />
+                </span>
                 <div class="LeftAvt">
                   <p style="text-align: center;">Drag an image here or</p>
                   <span class="fileinput-button">

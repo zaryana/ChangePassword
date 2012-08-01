@@ -8,7 +8,7 @@ var CloudLogin = {};
  *        FRAMEWORK METHODS
  *===========================================================================================================*/
  
-CloudLogin.initCloudLogin = function(maxAvatarLength, avatarUploadId, avatarUriPath, profileWsPath) {
+CloudLogin.initCloudLogin = function(maxAvatarLength, avatarUploadId, avatarUriPath, profileWsPath, contextPath) {
   if (!window.console) console = {};
   console.log = console.log || function(){};
   console.warn = console.warn || function(){};
@@ -27,6 +27,9 @@ CloudLogin.initCloudLogin = function(maxAvatarLength, avatarUploadId, avatarUriP
   }
   if(profileWsPath != undefined) {
     CloudLogin.PROFILE_WS_PATH = profileWsPath;
+  }
+  if(contextPath != undefined) {
+    CloudLogin.CONTEXT_PATH = contextPath;
   }
   
   $("#email").val(CloudLogin.DEFAULT_VALUE);
@@ -80,6 +83,7 @@ CloudLogin.AVATAR_MAX_LENGTH = 2000000; // 2Mo by default
 CloudLogin.AVATAR_UPLOAD_ID = "cloudloginavatar"; // by default
 CloudLogin.AVATAR_URI_PATH = "/rest/jcr/repository/collaboration/Documents/cloudlogin/"; // by default
 CloudLogin.PROFILE_WS_PATH = "/portal/rest/cloudlogin/setavatar/"; // by default
+CloudLogin.CONTEXT_PATH = "cloud-workspaces-wizard-extension"; // by default
 
 // Static variables
 CloudLogin.AVATAR_EXT_REGEXP = /^(gif|jpeg|jpg|png)$/i;
@@ -90,6 +94,7 @@ CloudLogin.PROFILE_FIRST_NAME = "";
 CloudLogin.PROFILE_LAST_NAME = "";
 CloudLogin.PROFILE_POSITION = "";
 CloudLogin.ERROR_MESSAGE = "";
+CloudLogin.AVATAR_URL = "";
 
 CloudLogin.showStepProfile = function(event) {
   if(event != undefined) {
@@ -102,6 +107,9 @@ CloudLogin.showStepProfile = function(event) {
 }
 
 CloudLogin.initUploadFile = function() {
+
+  CloudLogin.AVATAR_URL = CloudLogin.CONTEXT_PATH + "/background/img_avt.png";
+
   $(document).ready(function() {
     $('#datafile').fileupload({
       dropZone: $('#fileDropZone'),
@@ -114,6 +122,7 @@ CloudLogin.initUploadFile = function() {
         var ext = CloudLogin.getFileExtension(file.name);
         
         CloudLogin.lockProfile();
+        CloudLogin.setLoadingMode();
         
         if(file.name == CloudLogin.AVATAR_FILE_NAME) {
           fileOk = false;
@@ -135,36 +144,37 @@ CloudLogin.initUploadFile = function() {
         }
         else {
           CloudLogin.unlockProfile();
+          CloudLogin.unsetLoadingMode();
         }
       },
       done: function (e, data) {
         console.log("upload done !");
 
         /* Only supported by HTML5 browser */
-
         if (typeof window.FileReader != 'undefined'){
             var file = data.files[0],
             reader = new FileReader();
             reader.onload = function () {
                 $("#avatarImage").attr("src", event.target.result);
+                CloudLogin.AVATAR_URL = event.target.result;
             }
             reader.readAsDataURL(file);
         }
 
-        /** Upload is done we update uri of image
-        var imgUri = CloudLogin.AVATAR_URI_PATH + "/" + data.files[0].name;
+        /** TODO this code is the good one **/
+        /** Upload is done we update uri of image*/
+        /*var imgUri = CloudLogin.AVATAR_URI_PATH + "/" + data.files[0].name;
         // Save file name
         CloudLogin.AVATAR_FILE_NAME = data.files[0].name;
-        // Display avatar
-        $("#avatarImage").attr("src", imgUri);
-        */
+        CloudLogin.AVATAR_URL = imgUri;*/
+        
       },
       fail: function (e, data) {
         console.log("upload fails !");
       },
       always: function (e, data) {
-        console.log("upload always !");
         CloudLogin.unlockProfile();
+        CloudLogin.unsetLoadingMode();
       }
     });
   });
@@ -254,9 +264,19 @@ CloudLogin.lockProfile = function() {
 /**
  * unlock profile step and update button if is necessary
  */
-CloudLogin.unlockProfile= function() {
+CloudLogin.unlockProfile = function() {
   // Unlock button Next
   document.getElementById("t_submit_profile").disabled = false;
+}
+
+CloudLogin.setLoadingMode = function() {
+  $('#avatarImage').attr("src", CloudLogin.CONTEXT_PATH + "/background/loader.gif");
+  $('#avatarImage').css({'width' : '50px', 'height' : '50px', 'padding-top' : '13px', 'padding-right' : '17px'});
+}
+
+CloudLogin.unsetLoadingMode = function() {
+  $('#avatarImage').attr("src", CloudLogin.AVATAR_URL);
+  $('#avatarImage').css({'width' : '80px', 'height' : '77px', 'padding-top' : '', 'padding-right' : ''});
 }
 
 
