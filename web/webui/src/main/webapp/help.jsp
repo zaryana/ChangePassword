@@ -5,8 +5,9 @@
     <% String pageName = "Help eXo Cloud Workspace"; %>
     <%@ include file="common/headStyle.jsp"%>
     <%@ include file="common/headScript.jsp"%>
+    <script type="text/javascript" data-main="static" src="/js/require-2.0.4.min.js"></script>
   </head>
-  <body onLoad="tenants.init();">
+  <body>
     <div class="UIPageContainer">
       <!--begin header-->
       <%@ include file="common/header.jsp"%>
@@ -200,13 +201,10 @@
           }
         }
       </script>
-  
       <!--end help page-->
   
       <!--begin Footer-->
       <%@ include file="common/footer.jsp"%>  
     </div>    
-
-    <script type="text/javascript" src="/js/trackers.js"></script>    
   </body>
 </html>

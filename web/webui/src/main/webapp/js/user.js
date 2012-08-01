@@ -238,7 +238,7 @@ require([ "cloud/tenant", "cloud/marketo", "cloud/trackers", "cloud/support" ], 
 
 	$(function() {
 		if (queryString != null && queryString != "") {
-			if ($("registrationForm").length > 0) {
+			if ($("#registrationForm").length > 0) {
 				var id = $.getUrlVar("id");
 				if (id) {
 					fillForm(id);
@@ -246,7 +246,7 @@ require([ "cloud/tenant", "cloud/marketo", "cloud/trackers", "cloud/support" ], 
 				} else {
 					formError("Sorry, it's wrong registration link. Please <a class='TenantFormMsg' href='index.jsp'><u>sign up</u></a> again.");
 				}
-			} else if ($("joinForm").length > 0) {
+			} else if ($("#joinForm").length > 0) {
 				var rfid = $.getUrlVar("rfid");
 				if (rfid) {
 					fillForm(rfid);

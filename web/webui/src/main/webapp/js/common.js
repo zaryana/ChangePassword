@@ -116,6 +116,10 @@ function logError(err) {
 	} // otherwise go silently
 }
 
+String.prototype.capitalize = function() {
+  return this.charAt(0).toUpperCase() + this.slice(1);
+}
+
 /* RequireJS config */
 var require = {
 	baseUrl : "/js",

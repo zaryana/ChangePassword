@@ -19,7 +19,6 @@
 define([ "jquery", "jquery.string", "cloud/marketo" ], function() {
 
 	function Trackers() {
-
 		/**
 		 * Sends data to Marketo and Google Analytics if this is page from domain
 		 * with TARGET_DOMAIN_NAME_FOR_TRACKING

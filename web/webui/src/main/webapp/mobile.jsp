@@ -5,8 +5,9 @@
     <% String pageName = "Help eXo Cloud Workspace"; %>
     <%@ include file="common/headStyle.jsp"%>
     <%@ include file="common/headScript.jsp"%>
+    <script type="text/javascript" data-main="static" src="/js/require-2.0.4.min.js"></script>
   </head>
-  <body onLoad="tenants.init();">
+  <body>
     <div class="UIPageContainer">
       <!--begin header-->
       <%@ include file="common/header.jsp"%>
@@ -17,7 +18,7 @@
 			<div class="ClearFix">
 				<a href="#" class="FR Iphone"><img alt="" width="200" src="background/Iphone.png"/></a>
 				
-				<p class="Line_bt"><strong>Connect and collaborate on the go. </strong>Native iPhone, iPad, and Android apps integrate easily and securely with sites built on eXo Platform 3.5. Follow the latest updates from your colleagues and groups, interact with your personal dashboards, browse and edit your files, and more – at any time, from anywhere.</p>
+				<p class="Line_bt"><strong>Connect and collaborate on the go. </strong>Native iPhone, iPad, and Android apps integrate easily and securely with sites built on eXo Platform 3.5. Follow the latest updates from your colleagues and groups, interact with your personal dashboards, browse and edit your files, and more ï¿½ at any time, from anywhere.</p>
 				<div class="ClearFix Content">
 					<a class="FL PDTop" href="url"><img alt="" src="background/ForumMB.png"/></a>
 					<p class="Right_MB"><strong class="FontMobileCenter"> News Feed:</strong> receive messages from coworkers, follow your group's latest activities, and collaborate in real-time. You can also see when changes are made to the wiki pages, forums, calendars or documents you consider essential to your work. </p>
@@ -49,11 +50,8 @@
 	</div>	
 	<!--end code body here-->	
 		
-<!--begin Footer-->
+    <!--begin Footer-->
       <%@ include file="common/footer.jsp"%>  
     </div>
-    
-
-    <script type="text/javascript" src="/js/trackers.js"></script>    
   </body>
 </html>

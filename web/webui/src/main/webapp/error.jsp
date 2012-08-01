@@ -3,7 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
   <head>
     <% String pageName = "Cloud-workspaces error"; %>
-    <%@ include file="common/headStyle.jsp"%>
+    <%@ include file="common/headScript.jsp"%>
+    <script type="text/javascript" data-main="static" src="/js/require-2.0.4.min.js"></script>
   </head>
   <body>
     <div class="UIPageContainer">
