@@ -47,6 +47,10 @@ CloudLogin.exit = function() {
   $("#CloudExitForm").submit();
 }
 
+CloudLogin.scrollTo = function(target) {
+  $('#wrapper').scrollTo(target, 800);
+}
+
 /**
  * Display red message up to input
  */
@@ -101,9 +105,8 @@ CloudLogin.showStepProfile = function(event) {
     event.preventDefault();
   }
   
-  $('#StepSpace').hide();
-  $('#StepEmail').hide();
-  $('#StepProfile').show();
+  CloudLogin.scrollTo("#StepProfile");
+  return false;
 }
 
 CloudLogin.initUploadFile = function() {
@@ -293,10 +296,12 @@ CloudLogin.NB_SPACES_REQUESTED = 0;
 CloudLogin.SPACES_BUTTON_DEFAULT_LABEL = "Next";
 CloudLogin.SPACES_BUTTON_DEFAULT_WIDTH = "100px";
  
-CloudLogin.showStepSpace = function() {
-  $('#StepProfile').hide();
-  $('#StepEmail').hide();
-  $('#StepSpace').show();
+CloudLogin.showStepSpace = function(event) {
+  if(event != undefined) {
+    event.preventDefault();
+  }
+  CloudLogin.scrollTo("#StepSpace");
+  return false;
 }
 
 /**
@@ -502,6 +507,21 @@ CloudLogin.DEFAULT_VALUE = "Add email addresses";
 
 
 /**
+ * Show step Email
+ */
+CloudLogin.showStepEmail = function(event) {
+  if(event != undefined) {
+    event.preventDefault();
+  }
+  
+  // Init textExt just before displaying
+  CloudLogin.initTextExt();
+  
+  CloudLogin.scrollTo("#StepEmail");
+  return false;
+}
+
+/**
  * Initialize jquery module textext (http://textextjs.com)
  */
 CloudLogin.initTextExt = function() {
@@ -568,18 +588,6 @@ CloudLogin.initTextExt = function() {
       return;
     }
   );
-}
-
-/**
- * Show step Email
- */
-CloudLogin.showStepEmail = function() {
-  $('#StepProfile').hide();
-  $('#StepSpace').hide();
-  $('#StepEmail').show();
-  
-  // Init textExt just before displaying
-  CloudLogin.initTextExt();
 }
 
 /**

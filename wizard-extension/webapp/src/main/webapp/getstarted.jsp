@@ -53,6 +53,7 @@
     <script type="text/javascript" src="<%=request.getContextPath()%>/js/jquery-file-upload/jquery.iframe-transport.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/js/jquery-file-upload/jquery.fileupload.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/js/textext-1.3.0.js"></script>
+    <script type="text/javascript" src="<%=request.getContextPath()%>/js/jquery.scrollTo.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/js/cloudlogin.js"></script>
 
   </head>
@@ -61,108 +62,114 @@
   <div id="wrapper">
     <div id="mask">
 
-    <div class="UIFormBox StartedStep" style="display: block;" name="" id="StepProfile" >
-      <h1 class="StartedBarBG">Welcome to Cloud Workspaces - Get started in 3 easy steps</h1>
-      <div class="Steps" id="">
-        <span class="StepBG"></span>
-        <a href="#StepProfile" onclick="CloudLogin.doNothing(event);" class="StepSelectIcon panel" style="left: 60px;">1</a><a href="#StepSpace" class="StepIcon panel" onclick="CloudLogin.validateStepProfile(event);" style="left: 310px;" >2</a><a href="#StepEmail" onclick="CloudLogin.doNothing(event);" class="StepIcon panel" style="left: 569px;">3</a>
-      </div>
-      <h3>Step 1: Complete your profile</h3>
-      <table class="BorderDot" cols="2">
-        <tbody>
-          <tr>
-            <td class="FieldLabel UserInput">First and Last name:</td>
-            <td class="FieldComment FieldMini" colspan='2'>
-              <input type="text" id="firstNameProfile" value="<%=(firstName!=null ? firstName : "")%>">
-              <input type="text" id="lastNameProfile" value="<%=(lastName!=null ? lastName : "")%>">
-            </td>
-          </tr>
-          <tr>
-            <td class="FieldLabel UserInput">Your current position:</td>
-            <td class="FieldComment" colspan='2'><input type="text" id="posProfile"></td>
-          </tr>
-          <tr>
-            <td class="FieldLabel UserInput">Add a profile picture:</td>
-            <td class="FormInput">
-              <div class="ClearFix HelpText" id="fileDropZone">
-                <span class="FR">
-                  <img id="avatarImage" alt="" src="<%=request.getContextPath()%>/background/img_avt.png" style="width: 80px;height: 77px;" />
-                </span>
-                <div class="LeftAvt">
-                  <p style="text-align: center;">Drag an image here or</p>
-                  <span class="fileinput-button">
-                    <div class="BTBrowse">Browse</div>
-                    <input type="file" name="datafile" id="datafile" />
+    <div class="item" id="StepProfile">
+      <div class="UIFormBox StartedStep content" name="" >
+        <h1 class="StartedBarBG">Welcome to Cloud Workspaces - Get started in 3 easy steps</h1>
+        <div class="Steps" id="">
+          <span class="StepBG"></span>
+          <a href="#StepProfile" onclick="CloudLogin.doNothing(event);" class="StepSelectIcon panel" style="left: 60px;">1</a><a href="#StepSpace" class="StepIcon panel" onclick="CloudLogin.validateStepProfile(event);" style="left: 310px;" >2</a><a href="#StepEmail" onclick="CloudLogin.doNothing(event);" class="StepIcon panel" style="left: 569px;">3</a>
+        </div>
+        <h3>Step 1: Complete your profile</h3>
+        <table class="BorderDot" cols="2">
+          <tbody>
+            <tr>
+              <td class="FieldLabel UserInput">First and Last name:</td>
+              <td class="FieldComment FieldMini" colspan='2'>
+                <input type="text" id="firstNameProfile" value="<%=(firstName!=null ? firstName : "")%>">
+                <input type="text" id="lastNameProfile" value="<%=(lastName!=null ? lastName : "")%>">
+              </td>
+            </tr>
+            <tr>
+              <td class="FieldLabel UserInput">Your current position:</td>
+              <td class="FieldComment" colspan='2'><input type="text" id="posProfile"></td>
+            </tr>
+            <tr>
+              <td class="FieldLabel UserInput">Add a profile picture:</td>
+              <td class="FormInput">
+                <div class="ClearFix HelpText" id="fileDropZone">
+                  <span class="FR">
+                    <img id="avatarImage" alt="" src="<%=request.getContextPath()%>/background/img_avt.png" style="width: 80px;height: 77px;" />
                   </span>
+                  <div class="LeftAvt">
+                    <p style="text-align: center;">Drag an image here or</p>
+                    <span class="fileinput-button">
+                      <div class="BTBrowse">Browse</div>
+                      <input type="file" name="datafile" id="datafile" />
+                    </span>
+                  </div>
                 </div>
-              </div>
-            </td>
-            <td class="FormButton"> <input type="button" onclick="CloudLogin.validateStepProfile(event);" value="Next" id="t_submit_profile" class="Button" /></td>
-          </tr>
-        </tbody>
-      </table>
-      <div class="ClearFix StartTip">
-        <a href="#" class="FR RightStartTip"><img width="264" src="<%=request.getContextPath()%>/background/wizard_1.png" alt=""/></a>
-        <p class="LeftStartTip"><strong>Tip:</strong> Find and connect with your colleagues to see their latest updates in your activity stream.</p>
+              </td>
+              <td class="FormButton"> <input type="button" onclick="CloudLogin.validateStepProfile(event);" value="Next" id="t_submit_profile" class="Button" /></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="ClearFix StartTip">
+          <a href="#" class="FR RightStartTip"><img width="264" src="<%=request.getContextPath()%>/background/wizard_1.png" alt=""/></a>
+          <p class="LeftStartTip"><strong>Tip:</strong> Find and connect with your colleagues to see their latest updates in your activity stream.</p>
+        </div>
+        <div class="Link"><a href="#" onclick="CloudLogin.exit();" class="Link">Skip to homepage >></a></div>
       </div>
-      <div class="Link"><a href="#" onclick="CloudLogin.exit();" class="Link">Skip to homepage >></a></div>
     </div>
 
-    <form class="UIFormBox StartedStep" style="display: none;" name="" id="StepSpace" method="POST" action="javascript:void(0);" >
-      <h1 class="StartedBarBG">Welcome to Cloud Workspaces - Get started in 3 easy steps</h1>
-      <div class="Steps" id="">
-        <span class="StepBG"></span>
-        <a href="#" onclick="CloudLogin.showStepProfile(event);" class="StartedIcon" style="left: 60px;">1</a><a href="#" onclick="CloudLogin.doNothing(event);" class="StepSelectIcon" style="left: 310px;" >2</a><a href="#" onclick="CloudLogin.validateStepSpace(event);" class="StepIcon" style="left: 569px;">3</a>
+    <div class="item" id="StepSpace">
+      <div class="UIFormBox StartedStep content" name="" >
+        <h1 class="StartedBarBG">Welcome to Cloud Workspaces - Get started in 3 easy steps</h1>
+        <div class="Steps" id="">
+          <span class="StepBG"></span>
+          <a href="#StepProfile" onclick="CloudLogin.showStepProfile(event);" class="StartedIcon panel" style="left: 60px;">1</a><a href="#StepSpace" onclick="CloudLogin.doNothing(event);" class="StepSelectIcon panel" style="left: 310px;" >2</a><a href="#StepEmail" onclick="CloudLogin.validateStepSpace(event);" class="StepIcon panel" style="left: 569px;">3</a>
+        </div>
+        <h3>Step 2: Join Spaces</h3>
+        <p>Create your own collaboration spaces for teams or specific projects. We've set up your first space to help you get started.</p>
+        <table class="BorderDot" cols="2">
+          <tbody>
+            <tr>
+              <td class="FormInput CheckBox" id="SpacesContainer" style="display: none;">
+                <ul id="SpacesContent" class="ClearFix">
+                </ul>
+              </td>
+              <td class="FormInput CheckBox" id="SpacesLoader">
+                <img src="<%=request.getContextPath()%>/background/loader.gif" />
+              </td>
+              <td class="FormButton"> <input type="button" onclick="CloudLogin.validateStepSpace(event);" value="Next" id="t_submit_space" class="Button" /></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="ClearFix StartTip">
+          <a href="#" class="FR RightStartTip"><img width="264" src="<%=request.getContextPath()%>/background/wizard_2.png" alt=""/></a>
+          <p class="LeftStartTip"><strong>Tip:</strong> Spaces provide the tools to make your internal work more productive, including wikis, forums, group calendars and more.</p>
+        </div>
+        <div class="Link"><a href="#" onclick="CloudLogin.exit();">Skip to homepage &gt;&gt;</a></div>
       </div>
-      <h3>Step 2: Join Spaces</h3>
-      <p>Create your own collaboration spaces for teams or specific projects. We've set up your first space to help you get started.</p>
-      <table class="BorderDot" cols="2">
-        <tbody>
-          <tr>
-            <td class="FormInput CheckBox" id="SpacesContainer" style="display: none;">
-              <ul id="SpacesContent" class="ClearFix">
-              </ul>
-            </td>
-            <td class="FormInput CheckBox" id="SpacesLoader">
-              <img src="<%=request.getContextPath()%>/background/loader.gif" />
-            </td>
-            <td class="FormButton"> <input type="button" onclick="CloudLogin.validateStepSpace(event);" value="Next" id="t_submit_space" class="Button" /></td>
-          </tr>
-        </tbody>
-      </table>
-      <div class="ClearFix StartTip">
-        <a href="#" class="FR RightStartTip"><img width="264" src="<%=request.getContextPath()%>/background/wizard_2.png" alt=""/></a>
-        <p class="LeftStartTip"><strong>Tip:</strong> Spaces provide the tools to make your internal work more productive, including wikis, forums, group calendars and more.</p>
-      </div>
-      <div class="Link"><a href="#" onclick="CloudLogin.exit();">Skip to homepage &gt;&gt;</a></div>
-  </form>
+    </div>
 
-    <form class="UIFormBox StartedStep StepEmail" style="display: none;" name="" id="StepEmail" method="POST" action="javascript:void(0);" >
-      <h1 class="StartedBarBG">Welcome to Cloud Workspaces - Get started in 3 easy steps</h1>
-      <div class="Steps" id="">
-        <span class="StepBG"></span>
-        <a href="#" onclick="CloudLogin.doNothing(event);" class="StartedIcon" style="left: 60px;">1</a><a href="#" onclick="CloudLogin.doNothing(event);" class="StartedIcon" style="left: 310px;" >2</a><a href="#" onclick="CloudLogin.doNothing(event);" class="StepSelectIcon" style="left: 569px;">3</a>
-      </div>
-      <h3>Step 3: Invite Coworkers</h3>
-      <p class="ST3"><strong>Send email invitations to your coworkers to connect with them in your social intranet.</strong><br/>(note: Only people with the same email @domain name will be invited to your social intranet. Other addresses will receive an invitation to discover Cloud Workspaces)</p>
+    <div class="item" id="StepEmail">
+      <div class="UIFormBox StartedStep StepEmail content" name="" >
+        <h1 class="StartedBarBG">Welcome to Cloud Workspaces - Get started in 3 easy steps</h1>
+        <div class="Steps" id="">
+          <span class="StepBG"></span>
+          <a href="#StepProfile" onclick="CloudLogin.doNothing(event);" class="StartedIcon" style="left: 60px;">1</a><a href="#StepSpace" onclick="CloudLogin.doNothing(event);" class="StartedIcon" style="left: 310px;" >2</a><a href="#StepEmail" onclick="CloudLogin.doNothing(event);" class="StepSelectIcon" style="left: 569px;">3</a>
+        </div>
+        <h3>Step 3: Invite Coworkers</h3>
+        <p class="ST3"><strong>Send email invitations to your coworkers to connect with them in your social intranet.</strong><br/>(note: Only people with the same email @domain name will be invited to your social intranet. Other addresses will receive an invitation to discover Cloud Workspaces)</p>
 
-      <div id="messageString" class="TenantFormMsg" style="display:none"></div>
-      <table class="BorderDot">
-        <tbody>
-          <tr>
-            <td class="FormInput">
-              <textarea id="email" name="" class="required InputText"></textarea>
-            </td>
-            <td class="FormButton"> <input type="button" onclick="CloudLogin.validateStepEmail(event);" value="Finish" id="t_submit_email" class="Button" /></td>
-          </tr>
-        </tbody>
-      </table>
-      <div class="ClearFix StartTip">
-        <a href="#" class="FR RightStartTip" ><img height="140px" style="padding-right: 60px" src="<%=request.getContextPath()%>/background/wizard_3.png" alt=""/></a>
-        <p class="LeftStartTipST3" style="margin-right: 355px"><strong>Tip:</strong> Easily access your documents on your iPhone, iPad or Android device with the eXo mobile app.</p>
+        <div id="messageString" class="TenantFormMsg" style="display:none"></div>
+        <table class="BorderDot">
+          <tbody>
+            <tr>
+              <td class="FormInput">
+                <textarea id="email" name="" class="required InputText"></textarea>
+              </td>
+              <td class="FormButton"> <input type="button" onclick="CloudLogin.validateStepEmail(event);" value="Finish" id="t_submit_email" class="Button" /></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="ClearFix StartTip">
+          <a href="#" class="FR RightStartTip" ><img height="140px" style="padding-right: 60px" src="<%=request.getContextPath()%>/background/wizard_3.png" alt=""/></a>
+          <p class="LeftStartTipST3" style="margin-right: 355px"><strong>Tip:</strong> Easily access your documents on your iPhone, iPad or Android device with the eXo mobile app.</p>
+        </div>
+        <div class="Link"><a href="#" onclick="CloudLogin.exit();" class="Link">Skip to homepage >></a></div>
       </div>
-      <div class="Link"><a href="#" onclick="CloudLogin.exit();" class="Link">Skip to homepage >></a></div>
-  </form>
+    </div>
 
   </div>
   </div>
