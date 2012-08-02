@@ -44,7 +44,6 @@ import com.exoplatform.cloudworkspaces.rest.CloudWorkspacesInfoService;
 import com.exoplatform.cloudworkspaces.rest.CloudWorkspacesTenantService;
 import com.exoplatform.cloudworkspaces.users.UserLimitsStorage;
 import com.exoplatform.cloudworkspaces.users.UsersManager;
-import org.everrest.core.ResourceBinder;
 import org.exoplatform.ide.shell.server.CLIResourceFactory;
 import org.exoplatform.ide.shell.server.rest.CLIResourcesService;
 import org.exoplatform.ide.shell.server.rest.DummyConfigurationService;
@@ -60,8 +59,6 @@ public class CloudWorkspacesAdminApplicationComposer extends CloudAdminApplicati
   protected void doComposeApplication(MutablePicoContainer container, ServletContext servletContext) {
     super.doComposeApplication(container, servletContext);
     container.addComponent(CLIResourceFactory.class);
-    container.addComponent(ResourceBinder.class,
-                           servletContext.getAttribute(ResourceBinder.class.getName()));
 
     container.addComponent(UserLimitsStorage.class);
     container.addComponent(WorkspacesOrganizationRequestPerformer.class);
