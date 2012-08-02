@@ -26,6 +26,8 @@
   and thus are ignored when reading this file. Do not forget to remove
   <!.. ..> that surrounds them.
 -->
+  <role rolename="users"/>
+
   <role rolename="cloud-admin"/>
   <user username="cloudadmin" password="cloudadmin" roles="cloud-admin,users"/>
 
