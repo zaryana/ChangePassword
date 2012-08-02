@@ -129,9 +129,6 @@ require([ "cloud/tenant", "cloud/marketo", "cloud/marketo.cookies", "cloud/track
 			imageObj.src = imageSrc;
 		}
 
-		// load trackers
-		trackers.load();
-
 		// init if it's Try Again page
 		var tryagainMessage = getCookie("tryagainMessage");
 		if (tryagainMessage != null) {

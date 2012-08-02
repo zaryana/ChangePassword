@@ -20,9 +20,6 @@ require([ "cloud/tenant", "cloud/marketo", "cloud/trackers", "cloud/support", "t
 
 	// init *done page
 	$(function() {
-		// load trackers
-		trackers.load();
-
 		var email = location.hash.substring(1);
 		if (email) {
 			var userinfo = tenant.getUserInfo(email);

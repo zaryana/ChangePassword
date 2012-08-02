@@ -1,30 +1,49 @@
-require(["jquery", "jquery.validate", "cloud/tenant", "cloud/marketo"], function($, validate, tenant, marketo) {
+require([ "jquery", "jquery.validate", "cloud/tenant", "cloud/marketo" ], function($, validate, tenant, marketo) {
 
 	function showContactUs() {
-		
+		sendRequest({
+			url : url,
+			method : "GET",
+			handler : onReceiveShowContactFormResponse,
+			isAssinchronous : false,
+			showLoader : false
+		});
 	}
-	
-	function sendContact() {
-		var url = tenantServicePath + "/contactus";
-	  var valid = $("#mycontactForm").valid();
-	  if (!valid)
-	    return;
-	  tenants.xmlhttpPost(url, tenants.handleContactResponse, tenants.getquerystringContactUs, null);
 
-	  // document.getElementById(CONTACT_US_CONTAINER_ID).style.display = "none";
-	  // document.getElementById(MASK_LAYER_ID).style.display = "none";
-	  $("#submitButton").val("Wait...");
-	  $("$cancelButton").attr("disabled", "disabled");
+	function sendContact() {
+		var valid = $("#mycontactForm").valid();
+		if (valid) {
+			$("#submitButton").val("Wait...");
+			$("$cancelButton").attr("disabled", "disabled");
+			
+			tenant.sendFeedback({
+				"user-mail" : $.trim($("#email").val()),
+				"user-name" : $.trim($("#name").val()),
+				"subject" : $.trim($("#subject").val()),
+				"text" : $.trim($("#ContactUs_Message__c").val())
+			},{
+				
+			});
+		}	
 	}
-	
+
 	function cancel() {
-		$('#MaskLayer').hide(); 
-		hideContactUsForm();
+		$("#MaskLayer").hide();
+		$("#contactUsContainer").hide();
+		
+		//var container = document.getElementById(CONTACT_US_CONTAINER_ID);
+		//container.innerHTML = "";
+		//container.style.display = "none";
+		//return false;
 	}
-	
+
 	$(function() {
-		$("#submitButton").click(sendContact);
-		$("#cancelButton").click(cancel);
+		if ($("#showContactUs").length > 0) {
+			$("#showContactUs").click(showContactUs);
+		} else if ($("#submitButton").length > 0 && $("#cancelButton").length > 0) {
+			$("#submitButton").click(sendContact);
+			$("#cancelButton").click(cancel);
+		}
 	});
-	
+
 });

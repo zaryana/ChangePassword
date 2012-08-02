@@ -11,7 +11,7 @@
     <div class="UIPageBody" id="Content" style="display:none;"></div>
     <div class="UIPageBody ContactPages" id="ContactForm" style="margin: 0px auto; min-height: 0px;">
     <div style="position: absolute; left: 0px; top: 0px; width: 100%; height: 100%; background: #000000; opacity: 0.5; filter: alpha(opacity = 20); ZOOM: 1"></div>
-	  <form class="UIForm UIFormBox" action="javascript:void(0);"  method="post" name="" id="mycontactForm" style="top: 66px;">
+	  <form class="UIForm UIFormBox" action="javascript:void(0);"  method="post" id="mycontactForm" style="top: 66px;">
 		<h1 class="TitleForm">Contact Us</h1>
 		<div id="messageString" class="TenantFormMsg"></div>
         <div id="formDisplay">

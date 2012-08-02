@@ -17,9 +17,5 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 require([ "cloud/trackers", "cloud/support" ], function(trackers, support) {
-	
-	$(function() {
-		trackers.load();
-	});
-
+	// empty, all work done in required modules
 });

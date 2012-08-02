@@ -231,7 +231,7 @@ public class NotificationMailSender {
     }
   }
 
-  public void sendContactUsEmail(String userMail, String firstName, String subject, String text) {
+  public void sendContactUsEmail(String userMail, String userName, String subject, String text) {
 
     String mailTemplate = cloudAdminConfiguration.getString(MailingProperties.CLOUD_ADMIN_MAIL_CONTACT_TEMPLATE,
                                                             "");
@@ -240,7 +240,7 @@ public class NotificationMailSender {
 
     Map<String, String> props = new HashMap<String, String>();
     props.put("user.mail", userMail);
-    props.put("user.name", firstName);
+    props.put("user.name", userName);
     props.put("message", text);
     try {
       mailSender.sendMail(buildSupportHeaders(email,

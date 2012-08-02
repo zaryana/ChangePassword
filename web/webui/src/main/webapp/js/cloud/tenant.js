@@ -180,6 +180,16 @@ define([ "jquery" ], function() {
 			} else {
 				return info;
 			}
+		};
+		
+		this.sendFeedback = function() {
+			var request = $.ajax({
+				async : true,
+				url : tenantServicePath + "/contactus",
+				dataType : 'json'
+			});
+			
+			tenants.xmlhttpPost(url, tenants.handleContactResponse, tenants.getquerystringContactUs, null);
 		}
 	};
 
