@@ -155,7 +155,6 @@ define([ "jquery" ], function() {
 			});
 
 			initRequestDefaults(request, callbacks);
-
 		};
 
 		this.getUserInfo = function(email) {
@@ -186,10 +185,11 @@ define([ "jquery" ], function() {
 			var request = $.ajax({
 				async : true,
 				url : tenantServicePath + "/contactus",
-				dataType : 'json'
+				dataType : "text"
 			});
 			
-			tenants.xmlhttpPost(url, tenants.handleContactResponse, tenants.getquerystringContactUs, null);
+			initRequestDefaults(request, callbacks);
+			//tenants.xmlhttpPost(url, tenants.handleContactResponse, tenants.getquerystringContactUs, null);
 		}
 	};
 

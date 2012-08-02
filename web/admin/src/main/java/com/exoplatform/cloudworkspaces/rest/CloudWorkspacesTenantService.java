@@ -696,9 +696,10 @@ public class CloudWorkspacesTenantService {
   @Path("/contactus")
   public Response contactUs(@FormParam("user-mail") String userMail,
                             @FormParam("user-name") String userName,
+                            @FormParam("user-phone") String userPhone,
                             @FormParam("subject") String subject,
                             @FormParam("text") String text) {
-    notificationMailSender.sendContactUsEmail(userMail, userName, subject, text);
+    notificationMailSender.sendContactUsEmail(userMail, userName, userPhone, subject, text);
     return Response.ok().build();
   }
 

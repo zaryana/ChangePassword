@@ -5,7 +5,7 @@
     <% String pageName = "Thank You for Contacting Us"; %>
     <%@ include file="common/headStyle.jsp"%>
     <%@ include file="common/headScript.jsp"%>
-    <script type="text/javascript" data-main="done" src="/js/require-2.0.4.min.js"></script>
+    <script type="text/javascript" data-main="static" src="/js/require-2.0.4.min.js"></script>
   </head>
   <body>
     <div class="UIPageContainer">

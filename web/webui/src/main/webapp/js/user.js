@@ -18,8 +18,6 @@
  */
 require([ "cloud/tenant", "cloud/marketo", "cloud/trackers", "cloud/support" ], function(tenant, marketo, trackers, support) {
 
-	var namePattern = "^[A-Za-z][\u0000-\u007F\u0080-\u00FFa-zA-Z0-9 '&-.]*[A-Za-z0-9]$";
-
 	function fillForm(uuid) {
 		if (uuid != "") {
 			tenant.getEmail({

@@ -899,6 +899,7 @@ input.Button {
 
 /* Contact us page */
 .MarkLayer{
+  z-index: 110;
   background: black;
   opacity: 0.4;
   filter: alpha(opacity=40);
@@ -908,8 +909,8 @@ input.Button {
 
 .ContactPages .UIFormBox {
   position: absolute;
-  z-index: 10;
-  top: 100px;
+  z-index: 120;
+  top: 200px;
   left: 290px;
   background: white;
   border: none;

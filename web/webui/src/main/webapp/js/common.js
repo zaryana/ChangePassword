@@ -26,8 +26,12 @@ if (location.port) {
 
 var prefixUrl = location.protocol + "//" + hostName;
 
-var user;
-var auth = null;
+// var user; // TODO
+// var auth = null; // TODO
+
+// for validation
+var emailPattern = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+var namePattern = "^[A-Za-z][\u0000-\u007F\u0080-\u00FFa-zA-Z0-9 '&-.]*[A-Za-z0-9]$";
 
 // for thickbox
 var tb_pathToImage = "/background/img_video.png";

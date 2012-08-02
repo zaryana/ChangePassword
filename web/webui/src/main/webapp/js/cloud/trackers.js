@@ -21,13 +21,13 @@
  * This module can be used as regular Javascript and as AMD dependency.
  * */
 (function() {
-	function Trackers() {
-		/**
-		 * Sends data to Marketo and Google Analytics if this is page from domain with TARGET_DOMAIN_NAME_FOR_TRACKING
-		 */
-		var MARKETO_TRACKER_ID = "577-PCT-880";
-		var TARGET_DOMAIN_NAME_FOR_TRACKING = "cloud-workspaces.com";
+	/**
+	 * Sends data to Marketo and Google Analytics if this is page from domain with TARGET_DOMAIN_NAME_FOR_TRACKING
+	 */
+	var MARKETO_TRACKER_ID = "577-PCT-880";
+	var TARGET_DOMAIN_NAME_FOR_TRACKING = "cloud-workspaces.com";
 
+	function Trackers() {
 		/**
 		 * Send data to Google Analytics
 		 */
@@ -78,18 +78,17 @@
 		$(function() {
 			var t = new Trackers();
 			t.load();
+			return t;
 		});
 	};
-	
+
 	if (typeof define === 'function' && define.amd) {
-	  // Register as an anonymous AMD module
+		// Register as an anonymous AMD module
 		define([ "jquery", "jquery.string", "cloud/marketo" ], function() {
-			loadAll();
-		});	
+			return loadAll();
+		});
 	} else {
-	  // Browser globals
+		// Browser globals
 		loadAll();
 	}
 })();
-
-

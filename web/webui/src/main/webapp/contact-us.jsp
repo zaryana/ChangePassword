@@ -5,7 +5,7 @@
     <% String pageName = "Cloud-workspaces Contact Us"; %>
     <%@ include file="common/headStyle.jsp"%>
     <%@ include file="common/headScript.jsp"%>
-    <script type="text/javascript" data-main="support" src="/js/require-2.0.4.min.js"></script>
+    <script type="text/javascript" data-main="cloud/support" src="/js/require-2.0.4.min.js"></script>
   </head>
   <body>
     <div class="UIPageBody" id="Content" style="display:none;"></div>
@@ -17,33 +17,33 @@
         <div id="formDisplay">
           <table cols="2">
             <tr>
-             <td class="Field">First Name:</td><td> <input class="required InputText" type="text" name="FirstName" id="FirstName" value="" /></td>
+             <td class="Field">First Name:</td><td> <input class="required InputText" type="text" name="first_name" id="first_name" value="" /><span class="Star">*</span></td>
            </tr>
             <tr>
-             <td class="Field">Last Name:</td><td> <input class="required InputText" type="text" name="LastName" id="LastName" value="" /></td>
+             <td class="Field">Last Name:</td><td> <input class="required InputText" type="text" name="last_name" id="last_name" value="" /><span class="Star">*</span></td>
            </tr>
            <tr>
-            <td class="Field">Your email:</td><td> <input class="required InputText" type="text" name="email" id="email" value="" /></td>
+            <td class="Field">Your email:</td><td> <input class="required InputText" type="text" name="email" id="email" value="" /><span class="Star">*</span></td>
            </tr>
            <tr>
-            <td class="Field">Phone:</td><td> <input class="required InputText" type="text" name="Phone" id="Phone" /></td>
+            <td class="Field">Phone:</td><td> <input class="required InputText" type="text" name="phone" id="phone_work" /><span class="Star">*</span></td>
           </tr>
            <tr>
-            <td class="Field">Subject:</td><td> <input class="required InputText" type="text" name="subject" id="subject" /></td>
+            <td class="Field">Subject:</td><td> <input class="required InputText" type="text" name="subject" id="subject" /><span class="Star">*</span></td>
            </tr>
            <tr>
-            <td class="Field">Message:</td><td> <textarea class="required" type="text" name="ContactUs_Message__c" id="ContactUs_Message__c"></textarea></td>
+            <td class="Field">Message:</td><td> <textarea class="required" name="message" id="message"></textarea></td>
            </tr>
            <tr>
             <td class="Field"></td>
             <td>
-            <input class="Button" type="submit" id="submitButton" value="Send" onClick="tenants.doContactRequest();" />
+            <input class="Button" type="submit" id="submitButton" value="Send" />
             <input class="Button ButtonGray" type="submit" id="cancelButton" value="Cancel" />
             </td>
            </tr>
           </table>
           <!-- Marketo input hidden fields -->
-          <input name="LeadSource" id="LeadSource" type='hidden' value="Web - Cloud Workspaces" />
+          <input type="hidden" name="LeadSource" id="LeadSource" value="Web - Cloud Workspaces" />
           <input type="hidden" name="_marketo_comments" value="" />
           <input type="hidden" name="lpId" value="1028" />
           <input type="hidden" name="subId" value="46" />
