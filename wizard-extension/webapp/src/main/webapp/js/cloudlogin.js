@@ -154,14 +154,17 @@ CloudLogin.initUploadFile = function() {
         console.log("upload done !");
 
         /* Only supported by HTML5 browser */
-        if (typeof window.FileReader != 'undefined'){
+        if (typeof window.FileReader !== 'undefined'){
             var file = data.files[0],
             reader = new FileReader();
-            reader.onload = function () {
+            reader.onload = function (event) {
                 $("#avatarImage").attr("src", event.target.result);
                 CloudLogin.AVATAR_URL = event.target.result;
             }
             reader.readAsDataURL(file);
+        }
+        else {
+          $("#avatarImage").attr("src", CloudLogin.CONTEXT_PATH + '/background/check.png');
         }
 
         /** TODO this code is the good one **/
