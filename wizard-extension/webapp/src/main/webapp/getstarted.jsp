@@ -67,7 +67,7 @@
         <h1 class="StartedBarBG">Welcome to Cloud Workspaces - Get started in 3 easy steps</h1>
         <div class="Steps" id="">
           <span class="StepBG"></span>
-          <a href="#StepProfile" onclick="CloudLogin.doNothing(event);" class="StepSelectIcon panel" style="left: 60px;">1</a><a href="#StepSpace" class="StepIcon panel" onclick="CloudLogin.validateStepProfile(event);" style="left: 310px;" >2</a><a href="#StepEmail" onclick="CloudLogin.doNothing(event);" class="StepIcon panel" style="left: 569px;">3</a>
+          <span class="StepSelectIcon panel" style="left: 60px;">1</span><span class="StepIcon panel" style="left: 310px;" >2</span><span class="StepIcon panel" style="left: 569px;">3</span>
         </div>
         <h3>Step 1: Complete your profile</h3>
         <table class="BorderDot" cols="2">
@@ -116,7 +116,7 @@
         <h1 class="StartedBarBG">Welcome to Cloud Workspaces - Get started in 3 easy steps</h1>
         <div class="Steps" id="">
           <span class="StepBG"></span>
-          <a href="#StepProfile" onclick="CloudLogin.showStepProfile(event);" class="StartedIcon panel" style="left: 60px;">1</a><a href="#StepSpace" onclick="CloudLogin.doNothing(event);" class="StepSelectIcon panel" style="left: 310px;" >2</a><a href="#StepEmail" onclick="CloudLogin.validateStepSpace(event);" class="StepIcon panel" style="left: 569px;">3</a>
+          <span class="StartedIcon panel" style="left: 60px;">1</span><span class="StepSelectIcon panel" style="left: 310px;" >2</span><span class="StepIcon panel" style="left: 569px;">3</span>
         </div>
         <h3>Step 2: Join Spaces</h3>
         <p>Create your own collaboration spaces for teams or specific projects. We've set up your first space to help you get started.</p>
@@ -147,7 +147,7 @@
         <h1 class="StartedBarBG">Welcome to Cloud Workspaces - Get started in 3 easy steps</h1>
         <div class="Steps" id="">
           <span class="StepBG"></span>
-          <a href="#StepProfile" onclick="CloudLogin.doNothing(event);" class="StartedIcon" style="left: 60px;">1</a><a href="#StepSpace" onclick="CloudLogin.doNothing(event);" class="StartedIcon" style="left: 310px;" >2</a><a href="#StepEmail" onclick="CloudLogin.doNothing(event);" class="StepSelectIcon" style="left: 569px;">3</a>
+          <span class="StartedIcon panel" style="left: 60px;">1</span><span class="StartedIcon panel" style="left: 310px;" >2</span><span class="StepSelectIcon panel" style="left: 569px;">3</span>
         </div>
         <h3>Step 3: Invite Coworkers</h3>
         <p class="ST3"><strong>Send email invitations to your coworkers to connect with them in your social intranet.</strong><br/>(note: Only people with the same email @domain name will be invited to your social intranet. Other addresses will receive an invitation to discover Cloud Workspaces)</p>
