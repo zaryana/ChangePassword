@@ -165,6 +165,7 @@ CloudLogin.initUploadFile = function() {
         }
         else {
           $("#avatarImage").attr("src", CloudLogin.CONTEXT_PATH + '/background/check.png');
+          CloudLogin.AVATAR_URL = CloudLogin.CONTEXT_PATH + '/background/check.png';
         }
 
         /** TODO this code is the good one **/
