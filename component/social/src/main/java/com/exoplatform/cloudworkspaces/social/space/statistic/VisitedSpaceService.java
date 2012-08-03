@@ -20,6 +20,8 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.services.jcr.config.RepositoryConfigurationException;
+import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.core.space.spi.SpaceService;
 
 public class VisitedSpaceService {
 
@@ -36,12 +38,14 @@ public class VisitedSpaceService {
   private Executor executor;
   private String currentRepo;
   private RepositoryService repoService;
+  private SpaceService spaceService;
   
   public VisitedSpaceService(ChromatticManager chromatticManager, NodeHierarchyCreator nodeHierarchyCreator) {
     this.lifeCycle = chromatticManager.getLifeCycle(CHROMATTIC_LIFECYCLE_NAME);
     this.executor = Executors.newCachedThreadPool();
     this.nodeHierarchyCreator = nodeHierarchyCreator;
     this.repoService = (RepositoryService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(RepositoryService.class);
+    this.spaceService = (SpaceService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(SpaceService.class);
   }
 
   public void saveLastVisitedSpaces(final String spaceId, final String userId) {
@@ -140,7 +144,8 @@ public class VisitedSpaceService {
     
     List<String> spacesList = new ArrayList<String>();
     for (int i = spaces.length-1; i >= 0 ; i--) {
-      spacesList.add(spaces[i]);
+      Space space = spaceService.getSpaceByPrettyName(spaces[i]);
+      if (space != null) spacesList.add(spaces[i]);
     } 
     return spacesList;
   }

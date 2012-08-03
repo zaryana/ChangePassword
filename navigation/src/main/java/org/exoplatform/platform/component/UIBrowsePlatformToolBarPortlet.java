@@ -41,7 +41,6 @@ import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import com.exoplatform.cloudworkspaces.social.space.statistic.VisitedSpaceService;
-import org.exoplatform.social.core.service.LinkProvider;
 
 /**
  * Portlet manages profile.<br>
@@ -94,10 +93,6 @@ public class UIBrowsePlatformToolBarPortlet extends UIPortletApplication {
     VisitedSpaceService visitedSpaceService = getApplicationComponent(VisitedSpaceService.class);
     List<String> lastVisitedSpace = visitedSpaceService.getVisitedSpacesList(userId);
     SpaceService spaceService = getApplicationComponent(SpaceService.class);
-    for (int i=0; i<lastVisitedSpace.size(); i++){
-      Space space = spaceService.getSpaceByPrettyName((String) lastVisitedSpace.get(i));
-      if (space == null) lastVisitedSpace.remove(i);
-    }
     return lastVisitedSpace;
   }
   
