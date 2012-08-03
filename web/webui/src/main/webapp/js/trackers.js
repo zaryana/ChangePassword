@@ -61,7 +61,7 @@ function loadGoogleAnalyticsTracker()
  *  Send data to Marketo
  */
 function loadMarketoTracker(){
-   if (jQuery){
+   if (typeof jQuery !== 'undefined'){
       jQuery.ajax({
          url : document.location.protocol + '//munchkin.marketo.net/munchkin.js',
          dataType : 'script',
