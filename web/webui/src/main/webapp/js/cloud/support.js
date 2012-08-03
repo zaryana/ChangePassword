@@ -5,8 +5,8 @@ require([ "cloud/tenant", "cloud/marketo", "cloud/trackers" ], function(tenant, 
 
 		var body = document.body, html = document.documentElement;
 		var height = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight);
-		$("#MaskLayer").css("height", height - 140 + "px");
-		$("#MaskLayer").show();
+		$("#maskLayer").css("height", height - 140 + "px");
+		$("#maskLayer").show();
 
 		var container = $("#contactUsContainer");
 		// Get the window height and width
@@ -100,7 +100,7 @@ require([ "cloud/tenant", "cloud/marketo", "cloud/trackers" ], function(tenant, 
 	function cancel(event) {
 		event.preventDefault();
 
-		$("#MaskLayer").hide();
+		$("#maskLayer").hide();
 		$("#contactUsContainer").hide();
 	}
 

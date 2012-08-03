@@ -224,7 +224,7 @@
                           })();
                        </script>
                        <!-- End Inspectlet Embed Code -->
-                       <script type="text/javascript" src="http://cloud-workspaces.com/js/trackers.js"></script>
+                       <script type="text/javascript" src="/js/cloud/trackers.js"></script>
                        </body>]]></replacevalue>
                       </replace>
                       <zip destfile="${project.build.directory}/platform-cloud-tomcat/webapps/portal.war" basedir="${project.build.directory}/platform-cloud-tomcat/webapps/portal" />

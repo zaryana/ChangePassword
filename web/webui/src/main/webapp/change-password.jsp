@@ -16,9 +16,9 @@
       <div class="UIPageBodyContainer">
         <div class="UIPageBody UIChangePassword">
           <form class="UIFormBox" action="javascript:void(0);"  method="post" id="changePasswordForm">
+            <h1 class="TitleForm">Reset Password</h1>
+            <div class="TenantFormMsg" id="messageString"></div>
             <div id="formDisplay">
-              <h1 class="TitleForm">Reset Password</h1>
-              <div class="TenantFormMsg" id="messageString"></div>
               <table>
                 <tbody>
                   <tr>

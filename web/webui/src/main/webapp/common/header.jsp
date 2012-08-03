@@ -11,5 +11,5 @@
 		<div class="ClouIntranet FR"><h1>Cloud Workspaces</h1><span>The Free Social Intranet for Your Company</span></div>
 	</div>
 </div>
-<div class="MarkLayer" id="MaskLayer" style="width: 100%; display: none;"></div>
+<div class="MarkLayer" id="maskLayer" style="width: 100%; display: none;"></div>
 <div id="contactUsContainer" style="display: none;"></div>
