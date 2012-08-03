@@ -4,8 +4,8 @@
   <head>
     <% String pageName = "Cloud-workspaces Contact Us"; %>
     <%@ include file="common/headStyle.jsp"%>
-    <%@ include file="common/headScript.jsp"%>
-    <script type="text/javascript" data-main="cloud/support" src="/js/require-2.0.4.min.js"></script>
+    <!-- %@ include file="common/headScript.jsp"%>
+    <script type="text/javascript" data-main="cloud/support" src="/js/require-2.0.4.min.js"></script -->
   </head>
   <body>
     <div class="UIPageBody" id="Content" style="display:none;"></div>

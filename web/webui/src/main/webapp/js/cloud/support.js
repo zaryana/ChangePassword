@@ -23,23 +23,18 @@ require([ "cloud/tenant", "cloud/marketo", "cloud/trackers" ], function(tenant, 
 			$("#submitButton").click(sendFeedback);
 			$("#cancelButton").click(cancel);
 
-			// TODO we don't realy need it as all this happens on the initial page url, not contact-us.jsp page
-			// Load JS file
-			// $.getScript("/js/mktFormSupport.js");
-			// Fill data for Marketo form
+			// instead of loading of scripts
+			//$.getScript("/js/mktFormSupport.js");
 			// $.getScript("/js/trackers.js");
+			// just ask modules to do the job
+			marketo.init();
+			trackers.load();
 		});
 	}
 
 	function sendFeedback(event) {
 		event.preventDefault();
 
-		$.validator.setDefaults({
-			errorPlacement : function(error, element) {
-				error.appendTo(element.next());
-			}
-		});
-		
 		$("#mycontactForm").validate({
 			rules : {
 			  email : {
@@ -75,6 +70,7 @@ require([ "cloud/tenant", "cloud/marketo", "cloud/trackers" ], function(tenant, 
 				},
 				done : function(resp) {
 					if (resp == "") {
+						try {
 						marketo.send({
 							"FirstName" : $.trim($("#first_name").val()),
 							"LastName" : $.trim($("#last_name").val()),
@@ -90,9 +86,10 @@ require([ "cloud/tenant", "cloud/marketo", "cloud/trackers" ], function(tenant, 
 						}, function() {
 							window.location = "/contact-us-done.jsp";
 						});
+						} catch(err) {
+							console.log(err);
+						}
 					} else {
-						// $("#MaskLayer").hide();
-						// $("#contactUsContainer").hide();
 						$("#messageString").html(resp);
 					}
 				}

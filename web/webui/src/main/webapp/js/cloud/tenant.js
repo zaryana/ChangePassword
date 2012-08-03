@@ -24,6 +24,16 @@ define([ "jquery" ], function() {
 		var tenantServicePath = accessUrl + "/cloudworkspaces/tenant-service";
 		var tenantSecureServicePath = accessSecureUrl + "/cloudworkspaces/tenant-service"; // TODO remove
 
+		var redirectWrapper = function(callbacks) {
+			return function(data, textStatus, jqXHR) {
+				// custom redirect
+				if (callbacks.redirect) {
+					var location = jqXHR.getResponseHeader("Location");
+					callbacks.redirect(location);
+				}
+			};
+		};
+		
 		var initRequestDefaults = function(request, callbacks) {
 			request.fail(function(jqXHR, textStatus, err) {
 				if (callbacks.fail) {
@@ -49,14 +59,7 @@ define([ "jquery" ], function() {
 				data : data,
 				// contentType: "application/x-www-form-urlencoded",
 				statusCode : {
-					309 : function(data, textStatus, jqXHR) {
-						// custom redirect
-						if (callbacks.redirect) {
-							var location = jqXHR.getResponseHeader("Location");
-							callbacks.redirect(location);
-						}
-					},
-
+					309 : redirectWrapper(callbacks),
 					400 : function(jqXHR, textStatus, err) {
 						// wrong (non company) email
 						if (callbacks.wrongEmail) {
@@ -85,13 +88,7 @@ define([ "jquery" ], function() {
 				url : tenantServicePath + "/join",
 				data : data,
 				statusCode : {
-					309 : function(data, textStatus, jqXHR) {
-						// custom redirect
-						if (callbacks.redirect) {
-							var location = jqXHR.getResponseHeader("Location");
-							callbacks.redirect(location);
-						}
-					}
+					309 : redirectWrapper(callbacks)
 				}
 			});
 
@@ -180,16 +177,48 @@ define([ "jquery" ], function() {
 				return info;
 			}
 		};
-		
-		this.sendFeedback = function() {
+
+		this.sendFeedback = function(data, callbacks) {
 			var request = $.ajax({
 				async : true,
+				type : "POST",
 				url : tenantServicePath + "/contactus",
-				dataType : "text"
+				dataType : "text",
+				data : data
 			});
-			
+
 			initRequestDefaults(request, callbacks);
-			//tenants.xmlhttpPost(url, tenants.handleContactResponse, tenants.getquerystringContactUs, null);
+		}
+
+		this.resetPassword = function(data, callbacks) {
+			var request = $.ajax({
+				async : true,
+				type : "POST",
+				url : tenantServicePath + "/passrestore/" + data.email,
+				dataType : "text",
+				data : data,
+				statusCode : {
+					309 : redirectWrapper(callbacks)
+				}
+			});
+
+			initRequestDefaults(request, callbacks);
+		}
+		
+		this.changePassword = function(data, callbacks) {
+			var request = $.ajax({
+				async : true,
+				type : "POST",
+				processData : false,
+				url : tenantServicePath + "/passconfirm/" + data.email,
+				dataType : "text",
+				data : data,
+				statusCode : {
+					309 : redirectWrapper(callbacks)
+				}
+			});
+
+			initRequestDefaults(request, callbacks);
 		}
 	};
 

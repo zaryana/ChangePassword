@@ -177,5 +177,11 @@ var require = {
 			var re = new RegExp(regexp);
 			return this.optional(element) || re.test(value);
 		}, "Such name cannot be used.");
+		
+		$.validator.setDefaults({
+			errorPlacement : function(error, element) {
+				error.appendTo(element.next());
+			}
+		});
 	}
 };

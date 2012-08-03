@@ -32,6 +32,11 @@ define([ "jquery", "marketo.form" ], function(jQuery, Mkto) {
 			}
 		};
 
+		// for contact-us form, when we load it into an existing page need reinit Marketo
+		this.init = function() {
+			Mkto.init();
+		};
+		
 		this.send = function(data, afterSubmitCallback) {
 			if (data["_mkt_trk"] == "") {
 				afterSubmitCallback();

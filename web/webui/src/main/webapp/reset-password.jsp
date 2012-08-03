@@ -5,8 +5,9 @@
     <% String pageName = "Reset password"; %>
     <%@ include file="common/headStyle.jsp"%>
     <%@ include file="common/headScript.jsp"%>
+    <script type="text/javascript" data-main="user" src="/js/require-2.0.4.min.js"></script>
   </head>
-  <body onLoad="tenants.init();">
+  <body>
     <div class="UIPageContainer">
       <!--begin header-->
       <%@ include file="common/header.jsp"%>
@@ -14,7 +15,7 @@
       <!--begin FormPages-->
       <div class="UIPageBodyContainer">
         <div class="UIPageBody UIResetPassword">
-          <form class="UIFormBox" action="javascript:void(0);" id="resetForm" method="POST">
+          <form class="UIFormBox" action="javascript:void(0);" id="resetPasswordForm" method="post">
             <h1 class="TitleForm">Reset Password</h1>
             <div class="TenantFormMsg" id="messageString"></div>
             <table>
@@ -22,7 +23,7 @@
                 <td class="Field">Your Email:</td><td><input class="required InputText" id="email" type="text" value="Enter Your Email to Reset Your Password" onclick="this.value='';" /><span class="Star">*</span></td>
               </tr>
               <tr>
-                <td class="Field">&nbsp;</td><td><input class="Button" type="submit" id="submitButton" value="Change my password" onClick="tenants.doReset();" /></td>
+                <td class="Field">&nbsp;</td><td><input class="Button" type="submit" id="t_submit" value="Change my password" /></td>
               </tr>
             </table>
           </form>
@@ -32,8 +33,5 @@
       <!--begin Footer-->
       <%@ include file="common/footer.jsp"%>
     </div>
-      
-
-    <script type="text/javascript" src="/js/trackers.js"></script>
   </body>
 </html>

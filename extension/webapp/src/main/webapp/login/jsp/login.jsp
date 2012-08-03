@@ -54,10 +54,8 @@
 
     <link href="/css/Style.css" rel="stylesheet" type="text/css" />
 
-    <script type="text/javascript" src="/js/script.js"></script> 
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js"></script>
-    <script type="text/javascript" src="/js/jquery.validate.min-1.8.1.js"></script>
-
+    <script type="text/javascript" data-main="static" src="/js/require-2.0.4.min.js"></script>
+    
     <script type="text/javascript" src="/eXoResources/javascript/eXo.js"></script>
     <script type="text/javascript" src="/eXoResources/javascript/eXo/portal/UIPortalControl.js"></script>
     <style>
@@ -103,9 +101,7 @@
           fjs.parentNode.insertBefore(js, fjs);
         }(document, 'script', 'facebook-jssdk'));
         
-        function init(){
-        
-          tenants.init();
+        function init() {
           if (window.name == "true") {
                   document.getElementById("messageString").style.display = "block";
                   window.name = "false";

@@ -807,7 +807,7 @@ public class CloudWorkspacesTenantService {
     String tName = userInfo.getTenant();
     String username = userInfo.getUsername();
     workspacesOrganizationRequestPerformer.updatePassword(tName, username, email, password);
-    return Response.ok().build();
+    return Response.ok().entity(tName).build();
   }
 
   /**

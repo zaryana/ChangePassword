@@ -23,37 +23,32 @@ require([ "cloud/tenant", "cloud/marketo", "cloud/trackers", "cloud/support" ], 
 			tenant.getEmail({
 				uuid : uuid
 			}, {
-			  done : function(email) {
-				  if (email != null && email != "") {
-					  try {
-						  var userName = tenant.getUserInfo(email).username;
-						  $("#email").val(email);
-						  $("#username").val(userName);
-						  if (userName.indexOf(".") > 0) {
-							  var splittedName = userName.split('.');
-							  $("#first_name").val(splittedName[0].capitalize());
-							  $("#last_name").val(splittedName[1].capitalize());
-						  } else {
-							  $("#first_name").val(userName);
-						  }
+				done : function(email) {
+					if (email != null && email != "") {
+						try {
+							var userName = tenant.getUserInfo(email).username;
+							$("#email").val(email);
+							$("#username").val(userName);
+							if (userName.indexOf(".") > 0) {
+								var splittedName = userName.split('.');
+								$("#first_name").val(splittedName[0].capitalize());
+								$("#last_name").val(splittedName[1].capitalize());
+							} else {
+								$("#first_name").val(userName);
+							}
 
-						  $("#confirmation-id").val(uuid);
-					  } catch (err) {
-						  logError("user.fillForm(): " + err.message);
-						  formError("Application error: user record not found for " + email + ". Please contact support.");
-					  }
-				  } else {
-					  formError("Application error: email is not found. Please contact support.");
-				  }
-			  },
-			  fail : function(err) {
-				  formError(err); // using error from the server
-				  /*
-					 * var email = $.getUrlVar("email"); if (email != null && email != "") {
-					 * fillForm(email, id); } else { formError(err); // using error from
-					 * the server }
-					 */
-			  }
+							$("#confirmation-id").val(uuid);
+						} catch (err) {
+							logError("user.fillForm(): " + err.message);
+							formError("Application error: user record not found for " + email + ". Please contact support.");
+						}
+					} else {
+						formError("Application error: email is not found. Please contact support.");
+					}
+				},
+				fail : function(err) {
+					formError(err); // using error from the server
+				}
 			});
 		} else {
 			formError("Application error: damaged confirmation id. Please contact support.");
@@ -75,35 +70,29 @@ require([ "cloud/tenant", "cloud/marketo", "cloud/trackers", "cloud/support" ], 
 			return;
 		}
 
-		$.validator.setDefaults({
-			errorPlacement : function(error, element) {
-				error.appendTo(element.next());
-			}
-		});
-
 		$("#registrationForm").validate({
 			rules : {
-			  password : {
-			    required : true,
-			    minlength : 6
-			  },
-			  password2 : {
-			    required : true,
-			    minlength : 6,
-			    equalTo : "#password"
-			  },
-			  company : {
-			    required : true,
-			    regexp : namePattern
-			  },
-			  first_name : {
-			    required : true,
-			    regexp : namePattern
-			  },
-			  last_name : {
-			    required : true,
-			    regexp : namePattern
-			  }
+				password : {
+					required : true,
+					minlength : 6
+				},
+				password2 : {
+					required : true,
+					minlength : 6,
+					equalTo : "#password"
+				},
+				company : {
+					required : true,
+					regexp : namePattern
+				},
+				first_name : {
+					required : true,
+					regexp : namePattern
+				},
+				last_name : {
+					required : true,
+					regexp : namePattern
+				}
 			}
 		});
 
@@ -113,37 +102,37 @@ require([ "cloud/tenant", "cloud/marketo", "cloud/trackers", "cloud/support" ], 
 			$("#t_submit").attr("disabled", "disabled");
 
 			tenant.create({
-			  "user-mail" : $.trim($("#email").val()),
-			  "first-name" : $.trim($("#first_name").val()),
-			  "last-name" : $.trim($("#last_name").val()),
-			  "password" : $.trim($("#password").val()),
-			  "phone" : $.trim($("#phone_work").val()),
-			  "company-name" : $.trim($("#company").val()),
-			  "confirmation-id" : $.trim($("#confirmation-id").val())
+				"user-mail" : $.trim($("#email").val()),
+				"first-name" : $.trim($("#first_name").val()),
+				"last-name" : $.trim($("#last_name").val()),
+				"password" : $.trim($("#password").val()),
+				"phone" : $.trim($("#phone_work").val()),
+				"company-name" : $.trim($("#company").val()),
+				"confirmation-id" : $.trim($("#confirmation-id").val())
 			}, {
-			  fail : function(jqXHR, textStatus, err) {
-				  userError(err);
-			  },
-			  done : function(resp) {
-				  marketo.send({
-				    "Email" : $("#email").val(),
-				    "FirstName" : $("#first_name").val(),
-				    "LastName" : $("#last_name").val(),
-				    "Company" : $("#company").val(),
-				    "Phone" : $("#phone_work").val(),
-				    "Cloud_Workspaces_User__c" : "Yes",
-				    "lpId" : $("input[name=lpId]").val(),
-				    "subId" : $("input[name=subId]").val(),
-				    "formid" : $("input[name=formid]").val(),
-				    "_mkt_trk" : $("input[name=_mkt_trk]").val()
-				  }, function() {
-					  window.location = prefixUrl + "/registration-done.jsp";
-				  });
-			  },
-			  always : function() {
-				  $("#t_submit").removeAttr("disabled");
-				  $("#t_submit").val("Create");
-			  }
+				fail : function(jqXHR, textStatus, err) {
+					userError(err);
+				},
+				done : function(resp) {
+					marketo.send({
+						"Email" : $("#email").val(),
+						"FirstName" : $("#first_name").val(),
+						"LastName" : $("#last_name").val(),
+						"Company" : $("#company").val(),
+						"Phone" : $("#phone_work").val(),
+						"Cloud_Workspaces_User__c" : "Yes",
+						"lpId" : $("input[name=lpId]").val(),
+						"subId" : $("input[name=subId]").val(),
+						"formid" : $("input[name=formid]").val(),
+						"_mkt_trk" : $("input[name=_mkt_trk]").val()
+					}, function() {
+						window.location = prefixUrl + "/registration-done.jsp";
+					});
+				},
+				always : function() {
+					$("#t_submit").removeAttr("disabled");
+					$("#t_submit").val("Create");
+				}
 			});
 		}
 	}
@@ -154,31 +143,25 @@ require([ "cloud/tenant", "cloud/marketo", "cloud/trackers", "cloud/support" ], 
 			return;
 		}
 
-		$.validator.setDefaults({
-			errorPlacement : function(error, element) {
-				error.appendTo(element.next());
-			}
-		});
-
 		$("#joinForm").validate({
 			rules : {
-			  password : {
-			    required : true,
-			    minlength : 6
-			  },
-			  password2 : {
-			    required : true,
-			    minlength : 6,
-			    equalTo : "#password"
-			  },
-			  first_name : {
-			    required : true,
-			    regexp : namePattern
-			  },
-			  last_name : {
-			    required : true,
-			    regexp : namePattern
-			  }
+				password : {
+					required : true,
+					minlength : 6
+				},
+				password2 : {
+					required : true,
+					minlength : 6,
+					equalTo : "#password"
+				},
+				first_name : {
+					required : true,
+					regexp : namePattern
+				},
+				last_name : {
+					required : true,
+					regexp : namePattern
+				}
 			}
 		});
 
@@ -188,50 +171,120 @@ require([ "cloud/tenant", "cloud/marketo", "cloud/trackers", "cloud/support" ], 
 			$("#t_submit").attr("disabled", "disabled");
 
 			tenant.join({
-			  "user-mail" : $.trim($("#email").val()),
-			  "first-name" : $.trim($("#first_name").val()),
-			  "last-name" : $.trim($("#last_name").val()),
-			  "password" : $.trim($("#password").val()),
-			  "confirmation-id" : $.trim($("#confirmation-id").val())
+				"user-mail" : $.trim($("#email").val()),
+				"first-name" : $.trim($("#first_name").val()),
+				"last-name" : $.trim($("#last_name").val()),
+				"password" : $.trim($("#password").val()),
+				"confirmation-id" : $.trim($("#confirmation-id").val())
 			}, {
-			  fail : function(jqXHR, textStatus, err) {
-				  userError(err);
-			  },
-			  done : function() {
-				  marketo.send(marketoUserJoinData(), function() {
-					  var loginUrl = tenant.getLoginUrl({
-					    tenantname : $("#workspace").val(),
-					    username : $("#username").val(), // form already have an username 
-					    password : $("#password").val()
-					  });
-					  window.location = loginUrl;
-				  });
-			  },
-			  redirect : function(location) {
-			  	marketo.send(marketoUserJoinData(), function() {
-					  window.location = location;
-				  });
-			  },
-			  always : function() {
-				  $("#t_submit").removeAttr('disabled');
-				  $("#t_submit").val("Sign In");
-			  }
+				fail : function(jqXHR, textStatus, err) {
+					userError(err);
+				},
+				done : function() {
+					marketo.send(marketoUserJoinData(), function() {
+						var loginUrl = tenant.getLoginUrl({
+							tenantname : $("#workspace").val(),
+							username : $("#username").val(), // form already have an username
+							password : $("#password").val()
+						});
+						window.location = loginUrl;
+					});
+				},
+				redirect : function(location) {
+					marketo.send(marketoUserJoinData(), function() {
+						window.location = location;
+					});
+				},
+				always : function() {
+					$("#t_submit").removeAttr('disabled');
+					$("#t_submit").val("Sign In");
+				}
 			});
 		}
 	}
-	
+
 	// data for join
 	function marketoUserJoinData() {
 		return {
-	    "Email" : $("#email").val(),
-	    "FirstName" : $("#first_name").val(),
-	    "LastName" : $("#last_name").val(),
-	    "Cloud_Workspaces_User__c" : "Yes",
-	    "lpId" : $("input[name=lpId]").val(),
-	    "subId" : $("input[name=subId]").val(),
-	    "formid" : $("input[name=formid]").val(),
-	    "_mkt_trk" : $("input[name=_mkt_trk]").val()
-	  };
+			"Email" : $("#email").val(),
+			"FirstName" : $("#first_name").val(),
+			"LastName" : $("#last_name").val(),
+			"Cloud_Workspaces_User__c" : "Yes",
+			"lpId" : $("input[name=lpId]").val(),
+			"subId" : $("input[name=subId]").val(),
+			"formid" : $("input[name=formid]").val(),
+			"_mkt_trk" : $("input[name=_mkt_trk]").val()
+		};
+	}
+
+	function resetPassword() {
+		$("#t_submit").val("Wait...");
+
+		$("#resetPasswordForm").validate({
+			rules : {
+				email : {
+					required : true,
+				}
+			},
+		});
+
+		if ($("#resePasswordtForm").valid()) {
+			tenant.resetPassword({
+				email : $("#email").val()
+			}, {
+				fail : function(err) {
+					$("#messageString").html(err);
+				},
+				redirect : function(location) {
+					window.location = location;
+				},
+				done : function(resp) {
+					$("#t_submit").hide();
+					$("#messageString").html("<span style=\"color:#19BBE7;\">Request completed, check your email for instructions.</span>");
+				},
+				always : function() {
+					$("#t_submit").val("Change my password");
+				}
+			});
+		}
+	}
+
+	function changePassword() {
+		$("#t_submit").val("Wait...");
+	  
+	  $("#changePasswordForm").validate({
+	    rules : {
+	      password : {
+	        required : true,
+	        minlength : 6,
+	      },
+	      password2 : {
+	        required : true,
+	        minlength : 6,
+	        equalTo : "#password"
+	      }
+	    }
+	  });
+
+	  if ($("#changePasswordForm").valid()) {
+	  	tenant.changePassword({
+	  		uuid : $("#id").val(),
+	  		password : $.trim($("#password").val())
+	  	},{
+	  		fail : function(err) {
+          $("#messageString").html(err);
+          $("#t_submit").val("Submit");
+        },
+        done : function(data) {
+          $("#t_submit").val("Submit");
+          var loginUrl = tenant.getLoginUrl({
+						tenantname : data
+					});
+          $("#messageString").html("<span style=\"color:#19BBE7;\">Success. You can now <a href='" + loginUrl +
+          		"'>login</a> with your new password.</span>");
+        }
+	  	});
+	  }
 	}
 
 	$(function() {
@@ -252,7 +305,17 @@ require([ "cloud/tenant", "cloud/marketo", "cloud/trackers", "cloud/support" ], 
 				} else {
 					formError("Sorry, it's wrong registration link. Please <a class='TenantFormMsg' href='index.jsp'><u>sign up</u></a> again.");
 				}
+			} else if ($("#changePasswordForm").length > 0) {
+				var id = $.getUrlVar('id');
+		    if (id != null && id != "") {
+		      $('#id').val(id);
+		    } else {
+		      $("#messageString").html("Your link to this page is broken. Please, re-request it.");
+		    }
+				$("#t_submit").click(changePassword);
 			}
+		} else if ($("#resetPasswordForm").length > 0) {
+			$("#t_submit").click(resetPassword);
 		}
 	});
 

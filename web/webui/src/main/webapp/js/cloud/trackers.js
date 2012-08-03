@@ -74,21 +74,20 @@
 		};
 	};
 
-	var loadAll = function() {
-		$(function() {
-			var t = new Trackers();
-			t.load();
-			return t;
-		});
-	};
-
 	if (typeof define === 'function' && define.amd) {
 		// Register as an anonymous AMD module
 		define([ "jquery", "jquery.string", "cloud/marketo" ], function() {
-			return loadAll();
+			var t = new Trackers();
+			$(function() {
+				t.load();
+			});
+			return t;
 		});
 	} else {
 		// Browser globals
-		loadAll();
+		$(function() {
+			var t = new Trackers();
+			t.load();
+		});
 	}
 })();
