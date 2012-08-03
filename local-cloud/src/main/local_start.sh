@@ -58,7 +58,7 @@ is_ready "app"
 
   if [ -z "$1" ] || [ "$1" -ne "-no-demo" ] ; then
     #Create sandbox
-    echo -ne "Creating tenant demo \n"
+    echo -ne "\n Creating tenant demo \n"
     res=$(curl --connect-timeout 900 -s  -X POST -u cloudadmin:cloudadmin "http://localhost:8080/rest/private/cloud-admin/tenant-service/create/demo")
     is_ready "demo"
   fi
