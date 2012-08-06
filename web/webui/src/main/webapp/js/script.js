@@ -744,12 +744,12 @@ Tenants.prototype.handleJoinResponse = function(resp) {
 }
 
 Tenants.prototype.handleContactResponse = function(resp) {
-  var splitName = tenants.splitName($('#name').val());
   if (resp == "") {
     sendDataToMarketo({
-      "FirstName" : splitName.getFirstName(),
-      "LastName" : splitName.getLastName(),
+      "FirstName" : $('#FirstName').val(),
+      "LastName" : $('#LastName').val(),
       "Email" : $('#email').val(),
+      "Phone" : $('#Phone').val(),
       "Cloud_Workspaces_Contact_Us_Subject__c" : $('#subject').val(),
       "Cloud_Workspaces_Contact_Us_Message__c" : $('#ContactUs_Message__c').val(),
       "Cloud_Workspaces_User__c" : "Yes",

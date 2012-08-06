@@ -12,7 +12,7 @@
 
   <groupId>com.exoplatform.cloudworkspaces</groupId>
   <artifactId>cloud-workspaces-parent</artifactId>
-  <version>1.1.0-Beta06-SNAPSHOT</version>
+  <version>1.0.0-Beta06</version>
   <packaging>pom</packaging>
   <name>eXo Cloud Workspaces</name>
   <description>Parent POM for Cloud Workspaces projects.</description>
