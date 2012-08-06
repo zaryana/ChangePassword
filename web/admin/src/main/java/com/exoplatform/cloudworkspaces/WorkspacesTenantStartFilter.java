@@ -34,7 +34,6 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 public class WorkspacesTenantStartFilter implements Filter {
 
@@ -76,58 +75,51 @@ public class WorkspacesTenantStartFilter implements Filter {
           return;
         }
 
-        if (isTenantExists(tenant)) {
-          // resume tenant
-          HttpURLConnection connection = null;
-          URL resuming = new URL(resumingPage.replace("${tenant.masterhost}",
-                                                      System.getProperty("tenant.masterhost")));
-          connection = (HttpURLConnection) resuming.openConnection();
-          connection.setRequestMethod("GET");
+        // resume tenant
+        HttpURLConnection connection = null;
+        URL resuming = new URL(resumingPage.replace("${tenant.masterhost}",
+                                                    System.getProperty("tenant.masterhost")));
+        connection = (HttpURLConnection) resuming.openConnection();
+        connection.setRequestMethod("GET");
 
-          connection.connect();
+        connection.connect();
 
-          if (connection.getResponseCode() == 200) {
-            InputStream content = (InputStream) connection.getContent();
-            ByteArrayOutputStream bout = new ByteArrayOutputStream();
-            try {
-              int length = 0;
-              byte[] buf = new byte[10 * 1024];
-              while (length >= 0) {
-                bout.write(buf, 0, length);
-                length = content.read(buf);
-              }
-            } finally {
-              content.close();
-              bout.close();
+        if (connection.getResponseCode() == 200) {
+          InputStream content = (InputStream) connection.getContent();
+          ByteArrayOutputStream bout = new ByteArrayOutputStream();
+          try {
+            int length = 0;
+            byte[] buf = new byte[10 * 1024];
+            while (length >= 0) {
+              bout.write(buf, 0, length);
+              length = content.read(buf);
             }
-            String html = new String(bout.toByteArray());
-            String headTemplate = "<head>";
-            String baseTag = "<base href=\"http://" + System.getProperty("tenant.masterhost")
-                + "\"></base>";
-            String tenantTag = "<span id='tenantname' style='display: none'>" + tenant + "</span>";
-            String contactUsFrom = "onclick=\"showContactUsForm('/contact-us.jsp');\"";
-            String contactUsTo = "target=\"blank\" href=\"/index.jsp\"";
-
-            OutputStream stream = response.getOutputStream();
-            try {
-              int head = html.indexOf(headTemplate);
-              stream.write(html.substring(0, head + headTemplate.length()).getBytes());
-              stream.write(baseTag.getBytes());
-              stream.write(tenantTag.getBytes());
-              int contactUs = html.indexOf(contactUsFrom);
-              stream.write(html.substring(head + headTemplate.length(), contactUs).getBytes());
-              stream.write(contactUsTo.getBytes());
-              stream.write(html.substring(contactUs + contactUsFrom.length()).getBytes());
-            } finally {
-              stream.close();
-            }
+          } finally {
+            content.close();
+            bout.close();
           }
-        } else {
-          ((HttpServletResponse) response).sendRedirect(notFoundPage.replace("${tenant.masterhost}",
-                                                                             System.getProperty("tenant.masterhost"))
-                                                                    .replace("${tenant}", tenant));
-        }
+          String html = new String(bout.toByteArray());
+          String headTemplate = "<head>";
+          String baseTag = "<base href=\"http://" + System.getProperty("tenant.masterhost")
+              + "\"></base>";
+          String tenantTag = "<span id='tenantname' style='display: none'>" + tenant + "</span>";
+          String contactUsFrom = "onclick=\"showContactUsForm('/contact-us.jsp');\"";
+          String contactUsTo = "target=\"blank\" href=\"/index.jsp\"";
 
+          OutputStream stream = response.getOutputStream();
+          try {
+            int head = html.indexOf(headTemplate);
+            stream.write(html.substring(0, head + headTemplate.length()).getBytes());
+            stream.write(baseTag.getBytes());
+            stream.write(tenantTag.getBytes());
+            int contactUs = html.indexOf(contactUsFrom);
+            stream.write(html.substring(head + headTemplate.length(), contactUs).getBytes());
+            stream.write(contactUsTo.getBytes());
+            stream.write(html.substring(contactUs + contactUsFrom.length()).getBytes());
+          } finally {
+            stream.close();
+          }
+        }
       } else {
         chain.doFilter(httpRequest, response);
       }
