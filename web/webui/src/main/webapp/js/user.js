@@ -26,7 +26,12 @@ require([ "cloud/tenant", "cloud/marketo", "cloud/trackers", "cloud/support" ], 
 				done : function(email) {
 					if (email != null && email != "") {
 						try {
-							var userName = tenant.getUserInfo(email).username;
+							var userInfo = tenant.getUserInfo(email);
+							if ($("#workspace").length > 0) {
+								// need for join form' login url
+								$("#workspace").val(userInfo.tenant);
+							}
+							var userName = userInfo.username;
 							$("#email").val(email);
 							$("#username").val(userName);
 							if (userName.indexOf(".") > 0) {
@@ -110,7 +115,7 @@ require([ "cloud/tenant", "cloud/marketo", "cloud/trackers", "cloud/support" ], 
 				"company-name" : $.trim($("#company").val()),
 				"confirmation-id" : $.trim($("#confirmation-id").val())
 			}, {
-				fail : function(jqXHR, textStatus, err) {
+				fail : function(err) {
 					userError(err);
 				},
 				done : function(resp) {
@@ -177,14 +182,14 @@ require([ "cloud/tenant", "cloud/marketo", "cloud/trackers", "cloud/support" ], 
 				"password" : $.trim($("#password").val()),
 				"confirmation-id" : $.trim($("#confirmation-id").val())
 			}, {
-				fail : function(jqXHR, textStatus, err) {
+				fail : function(err) {
 					userError(err);
 				},
 				done : function() {
 					marketo.send(marketoUserJoinData(), function() {
 						var loginUrl = tenant.getLoginUrl({
-							tenantname : $("#workspace").val(),
-							username : $("#username").val(), // form already have an username
+							tenantname : $("#workspace").val(), // form already have an username and workspace, filled in fillForm
+							username : $("#username").val(), 
 							password : $("#password").val()
 						});
 						window.location = loginUrl;

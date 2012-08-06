@@ -52,8 +52,8 @@ require([ "cloud/tenant", "cloud/marketo", "cloud/trackers", "cloud/support" ], 
 		tenant.start({
 			tenantname : tenantName
 		}, {
-			fail : function(errorMessage) {
-				if (errorMessage.indexOf("Starting failed... not available space on application servers") != -1) {
+			fail : function(err) {
+				if (err.indexOf("Starting failed... not available space on application servers") != -1) {
 					setTimeout(tryResume, 5 * 60 * 1000); // try again in 5min
 				} else {
 					$("#messageString").html("Your tenant cannot be resumed in time. This was reported to administrators. Try again later.");
