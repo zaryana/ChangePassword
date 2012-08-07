@@ -16,6 +16,7 @@
  */
 package com.exoplatform.cloudworkspaces.gadget.services.EmailNotification;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,7 +26,7 @@ import java.util.Map;
  *          vietnt@exoplatform.com
  * Jul 19, 2012  
  */
-public class Event {
+public class Event implements Serializable {
 
   private String identity;
 

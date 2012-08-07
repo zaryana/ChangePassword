@@ -14,7 +14,7 @@ import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 
 import com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.EmailNotificationPlugin;
-import com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.EmailNotificationStorage;
+import com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.EmailNotificationService;
 import com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.Event;
 import com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.Plugin;
 import com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.utils.MessagesCache;
@@ -29,20 +29,22 @@ public class SpaceNotificationPlugin extends EmailNotificationPlugin{
 			MessagesCache messagesCache = (MessagesCache)context.get("pluginMessagesCache");
 			Properties messages = messagesCache.get((String) context.get("userLocale"));
 			long lastRun = (Long)context.get("lastRun");
+			boolean isSummaryMail = (Boolean) context.get("isSummaryMail");
 
 			LOG.debug("SpaceNotificationPlugin running for " + userId);
 
 			SpaceService spaceSvc = (SpaceService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(SpaceService.class);
 			ListAccess<Space> invitedSpaces = spaceSvc.getInvitedSpacesWithListAccess(userId);
 			
-			EmailNotificationStorage notificationStorage = (EmailNotificationStorage) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(EmailNotificationStorage.class);			
-			Set<Event> events = notificationStorage.getEvents(Plugin.SPACE_INVITATION, userId);
+			EmailNotificationService notificationService = (EmailNotificationService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(EmailNotificationService.class);			
+			Set<Event> events = notificationService.getEvents(Plugin.SPACE_INVITATION, userId);
       for (Space space : invitedSpaces.load(0, invitedSpaces.getSize())) {
         Event event = new Event(space.getPrettyName(), System.currentTimeMillis());
         if (!events.contains(event)) {
           events.add(event);
         }
       }
+      notificationService.setEvents(Plugin.SPACE_INVITATION, userId, events);
 			
 			StringBuilder builder = new StringBuilder();
 			String host = context.get("repoName") + "." + System.getProperty("tenant.masterhost");
@@ -58,9 +60,15 @@ public class SpaceNotificationPlugin extends EmailNotificationPlugin{
 			String spaceRequests = builder.toString();
 			if(spaceRequests.isEmpty()) return "";
 
-			GroovyTemplate g = new GroovyTemplate(messages.getProperty("message"));
+			GroovyTemplate g;
+      if (isSummaryMail) {
+        g = new GroovyTemplate(messages.getProperty("summary"));
+      } else {
+        g = new GroovyTemplate(messages.getProperty("message"));
+      }
 			Map<String, String> binding = new HashMap<String, String>();
 			binding.put("spaces", spaceRequests);
+      binding.put("tenantName", (String)context.get("repoName"));
 
 			return g.render(binding);
 

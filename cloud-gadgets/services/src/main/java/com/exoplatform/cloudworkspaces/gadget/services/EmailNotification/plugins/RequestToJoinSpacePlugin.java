@@ -30,7 +30,7 @@ import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 
 import com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.EmailNotificationPlugin;
-import com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.EmailNotificationStorage;
+import com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.EmailNotificationService;
 import com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.Event;
 import com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.Plugin;
 import com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.utils.MessagesCache;
@@ -52,23 +52,26 @@ public class RequestToJoinSpacePlugin extends EmailNotificationPlugin {
       MessagesCache messagesCache = (MessagesCache) context.get("pluginMessagesCache");
       Properties messages = messagesCache.get((String) context.get("userLocale"));
       long lastRun = (Long) context.get("lastRun");
+      boolean isSummaryMail = (Boolean) context.get("isSummaryMail");
 
       SpaceService spaceSvc = (SpaceService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(SpaceService.class);
       ListAccess<Space> settingableSpaces = spaceSvc.getSettingableSpaces(userId);
 
-      EmailNotificationStorage notificationStorage = (EmailNotificationStorage) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(EmailNotificationStorage.class);
-      Set<Event> events = notificationStorage.getEvents(Plugin.REQUEST_JOIN_SPACE, userId);
-
+      EmailNotificationService notificationService = (EmailNotificationService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(EmailNotificationService.class);
+      Set<Event> events = notificationService.getEvents(Plugin.REQUEST_JOIN_SPACE, userId);
       for (Space space : settingableSpaces.load(0, settingableSpaces.getSize())) {
-        for (String user : space.getPendingUsers()) {
-          Event event = new Event(user + "_" + space.getPrettyName(), System.currentTimeMillis());
-          if (!events.contains(event)) {
-            event.getAttributes().put("user", user);
-            event.getAttributes().put("space", space.getPrettyName());
-            events.add(event);
+        if (space.getPendingUsers() != null) {
+          for (String user : space.getPendingUsers()) {
+            Event event = new Event(user + "_" + space.getPrettyName(), System.currentTimeMillis());
+            if (!events.contains(event)) {
+              event.getAttributes().put("user", user);
+              event.getAttributes().put("space", space.getPrettyName());
+              events.add(event);
+            }
           }
         }
       }
+      notificationService.setEvents(Plugin.REQUEST_JOIN_SPACE, userId, events);
       
       StringBuilder builder = new StringBuilder();
       StringBuilder builder2 = new StringBuilder();
@@ -90,7 +93,12 @@ public class RequestToJoinSpacePlugin extends EmailNotificationPlugin {
       String userRequests = builder2.toString();
       if(spaceRequests.isEmpty()) return "";
 
-      GroovyTemplate g = new GroovyTemplate(messages.getProperty("message"));
+      GroovyTemplate g;
+      if (isSummaryMail) {
+        g = new GroovyTemplate(messages.getProperty("summary"));
+      } else {
+        g = new GroovyTemplate(messages.getProperty("message"));
+      }
       Map<String, String> binding = new HashMap<String, String>();
       binding.put("spaces", spaceRequests);
       binding.put("users", userRequests);

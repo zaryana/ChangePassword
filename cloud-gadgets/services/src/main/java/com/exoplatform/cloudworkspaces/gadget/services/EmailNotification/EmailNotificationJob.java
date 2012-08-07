@@ -205,10 +205,14 @@ public class EmailNotificationJob extends MultiTenancyJob {
             runningContext.put("userLocale", userLocale);
             runningContext.put("repoName", this.repoName);
             runningContext.put("lastRun", new Long(lastRun));
+            runningContext.put("isSummaryMail", Boolean.TRUE);
 
+            String mailSubject = "";
             for (EmailNotificationPlugin plugin : emailNotificationService.getPlugins()) {
               if (notificationPlugins.contains(plugin.getName())) {
-                runningContext.put("pluginMessagesCache", pluginMessagesCaches.get(plugin.getName()));
+                MessagesCache pluginMessagesCache = pluginMessagesCaches.get(plugin.getName());
+                mailSubject = pluginMessagesCache.get((userLocale)).getProperty("title");
+                runningContext.put("pluginMessagesCache", pluginMessagesCache);
                 String pluginNotification = plugin.exec(runningContext);
                 if (!pluginNotification.isEmpty())
                   builder.append(pluginNotification);
@@ -225,8 +229,12 @@ public class EmailNotificationJob extends MultiTenancyJob {
             GroovyTemplate mailTemplate = new GroovyTemplate(templatesCache.get(userLocale));
             Map<String, String> binding;
             Properties prop = messagesCache.get(userLocale);
-
+            if(isSummaryMail){
+              mailSubject = prop.getProperty("subject");
+            }
+            
             binding = new HashMap<String, String>();
+            binding.put("subject", mailSubject);
             binding.put("user", user.getFirstName());
             binding.put("interval", prop.getProperty(interval));
             binding.put("notifications", notifications);

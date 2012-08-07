@@ -16,7 +16,7 @@ import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
 
 import com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.EmailNotificationPlugin;
-import com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.EmailNotificationStorage;
+import com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.EmailNotificationService;
 import com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.Event;
 import com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.Plugin;
 import com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.utils.MessagesCache;
@@ -31,6 +31,7 @@ public class ConnectionNotificationPlugin extends EmailNotificationPlugin{
 			MessagesCache messagesCache = (MessagesCache)context.get("pluginMessagesCache");
 			Properties messages = messagesCache.get((String) context.get("userLocale"));
 			long lastRun = (Long)context.get("lastRun");
+      boolean isSummaryMail = (Boolean) context.get("isSummaryMail");
 			
 			LOG.debug("ConnectionNotificationPlugin running for " + userId);
 
@@ -40,8 +41,8 @@ public class ConnectionNotificationPlugin extends EmailNotificationPlugin{
 			Identity userIdentity = idMan.getOrCreateIdentity(OrganizationIdentityProvider.NAME, userId, false);
 			ListAccess<Identity> rels = relMan.getIncomingWithListAccess(userIdentity);
 			
-			EmailNotificationStorage notificationStorage = (EmailNotificationStorage) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(EmailNotificationStorage.class);      
-      Set<Event> events = notificationStorage.getEvents(Plugin.CONNECTION_REQUEST, userId);
+			EmailNotificationService notificationService = (EmailNotificationService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(EmailNotificationService.class);      
+      Set<Event> events = notificationService.getEvents(Plugin.CONNECTION_REQUEST, userId);
       for (Identity rel : rels.load(0, rels.getSize())) {
         Event event = new Event(rel.getProfile().getFullName(), System.currentTimeMillis());
         if (!events.contains(event)) {
@@ -49,7 +50,8 @@ public class ConnectionNotificationPlugin extends EmailNotificationPlugin{
           events.add(event);
         }
       }
-			
+      notificationService.setEvents(Plugin.CONNECTION_REQUEST, userId, events);
+      
 			StringBuilder builder = new StringBuilder();
 			String host = context.get("repoName") + "." + System.getProperty("tenant.masterhost");
 			String prefix = "";
@@ -64,9 +66,15 @@ public class ConnectionNotificationPlugin extends EmailNotificationPlugin{
 			String connectionRequests = builder.toString();
 			if(connectionRequests.isEmpty()) return "";
 
-			GroovyTemplate g = new GroovyTemplate(messages.getProperty("message"));
+      GroovyTemplate g;
+      if (isSummaryMail) {
+        g = new GroovyTemplate(messages.getProperty("summary"));
+      } else {
+        g = new GroovyTemplate(messages.getProperty("message"));
+      }
 			Map<String, String> binding = new HashMap<String, String>();
 			binding.put("connections", connectionRequests);
+      binding.put("tenantName", (String)context.get("repoName"));
 			
 			return g.render(binding);
 
