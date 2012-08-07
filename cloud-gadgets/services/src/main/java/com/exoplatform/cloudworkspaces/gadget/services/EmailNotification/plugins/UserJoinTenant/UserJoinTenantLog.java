@@ -96,7 +96,7 @@ public class UserJoinTenantLog {
 		Iterator<UserJoinTenantLogEntry> it = log.iterator();
 		while(it.hasNext()){
 			UserJoinTenantLogEntry entry = it.next();
-			if(now - entry.getJoinDate() > 31*24*60*60*1000) {
+			if(now - entry.getJoinDate() > 31*24*60*60*1000L) {
 				LOG.debug(entry.getUserId() + " will be removed");
 				it.remove();
 			}
