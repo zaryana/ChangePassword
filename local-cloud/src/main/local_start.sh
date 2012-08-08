@@ -67,6 +67,6 @@ is_ready "app"
   
 
 echo ""
-echo "Local Cloud started succesfully at $remote_cwks                " # need spaces to rewrite waiting text
+echo "Local Cloud started succesfully at localhost.                " # need spaces to rewrite waiting text
 exit 0
 
