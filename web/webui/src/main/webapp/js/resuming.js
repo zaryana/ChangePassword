@@ -90,7 +90,7 @@ require([ "cloud/tenant", "cloud/marketo", "cloud/trackers", "cloud/support" ], 
 	}
 
 	$(function() {
-		if (queryString != null && queryString != "") {
+		if ( (queryString != null && queryString != "") || (location.pathname != null && location.pathname != "")) {
 			if ($("#tenantname").length > 0) {
 				// resuming page under a tenant url
 				tenantName = $("#tenantname").text();

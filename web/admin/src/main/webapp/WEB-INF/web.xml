@@ -42,7 +42,7 @@
       <filter-class>com.exoplatform.cloudworkspaces.WorkspacesTenantStartFilter</filter-class>
       <init-param>
          <param-name>resumingPage</param-name>
-         <param-value>http://${tenant.masterhost}/resuming-hide.jsp</param-value>
+         <param-value>http://${tenant.masterhost}/resuming.jsp</param-value>
       </init-param>
       <init-param>
          <param-name>notFoundPage</param-name>

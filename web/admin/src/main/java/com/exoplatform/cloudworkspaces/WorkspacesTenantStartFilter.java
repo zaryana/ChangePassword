@@ -19,14 +19,12 @@
 package com.exoplatform.cloudworkspaces;
 
 import com.exoplatform.cloud.multitenancy.TenantNameResolver;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -100,10 +98,11 @@ public class WorkspacesTenantStartFilter implements Filter {
           }
           String html = new String(bout.toByteArray());
           String headTemplate = "<head>";
+          String bodyEndTemplate = "</body>";
           String baseTag = "<base href=\"http://" + System.getProperty("tenant.masterhost")
               + "\"></base>";
           String tenantTag = "<span id='tenantname' style='display: none'>" + tenant + "</span>";
-          String contactUsFrom = "onclick=\"showContactUsForm('/contact-us.jsp');\"";
+          String contactUsFrom = "id=\"showContactUs\"";
           String contactUsTo = "target=\"blank\" href=\"/index.jsp\"";
 
           OutputStream stream = response.getOutputStream();
@@ -111,11 +110,14 @@ public class WorkspacesTenantStartFilter implements Filter {
             int head = html.indexOf(headTemplate);
             stream.write(html.substring(0, head + headTemplate.length()).getBytes());
             stream.write(baseTag.getBytes());
-            stream.write(tenantTag.getBytes());
+//            stream.write(tenantTag.getBytes());    Moved before </body>
             int contactUs = html.indexOf(contactUsFrom);
+            int bodyEndIndex = html.indexOf(bodyEndTemplate);
             stream.write(html.substring(head + headTemplate.length(), contactUs).getBytes());
             stream.write(contactUsTo.getBytes());
-            stream.write(html.substring(contactUs + contactUsFrom.length()).getBytes());
+            stream.write(html.substring(contactUs + contactUsFrom.length(), bodyEndIndex).getBytes());
+            stream.write(tenantTag.getBytes());
+            stream.write(html.substring(bodyEndIndex + bodyEndTemplate.length()).getBytes());
           } finally {
             stream.close();
           }
