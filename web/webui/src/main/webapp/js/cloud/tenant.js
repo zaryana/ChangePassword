@@ -42,7 +42,7 @@ define([ "jquery" ], function() {
 			});
 			request.done(function(data, textStatus, jqXHR) {
 				if (callbacks.done) {
-					callbacks.done(data);
+					callbacks.done(jqXHR.responseText);  //callbacks.done(data); // Data???? No.
 				}
 			});
 			request.always(function(jqXHR, textStatus) {
@@ -57,7 +57,7 @@ define([ "jquery" ], function() {
 				type : "POST",
 				url : tenantServicePath + "/signup",
 				data : data,
-				// contentType: "application/x-www-form-urlencoded",
+				//contentType: "application/x-www-form-urlencoded",
 				statusCode : {
 					309 : redirectWrapper(callbacks),
 					400 : function(jqXHR, textStatus, err) {
