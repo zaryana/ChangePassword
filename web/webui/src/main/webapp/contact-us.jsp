@@ -26,7 +26,7 @@
             <td class="Field">Your email:</td><td> <input class="required InputText" type="text" name="email" id="email" value="" /><span class="Star">*</span></td>
            </tr>
            <tr>
-            <td class="Field">Phone:</td><td> <input class="required InputText" type="text" name="phone" id="phone_work" /><span class="Star">*</span></td>
+            <td class="Field">Phone:</td><td> <input class="required InputText" type="text" name="phone" id="phone_work" onkeypress="return onlyNumbers(event);" /><span class="Star">*</span></td>
           </tr>
            <tr>
             <td class="Field">Subject:</td><td> <input class="required InputText" type="text" name="subject" id="subject" /><span class="Star">*</span></td>

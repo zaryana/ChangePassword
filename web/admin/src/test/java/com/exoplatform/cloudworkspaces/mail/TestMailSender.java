@@ -1,7 +1,5 @@
 package com.exoplatform.cloudworkspaces.mail;
 
-import static com.exoplatform.cloud.admin.configuration.MailConfiguration.CLOUD_ADMIN_MAIL_SENDER;
-
 import com.dumbster.smtp.SimpleSmtpServer;
 import com.dumbster.smtp.SmtpMessage;
 import com.exoplatform.cloud.admin.CloudAdminException;
@@ -15,7 +13,6 @@ import com.exoplatform.cloudworkspaces.MailingProperties;
 import com.exoplatform.cloudworkspaces.NotificationMailSender;
 import com.exoplatform.cloudworkspaces.dao.ModifiableEmailValidationStorage;
 import com.exoplatform.cloudworkspaces.http.WorkspacesOrganizationRequestPerformer;
-
 import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.Configuration;
 import org.everrest.assured.AvailablePortFinder;
@@ -25,10 +22,11 @@ import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+import static com.exoplatform.cloud.admin.configuration.MailConfiguration.CLOUD_ADMIN_MAIL_SENDER;
 
 /**
  * Created with IntelliJ IDEA. User: makis Date: 4/20/12 Time: 12:42 PM
@@ -242,7 +240,7 @@ public class TestMailSender {
 
     cloudAdminConfiguration.setProperty(MailingProperties.CLOUD_ADMIN_MAIL_CONTACT_TEMPLATE,
                                         "target/test-classes/template/ContactUsEmail.html");
-    sender.sendContactUsEmail("test@test.com", "fname", "subject", "contact-us text");
+    sender.sendContactUsEmail("test@test.com", "fname", "+3800000", "subject", "contact-us text");
 
     // Thread.sleep(2000);
     Assert.assertEquals(server.getReceivedEmailSize(), 1);

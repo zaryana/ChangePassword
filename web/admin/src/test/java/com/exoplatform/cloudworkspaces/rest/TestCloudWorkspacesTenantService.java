@@ -130,12 +130,14 @@ public class TestCloudWorkspacesTenantService {
   public void testSendContactUs(ITestContext context) {
     final String SUBJECT = "subject";
     final String TEXT = "text";
+    final String PHONE = "phone";
 
     RestAssured.given()
                .auth()
                .basic(AUTH_USERNAME, AUTH_PASSWORD)
                .formParam("user-mail", EMAIL)
-               .formParam("first-name", FIRST_NAME)
+               .formParam("user-name", FIRST_NAME)
+               .formParam("user-phone", PHONE)
                .formParam("subject", SUBJECT)
                .formParam("text", TEXT)
                .port((Integer) context.getAttribute(EverrestJetty.JETTY_PORT))
@@ -144,7 +146,7 @@ public class TestCloudWorkspacesTenantService {
                .when()
                .post("/rest/cloud-admin/cloudworkspaces/tenant-service/contactus");
 
-    Mockito.verify(notificationMailSender).sendContactUsEmail(EMAIL, FIRST_NAME, SUBJECT, TEXT);
+    Mockito.verify(notificationMailSender).sendContactUsEmail(EMAIL, FIRST_NAME, PHONE, SUBJECT, TEXT);
 
     Mockito.verifyNoMoreInteractions(notificationMailSender);
   }
