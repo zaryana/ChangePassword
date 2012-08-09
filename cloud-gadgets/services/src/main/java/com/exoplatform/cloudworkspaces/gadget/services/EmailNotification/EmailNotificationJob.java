@@ -149,7 +149,7 @@ public class EmailNotificationJob extends MultiTenancyJob {
               boolean isDefault = Boolean.parseBoolean(pluginMessagesCaches.get(plugin.getName()).getDefault().getProperty("isDefault", "true"));
               if (isDefault) {
                 notificationPlugins.append(prefix);
-                prefix = ", ";
+                prefix = ",";
                 notificationPlugins.append(plugin.getName());
               }
             }
