@@ -234,7 +234,7 @@ require([ "cloud/tenant", "cloud/marketo", "cloud/trackers", "cloud/support" ], 
 			},
 		});
 
-		if ($("#resePasswordtForm").valid()) {
+		if ($("#resetPasswordForm").valid()) {
 			tenant.resetPassword({
 				email : $("#email").val()
 			}, {

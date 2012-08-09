@@ -193,7 +193,7 @@ define([ "jquery" ], function() {
 		this.resetPassword = function(data, callbacks) {
 			var request = $.ajax({
 				async : true,
-				type : "POST",
+				type : "GET",
 				url : tenantServicePath + "/passrestore/" + data.email,
 				dataType : "text",
 				data : data,
@@ -209,8 +209,7 @@ define([ "jquery" ], function() {
 			var request = $.ajax({
 				async : true,
 				type : "POST",
-				processData : false,
-				url : tenantServicePath + "/passconfirm/" + data.email,
+				url : tenantServicePath + "/passconfirm/",
 				dataType : "text",
 				data : data,
 				statusCode : {
