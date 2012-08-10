@@ -1,0 +1,118 @@
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+   <title>Signup test</title>
+   <link rel="stylesheet" href="/jasmine/jasmine.css" />
+   <script src="/jasmine/jasmine.js"></script>
+   <script src="/jasmine/jasmine-html.js"></script>
+   <script type="text/javascript" src="/js/common.js"></script>
+   <script type="text/javascript" data-main="signup" src="/js/require-2.0.4.min.js"></script>
+
+   <script>
+
+
+ describe("Test.signup", function() {
+
+      var mkt;
+
+      beforeEach(function() {
+         require(["cloud/marketo"], function(marketo) {
+           mkt = marketo;
+           spyOn(mkt, 'send');
+           document.getElementById("messageString").innerHTML="";
+         });
+      });
+
+
+     it("Test.signup.wrong_email", function() {
+
+       runs(function() {
+         var links = document.getElementById("email");
+         links.value = "aa123";
+         document.getElementById("t_submit").click();
+       });
+
+
+       waitsFor(function() {
+         return  (document.getElementById("t_submit").getAttribute("disabled") == null);
+       }, "The button is enabled", 2000);
+
+       runs(function() {
+
+          expect(document.getElementById("messageString").innerHTML).toBe('<span class="WarningIcon">Please enter a valid email address.</span>');
+          expect(mkt.send).toHaveBeenCalled(); // TODO: It's wrong!
+        });
+     });
+
+
+
+    it("Test.signup.good_email", function() {
+
+      runs(function() {
+        var links = document.getElementById("email");
+        links.value = "mshaposhnik@exoplatform.com";
+        document.getElementById("t_submit").click();
+      });
+
+
+      waitsFor(function() {
+        return  (document.getElementById("t_submit").getAttribute("disabled") == null);
+      }, "The button is enabled", 5000);
+
+      runs(function() {
+          expect(document.getElementById("messageString").innerHTML).toBe('');
+          expect(mkt.send).toHaveBeenCalled();
+      });
+    });
+ });
+
+
+   </script>
+
+
+   <!-- Jasmine runner -->
+   <script type="text/javascript">
+      (function() {
+      var jasmineEnv = jasmine.getEnv();
+      jasmineEnv.updateInterval = 1000;
+
+      var htmlReporter = new jasmine.HtmlReporter();
+
+      jasmineEnv.addReporter(htmlReporter);
+
+      jasmineEnv.specFilter = function(spec) {
+      return htmlReporter.specFilter(spec);
+      };
+
+      var currentWindowOnload = window.onload;
+
+      window.onload = function() {
+      if (currentWindowOnload) {
+      currentWindowOnload();
+      }
+      execJasmine();
+      };
+
+      function execJasmine() {
+      jasmineEnv.execute();
+      }
+
+      })();
+   </script>
+
+
+
+<head>
+<body>
+<div style="display:none;">
+   <form id="signupForm" action="javascript:void(0);">
+      <!-- Marketo input hidden fields -->
+      <div>
+         <div id="messageString" class="TenantFormMsg"></div>
+         <input class="InputText" type="text" name="email" id="email" value="Enter your professional email" />
+         <input class="Button" type="submit" name="t_submit" id="t_submit"  value="Sign Up" />
+      </div>
+   </form>
+</div>
+</body>
+</html>

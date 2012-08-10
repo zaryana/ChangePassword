@@ -1,0 +1,51 @@
+<html>
+<head>
+ <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+ <title>Signup test</title>
+ <link rel="stylesheet" href="/qunit/qunit.css" />
+ <script src="http://code.jquery.com/qunit/qunit-git.js"></script>
+ <script type="text/javascript" src="/js/common.js"></script>
+ <script type="text/javascript" data-main="signup" src="/js/require-2.0.4.min.js"></script>
+ <script>
+  test("Test.signup.wrong_email", function() {
+    stop();
+    var links = document.getElementById("email");
+    links.value = "aa123";
+    document.getElementById("t_submit").click();
+
+    setTimeout(function() {
+       equal(document.getElementById("messageString").innerHTML,  '<span class="WarningIcon">Please enter a valid email address.</span>'); //Message error string
+       // TODO: How to check Marketo is send ?
+       start();
+    }, 2000);
+  });
+
+  test("Test.signup.good_email", function() {
+    stop();
+    var links = document.getElementById("email");
+    links.value = "aa123";
+    document.getElementById("t_submit").click();
+
+    setTimeout(function() {
+     equal(document.getElementById("messageString").innerHTML,  ''); //Message error string empty
+     // TODO: How to check Marketo is send ?
+     start();
+    }, 2000);
+  });
+  </script>
+<head>
+<body>
+<div id="qunit"></div>
+<div id="qunit-fixture">
+<form id="signupForm" action="javascript:void(0);">
+   <!-- Marketo input hidden fields -->
+   <div>
+      <div id="messageString" class="TenantFormMsg"></div>
+      <input class="InputText" type="text" name="email" id="email" value="Enter your professional email" />
+      <input class="Button" type="submit" name="t_submit" id="t_submit"  value="Sign Up" />
+   </div>
+</form>
+</div>
+</div>
+</body>
+</html>
