@@ -168,8 +168,7 @@ eXoEventGadget.prototype.render = function(data){
 		var totime = parseInt(item.toDateTime.time);
 		var dateOfFrom = parseInt(item.fromDateTime.date);
 		var fullDate = eXoEventGadget.getFullTime(fromtime, totime, userTimezoneOffset, dateOfFrom);
-                html += '<li class="eventType">» <span><b>' + item.eventType + ':</b></span></li><li class="eventTitle"><a href="' + $("#calendarlink").html() + '" target="_parent">' + item.summary + ' in ' + eXoEventGadget.calendarNames[calendarId] + '</a></li>';
-                html += '<li class="eventEmpty"></li><li class="eventTime"><span>on ' + fullDate + '</span></li>';
+                html += '<li class="eventType"><span>» <b>' + item.eventType + ':</b></span></li><li class="eventTitle"><a href="' + $("#calendarlink").html() + '" target="_parent">' + item.summary + ' in ' + eXoEventGadget.calendarNames[calendarId] + '</a><br /><span>on ' + fullDate + '</span></li>';
   	}
   	html += '</ul>';
   	$("#eventDiv").html(html);
@@ -276,8 +275,7 @@ eXoEventGadget.prototype.setCalendarLink = function() {
   $.ajax({
        url: url,
        success: function(data) {
-	var a = document.getElementById("calendarlink");
-	if (data != null) a.innerHTML = data.toString() + "calendar";
+	if (data != null) $("#calendarlink").html(data.toString() + "calendar");
        },
        dataType: 'text'
   });  
@@ -295,7 +293,7 @@ eXoEventGadget.prototype.init = function() {
   var hours = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"];
   var APM = ["AM", "PM"];
   var prefs = new gadgets.Prefs();
-  document.getElementById("eventType").innerHTML = '<option value="Event">' + prefs.getMsg("eventType") + '</option><option value="Task">' + prefs.getMsg("taskType") + '</option>';
+  $("#eventType").html('<option value="Event">' + prefs.getMsg("eventType") + '</option><option value="Task">' + prefs.getMsg("taskType") + '</option>');
   var msg = prefs.getMsg("allday");
   var html = '<option value="AllDay">' + msg + '</option>';
   var html1 = '';
@@ -304,31 +302,28 @@ eXoEventGadget.prototype.init = function() {
                 html += '<option value="' + hours[j] + APM[i] + '">' + hours[j] +  " " + APM[i] + '</option>';
                 html1 += '<option value="' + hours[j] + APM[i] + '">' + hours[j] +  " " + APM[i] + '</option>';
         }
-  document.getElementById("fromTime").innerHTML = html;
-  var toTime = document.getElementById("toTime")
-  toTime.innerHTML = html1;
+  $("#fromTime").html(html);
+  $("#toTime").html(html1);        
   to.disabled = true;
-  toTime.disabled = true;
+  document.getElementById("toTime").disabled = true;
           
 }
 
 eXoEventGadget.prototype.listCalendar = function(data) {
-	var select = document.getElementById("calendar");
-	var html = '<optgroup label="Personal Calendars">';
-	var personalCal = '', groupCal = '';
-	var calendarName = '';
-	for(var i=0,len = data.calendars.length; i < len;i++){
-	        if(data.calendars[i].name.indexOf("default") != -1) calendarName = "Default Calendar";
-	        else calendarName = data.calendars[i].name;
-	        if (data.calendars[i].groups != null) {
-	                var group = data.calendars[i].groups[0];
-	                var grpName = " (" + group.substring(group.lastIndexOf("/") + 1) + ")";
-	                groupCal += '<option value="1:' + data.calendars[i].id + '">' + calendarName + grpName + '</option>';
-	        }
-	        else personalCal += '<option value="0:' + data.calendars[i].id + '">' + calendarName + '</option>';
-	}
-	html += personalCal + '</optgroup><optgroup label="Group Calendars">' + groupCal + '</optgroup>';
-	select.innerHTML = html;
+  var personalCal = '', groupCal = '';
+  var calendarName = '';
+  for(var i=0,len = data.calendars.length; i < len;i++){
+    if(data.calendars[i].name.indexOf("default") != -1) calendarName = "Default Calendar";
+    else calendarName = data.calendars[i].name;
+    if (data.calendars[i].groups != null) {
+      var group = data.calendars[i].groups[0];
+      var grpName = " (" + group.substring(group.lastIndexOf("/") + 1) + ")";
+      groupCal += '<option value="1:' + data.calendars[i].id + '">' + calendarName + grpName + '</option>';
+    }
+    else personalCal += '<option value="0:' + data.calendars[i].id + '">' + calendarName + '</option>';
+  }
+  var html = '<optgroup label="Personal Calendars">' + personalCal + '</optgroup><optgroup label="Group Calendars">' + groupCal + '</optgroup>';
+  $("#calendar").html(html);
 }
   
 eXoEventGadget =  new eXoEventGadget();
