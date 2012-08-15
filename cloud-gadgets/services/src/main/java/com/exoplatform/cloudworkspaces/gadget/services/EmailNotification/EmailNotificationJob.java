@@ -205,17 +205,18 @@ public class EmailNotificationJob extends MultiTenancyJob {
             runningContext.put("userLocale", userLocale);
             runningContext.put("repoName", this.repoName);
             runningContext.put("lastRun", new Long(lastRun));
-            runningContext.put("isSummaryMail", Boolean.TRUE);
+            runningContext.put("isSummaryMail", isSummaryMail);
 
             String mailSubject = "";
             for (EmailNotificationPlugin plugin : emailNotificationService.getPlugins()) {
               if (notificationPlugins.contains(plugin.getName())) {
                 MessagesCache pluginMessagesCache = pluginMessagesCaches.get(plugin.getName());
-                mailSubject = pluginMessagesCache.get((userLocale)).getProperty("title");
                 runningContext.put("pluginMessagesCache", pluginMessagesCache);
                 String pluginNotification = plugin.exec(runningContext);
-                if (!pluginNotification.isEmpty())
+                if (!pluginNotification.isEmpty()) {
+                  mailSubject = pluginMessagesCache.get((userLocale)).getProperty("title");
                   builder.append(pluginNotification);
+                }
               }
             }
 
@@ -227,14 +228,15 @@ public class EmailNotificationJob extends MultiTenancyJob {
               continue;
 
             GroovyTemplate mailTemplate = new GroovyTemplate(templatesCache.get(userLocale));
-            Map<String, String> binding;
+            Map<String, Object> binding;
             Properties prop = messagesCache.get(userLocale);
             if(isSummaryMail){
               mailSubject = prop.getProperty("subject");
             }
             
-            binding = new HashMap<String, String>();
+            binding = new HashMap<String, Object>();
             binding.put("subject", mailSubject);
+            binding.put("isSummaryMail", isSummaryMail);
             binding.put("user", user.getFirstName());
             binding.put("interval", prop.getProperty(interval));
             binding.put("notifications", notifications);

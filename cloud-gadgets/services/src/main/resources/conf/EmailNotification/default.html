@@ -24,17 +24,32 @@
             <td align="left">
               
               <p style="font-family:verdana,arial,tahoma;font-size:12px;margin:0px 0 15px;line-height:20px;">Hi ${user},</p>
+            <%
+              if(isSummaryMail){
+            %>
               <p style="font-family:verdana,arial,tahoma;font-size:12px;margin:15px 0;line-height:20px;">
                 Here's what's been happening in your Social Intranet in the past ${interval}:
               </p>
+            <%} %>
               <p style="font-family:verdana,arial,tahoma;font-size:12px;margin:15px 0;line-height:20px;">
+            <%
+              if(isSummaryMail){
+            %>
                 <ul style="padding-left: 5px;">
                   ${notifications}
                 </ul>
+            <%} else {
+            %>
+                ${notifications}
+            <%} %>
               </p>
+            <%
+              if(isSummaryMail){
+            %>
               <p style="font-family:verdana,arial,tahoma;font-size:12px;margin:15px 0;line-height:20px;">
-                If you don't want to receive these notifications any more, edit your <a href="${accountSettingsLink}" target="_blank" style="color:#FFFFFF; text-decoration:none; border-bottom: 1px dotted #fff;">[account settings]</a> in your Cloud Workspaces account.
+                If you don't want to receive these notifications any more, edit your <a href="${accountSettingsLink}" target="_blank" style="color:#666666; text-decoration:none;">[account settings]</a> in your Cloud Workspaces account.
               </p>
+            <%} %>
               <p style="font-family:verdana,arial,tahoma;font-size:12px;margin:15px 0;line-height:20px;"><strong>The Cloud Workspaces Team</strong></p><br/>
 
             </td>

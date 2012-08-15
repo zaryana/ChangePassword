@@ -26,6 +26,10 @@ import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.groovyscript.GroovyTemplate;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 
@@ -73,6 +77,7 @@ public class RequestToJoinSpacePlugin extends EmailNotificationPlugin {
       }
       notificationService.setEvents(Plugin.REQUEST_JOIN_SPACE, userId, events);
       
+      IdentityManager idMan = (IdentityManager) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(IdentityManager.class);
       StringBuilder builder = new StringBuilder();
       StringBuilder builder2 = new StringBuilder();
       String host = context.get("repoName") + "." + System.getProperty("tenant.masterhost");
@@ -85,8 +90,10 @@ public class RequestToJoinSpacePlugin extends EmailNotificationPlugin {
         builder2.append(prefix2);
         prefix = ", ";
         prefix2 = ", ";
-        builder.append("<a href='" + host + "/" + messagesCache.getDefault().getProperty("invitedSpaceLink") + "' target='_blank'>" + event.getAttributes().get("space") + "</a>");
-        builder2.append("<a href='" + host + "/" + messagesCache.getDefault().getProperty("invitedSpaceLink") + "' target='_blank'>" + event.getAttributes().get("user") + "</a>");
+        builder.append("<a href='" + host + "/" + messagesCache.getDefault().getProperty("spacesLink") + "' target='_blank'>" + event.getAttributes().get("space") + "</a>");
+        Identity userIdentity = idMan.getOrCreateIdentity(OrganizationIdentityProvider.NAME, event.getAttributes().get("user"), false);
+        Profile userProfile = userIdentity.getProfile();
+        builder2.append("<a href='" + host + "/" + userProfile.getUrl() + "' target='_blank'>" + userProfile.getFullName() + "</a>");
       }
 
       String spaceRequests = builder.toString();

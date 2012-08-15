@@ -22,12 +22,19 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.services.cache.CacheService;
+import org.exoplatform.services.cache.ExoCache;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.jcr.core.ManageableRepository;
 import org.exoplatform.services.jcr.ext.common.SessionProvider;
 import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+
+import com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.cache.CacheData;
+import com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.cache.CacheKey;
+import com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.cache.IdentityData;
+import com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.cache.IdentityKey;
 
 public class EmailNotificationService {
 	private static Log LOG = ExoLogger.getLogger(EmailNotificationService.class);
@@ -44,9 +51,14 @@ public class EmailNotificationService {
 	public static final String PLUGINS_RESOURCE_DIR = RESOURCE_DIR + "/plugins";
 	
 	private List<EmailNotificationPlugin> plugins;
+	private CacheService cacheService;
+	private ExoCache<CacheKey, CacheData<Set<Event>>> eventsCache;
+	private static final String EMAIL_NOTIFICATIONS_CACHE = "EmailNotificationsCache";
 	
-	public EmailNotificationService() {
+	public EmailNotificationService(CacheService cacheService) {
 		plugins = new ArrayList<EmailNotificationPlugin>();
+		this.cacheService = cacheService;
+		this.eventsCache = this.cacheService.getCacheInstance(EMAIL_NOTIFICATIONS_CACHE);
 	}
 	
 	public List<EmailNotificationPlugin> getPlugins() {
@@ -59,26 +71,38 @@ public class EmailNotificationService {
 	}
 	
 	public Set<Event> getEvents(Plugin plugin, String user) throws Exception {
+	  CacheData<Set<Event>> data = eventsCache.get(new IdentityKey(plugin, user));
+    if (data != null) {
+      return (Set<Event>) data.build();
+    }
     SessionProvider sProvider = SessionProvider.createSystemProvider();
     NodeHierarchyCreator nodeCreator = (NodeHierarchyCreator) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(NodeHierarchyCreator.class);
     if (user != null && !user.isEmpty()) {
       Node userPrivateNode = nodeCreator.getUserNode(sProvider, user).getNode("Private");
       if (userPrivateNode != null && userPrivateNode.hasNode(STORAGE)) {
         Node storage = userPrivateNode.getNode(STORAGE);
-        return getEventsFromStorage(storage, plugin);
+        Set<Event> events = getEventsFromStorage(storage, plugin);
+        eventsCache.put(new IdentityKey(plugin, user), new IdentityData(events));
+        return events;
       }
     } else {
       initResourceBundle(null);
       Node emailNotificationNode = nodeCreator.getPublicApplicationNode(sProvider).getNode("EmailNotification");
       if (emailNotificationNode != null && emailNotificationNode.hasNode(STORAGE)) {
         Node storage = emailNotificationNode.getNode(STORAGE);
-        return getEventsFromStorage(storage, plugin);
+        Set<Event> events = getEventsFromStorage(storage, plugin);
+        eventsCache.put(new IdentityKey(plugin, user), new IdentityData(events));
+        return events;
       }
     }
     return new HashSet<Event>();
   }
 
   public void setEvents(Plugin plugin, String user, Set<Event> events) throws Exception {
+    CacheData<Set<Event>> data = eventsCache.get(new IdentityKey(plugin, user));
+    if (data != null && data.build().equals(events)) {
+      return;
+    }
     SessionProvider sProvider = SessionProvider.createSystemProvider();
     NodeHierarchyCreator nodeCreator = (NodeHierarchyCreator) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(NodeHierarchyCreator.class);
     if (user != null && !user.isEmpty()) {
@@ -90,6 +114,7 @@ public class EmailNotificationService {
         }
         Node storage = userPrivateNode.getNode(STORAGE);
         setEventsToStorage(storage, plugin, events);
+        eventsCache.put(new IdentityKey(plugin, user), new IdentityData(events));
       }
     } else {
       initResourceBundle(null);
@@ -101,6 +126,7 @@ public class EmailNotificationService {
         }
         Node storage = emailNotificationNode.getNode(STORAGE);
         setEventsToStorage(storage, plugin, events);
+        eventsCache.put(new IdentityKey(plugin, user), new IdentityData(events));
       }
     }
   }

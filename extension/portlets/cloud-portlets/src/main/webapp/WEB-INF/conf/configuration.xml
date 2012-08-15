@@ -82,5 +82,46 @@
       </init-params>
     </component-plugin>
   </external-component-plugins>
+
+  <external-component-plugins>
+    <target-component>org.exoplatform.services.cache.CacheService</target-component>
+    <component-plugin>
+      <name>addExoCacheConfig</name>
+      <set-method>addExoCacheConfig</set-method>
+      <type>org.exoplatform.services.cache.ExoCacheConfigPlugin</type>
+      <description></description>
+      <init-params>
+        <object-param>
+          <name>EmailNotificationsCache</name>
+          <description></description>
+          <object type="org.exoplatform.services.cache.ExoCacheConfig">
+            <field name="name"><string>EmailNotificationsCache</string></field>
+            <field name="maxSize"><int>${cache.exo.cloud.EmailNotificationsCache.Capacity:100000}</int></field>
+            <field name="liveTime"><long>${cache.exo.cloud.EmailNotificationsCache.TimeToLive:-1}</long></field>
+            <field name="implementation"><string>org.exoplatform.services.cache.concurrent.ConcurrentFIFOExoCache</string></field>
+          </object>
+        </object-param>
+      </init-params>
+    </component-plugin>
+    <component-plugin profiles="cluster">
+      <name>addExoCacheConfig</name>
+      <set-method>addExoCacheConfig</set-method>
+      <type>org.exoplatform.services.cache.ExoCacheConfigPlugin</type>
+      <description>add Exo Cache Config</description>
+      <init-params>
+        <object-param>
+          <name>EmailNotificationsCache</name>
+          <description>The JBoss Cache configuration for the IdentityCache</description>
+          <object
+            type="org.exoplatform.services.cache.impl.jboss.ea.EAExoCacheConfig">
+            <field name="name"><string>EmailNotificationsCache</string></field>
+            <field name="expirationTimeout"><long>${cache.exo.cloud.EmailNotificationsCache.TimeToLive:-1}</long></field>
+            <field name="maxNodes"><int>${cache.exo.cloud.EmailNotificationsCache.Capacity:100000}</int></field>
+            <field name="distributed"><boolean>true</boolean></field>
+          </object>
+        </object-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
     
 </configuration>
