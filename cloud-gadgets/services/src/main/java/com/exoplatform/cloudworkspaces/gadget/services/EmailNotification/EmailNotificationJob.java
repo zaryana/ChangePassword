@@ -8,12 +8,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import javax.jcr.Node;
-import javax.mail.Message.RecipientType;
-import javax.mail.Session;
 import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
 
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.ExoContainerContext;
@@ -22,7 +17,6 @@ import org.exoplatform.services.jcr.ext.common.SessionProvider;
 import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.services.mail.MailService;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.social.core.identity.model.Profile;
@@ -40,27 +34,6 @@ public class EmailNotificationJob extends MultiTenancyJob {
   @Override
   public Class<? extends MultiTenancyTask> getTask() {
     return EmailNotificationTask.class;
-  }
-
-  private static void sendMail(String subject, String content, InternetAddress from, InternetAddress to) throws Exception {
-    MailService mailService = (MailService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(MailService.class);
-    Session mailSession = mailService.getMailSession();
-    MimeMessage message = new MimeMessage(mailSession);
-
-    message.setSubject(subject);
-    message.setFrom(from);
-    message.setRecipient(RecipientType.TO, to);
-
-    MimeMultipart mailContent = new MimeMultipart("alternative");
-    MimeBodyPart text = new MimeBodyPart();
-    MimeBodyPart html = new MimeBodyPart();
-    text.setText(content);
-    html.setContent(content, "text/html; charset=ISO-8859-1");
-    mailContent.addBodyPart(text);
-    mailContent.addBodyPart(html);
-
-    message.setContent(mailContent);
-    mailService.sendMessage(message);
   }
 
   private static long nextMinuteOf(long date) {
@@ -249,7 +222,7 @@ public class EmailNotificationJob extends MultiTenancyJob {
             String fromEmail = prop.getProperty("from.email");
             String fromName = prop.getProperty("from.name");
 
-            sendMail(subject, mailTemplate.render(binding), new InternetAddress(fromEmail, fromName), userAddr);
+            emailNotificationService.sendMail(subject, mailTemplate.render(binding), new InternetAddress(fromEmail, fromName), userAddr);
             LOG.info("Notification mail sent to " + userAddr.getAddress());
           }
         }

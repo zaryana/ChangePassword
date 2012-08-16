@@ -15,11 +15,19 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+import javax.mail.Message.RecipientType;
+import javax.mail.Session;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.services.cache.CacheService;
@@ -30,6 +38,7 @@ import org.exoplatform.services.jcr.ext.common.SessionProvider;
 import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.services.mail.MailService;
 
 import com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.cache.CacheData;
 import com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.cache.CacheKey;
@@ -37,29 +46,34 @@ import com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.cache.I
 import com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.cache.IdentityKey;
 
 public class EmailNotificationService {
-	private static Log LOG = ExoLogger.getLogger(EmailNotificationService.class);
-	
-	public static final String HOME = "exo:applications/EmailNotification";
-	public static final String PLUGINS = HOME + "/plugins";
-	public static final String PREFS = "EmailNotificationPrefs";
+  private static Log LOG = ExoLogger.getLogger(EmailNotificationService.class);
 
-	public static final String NT_UNSTRUCTURED = "nt:unstructured";
-	public static final String NT_FOLDER = "nt:folder";
-	public static final String NT_FILE = "nt:file";
-	public static final String STORAGE = "EmailNotificationStorage";
-	public static final String RESOURCE_DIR = "conf/EmailNotification";
-	public static final String PLUGINS_RESOURCE_DIR = RESOURCE_DIR + "/plugins";
-	
-	private List<EmailNotificationPlugin> plugins;
-	private CacheService cacheService;
-	private ExoCache<CacheKey, CacheData<Set<Event>>> eventsCache;
-	private static final String EMAIL_NOTIFICATIONS_CACHE = "EmailNotificationsCache";
-	
-	public EmailNotificationService(CacheService cacheService) {
-		plugins = new ArrayList<EmailNotificationPlugin>();
-		this.cacheService = cacheService;
-		this.eventsCache = this.cacheService.getCacheInstance(EMAIL_NOTIFICATIONS_CACHE);
-	}
+  public static final String HOME = "exo:applications/EmailNotification";
+  public static final String PLUGINS = HOME + "/plugins";
+  public static final String PREFS = "EmailNotificationPrefs";
+
+  public static final String NT_UNSTRUCTURED = "nt:unstructured";
+  public static final String NT_FOLDER = "nt:folder";
+  public static final String NT_FILE = "nt:file";
+  public static final String STORAGE = "EmailNotificationStorage";
+  public static final String RESOURCE_DIR = "conf/EmailNotification";
+  public static final String PLUGINS_RESOURCE_DIR = RESOURCE_DIR + "/plugins";
+
+  private List<EmailNotificationPlugin> plugins;
+  private CacheService cacheService;
+  private ExoCache<CacheKey, CacheData<Set<Event>>> eventsCache;
+  private Executor executor;
+  private MailService mailService;
+
+  private static final String EMAIL_NOTIFICATIONS_CACHE = "EmailNotificationsCache";
+
+  public EmailNotificationService(CacheService cacheService, MailService mailService) {
+    plugins = new ArrayList<EmailNotificationPlugin>();
+    this.cacheService = cacheService;
+    this.eventsCache = this.cacheService.getCacheInstance(EMAIL_NOTIFICATIONS_CACHE);
+    this.executor = Executors.newCachedThreadPool();
+    this.mailService = mailService;
+  }
 	
 	public List<EmailNotificationPlugin> getPlugins() {
 		return plugins;
@@ -129,6 +143,34 @@ public class EmailNotificationService {
         eventsCache.put(new IdentityKey(plugin, user), new IdentityData(events));
       }
     }
+  }
+  
+  public void sendMail(final String subject, final String content, final InternetAddress from, final InternetAddress to) {
+    executor.execute(new Runnable() {
+      public void run() {
+        try {
+          Session mailSession = mailService.getMailSession();
+          MimeMessage message = new MimeMessage(mailSession);
+
+          message.setSubject(subject);
+          message.setFrom(from);
+          message.setRecipient(RecipientType.TO, to);
+
+          MimeMultipart mailContent = new MimeMultipart("alternative");
+          MimeBodyPart text = new MimeBodyPart();
+          MimeBodyPart html = new MimeBodyPart();
+          text.setText(content);
+          html.setContent(content, "text/html; charset=ISO-8859-1");
+          mailContent.addBodyPart(text);
+          mailContent.addBodyPart(html);
+
+          message.setContent(mailContent);
+          mailService.sendMessage(message);
+        } catch (Exception exception) {
+          throw new RuntimeException(exception);
+        }
+      }
+    });
   }
 	
 	public void initResourceBundle(String currentRepoName) {
