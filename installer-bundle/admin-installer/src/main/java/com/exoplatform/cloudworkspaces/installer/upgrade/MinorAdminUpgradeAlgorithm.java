@@ -79,7 +79,7 @@ public abstract class MinorAdminUpgradeAlgorithm extends AdminUpgradeAlgorithm {
     tomcatStarted(previousConfDir, previousTomcatDir, dataDir, cloudAdminServices);
 
     cloudAdminServices.blockAutoscaling();
-    String newAlias = cloudAdminServices.serverStart(answers.getAnswer("cloud.application.default.type"));
+    String newAlias = cloudAdminServices.serverStart(answers.getAnswer("application.default.type"));
 
     String state = cloudAdminServices.serverState(newAlias);
     while (state != null && !state.equals("ONLINE")) {

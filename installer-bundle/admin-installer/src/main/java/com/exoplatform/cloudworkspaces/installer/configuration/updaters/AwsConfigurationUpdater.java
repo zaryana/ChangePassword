@@ -30,41 +30,41 @@ import java.io.File;
 import java.io.IOException;
 
 public class AwsConfigurationUpdater extends BaseConfigurationUpdater {
-  private final Question cloudApplicationDefaultTypeQuestion = new Question("cloud.application.default.type",
-                                                                            "Set cloud application default type",
-                                                                            "cloud-agent",
-                                                                            "^.*$",
-                                                                            null);
+  private final Question applicationDefaultTypeQuestion = new Question("application.default.type",
+                                                                       "Set application default type",
+                                                                       "cloud-agent",
+                                                                       "^.*$",
+                                                                       null);
 
-  private final Question cloudServiceTypeQuestion            = new Question("cloud.service.type",
-                                                                            "Set cloud service connector class",
-                                                                            "com.exoplatform.cloud.admin.instance.aws.AWSCloudServerClient",
-                                                                            "^.*$",
-                                                                            null);
+  private final Question cloudServiceTypeQuestion       = new Question("cloud.service.type",
+                                                                       "Set cloud service connector class",
+                                                                       "com.exoplatform.cloud.admin.instance.aws.AWSCloudServerClient",
+                                                                       "^.*$",
+                                                                       null);
 
-  private final Question cloudClientNameQuestion             = new Question("cloud.client.name",
-                                                                            "Set cloud client name (for amazon aws-ec2)",
-                                                                            "aws-ec2",
-                                                                            "^.*$",
-                                                                            null);
+  private final Question cloudClientNameQuestion        = new Question("cloud.client.name",
+                                                                       "Set cloud client name (for amazon aws-ec2)",
+                                                                       "aws-ec2",
+                                                                       "^.*$",
+                                                                       null);
 
-  private final Question cloudAwsVersionQuestion             = new Question("cloud.aws.version",
-                                                                            "Set cloud aws api version",
-                                                                            "2011-05-15",
-                                                                            "^.*$",
-                                                                            null);
+  private final Question cloudAwsVersionQuestion        = new Question("cloud.aws.version",
+                                                                       "Set cloud aws api version",
+                                                                       "2011-05-15",
+                                                                       "^.*$",
+                                                                       null);
 
-  private final Question cloudAwsIdentityQuestion            = new Question("cloud.aws.identity",
-                                                                            "Set cloud aws identity",
-                                                                            null,
-                                                                            "^.*$",
-                                                                            null);
+  private final Question cloudAwsIdentityQuestion       = new Question("cloud.aws.identity",
+                                                                       "Set cloud aws identity",
+                                                                       null,
+                                                                       "^.*$",
+                                                                       null);
 
-  private final Question cloudAwsCredentialsQuestion         = new Question("cloud.aws.credentials",
-                                                                            "Set cloud aws credentials",
-                                                                            null,
-                                                                            "^.*$",
-                                                                            null);
+  private final Question cloudAwsCredentialsQuestion    = new Question("cloud.aws.credentials",
+                                                                       "Set cloud aws credentials",
+                                                                       null,
+                                                                       "^.*$",
+                                                                       null);
 
   @Override
   public void update(File confDir,
@@ -80,7 +80,7 @@ public class AwsConfigurationUpdater extends BaseConfigurationUpdater {
 
       String prevApplicationDefaultType = ConfigUtils.findProperty(previousConfDir,
                                                                    "environment.sh",
-                                                                   "CLOUD_APPLICATION_DEFAULT_TYPE");
+                                                                   "APPLICATION_DEFAULT_TYPE");
       String prevCloudServiceType = ConfigUtils.findProperty(previousConfDir,
                                                              "environment.sh",
                                                              "CLOUD_SERVICE_TYPE");
@@ -92,7 +92,7 @@ public class AwsConfigurationUpdater extends BaseConfigurationUpdater {
                                                             "CLOUD_AWS_VERSION");
 
       clearBlock();
-      addToBlock(cloudApplicationDefaultTypeQuestion, prevApplicationDefaultType);
+      addToBlock(applicationDefaultTypeQuestion, prevApplicationDefaultType);
       addToBlock(cloudServiceTypeQuestion, prevCloudServiceType);
       addToBlock(cloudClientNameQuestion, prevCloudClientName);
       addToBlock(cloudAwsVersionQuestion, prevCloudAwsVersion);
@@ -107,21 +107,21 @@ public class AwsConfigurationUpdater extends BaseConfigurationUpdater {
       String cloudClientName = prevCloudClientName;
       String cloudAwsVersion = prevCloudAwsVersion;
       if (!usePrev) {
-        cloudApplicationDefaultTypeQuestion.setDefaults(prevApplicationDefaultType);
+        applicationDefaultTypeQuestion.setDefaults(prevApplicationDefaultType);
         cloudServiceTypeQuestion.setDefaults(prevCloudServiceType);
         cloudClientNameQuestion.setDefaults(prevCloudClientName);
         cloudAwsVersionQuestion.setDefaults(prevCloudAwsVersion);
 
-        applicationDefaultType = interaction.ask(cloudApplicationDefaultTypeQuestion);
+        applicationDefaultType = interaction.ask(applicationDefaultTypeQuestion);
         cloudServiceType = interaction.ask(cloudServiceTypeQuestion);
         cloudClientName = interaction.ask(cloudClientNameQuestion);
         cloudAwsVersion = interaction.ask(cloudAwsVersionQuestion);
       }
       ConfigUtils.writeProperty(confDir,
                                 "environment.sh",
-                                "CLOUD_APPLICATION_DEFAULT_TYPE",
+                                "APPLICATION_DEFAULT_TYPE",
                                 applicationDefaultType);
-      answers.addAnswer(cloudApplicationDefaultTypeQuestion, applicationDefaultType);
+      answers.addAnswer(applicationDefaultTypeQuestion, applicationDefaultType);
       ConfigUtils.writeProperty(confDir, "environment.sh", "CLOUD_SERVICE_TYPE", cloudServiceType);
       answers.addAnswer(cloudServiceTypeQuestion, cloudServiceType);
       ConfigUtils.writeProperty(confDir, "environment.sh", "CLOUD_CLIENT_NAME", cloudClientName);
