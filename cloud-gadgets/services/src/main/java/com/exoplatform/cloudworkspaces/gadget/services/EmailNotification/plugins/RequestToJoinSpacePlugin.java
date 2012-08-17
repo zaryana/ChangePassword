@@ -17,6 +17,7 @@
 package com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.plugins;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -33,6 +34,7 @@ import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 
+import com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.DateTimeUtils;
 import com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.EmailNotificationPlugin;
 import com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.EmailNotificationService;
 import com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.Event;
@@ -75,7 +77,6 @@ public class RequestToJoinSpacePlugin extends EmailNotificationPlugin {
           }
         }
       }
-      notificationService.setEvents(Plugin.REQUEST_JOIN_SPACE, userId, events);
       
       IdentityManager idMan = (IdentityManager) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(IdentityManager.class);
       StringBuilder builder = new StringBuilder();
@@ -83,9 +84,14 @@ public class RequestToJoinSpacePlugin extends EmailNotificationPlugin {
       String host = context.get("repoName") + "." + System.getProperty("tenant.masterhost");
       String prefix = "";
       String prefix2 = "";
-      for (Event event : events) {
-        if (event.getCreatedDate() < lastRun)
+      for (Iterator<Event> iter = events.iterator(); iter.hasNext();) {
+        Event event = iter.next();
+        if (event.getCreatedDate() < lastRun) {
+          if (event.getCreatedDate() < DateTimeUtils.subtract7days(lastRun)) {
+            iter.remove();
+          }
           continue; // bypass if the entry was already reported
+        }
         builder.append(prefix);
         builder2.append(prefix2);
         prefix = ", ";
@@ -95,7 +101,9 @@ public class RequestToJoinSpacePlugin extends EmailNotificationPlugin {
         Profile userProfile = userIdentity.getProfile();
         builder2.append("<a href='" + host + "/" + userProfile.getUrl() + "' target='_blank'>" + userProfile.getFullName() + "</a>");
       }
-
+      
+      notificationService.setEvents(Plugin.REQUEST_JOIN_SPACE, userId, events);
+      
       String spaceRequests = builder.toString();
       String userRequests = builder2.toString();
       if(spaceRequests.isEmpty()) return "";

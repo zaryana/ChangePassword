@@ -1,6 +1,7 @@
 package com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.plugins;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -15,6 +16,7 @@ import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvide
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
 
+import com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.DateTimeUtils;
 import com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.EmailNotificationPlugin;
 import com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.EmailNotificationService;
 import com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.Event;
@@ -50,18 +52,24 @@ public class ConnectionNotificationPlugin extends EmailNotificationPlugin{
           events.add(event);
         }
       }
-      notificationService.setEvents(Plugin.CONNECTION_REQUEST, userId, events);
       
 			StringBuilder builder = new StringBuilder();
 			String host = context.get("repoName") + "." + System.getProperty("tenant.masterhost");
 			String prefix = "";
-      for (Event event : events) {
-        if (event.getCreatedDate() < lastRun)
+      for (Iterator<Event> iter = events.iterator(); iter.hasNext();) {
+        Event event = iter.next();
+        if (event.getCreatedDate() < lastRun) {
+          if (event.getCreatedDate() < DateTimeUtils.subtract7days(lastRun)) {
+            iter.remove();
+          }
           continue; // bypass if the entry was already reported
+        }
         builder.append(prefix);
         prefix = ", ";
         builder.append("<a href='" + host + "/" + event.getAttributes().get("url") + "' target='_blank'>" + event.getIdentity() + "</a>");
       }
+      
+      notificationService.setEvents(Plugin.CONNECTION_REQUEST, userId, events);
 			
 			String connectionRequests = builder.toString();
 			if(connectionRequests.isEmpty()) return "";

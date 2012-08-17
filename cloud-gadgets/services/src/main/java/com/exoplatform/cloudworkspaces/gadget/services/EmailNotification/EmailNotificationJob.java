@@ -1,7 +1,6 @@
 package com.exoplatform.cloudworkspaces.gadget.services.EmailNotification;
 
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,54 +33,6 @@ public class EmailNotificationJob extends MultiTenancyJob {
   @Override
   public Class<? extends MultiTenancyTask> getTask() {
     return EmailNotificationTask.class;
-  }
-
-  private static long nextMinuteOf(long date) {
-    Calendar now = Calendar.getInstance();
-    now.setTimeInMillis(date);
-    now.add(Calendar.MINUTE, 1);
-    now.set(Calendar.SECOND, 0);
-    now.set(Calendar.MILLISECOND, 0);
-    return now.getTimeInMillis();
-  }
-  
-  private static long nextDayOf(long date) {
-    Calendar now = Calendar.getInstance();
-    now.setTimeInMillis(date);
-    now.add(Calendar.DAY_OF_YEAR, 1);
-
-    now.set(Calendar.HOUR_OF_DAY, 0);
-    now.set(Calendar.MINUTE, 0);
-    now.set(Calendar.SECOND, 0);
-    now.set(Calendar.MILLISECOND, 0);
-    return now.getTimeInMillis();
-  }
-
-  private static long nextMondayOf(long date) {
-    Calendar now = Calendar.getInstance();
-    now.setTimeInMillis(date);
-    int weekday = now.get(Calendar.DAY_OF_WEEK);
-    int days = weekday == Calendar.SUNDAY ? 1 : Calendar.SATURDAY - weekday + 2;
-    now.add(Calendar.DAY_OF_YEAR, days);
-
-    now.set(Calendar.HOUR_OF_DAY, 0);
-    now.set(Calendar.MINUTE, 0);
-    now.set(Calendar.SECOND, 0);
-    now.set(Calendar.MILLISECOND, 0);
-    return now.getTimeInMillis();
-  }
-
-  private static long nextMonthOf(long date) {
-    Calendar now = Calendar.getInstance();
-    now.setTimeInMillis(date);
-    now.add(Calendar.MONTH, 1);
-    now.set(Calendar.DAY_OF_MONTH, 1);
-
-    now.set(Calendar.HOUR_OF_DAY, 0);
-    now.set(Calendar.MINUTE, 0);
-    now.set(Calendar.SECOND, 0);
-    now.set(Calendar.MILLISECOND, 0);
-    return now.getTimeInMillis();
   }
 
   public class EmailNotificationTask extends MultiTenancyTask {
@@ -155,14 +106,14 @@ public class EmailNotificationJob extends MultiTenancyJob {
               if (interval.equals("never")) {
                 continue;
               } else if (interval.equals("day")) {
-                nextRun = nextDayOf(lastRun);
+                nextRun = DateTimeUtils.nextDayOf(lastRun);
               } else if (interval.equals("week")) {
-                nextRun = nextMondayOf(lastRun);
+                nextRun = DateTimeUtils.nextMondayOf(lastRun);
               } else if (interval.equals("month")) {
-                nextRun = nextMonthOf(lastRun);
+                nextRun = DateTimeUtils.nextMonthOf(lastRun);
               }
             } else {
-              nextRun = nextMinuteOf(lastRun);
+              nextRun = DateTimeUtils.nextMinuteOf(lastRun);
             }
 
             if (System.currentTimeMillis() < nextRun) {
