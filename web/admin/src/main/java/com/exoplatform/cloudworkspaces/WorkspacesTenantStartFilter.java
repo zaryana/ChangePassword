@@ -34,6 +34,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public class WorkspacesTenantStartFilter implements Filter {
 
@@ -109,18 +110,23 @@ public class WorkspacesTenantStartFilter implements Filter {
           OutputStream stream = response.getOutputStream();
           try {
             int head = html.indexOf(headTemplate);
-            stream.write(html.substring(0, head + headTemplate.length()).getBytes());
-            stream.write(baseTag.getBytes());
-            stream.write(tenantTag.getBytes());
-            int contactUs = html.indexOf(contactUsFrom);
-            stream.write(html.substring(head + headTemplate.length(), contactUs).getBytes());
-            stream.write(contactUsTo.getBytes());
-            stream.write(html.substring(contactUs + contactUsFrom.length()).getBytes());
+            if (head >= 0) {
+              stream.write(html.substring(0, head + headTemplate.length()).getBytes());
+              stream.write(baseTag.getBytes());
+              stream.write(tenantTag.getBytes());
+              int contactUs = html.indexOf(contactUsFrom);
+              if (contactUs >= 0) {
+                stream.write(html.substring(head + headTemplate.length(), contactUs).getBytes());
+                stream.write(contactUsTo.getBytes());
+                stream.write(html.substring(contactUs + contactUsFrom.length()).getBytes());
+                return;
+              }
+            }
+            ((HttpServletResponse) response).sendRedirect(resumingPage.toString());
           } finally {
             stream.close();
           }
         }
-
       } else {
         chain.doFilter(httpRequest, response);
       }

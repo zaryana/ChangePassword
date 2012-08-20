@@ -5,7 +5,7 @@
   <parent>
     <groupId>com.exoplatform.cloudworkspaces</groupId>
     <artifactId>cloud-workspaces-web</artifactId>
-    <version>1.1.0-Beta06-SNAPSHOT</version>
+    <version>1.1.0-Beta07-SNAPSHOT</version>
   </parent>
 
   <artifactId>cloud-workspaces-web-admin</artifactId>
@@ -65,6 +65,11 @@
           <artifactId>exo.core.component.security.core</artifactId>
         </exclusion>
       </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <type>jar</type>
     </dependency>
     <dependency>
       <groupId>org.testng</groupId>

@@ -8,7 +8,7 @@
   <parent>
     <groupId>com.exoplatform.cloudworkspaces</groupId>
     <artifactId>cloud-workspaces-parent</artifactId>
-    <version>1.1.0-Beta06-SNAPSHOT</version>
+    <version>1.1.0-Beta07-SNAPSHOT</version>
   </parent>
 
   <artifactId>cloud-workspaces-platform-bundle</artifactId>
@@ -214,6 +214,8 @@
                       <replacetoken><![CDATA[</body>]]></replacetoken>
                       <replacevalue><![CDATA[<!-- BEGIN: SEO TRACKING -->
                         <!-- Begin Inspectlet Embed Code -->
+                        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js"></script>
+                        <script type="text/javascript" src="/js/trackers.js"></script> 
                         <script type="text/javascript" id="inspectletjs">
                           var __insp = __insp || [];
                           __insp.push(['wid', 2511960504]);
@@ -224,7 +226,6 @@
                           })();
                        </script>
                        <!-- End Inspectlet Embed Code -->
-                       <script type="text/javascript" src="http://cloud-workspaces.com/js/trackers.js"></script>
                        </body>]]></replacevalue>
                       </replace>
                       <zip destfile="${project.build.directory}/platform-cloud-tomcat/webapps/portal.war" basedir="${project.build.directory}/platform-cloud-tomcat/webapps/portal" />

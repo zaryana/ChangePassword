@@ -5,6 +5,8 @@ if [ -z $1 ] ; then
   exit 1
 fi
 
+access=$1
+
 PACKAGE_NAME=$(find . -maxdepth 1 -name "cloud-workspaces-local-cloud*.zip")
 
 if [ -z "$PACKAGE_NAME" ]; then
@@ -15,35 +17,40 @@ fi
 url=($(echo $1 | tr "@" "\n"))
 remote_cwks=${url[1]}
 
-ssh -l cloud -i ~/.ssh/wks-cloud.key $1 "rm -rf /home/cloud/cloud-workspaces/*"
-scp -i ~/.ssh/wks-cloud.key $PACKAGE_NAME $1:/home/cloud/cloud-workspaces/
-ssh -l cloud -i ~/.ssh/wks-cloud.key $1 "unzip -q /home/cloud/cloud-workspaces/$PACKAGE_NAME -d /home/cloud/cloud-workspaces/"
-ssh -l cloud -i ~/.ssh/wks-cloud.key $1 "cd /home/cloud/cloud-workspaces/ && ./start.sh"
+ssh -l cloud -i ~/.ssh/wks-cloud.key $access "rm -rf /home/cloud/cloud-workspaces/*"
+scp -i ~/.ssh/wks-cloud.key $PACKAGE_NAME $access:/home/cloud/cloud-workspaces/
+ssh -l cloud -i ~/.ssh/wks-cloud.key $access "unzip -q /home/cloud/cloud-workspaces/$PACKAGE_NAME -d /home/cloud/cloud-workspaces/"
+ssh -l cloud -i ~/.ssh/wks-cloud.key $access "cd /home/cloud/cloud-workspaces/ && ./start.sh"
 
 sleep 40s
 
 lpath=`pwd`
 curl_res="$lpath/curl.res"
-get() {
-  echo $(curl --write-out %{http_code} --connect-timeout 60 -s -S --output $curl_res $1)
-}
-
 is_ready() {
-  local code=0
+  local status=""
+  local state=""
   # will wait for 30min
   timeout=$((30 * 60))
   local tstep=5
   local t=0
-  while [ $code -ne 302 ] && [ $code -ne 200 ] && [ $t -lt $timeout ] ; do
-    code=$(get $1)
-    if [ $code -ge 500  ] && [ $code -ne 502 ] ; then
-      echo "Cannot start app server. Internal error: "
-      cat $curl_res
-      exit 1
-    fi
+  as=$(ssh -l cloud -i ~/.ssh/wks-cloud.key $access "cat /home/cloud/cloud-workspaces/as.txt") 
+  while [ "$state" != "ONLINE" ] && [ $t -lt $timeout ] ; do
+  
+   if [ "$1" == "app" ] ; then
+      status=$(curl --connect-timeout 900 -s  -u cloudadmin:cloudadmin --output $curl_res --write-out %{http_code}  "http://$remote_cwks/rest/private/cloud-admin/instance-service/server-state/$as")
+   else
+      status=$(curl --connect-timeout 900 -s  -u cloudadmin:cloudadmin --output $curl_res --write-out %{http_code}  "http://$remote_cwks/rest/private/cloud-admin/cloudworkspaces/tenant-service/status/$1")
+   fi
+   
+   if [ $status -ne '200' ] ; then
+     echo "Unexpected status from REST call: $status, exiting.";
+     exit 1
+   fi
+
+    state=$(cat "$curl_res")
     sleep $tstep
     t=$((t + tstep))
-    echo -ne "\rwaiting $t seconds from $timeout, http status: $code     "
+    echo -ne "\rwaiting $t seconds from $timeout, app/tenant state: $state           "
   done
   
   if [ $t -ge $timeout ] ; then
@@ -53,13 +60,13 @@ is_ready() {
 }
 
 
-is_ready "http://$remote_cwks/portal/intranet/home"
+is_ready "app"
 
 #Create sandbox
-echo -ne "Creating tenant demo \n"
+echo -ne "\n Creating tenant demo \n"
 res=$(curl --connect-timeout 900 -s  -X POST -u cloudadmin:cloudadmin "http://$remote_cwks/rest/private/cloud-admin/tenant-service/create/demo")
 
-is_ready "http://demo.$remote_cwks/portal/intranet/home"
+is_ready "demo"
 
 sleep 20s
 
@@ -68,7 +75,7 @@ if [ ! -z $2 ] ; then
   echo ""
   echo -ne "Creating tenant $2 \n"
   res=$(curl --connect-timeout 900 -s  -X POST -u cloudadmin:cloudadmin "http://$remote_cwks/rest/private/cloud-admin/tenant-service/create/$2")
-  is_ready "http://$2.$remote_cwks/portal/intranet/home"
+  is_ready "$2"
 fi
 
 

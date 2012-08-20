@@ -12,7 +12,7 @@
 
   <groupId>com.exoplatform.cloudworkspaces</groupId>
   <artifactId>cloud-workspaces-parent</artifactId>
-  <version>1.1.0-Beta06-SNAPSHOT</version>
+  <version>1.1.0-Beta07-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>eXo Cloud Workspaces</name>
   <description>Parent POM for Cloud Workspaces projects.</description>
@@ -31,19 +31,19 @@
 
     <!-- eXo Modules -->
     <org.exoplatform.platform.cloud.version>3.5.4-1-SNAPSHOT</org.exoplatform.platform.cloud.version>
-    <org.exoplatform.platform.version>3.5.4-SNAPSHOT</org.exoplatform.platform.version>
-    <org.exoplatform.kernel.version>2.3.8-GA-SNAPSHOT</org.exoplatform.kernel.version>
-    <org.exoplatform.core.version>2.4.8-GA-SNAPSHOT</org.exoplatform.core.version>
-    <org.exoplatform.ws.version>2.2.8-GA-SNAPSHOT</org.exoplatform.ws.version>
-    <org.exoplatform.jcr.version>1.14.8-GA-SNAPSHOT</org.exoplatform.jcr.version>
-    <org.exoplatform.jcr-services.version>1.14.8-GA-SNAPSHOT</org.exoplatform.jcr-services.version>
+    <org.exoplatform.platform.version>3.5.4</org.exoplatform.platform.version>
+    <org.exoplatform.kernel.version>2.3.8-GA</org.exoplatform.kernel.version>
+    <org.exoplatform.core.version>2.4.8-GA</org.exoplatform.core.version>
+    <org.exoplatform.ws.version>2.2.8-GA</org.exoplatform.ws.version>
+    <org.exoplatform.jcr.version>1.14.8-GA</org.exoplatform.jcr.version>
+    <org.exoplatform.jcr-services.version>1.14.8-GA</org.exoplatform.jcr-services.version>
     <com.exoplatform.cloud-management.version>1.1-M9</com.exoplatform.cloud-management.version>
     <org.exoplatform.ide.version>1.2.0-M8</org.exoplatform.ide.version>
-    <org.exoplatform.portal.version>3.2.5-PLF-SNAPSHOT</org.exoplatform.portal.version>
-    <org.exoplatform.cs.version>2.2.10-SNAPSHOT</org.exoplatform.cs.version>
-    <org.exoplatform.ks.version>2.2.10-SNAPSHOT</org.exoplatform.ks.version>
-    <org.exoplatform.ecms.version>2.3.8-SNAPSHOT</org.exoplatform.ecms.version>
-    <org.exoplatform.social.version>1.2.10-SNAPSHOT</org.exoplatform.social.version>
+    <org.exoplatform.portal.version>3.2.5-PLF</org.exoplatform.portal.version>
+    <org.exoplatform.cs.version>2.2.10</org.exoplatform.cs.version>
+    <org.exoplatform.ks.version>2.2.10</org.exoplatform.ks.version>
+    <org.exoplatform.ecms.version>2.3.8</org.exoplatform.ecms.version>
+    <org.exoplatform.social.version>1.2.10</org.exoplatform.social.version>
     <org.gatein.shindig.version>2.0.2</org.gatein.shindig.version>
 
     <!-- Db libs -->

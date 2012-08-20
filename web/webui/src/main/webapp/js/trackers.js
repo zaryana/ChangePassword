@@ -28,6 +28,8 @@
  * --------------------- Sends data to Marketo and Google Analytics if this is page from domain with targetDomainNameForTracking 
  */
 
+ var MARKETO_TRACKER_ID = "577-PCT-880";
+ var TARGET_DOMAIN_NAME_FOR_TRACKING = "cloud-workspaces.com";
 
 if (typeof jQuery === 'undefined') {
 	var script = document.createElement('script');
@@ -36,10 +38,7 @@ if (typeof jQuery === 'undefined') {
 	document.getElementsByTagName('head')[0].appendChild(script);
 }
 
-
-
-var targetDomainNameForTracking = "cloud-workspaces.com";
-if (testDomainPrefix(targetDomainNameForTracking)){
+if (testDomainPrefix(TARGET_DOMAIN_NAME_FOR_TRACKING)){
    loadGoogleAnalyticsTracker();
    loadMarketoTracker();
 }
@@ -62,7 +61,7 @@ function loadGoogleAnalyticsTracker()
  *  Send data to Marketo
  */
 function loadMarketoTracker(){
-   if (jQuery){
+   if (typeof jQuery !== 'undefined'){
       jQuery.ajax({
          url : document.location.protocol + '//munchkin.marketo.net/munchkin.js',
          dataType : 'script',

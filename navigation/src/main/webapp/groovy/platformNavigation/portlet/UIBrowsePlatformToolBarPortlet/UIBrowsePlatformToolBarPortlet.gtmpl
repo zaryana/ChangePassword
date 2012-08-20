@@ -5,6 +5,7 @@ import org.exoplatform.portal.mop.user.UserNode;
 import org.exoplatform.web.application.JavascriptManager;
 import org.exoplatform.platform.component.social.UINavigationComposer;
 import org.exoplatform.platform.webui.NavigationURLUtils;
+import org.exoplatform.social.core.service.LinkProvider;
 
 def rcontext = _ctx.getRequestContext() ;
 JavascriptManager jsmanager = rcontext.getJavascriptManager();
@@ -16,10 +17,28 @@ def labelDocument = _ctx.appRes("UIBrowsePlatformToolBarPortlet.label.document")
 def labelBrowse = _ctx.appRes("UIBrowsePlatformToolBarPortlet.label.browse");
 def labelSpace = _ctx.appRes("UIBrowsePlatformToolBarPortlet.label.space");
 def labelPeople = _ctx.appRes("UIBrowsePlatformToolBarPortlet.label.people");
+def labelLastVisited = _ctx.appRes("UIBrowsePlatformToolBarPortlet.label.lastVisited");
 
 def documentLink = NavigationURLUtils.getURLInCurrentPortal("documents");
 def peopleLink = NavigationURLUtils.getURLInCurrentPortal("people");
 def spaceLink = NavigationURLUtils.getURLInCurrentPortal("all-spaces");
+
+void renderSpacesList() {
+  def spacesList = uicomponent.getLastVisitedSpaces();
+  if(spacesList == null || spacesList.isEmpty()) return ;
+  for (space in spacesList) {
+    def spaceUrl = LinkProvider.getSpaceUri(space);
+    def spaceName = uicomponent.getSpaceDisplayName(space);
+    print """
+      <li class="MenuItem">
+    """;
+    print """<a class="ItemIcon" href="$spaceUrl">$spaceName</a>""";
+      print """
+        </li>
+      """;
+  }
+}
+
 %>
 
 <ul id="$uicomponent.id" class="UIUserToolBarSitePortlet UIHorizontalTabs">
@@ -35,8 +54,12 @@ def spaceLink = NavigationURLUtils.getURLInCurrentPortal("all-spaces");
 		        <li class="MenuItem ">
 		            <a class="ItemIcon SiteIcon" href="$peopleLink">$labelPeople</a>
 		        </li>
-		        <li class="MenuItem ">
+		        <li class="MenuItem ArrowIcon ">
 		            <a class="ItemIcon SiteIcon" href="$spaceLink">$labelSpace</a>
+		            <ul class="MenuItemContainer" style="position: absolute; display:none">
+		               <li class="MenuItem "><a class="ItemIcon DefaultPageIcon" style="font-weight: bold; padding: 0px 22px; text-decoration: none; cursor: default;">$labelLastVisited</a></li>
+		               <% renderSpacesList(); %>
+		            </ul>
 		        </li>    
 		        <%}%>        
 				</ul>  

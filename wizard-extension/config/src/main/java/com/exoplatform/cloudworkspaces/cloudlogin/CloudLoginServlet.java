@@ -52,9 +52,9 @@ public class CloudLoginServlet extends HttpServlet {
    * CL_SERVLET_CTX depends on name of cloud webui war, in case of cloud-workspaces, it's named ROOT which is corresponding to "" context
    * if war name is "cloud.war", CL_SERVLET_CTX need to be named "cloud"
    */
-  public static final String CL_SERVLET_CTX = "";
+  public static final String CL_SERVLET_CTX = "cloud-workspaces-wizard-extension";
   public static final String CL_SERVLET_URL = "/cloudlogin";
-  public static final String CL_JSP_RESOURCE = "/StartedStep.jsp";
+  public static final String CL_JSP_RESOURCE = "/getstarted.jsp";
   
   public static final String CLOUD_REQUESTED_URI = "cloudRequestUri";
   public static final String CLOUD_PROCESS_DISPLAYED = "cloudProcessDisplayed";
