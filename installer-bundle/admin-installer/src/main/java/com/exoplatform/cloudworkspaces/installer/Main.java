@@ -29,6 +29,7 @@ import com.exoplatform.cloudworkspaces.installer.configuration.updaters.TomcatUs
 import com.exoplatform.cloudworkspaces.installer.downloader.IntranetBundleDownloader;
 import com.exoplatform.cloudworkspaces.installer.interaction.AnswersManager;
 import com.exoplatform.cloudworkspaces.installer.interaction.InteractionManager;
+import com.exoplatform.cloudworkspaces.installer.interaction.InteractionManagerWithAnswers;
 import com.exoplatform.cloudworkspaces.installer.interaction.StreamInteractionManager;
 import com.exoplatform.cloudworkspaces.installer.rest.M8CloudAdminServices;
 import com.exoplatform.cloudworkspaces.installer.upgrade.AdminUpgradeAlgorithm;
@@ -70,6 +71,7 @@ public class Main {
     String conf = "admin-data/conf";
     String data = "admin-data/data";
     String tomcat = "admin-tomcat";
+    String saveTo = null;
     for (int i = 0; i < args.length; i++) {
       if (args[i].equals("-v") || args[i].equals("--version"))
         version = args[i + 1];
@@ -83,6 +85,8 @@ public class Main {
         data = args[i + 1];
       if (args[i].equals("-t") || args[i].equals("--tomcat"))
         tomcat = args[i + 1];
+      if (args[i].equals("-s") || args[i].equals("--save"))
+        saveTo = args[i + 1];
     }
     if (version == null) {
       System.out.println("Set version for upgrade");
@@ -103,6 +107,7 @@ public class Main {
     if (!dataDir.exists() || !dataDir.isDirectory()) {
       System.out.println("Data dir not exists or is not directory");
     }
+    AnswersManager answersManager = new AnswersManager((saveTo == null) ? null : new File(saveTo));
 
     InstallerConfiguration configuration = new InstallerConfiguration(installConfigFile);
 
@@ -110,11 +115,11 @@ public class Main {
     if (answersFile == null) {
       interaction = new StreamInteractionManager();
     } else {
-      // to be continued...
+      interaction = new InteractionManagerWithAnswers(new File(answersFile));
     }
 
     AdminUpgradeAlgorithm algorithm = versionsManager.getAlgorithm("1.1.0-Beta05", version);
-    algorithm.upgrade(confDir, tomcatDir, dataDir, configuration, interaction);
+    algorithm.upgrade(confDir, tomcatDir, dataDir, configuration, interaction, answersManager);
   }
 
   public static void rest(String[] args) throws Exception {
@@ -134,7 +139,7 @@ public class Main {
   }
 
   public static void config(String[] args) throws Exception {
-    AnswersManager answers = new AnswersManager();
+    AnswersManager answers = new AnswersManager(new File("/home/koster/test/answers.txt"));
     InteractionManager interaction = new StreamInteractionManager();
     List<ConfigurationUpdater> updaters = new ArrayList<ConfigurationUpdater>();
     updaters.add(new DBConfigurationUpdater());

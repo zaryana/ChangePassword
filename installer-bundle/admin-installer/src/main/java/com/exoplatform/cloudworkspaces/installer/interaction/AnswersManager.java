@@ -18,24 +18,64 @@
  */
 package com.exoplatform.cloudworkspaces.installer.interaction;
 
+import com.exoplatform.cloudworkspaces.installer.InstallerException;
 import com.exoplatform.cloudworkspaces.installer.configuration.Question;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class AnswersManager {
 
+  private final File                saveTo;
+
   private final Map<String, String> answers = new HashMap<String, String>();
 
-  public AnswersManager() {
+  private final List<String>        lines   = new ArrayList<String>();
+
+  public AnswersManager(File saveTo) {
+    this.saveTo = saveTo;
   }
 
-  public void addAnswer(Question question, String answer) {
+  public void addBlockName(String block) {
+    lines.add("");
+    lines.add("# " + block);
+  }
+
+  public void addAnswer(Question question, String answer) throws InstallerException {
     answers.put(question.getParameter(), answer);
+    lines.add(question.getParameter() + "=" + answer);
+    if (saveTo != null) {
+      try {
+        saveTo(saveTo, lines);
+      } catch (IOException e) {
+        throw new InstallerException("Error while saving parameters to file "
+            + saveTo.getAbsolutePath(), e);
+      }
+    }
   }
 
   public String getAnswer(String parameter) {
     return answers.get(parameter);
+  }
+
+  private void saveTo(File saveTo, List<String> answers) throws IOException {
+    if (!saveTo.exists()) {
+      if (!saveTo.getParentFile().exists() && saveTo.getParentFile().mkdirs())
+        throw new IOException("Couldn't create directory for answers file");
+      if (!saveTo.createNewFile())
+        throw new IOException("Couldn't create file for answers");
+    }
+    PrintWriter out = new PrintWriter(new FileOutputStream(saveTo));
+    for (String line : answers) {
+      out.println(line);
+    }
+    out.close();
   }
 
 }

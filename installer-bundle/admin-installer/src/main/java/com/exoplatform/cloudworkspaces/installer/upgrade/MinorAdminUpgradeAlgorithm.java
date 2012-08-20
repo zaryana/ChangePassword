@@ -24,6 +24,7 @@ import com.exoplatform.cloudworkspaces.installer.configuration.ConfigurationMana
 import com.exoplatform.cloudworkspaces.installer.downloader.BundleDownloader;
 import com.exoplatform.cloudworkspaces.installer.interaction.AnswersManager;
 import com.exoplatform.cloudworkspaces.installer.interaction.InteractionManager;
+import com.exoplatform.cloudworkspaces.installer.rest.AdminException;
 import com.exoplatform.cloudworkspaces.installer.rest.CloudAdminServices;
 import com.exoplatform.cloudworkspaces.installer.tomcat.AdminTomcatWrapper;
 
@@ -35,12 +36,16 @@ import java.io.File;
  */
 public abstract class MinorAdminUpgradeAlgorithm extends AdminUpgradeAlgorithm {
 
+  public MinorAdminUpgradeAlgorithm() {
+  }
+
   @Override
   public void upgrade(File previousConfDir,
                       File previousTomcatDir,
                       File dataDir,
                       InstallerConfiguration configuration,
-                      InteractionManager interaction) throws InstallerException {
+                      InteractionManager interaction,
+                      AnswersManager answers) throws InstallerException {
     File bundleZip = new File(previousTomcatDir.getParentFile(), "admin-bundle-" + getVersion()
         + ".zip");
     if (bundleZip.exists()) {
@@ -53,8 +58,6 @@ public abstract class MinorAdminUpgradeAlgorithm extends AdminUpgradeAlgorithm {
                                configuration.getProperty("bundle.username"),
                                configuration.getProperty("bundle.password"),
                                bundleZip);
-
-    AnswersManager answers = new AnswersManager();
 
     ConfigurationManager configurationManager = getConfigurationManager(previousConfDir,
                                                                         previousTomcatDir,
@@ -77,6 +80,16 @@ public abstract class MinorAdminUpgradeAlgorithm extends AdminUpgradeAlgorithm {
     tomcat.startTomcat();
 
     tomcatStarted(previousConfDir, previousTomcatDir, dataDir, cloudAdminServices);
+
+    boolean z = false;
+    while (!z) {
+      try {
+        cloudAdminServices.serverStates();
+        z = true;
+      } catch (AdminException e) {
+        z = false;
+      }
+    }
 
     cloudAdminServices.blockAutoscaling();
     String newAlias = cloudAdminServices.serverStart(answers.getAnswer("application.default.type"));

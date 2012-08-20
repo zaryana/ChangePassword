@@ -22,8 +22,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 public class FileUtils {
 
@@ -69,35 +67,21 @@ public class FileUtils {
       throw new IOException("Directory " + dir.getAbsolutePath() + " couldn't be deleted");
   }
 
-  public static void unzipTo(File zip, File toDir) throws IOException {
-    ZipInputStream zin = new ZipInputStream(new FileInputStream(zip));
-    try {
-      ZipEntry entry = zin.getNextEntry();
-      while (entry != null) {
-        File current = new File(toDir.getAbsolutePath() + "/" + entry.getName());
-        if (entry.isDirectory()) {
-          if (!current.mkdirs()) {
-            throw new IOException("Could not unzip archive " + zip.getAbsolutePath() + " to "
-                + toDir.getAbsolutePath());
-          }
-        } else {
-          current.createNewFile();
-          FileOutputStream fout = new FileOutputStream(current);
-          try {
-            byte[] buf = new byte[100 * 1024];
-            int length = 0;
-            while (length >= 0) {
-              fout.write(buf, 0, length);
-              length = zin.read(buf);
-            }
-          } finally {
-            fout.close();
-          }
-        }
-        entry = zin.getNextEntry();
-      }
-    } finally {
-      zin.close();
+  public static void unzipTo(File zip, File toDir) throws IOException, InterruptedException {
+    if (!toDir.exists() && !toDir.mkdirs()) {
+      throw new IOException("Couldn't create directory for unzipping");
+    }
+    StringBuilder zipCmd = new StringBuilder();
+    zipCmd.append("unzip -d ");
+    zipCmd.append(toDir.getAbsolutePath());
+    zipCmd.append(' ');
+    zipCmd.append(zip.getAbsolutePath());
+    System.out.println(zipCmd.toString());
+    Process process = Runtime.getRuntime().exec(zipCmd.toString());
+    int result = process.waitFor();
+    if (result != 0) {
+      throw new IOException("Unzipping archive failed with code " + result);
     }
   }
+
 }

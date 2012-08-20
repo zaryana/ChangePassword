@@ -19,6 +19,7 @@
 package com.exoplatform.cloudworkspaces.installer.configuration;
 
 import com.exoplatform.cloudworkspaces.installer.FileUtils;
+import com.exoplatform.cloudworkspaces.installer.InstallerException;
 import com.exoplatform.cloudworkspaces.installer.interaction.AnswersManager;
 import com.exoplatform.cloudworkspaces.installer.interaction.InteractionManager;
 
@@ -58,7 +59,7 @@ public class ConfigurationManager {
     this.updaters = updaters;
   }
 
-  public void configure() throws ConfigurationException {
+  public void configure() throws InstallerException {
     try {
       File bundleDir = new File(previousTomcatDir.getParentFile(), "new-admin-bundle/");
       if (bundleDir.exists())
@@ -79,7 +80,9 @@ public class ConfigurationManager {
         FileUtils.deleteDir(tomcatDir);
       if (!tomcatDir.mkdirs())
         throw new IOException("Couldn't create directory " + tomcatDir.getAbsolutePath());
-      FileUtils.copyDirs(new File(bundleDir, "admin-tomcat"), tomcatDir);
+      if (!(new File(bundleDir, "admin-tomcat").renameTo(tomcatDir)))
+        throw new IOException("AAAAAAAAAAAAAA");
+      // FileUtils.copyDirs(new File(bundleDir, "admin-tomcat"), tomcatDir);
 
       File prevEnvFile = new File(previousConfDir, "environment.sh");
       if (!prevEnvFile.exists()) {
@@ -96,6 +99,8 @@ public class ConfigurationManager {
                        answersManager);
       }
     } catch (IOException e) {
+      throw new ConfigurationException(e);
+    } catch (InterruptedException e) {
       throw new ConfigurationException(e);
     }
   }

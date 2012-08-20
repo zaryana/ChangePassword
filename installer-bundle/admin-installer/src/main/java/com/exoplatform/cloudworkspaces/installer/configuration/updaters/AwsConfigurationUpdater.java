@@ -19,6 +19,7 @@
 package com.exoplatform.cloudworkspaces.installer.configuration.updaters;
 
 import com.exoplatform.cloudworkspaces.installer.ConfigUtils;
+import com.exoplatform.cloudworkspaces.installer.InstallerException;
 import com.exoplatform.cloudworkspaces.installer.configuration.BaseConfigurationUpdater;
 import com.exoplatform.cloudworkspaces.installer.configuration.ConfigurationException;
 import com.exoplatform.cloudworkspaces.installer.configuration.PreviousQuestion;
@@ -72,11 +73,12 @@ public class AwsConfigurationUpdater extends BaseConfigurationUpdater {
                      File previousConfDir,
                      File previousTomcatDir,
                      InteractionManager interaction,
-                     AnswersManager answers) throws ConfigurationException {
+                     AnswersManager answers) throws InstallerException {
     try {
       interaction.println("");
       interaction.println("");
       interaction.println("Aws settings");
+      answers.addBlockName("Aws settings");
 
       String prevApplicationDefaultType = ConfigUtils.findProperty(previousConfDir,
                                                                    "environment.sh",

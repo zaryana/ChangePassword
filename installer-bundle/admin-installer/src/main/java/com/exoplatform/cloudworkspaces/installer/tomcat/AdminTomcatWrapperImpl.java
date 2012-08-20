@@ -21,7 +21,7 @@ package com.exoplatform.cloudworkspaces.installer.tomcat;
 import com.exoplatform.cloudworkspaces.installer.InstallerException;
 
 import java.io.File;
-import java.util.Scanner;
+import java.io.IOException;
 
 public class AdminTomcatWrapperImpl implements AdminTomcatWrapper {
 
@@ -33,14 +33,25 @@ public class AdminTomcatWrapperImpl implements AdminTomcatWrapper {
 
   @Override
   public void startTomcat() throws InstallerException {
-    System.out.println("Please, start tomcat");
-    new Scanner(System.in).next();
+    execute("./catalina.sh start", new File(tomcatDir, "bin"));
   }
 
   @Override
   public void stopTomcat() throws InstallerException {
-    System.out.println("Please, stop tomcat");
-    new Scanner(System.in).next();
+    execute("./catalina.sh stop -force", new File(tomcatDir, "bin"));
+  }
+
+  private void execute(String cmd, File dir) throws InstallerException {
+    try {
+      Process process = Runtime.getRuntime().exec(cmd, null, dir);
+      int result = process.waitFor();
+      if (result != 0)
+        throw new InstallerException("Starting or stopping tomcat was failed with status " + result);
+    } catch (IOException e) {
+      throw new InstallerException("Error while starting/stopping tomcat", e);
+    } catch (InterruptedException e) {
+      throw new InstallerException("Error while starting/stopping tomcat", e);
+    }
   }
 
 }

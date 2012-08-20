@@ -18,6 +18,7 @@
  */
 package com.exoplatform.cloudworkspaces.installer.configuration;
 
+import com.exoplatform.cloudworkspaces.installer.InstallerException;
 import com.exoplatform.cloudworkspaces.installer.interaction.AnswersManager;
 import com.exoplatform.cloudworkspaces.installer.interaction.InteractionManager;
 
@@ -30,6 +31,6 @@ public interface ConfigurationUpdater {
                      File previousConfDir,
                      File previousTomcatDir,
                      InteractionManager interaction,
-                     AnswersManager answers) throws ConfigurationException;
+                     AnswersManager answers) throws InstallerException;
 
 }
