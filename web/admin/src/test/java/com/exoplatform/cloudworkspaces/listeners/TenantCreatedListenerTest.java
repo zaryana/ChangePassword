@@ -54,8 +54,7 @@ public class TenantCreatedListenerTest {
     Configuration cloudAdminConfiguration = new CompositeConfiguration();
     usersManager = Mockito.mock(UsersManager.class);
     TenantInfoDataManager tenantInfoDataManager = Mockito.mock(TenantInfoDataManager.class);
-    tenantStateDataManager = new TenantStateDataManager(cloudAdminConfiguration,
-                                                        tenantInfoDataManager);
+    tenantStateDataManager = new TenantStateDataManager(tenantInfoDataManager);
     NotificationMailSender notificationMailSender = Mockito.mock(NotificationMailSender.class);
     this.listener = new TenantCreatedListener(tenantStateDataManager,
                                               notificationMailSender,

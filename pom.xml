@@ -37,7 +37,7 @@
     <org.exoplatform.ws.version>2.2.8-GA-SNAPSHOT</org.exoplatform.ws.version>
     <org.exoplatform.jcr.version>1.14.8-GA-SNAPSHOT</org.exoplatform.jcr.version>
     <org.exoplatform.jcr-services.version>1.14.8-GA-SNAPSHOT</org.exoplatform.jcr-services.version>
-    <com.exoplatform.cloud-management.version>1.1-M9-SNAPSHOT</com.exoplatform.cloud-management.version>
+    <com.exoplatform.cloud-management.version>1.1-M9</com.exoplatform.cloud-management.version>
     <org.exoplatform.ide.version>1.2.0-M8</org.exoplatform.ide.version>
     <org.exoplatform.portal.version>3.2.5-PLF-SNAPSHOT</org.exoplatform.portal.version>
     <org.exoplatform.cs.version>2.2.10-SNAPSHOT</org.exoplatform.cs.version>
@@ -212,6 +212,12 @@
       </dependency>
 
       <!-- Cloud Platform -->
+      <dependency>
+        <groupId>com.exoplatform.platform.cloud</groupId>
+        <artifactId>exo-platform-cloud-services</artifactId>
+        <version>${org.exoplatform.platform.cloud.version}</version>
+        <type>jar</type>
+      </dependency>
       <dependency>
         <groupId>com.exoplatform.platform.cloud</groupId>
         <artifactId>exo-platform-cloud-packaging-tomcat</artifactId>
