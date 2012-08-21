@@ -54,7 +54,7 @@ public class CloudWorkspacesInfoService {
     for (Configuration server : applicationServerConfigurationManager.getAllLoadedConfiguration()
                                                                      .values()) {
       result.append(createATag(generateServerLogUrl(server),
-                               server.getString(ApplicationServerConfiguration.ALIAS_PARAMETER)));
+                               server.getString(ApplicationServerConfiguration.INSTANCE_ID)));
       result.append("<br>");
     }
     return result.toString();
@@ -75,7 +75,7 @@ public class CloudWorkspacesInfoService {
 
   private String generateServerLogUrl(Configuration server) throws CloudAdminException {
     Map<String, Object> description = cloudServerClient.describeInstanceInRegion(null,
-                                                                                 server.getString(ApplicationServerConfiguration.ALIAS_PARAMETER));
+                                                                                 server.getString(ApplicationServerConfiguration.INSTANCE_ID));
     StringBuilder url = new StringBuilder();
     url.append("https://");
     url.append(description.get("dnsName"));
