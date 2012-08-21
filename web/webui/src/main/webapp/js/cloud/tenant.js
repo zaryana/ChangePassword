@@ -42,7 +42,13 @@ define([ "jquery" ], function() {
 			});
 			request.done(function(data, textStatus, jqXHR) {
 				if (callbacks.done) {
-					callbacks.done(jqXHR.responseText);  //callbacks.done(data); // Data???? No.
+				  // TODO callbacks.done(data); // Data???? No.
+					// Yes- The function gets passed three arguments: 
+					// * The data returned from the server, formatted according to the dataType parameter; 
+					// * a string describing the status; 
+					// * and the jqXHR (in jQuery 1.4.x, XMLHttpRequest)
+					// callbacks.done(jqXHR.responseText); // it's not formatted data from the response, why we need it?
+					callbacks.done(data);
 				}
 			});
 			request.always(function(jqXHR, textStatus) {
