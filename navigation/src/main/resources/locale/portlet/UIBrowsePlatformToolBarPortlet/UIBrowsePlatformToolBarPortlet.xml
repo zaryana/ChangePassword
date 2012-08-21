@@ -6,6 +6,7 @@
       <document>Documents</document>
       <people>People</people>
       <space>Spaces</space>
+      <lastVisited>Last Visited</lastVisited>
     </label>
   </UIBrowsePlatformToolBarPortlet>
 </bundle>

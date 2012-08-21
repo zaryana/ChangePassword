@@ -13,6 +13,12 @@
   <description>eXo Cloud Workspaces Social</description>
 
   <dependencies>
+     <dependency>
+      <groupId>org.exoplatform.platform</groupId>
+      <artifactId>exo.platform.component.common</artifactId>
+      <version>${org.exoplatform.platform.version}</version>
+      <scope>provided</scope>
+    </dependency>  
     <dependency>
       <groupId>org.exoplatform.core</groupId>
       <artifactId>exo.core.component.organization.api</artifactId>

@@ -47,7 +47,6 @@
         <ul id="documentList">
           <li class="Icon exo_documentFolder16x16Icon"><a target="_parent" href="/Documents">Documents</a></li>
           <li class="Icon exo_favoriteFolder16x16Icon"><a target="_parent" href="/Favorites">Favorites</a></li>
-          <li class="Icon exo_musicFolder16x16Icon"><a target="_parent" href="/Music">Music</a></li>
           <li class="Icon exo_pictureFolder16x16Icon"><a target="_parent" href="/Pictures">Pictures</a></li>
           <li class="Icon nt_unstructured16x16Icon" id="publicFolder"><a target="_parent" href="">Public Documents</a></li>
           <li class="Icon exo_videoFolder16x16Icon"><a target="_parent" href="/Videos">Videos</a></li>

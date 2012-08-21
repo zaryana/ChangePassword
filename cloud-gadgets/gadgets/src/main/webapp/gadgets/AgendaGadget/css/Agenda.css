@@ -3,9 +3,10 @@
 }
 
 .listEvent ul {
-        width: 100%;
+        width: 207px;
         list-style-type: none;
         padding-left: 0px;
+        margin-left: 0px;
 }
 
 .listEvent ul li {
@@ -22,19 +23,10 @@
 			
 .listEvent ul .eventTitle {
         width: 70%;				
-}
-
-.listEvent ul .eventEmpty{
-        width: 30%;
-        margin-bottom: 5px;
-}
-
-.listEvent ul .eventTime {
-        width: 70%;
         margin-bottom: 5px;        
 }
 
-.listEvent ul .eventTime span {
+.listEvent ul .eventTitle span {
         font-size: 10px;
         color: 	#606060;
         font-style: italic;       
@@ -83,14 +75,14 @@
         border: 1px solid #DDDDDD;
         border-radius: 4px 4px 4px 4px;
         cursor: pointer;
-        margin: 10px 1px 2px 8px;
+        margin: 10px 1px 2px 3px;
         font-size: 12px;
         white-space: nowrap;
         padding: 1px 2px;
 }
 
 .add-table .Button #cancel {
-        margin: 10px 4px 2px 1px;
+        margin: 10px 3px 2px 1px;
 }
 
 .add-table .RowTitle input[type="text"] {

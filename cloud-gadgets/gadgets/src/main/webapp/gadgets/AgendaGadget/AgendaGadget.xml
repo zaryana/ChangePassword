@@ -76,7 +76,7 @@
                                                 to = Date.parse(toString) + extract_hour(toTime);
                                         }
                                         var calendar = addForm["calendar"].options[addForm["calendar"].selectedIndex].value;
-                                        var dataString = 'calId='+ calendar + '&eventTitle=' + title + '&from=' + from + '&to=' + to + '&eventType=' + eventType;
+                                        var dataString = 'calId='+ calendar + '&eventTitle=' + encodeURIComponent(title) + '&from=' + from + '&to=' + to + '&eventType=' + eventType;
           
                                         $.ajax({  
                                                 type: "POST",  

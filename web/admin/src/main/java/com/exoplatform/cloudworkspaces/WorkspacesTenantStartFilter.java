@@ -18,13 +18,13 @@
  */
 package com.exoplatform.cloudworkspaces;
 
-import com.exoplatform.cloud.multitenancy.TenantNameResolver;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -33,7 +33,14 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.exoplatform.cloud.multitenancy.TenantNameResolver;
+
 public class WorkspacesTenantStartFilter implements Filter {
+  
+  private static final Logger LOG = LoggerFactory.getLogger(WorkspacesTenantStartFilter.class);
 
   private String resumingPage = "http://${tenant.masterhost}/resuming.jsp";
 
@@ -108,16 +115,27 @@ public class WorkspacesTenantStartFilter implements Filter {
           OutputStream stream = response.getOutputStream();
           try {
             int head = html.indexOf(headTemplate);
-            stream.write(html.substring(0, head + headTemplate.length()).getBytes());
-            stream.write(baseTag.getBytes());
-//            stream.write(tenantTag.getBytes());    Moved before </body>
-            int contactUs = html.indexOf(contactUsFrom);
-            int bodyEndIndex = html.indexOf(bodyEndTemplate);
-            stream.write(html.substring(head + headTemplate.length(), contactUs).getBytes());
-            stream.write(contactUsTo.getBytes());
-            stream.write(html.substring(contactUs + contactUsFrom.length(), bodyEndIndex).getBytes());
-            stream.write(tenantTag.getBytes());
-            stream.write(html.substring(bodyEndIndex + bodyEndTemplate.length()).getBytes());
+            if (head >= 0) {
+              int contactUs = html.indexOf(contactUsFrom);
+              if (contactUs >= 0) {
+                int bodyEndIndex = html.indexOf(bodyEndTemplate);
+                if (bodyEndIndex >= 0) {
+                  stream.write(html.substring(0, head + headTemplate.length()).getBytes());
+                  stream.write(baseTag.getBytes());
+                  stream.write(html.substring(head + headTemplate.length(), contactUs).getBytes());
+                  stream.write(contactUsTo.getBytes());
+                  stream.write(html.substring(contactUs + contactUsFrom.length(), bodyEndIndex).getBytes());
+                  stream.write(tenantTag.getBytes());
+                  stream.write(html.substring(bodyEndIndex + bodyEndTemplate.length()).getBytes());
+                } else {
+                  LOG.error("closing 'body' element not found in HTML of " + resumingPage);
+                }
+              } else {
+                LOG.error("ContactUs form not found in HTML of " + resumingPage);
+              }
+            } else {
+              LOG.error("'head' element not found in HTML of " + resumingPage);
+            }
           } finally {
             stream.close();
           }
