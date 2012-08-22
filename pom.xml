@@ -30,14 +30,14 @@
     <maven.compiler.target>1.6</maven.compiler.target>
 
     <!-- eXo Modules -->
-    <org.exoplatform.platform.cloud.version>3.5.4</org.exoplatform.platform.cloud.version>
+    <org.exoplatform.platform.cloud.version>3.5.4-1-SNAPSHOT</org.exoplatform.platform.cloud.version>
     <org.exoplatform.platform.version>3.5.4</org.exoplatform.platform.version>
-    <org.exoplatform.kernel.version>2.3.8-GA</org.exoplatform.kernel.version>
-    <org.exoplatform.core.version>2.4.8-GA</org.exoplatform.core.version>
-    <org.exoplatform.ws.version>2.2.8-GA</org.exoplatform.ws.version>
-    <org.exoplatform.jcr.version>1.14.8-GA</org.exoplatform.jcr.version>
-    <org.exoplatform.jcr-services.version>1.14.8-GA</org.exoplatform.jcr-services.version>
-    <com.exoplatform.cloud-management.version>1.1-M8</com.exoplatform.cloud-management.version>
+    <org.exoplatform.kernel.version>2.3.8-CR01</org.exoplatform.kernel.version>
+    <org.exoplatform.core.version>2.4.8-CR01</org.exoplatform.core.version>
+    <org.exoplatform.ws.version>2.2.8-CR01</org.exoplatform.ws.version>
+    <org.exoplatform.jcr.version>1.14.8-CR01</org.exoplatform.jcr.version>
+    <org.exoplatform.jcr-services.version>1.14.8-CR01</org.exoplatform.jcr-services.version>
+    <com.exoplatform.cloud-management.version>1.1-M10</com.exoplatform.cloud-management.version>
     <org.exoplatform.ide.version>1.2.0-M8</org.exoplatform.ide.version>
     <org.exoplatform.portal.version>3.2.5-PLF</org.exoplatform.portal.version>
     <org.exoplatform.cs.version>2.2.10</org.exoplatform.cs.version>
@@ -212,6 +212,12 @@
       </dependency>
 
       <!-- Cloud Platform -->
+      <dependency>
+        <groupId>com.exoplatform.platform.cloud</groupId>
+        <artifactId>exo-platform-cloud-services</artifactId>
+        <version>${org.exoplatform.platform.cloud.version}</version>
+        <type>jar</type>
+      </dependency>
       <dependency>
         <groupId>com.exoplatform.platform.cloud</groupId>
         <artifactId>exo-platform-cloud-packaging-tomcat</artifactId>

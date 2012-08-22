@@ -19,7 +19,7 @@
 package com.exoplatform.cloudworkspaces;
 
 import com.exoplatform.cloud.admin.dao.EmailValidationStorage;
-import com.exoplatform.cloud.admin.instance.CloudAdminUserDataGenerator;
+import com.exoplatform.cloud.admin.instance.ApplicationServerDataGenerator;
 import com.exoplatform.cloud.admin.mail.TenantOperationMailSenderInitiator;
 import com.exoplatform.cloud.admin.mail.WorkspacesTenantOperationMailSenderInitiator;
 import com.exoplatform.cloud.admin.proxy.ProxyConfigurator;
@@ -44,11 +44,12 @@ import com.exoplatform.cloudworkspaces.rest.CloudWorkspacesInfoService;
 import com.exoplatform.cloudworkspaces.rest.CloudWorkspacesTenantService;
 import com.exoplatform.cloudworkspaces.users.UserLimitsStorage;
 import com.exoplatform.cloudworkspaces.users.UsersManager;
-import org.everrest.core.ResourceBinder;
+
 import org.exoplatform.ide.shell.server.CLIResourceFactory;
 import org.exoplatform.ide.shell.server.rest.CLIResourcesService;
 import org.exoplatform.ide.shell.server.rest.DummyConfigurationService;
 import org.picocontainer.MutablePicoContainer;
+
 import javax.servlet.ServletContext;
 
 /**
@@ -60,8 +61,6 @@ public class CloudWorkspacesAdminApplicationComposer extends CloudAdminApplicati
   protected void doComposeApplication(MutablePicoContainer container, ServletContext servletContext) {
     super.doComposeApplication(container, servletContext);
     container.addComponent(CLIResourceFactory.class);
-    container.addComponent(ResourceBinder.class,
-                           servletContext.getAttribute(ResourceBinder.class.getName()));
 
     container.addComponent(UserLimitsStorage.class);
     container.addComponent(WorkspacesOrganizationRequestPerformer.class);
@@ -95,8 +94,8 @@ public class CloudWorkspacesAdminApplicationComposer extends CloudAdminApplicati
     container.removeComponent(TenantOperationMailSenderInitiator.class);
     container.addComponent(WorkspacesTenantOperationMailSenderInitiator.class);
 
-    container.removeComponent(CloudAdminUserDataGenerator.class);
-    container.addComponent(CloudAdminUserDataGenerator.class, WorkspacesUserDataGenerator.class);
+    container.removeComponent(ApplicationServerDataGenerator.class);
+    container.addComponent(ApplicationServerDataGenerator.class, WorkspacesUserDataGenerator.class);
 
     container.removeComponent(ServerStatusMailer.class);
     container.addComponent(ServerStatusMailer.class, WorkspacesServerStatusMailer.class);
