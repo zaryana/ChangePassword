@@ -52,7 +52,7 @@ require([ "cloud/tenant", "cloud/marketo", "cloud/trackers", "cloud/support" ], 
 		tenant.start({
 			tenantname : tenantName
 		}, {
-			fail : function(err) {
+			fail : function(err, status) {
 				if (err.indexOf("Starting failed... not available space on application servers") != -1) {
 					setTimeout(tryResume, 5 * 60 * 1000); // try again in 5min
 				} else {
