@@ -19,8 +19,9 @@
 package com.exoplatform.cloudworkspaces.instance;
 
 import com.exoplatform.cloud.admin.CloudAdminException;
+import com.exoplatform.cloud.admin.configuration.ApplicationServerConfiguration;
+import com.exoplatform.cloud.admin.instance.ApplicationServerDataGenerator;
 import com.exoplatform.cloud.admin.instance.ApplicationServerType;
-import com.exoplatform.cloud.admin.instance.CloudAdminUserDataGenerator;
 import com.exoplatform.cloud.admin.tenant.DatabaseServerSelectionAlgorithm;
 import com.exoplatform.cloud.admin.util.AdminConfigurationUtil;
 import com.exoplatform.cloud.status.DatabaseInfo;
@@ -31,33 +32,28 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
-public class WorkspacesUserDataGenerator extends CloudAdminUserDataGenerator {
+public class WorkspacesUserDataGenerator implements ApplicationServerDataGenerator<String> {
 
   private static final Logger                    LOG = LoggerFactory.getLogger(WorkspacesUserDataGenerator.class);
+
+  private final Configuration                    cloudAdminConfiguration;
 
   private final DatabaseServerSelectionAlgorithm databaseServerSelectionAlgorithm;
 
   public WorkspacesUserDataGenerator(Configuration cloudAdminConfiguration,
                                      DatabaseServerSelectionAlgorithm databaseServerSelectionAlgorithm) {
-    super(cloudAdminConfiguration);
+    this.cloudAdminConfiguration = cloudAdminConfiguration;
     this.databaseServerSelectionAlgorithm = databaseServerSelectionAlgorithm;
   }
 
-  @Override
   public String generate(Map<Object, Object> properties) {
-    // TODO user super userdata
-    /*
-     * String superUserdata = super.generate(properties); StringBuilder
-     * userdataBuilder = new StringBuilder();
-     * userdataBuilder.append(superUserdata); userdataBuilder.append('&');
-     */
     StringBuilder userdataBuilder = new StringBuilder();
     try {
       String volumeId = null;
       if (properties.containsKey(ApplicationServerType.PROPERTY_VOLUME_ID)) {
         volumeId = (String) properties.get(ApplicationServerType.PROPERTY_VOLUME_ID);
       }
-      String tenantMasterhost = AdminConfigurationUtil.getMasterHost(adminConfiguration);
+      String tenantMasterhost = AdminConfigurationUtil.getMasterHost(cloudAdminConfiguration);
       DatabaseInfo database = databaseServerSelectionAlgorithm.selectServers().iterator().next();
       String url = database.getUrl();
       int starthost = url.indexOf("//") + 2;
@@ -79,7 +75,8 @@ public class WorkspacesUserDataGenerator extends CloudAdminUserDataGenerator {
       userdataBuilder.append('&');
       userdataBuilder.append(System.getProperty("admin.agent.auth.username"));
       userdataBuilder.append('&');
-      userdataBuilder.append(System.getProperty("admin.agent.auth.password"));
+      // userdataBuilder.append(System.getProperty("admin.agent.auth.password"));
+      userdataBuilder.append(properties.get(ApplicationServerConfiguration.PASSWORD_PARAMETER));
 
       userdataBuilder.append('&');
       userdataBuilder.append(System.getProperty("cloud.admin.mail.admin.email"));
