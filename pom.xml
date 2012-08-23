@@ -7,7 +7,7 @@
   <parent>
     <groupId>org.exoplatform</groupId>
     <artifactId>exo.parent</artifactId>
-    <version>7.1</version>
+    <version>8.1</version>
   </parent>
 
   <groupId>com.exoplatform.cloudworkspaces</groupId>
@@ -24,10 +24,19 @@
   </scm>
 
   <properties>
+    <!-- SNAPSHOTS must be deployed in our private repository -->
+    <exo.snapshots.repo.url>dav:http://repository.exoplatform.org/content/repositories/exo-private-snapshots</exo.snapshots.repo.url>
+    <exo.product.specification>1.1</exo.product.specification>
+
     <!-- Defaut compiler settings -->
     <maven.compiler.optimize>true</maven.compiler.optimize>
     <maven.compiler.source>1.6</maven.compiler.source>
     <maven.compiler.target>1.6</maven.compiler.target>
+
+    <!-- Animal Sniffer settings - SWF-2079 -->
+    <version.animal-sniffer.enforcer-rule>1.8</version.animal-sniffer.enforcer-rule>
+    <!-- To configure animal-sniffer to check API compat with Java 6 -->
+    <animal-sniffer.signature.artifactId>java16</animal-sniffer.signature.artifactId>
 
     <!-- eXo Modules -->
     <org.exoplatform.platform.cloud.version>3.5.4-1-SNAPSHOT</org.exoplatform.platform.cloud.version>
@@ -85,7 +94,7 @@
 
     <everrest.version>1.0.4</everrest.version>
 
-    <!-- test -->
+    <!-- Testing tools -->
     <testng.version>6.3.1</testng.version>
     <mockito.version>1.9.0</mockito.version>
     <everrest.assured.version>0.4</everrest.assured.version>
