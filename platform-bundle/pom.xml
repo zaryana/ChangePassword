@@ -16,136 +16,136 @@
   <name>eXo Cloud Workspaces :: Platform bundle</name>
   <description>Cloud Workspaces Platform Tomcat bundle.</description>
 
+  <dependencies>
+    <dependency>
+      <groupId>com.exoplatform.cloudworkspaces</groupId>
+      <artifactId>cloud-workspaces-webui</artifactId>
+      <scope>provided</scope>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>com.exoplatform.cloudworkspaces</groupId>
+      <artifactId>cloud-workspaces-component-social</artifactId>
+      <scope>provided</scope>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>com.exoplatform.cloudworkspaces</groupId>
+      <artifactId>cloud-workspaces-component-organization</artifactId>
+      <scope>provided</scope>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>com.exoplatform.cloudworkspaces</groupId>
+      <artifactId>cloud-workspaces-component-multitenancy</artifactId>
+      <scope>provided</scope>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>com.exoplatform.cloudworkspaces</groupId>
+      <artifactId>cloud-workspaces-component-initializer</artifactId>
+      <scope>provided</scope>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>com.exoplatform.cloudworkspaces</groupId>
+      <artifactId>cloud-workspaces-extension-webapp</artifactId>
+      <scope>provided</scope>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>com.exoplatform.cloudworkspaces</groupId>
+      <artifactId>cloud-workspaces-extension-config</artifactId>
+      <scope>provided</scope>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>com.exoplatform.cloudworkspaces</groupId>
+      <artifactId>cloud-workspaces-wizard-extension-webapp</artifactId>
+      <scope>provided</scope>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>com.exoplatform.cloudworkspaces</groupId>
+      <artifactId>cloud-workspaces-wizard-extension-config</artifactId>
+      <scope>provided</scope>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>com.exoplatform.cloudworkspaces</groupId>
+      <artifactId>cloud-workspaces-platform-navigation</artifactId>
+      <scope>provided</scope>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>com.exoplatform.cloudworkspaces</groupId>
+      <artifactId>cloud-workspaces.extension.portlets.social-portlet</artifactId>
+      <scope>provided</scope>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>com.exoplatform.cloudworkspaces</groupId>
+      <artifactId>cloud-workspaces.extension.portlets.cloud-portlets</artifactId>
+      <scope>provided</scope>
+      <type>war</type>
+    </dependency>
+
+    <!-- Cloud Workspaces gadgets -->
+    <dependency>
+      <groupId>com.exoplatform.cloudworkspaces</groupId>
+      <artifactId>cloud-workspaces-gadget-services</artifactId>
+      <scope>provided</scope>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>com.exoplatform.cloudworkspaces</groupId>
+      <artifactId>cloud-workspaces-gadgets</artifactId>
+      <scope>provided</scope>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>com.exoplatform.cloudworkspaces</groupId>
+      <artifactId>cloud-workspaces-gadget-config</artifactId>
+      <scope>provided</scope>
+      <type>jar</type>
+    </dependency>
+
+    <!-- Cloud Platform -->
+    <dependency>
+      <groupId>com.exoplatform.platform.cloud</groupId>
+      <artifactId>exo-platform-cloud-packaging-tomcat</artifactId>
+      <scope>provided</scope>
+      <type>zip</type>
+      <classifier>tomcat</classifier>
+    </dependency>
+
+    <!-- Cloud Management -->
+    <dependency>
+      <groupId>com.exoplatform.cloud-management</groupId>
+      <artifactId>cloud-rest-everrest</artifactId>
+      <scope>provided</scope>
+      <type>jar</type>
+    </dependency>
+
+    <dependency>
+       <groupId>org.everrest</groupId>
+       <artifactId>everrest-groovy</artifactId>
+       <scope>provided</scope>
+       <type>jar</type>
+    </dependency>
+
+    <!-- Third parties -->
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <scope>provided</scope>
+      <type>jar</type>
+    </dependency>
+  </dependencies>
+
   <profiles>
     <profile>
       <id>distrib</id>
-      <dependencies>
-        <dependency>
-          <groupId>com.exoplatform.cloudworkspaces</groupId>
-          <artifactId>cloud-workspaces-webui</artifactId>
-          <scope>provided</scope>
-          <type>war</type>
-        </dependency>
-        <dependency>
-          <groupId>com.exoplatform.cloudworkspaces</groupId>
-          <artifactId>cloud-workspaces-component-social</artifactId>
-          <scope>provided</scope>
-          <type>jar</type>
-        </dependency>
-        <dependency>
-          <groupId>com.exoplatform.cloudworkspaces</groupId>
-          <artifactId>cloud-workspaces-component-organization</artifactId>
-          <scope>provided</scope>
-          <type>jar</type>
-        </dependency>
-        <dependency>
-          <groupId>com.exoplatform.cloudworkspaces</groupId>
-          <artifactId>cloud-workspaces-component-multitenancy</artifactId>
-          <scope>provided</scope>
-          <type>jar</type>
-        </dependency>
-        <dependency>
-          <groupId>com.exoplatform.cloudworkspaces</groupId>
-          <artifactId>cloud-workspaces-component-initializer</artifactId>
-          <scope>provided</scope>
-          <type>jar</type>
-        </dependency>
-        <dependency>
-          <groupId>com.exoplatform.cloudworkspaces</groupId>
-          <artifactId>cloud-workspaces-extension-webapp</artifactId>
-          <scope>provided</scope>
-          <type>war</type>
-        </dependency>
-        <dependency>
-          <groupId>com.exoplatform.cloudworkspaces</groupId>
-          <artifactId>cloud-workspaces-extension-config</artifactId>
-          <scope>provided</scope>
-          <type>jar</type>
-        </dependency>
-        <dependency>
-          <groupId>com.exoplatform.cloudworkspaces</groupId>
-          <artifactId>cloud-workspaces-wizard-extension-webapp</artifactId>
-          <scope>provided</scope>
-          <type>war</type>
-        </dependency>
-        <dependency>
-          <groupId>com.exoplatform.cloudworkspaces</groupId>
-          <artifactId>cloud-workspaces-wizard-extension-config</artifactId>
-          <scope>provided</scope>
-          <type>jar</type>
-        </dependency>
-        <dependency>
-          <groupId>com.exoplatform.cloudworkspaces</groupId>
-          <artifactId>cloud-workspaces-platform-navigation</artifactId>
-          <scope>provided</scope>
-          <type>war</type>
-        </dependency>
-        <dependency>
-          <groupId>com.exoplatform.cloudworkspaces</groupId>
-          <artifactId>cloud-workspaces.extension.portlets.social-portlet</artifactId>
-          <scope>provided</scope>
-          <type>war</type>
-        </dependency>
-        <dependency>
-          <groupId>com.exoplatform.cloudworkspaces</groupId>
-          <artifactId>cloud-workspaces.extension.portlets.cloud-portlets</artifactId>
-          <scope>provided</scope>
-          <type>war</type>
-        </dependency>
-
-        <!-- Cloud Workspaces gadgets -->
-        <dependency>
-          <groupId>com.exoplatform.cloudworkspaces</groupId>
-          <artifactId>cloud-workspaces-gadget-services</artifactId>
-          <scope>provided</scope>
-          <type>jar</type>
-        </dependency>
-        <dependency>
-          <groupId>com.exoplatform.cloudworkspaces</groupId>
-          <artifactId>cloud-workspaces-gadgets</artifactId>
-          <scope>provided</scope>
-          <type>war</type>
-        </dependency>
-        <dependency>
-          <groupId>com.exoplatform.cloudworkspaces</groupId>
-          <artifactId>cloud-workspaces-gadget-config</artifactId>
-          <scope>provided</scope>
-          <type>jar</type>
-        </dependency>
-
-        <!-- Cloud Platform -->
-        <dependency>
-          <groupId>com.exoplatform.platform.cloud</groupId>
-          <artifactId>exo-platform-cloud-packaging-tomcat</artifactId>
-          <scope>provided</scope>
-          <type>zip</type>
-          <classifier>tomcat</classifier>
-        </dependency>
-
-        <!-- Cloud Management -->
-        <dependency>
-          <groupId>com.exoplatform.cloud-management</groupId>
-          <artifactId>cloud-rest-everrest</artifactId>
-          <scope>provided</scope>
-          <type>jar</type>
-        </dependency>
-
-        <dependency>
-           <groupId>org.everrest</groupId>
-           <artifactId>everrest-groovy</artifactId>
-           <scope>provided</scope>
-           <type>jar</type>
-        </dependency>
-
-        <!-- Third parties -->
-        <dependency>
-          <groupId>mysql</groupId>
-          <artifactId>mysql-connector-java</artifactId>
-          <scope>provided</scope>
-          <type>jar</type>
-        </dependency>
-      </dependencies>
-
       <build>
         <finalName>cloud-workspaces-platform-${project.version}</finalName>
         <plugins>
