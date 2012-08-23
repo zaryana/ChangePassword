@@ -87,10 +87,10 @@ require([ "cloud/tenant", "cloud/marketo", "cloud/marketo.cookies", "cloud/track
 						setCookie("tryagainMessage", "true", 5);
 					}
 				});
-				$("#messageString").html('<span class="WarningIcon">' + message + '</span>');
+				$("#messageString").html("<span class='WarningIcon'>" + message + "</span>");
 			},
 			fail : function(err) {
-				$("#messageString").html('<span class="WarningIcon">' + err + '</span>');
+				$("#messageString").html("<span class='WarningIcon'>Unexpected error happened (" + err + "). Please contact support.</span>");
 			},
 			always : function() {
 				// finally enable button
