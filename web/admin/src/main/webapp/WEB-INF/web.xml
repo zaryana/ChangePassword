@@ -42,7 +42,7 @@
       <filter-class>com.exoplatform.cloud.admin.http.filter.UnknownTenantFilter</filter-class>
       <init-param>
          <param-name>unknownTenantPage</param-name>
-         <param-value>/not-found.html</param-value>
+         <param-value>/not-found.jsp</param-value>
       </init-param>
    </filter>
 
