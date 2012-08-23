@@ -20,6 +20,7 @@ package com.exoplatform.cloudworkspaces;
 
 import com.exoplatform.cloud.admin.dao.EmailValidationStorage;
 import com.exoplatform.cloud.admin.instance.ApplicationServerDataGenerator;
+import com.exoplatform.cloud.admin.instance.PropertiesUserDataGenerator;
 import com.exoplatform.cloud.admin.mail.TenantOperationMailSenderInitiator;
 import com.exoplatform.cloud.admin.mail.WorkspacesTenantOperationMailSenderInitiator;
 import com.exoplatform.cloud.admin.proxy.ProxyConfigurator;
@@ -33,7 +34,6 @@ import com.exoplatform.cloud.admin.util.ServerStatusMailer;
 import com.exoplatform.cloud.admin.util.WorkspacesServerStatusMailer;
 import com.exoplatform.cloudworkspaces.dao.PropertiesModifiableEmailValidationStorage;
 import com.exoplatform.cloudworkspaces.http.WorkspacesOrganizationRequestPerformer;
-import com.exoplatform.cloudworkspaces.instance.WorkspacesUserDataGenerator;
 import com.exoplatform.cloudworkspaces.listener.AsyncTenantStarter;
 import com.exoplatform.cloudworkspaces.listener.DemoTenantOnlineListener;
 import com.exoplatform.cloudworkspaces.listener.JoinAllInOnlineServerListener;
@@ -94,8 +94,10 @@ public class CloudWorkspacesAdminApplicationComposer extends CloudAdminApplicati
     container.removeComponent(TenantOperationMailSenderInitiator.class);
     container.addComponent(WorkspacesTenantOperationMailSenderInitiator.class);
 
-    container.removeComponent(ApplicationServerDataGenerator.class);
-    container.addComponent(ApplicationServerDataGenerator.class, WorkspacesUserDataGenerator.class);
+    // container.removeComponent(ApplicationServerDataGenerator.class);
+    // container.addComponent(ApplicationServerDataGenerator.class,
+    // WorkspacesUserDataGenerator.class);
+    container.addComponent(ApplicationServerDataGenerator.class, PropertiesUserDataGenerator.class);
 
     container.removeComponent(ServerStatusMailer.class);
     container.addComponent(ServerStatusMailer.class, WorkspacesServerStatusMailer.class);

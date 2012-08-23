@@ -4,12 +4,11 @@
   <head>
     
     <title>Cloud-workspaces error</title>
+<base href="http://<%=System.getProperty("tenant.masterhost")%>"/>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="google-site-verification" content="nLMrhJKIZf-LTLYZZ6o_V_ET_aUqGRqNx_b-3nNY7ec" />
 <link href="/css/Style.css" rel="stylesheet" type="text/css" />
 <link rel="shortcut icon" type="image/png" href="/favicon.png" />
-
-
   </head>
   <body>
     <div class="UIPageContainer">
@@ -29,7 +28,7 @@
       </div>
       <div class="UIPageBodyContainer">
         <div class="UIPageBody ErrorPages">
-          <p><span class="ErrorIcon">Sorry, we are currently unable to process your request due to exceptionally high traffic. Please try again later.</span></p>
+          <p><span class="ErrorIcon">Sorry, tenant with name <b><%=request.getParameter("tenantName")%></b> not found.</span></p>
           <center><a class="BackIcon" href="/">Back</a></center>
         </div>
       </div>

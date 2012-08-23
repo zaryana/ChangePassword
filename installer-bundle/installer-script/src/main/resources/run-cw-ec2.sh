@@ -96,7 +96,7 @@ export EC2_HOME JAVA_HOME EC2_PRIVATE_KEY EC2_CERT PATH
 # Get User data
 	wget ${URL}${URI_UData} -O $ResFile --no-clobber --retry-connrefused --tries=10 -o ${WGET_Log}
 # get volume-ID
-	VolID=$(cut -f 1 -d\& $ResFile | grep -E 'vol-[[:xdigit:]]{8}' )
+	VolID=`grep ^volume.id $ResFile | cut -d '=' -f 2`
 	[ -z "$VolID" ] && {
 	  echo "Error retrieving VolumeID" >> $SCR_Log
 	  exit 2
@@ -104,7 +104,7 @@ export EC2_HOME JAVA_HOME EC2_PRIVATE_KEY EC2_CERT PATH
 	  echo "Volume ID : $VolID" >> $SCR_Log
 	}
 # Get tenant masterhost
-	TMHost=$(cut -f 2 -d\& $ResFile | grep -E '[[:print:]]{5,}' )
+	TMHost=`grep ^masterHost $ResFile | cut -d '=' -f 2`
 	[ -z "$TMHost" ] && {
 	  echo "TenantMasterHost is empty" >> $SCR_Log
 	  exit 2
@@ -112,7 +112,7 @@ export EC2_HOME JAVA_HOME EC2_PRIVATE_KEY EC2_CERT PATH
 	  echo "MasterHost : $TMHost" >> $SCR_Log
 	}
 # Get DB host name
-	DBHost=$(cut -f 3 -d\& $ResFile | grep -E '[[:print:]]{16,}' )
+	DBHost=`grep ^db.url $ResFile | cut -d '=' -f 2`
 	[ -z "$DBHost" ] && {
 	  echo "DB hostname is empty" >> $SCR_Log
 	  exit 2
@@ -120,7 +120,7 @@ export EC2_HOME JAVA_HOME EC2_PRIVATE_KEY EC2_CERT PATH
 	  echo "DBHost : $DBHost" >> $SCR_Log
 	}
 # Get DB user name
-	DBUName=$(cut -f 4 -d\& $ResFile | grep -E '[[:alnum:]]{3,}' )
+	DBUName=`grep ^db.username $ResFile | cut -d '=' -f 2`
 	[ -z "$DBUName" ] && {
 	  echo "DB username is empty" >> $SCR_Log
 	  exit 2
@@ -128,7 +128,7 @@ export EC2_HOME JAVA_HOME EC2_PRIVATE_KEY EC2_CERT PATH
 	  echo "DB User name : $DBUName" >> $SCR_Log
 	}
 # Get DB user name pass
-	DBUPass=$(cut -f 5 -d\& $ResFile | grep -E '[[:print:]]{6,}' )
+	DBUPass=`grep ^db.password $ResFile | cut -d '=' -f 2`
 	[ -z "$DBUPass" ] && {
 	  echo "DB user password is empty" >> $SCR_Log
 	  exit 2
@@ -136,7 +136,7 @@ export EC2_HOME JAVA_HOME EC2_PRIVATE_KEY EC2_CERT PATH
 	  echo "DB User password: defined" >> $SCR_Log
 	}
 # Get agent user name
-	AgentUName=$(cut -f 6 -d\& $ResFile | grep -E '[[:print:]]{6,}' )
+	AgentUName=`grep ^username $ResFile | cut -d '=' -f 2`
 	[ -z "$AgentUName" ] && {
 	  echo "Agent username is empty" >> $SCR_Log
 	  exit 2
@@ -144,7 +144,7 @@ export EC2_HOME JAVA_HOME EC2_PRIVATE_KEY EC2_CERT PATH
 	  echo "Agent User name : $AgentUName" >> $SCR_Log
 	}
 # Get agent user name pass
-	AgentUPass=$(cut -f 7 -d\& $ResFile | grep -E '[[:print:]]{6,}' )
+	AgentUPass=`grep ^password $ResFile | cut -d '=' -f 2`
 	[ -z "$AgentUPass" ] && {
 	  echo "Agent user password is empty" >> $SCR_Log
 	  exit 2
@@ -152,7 +152,7 @@ export EC2_HOME JAVA_HOME EC2_PRIVATE_KEY EC2_CERT PATH
 	  echo "Agent User password: defined" >> $SCR_Log
 	}
 # Get mail from
-	MailFrom=$(cut -f 8 -d\& $ResFile | grep -E '[[:print:]]{6,}' )
+	MailFrom=`grep ^mail.admin.email $ResFile | cut -d '=' -f 2`
 	[ -z "$MailFrom" ] && {
 	  echo "Mail from is empty" >> $SCR_Log
 	  exit 2
@@ -160,7 +160,7 @@ export EC2_HOME JAVA_HOME EC2_PRIVATE_KEY EC2_CERT PATH
 	  echo "Mail from: $MailFrom" >> $SCR_Log
 	}
 # Get mail host
-	MailHost=$(cut -f 9 -d\& $ResFile | grep -E '[[:print:]]{6,}' )
+	MailHost=`grep ^mail.host $ResFile | cut -d '=' -f 2`
 	[ -z "$MailHost" ] && {
 	  echo "Mail host is empty" >> $SCR_Log
 	  exit 2
@@ -168,7 +168,7 @@ export EC2_HOME JAVA_HOME EC2_PRIVATE_KEY EC2_CERT PATH
 	  echo "Mail host: $MailHost" >> $SCR_Log
 	}
 # Get mail port
-	MailPort=$(cut -f 10 -d\& $ResFile | grep -E '[[:digit:]]{2,5}' )
+	MailPort=`grep ^mail.port $ResFile | cut -d '=' -f 2`
 	[ -z "$MailPort" ] && {
 	  echo "Mail port is empty" >> $SCR_Log
 	  exit 2
@@ -176,7 +176,7 @@ export EC2_HOME JAVA_HOME EC2_PRIVATE_KEY EC2_CERT PATH
 	  echo "Mail port: $MailPort" >> $SCR_Log
 	}
 # Get mail user name
-	MailUName=$(cut -f 11 -d\& $ResFile | grep -E '[[:print:]]{6,}' )
+	MailUName=`grep ^mail.user $ResFile | cut -d '=' -f 2`
 	[ -z "$MailUName" ] && {
 	  echo "Mail user name is empty" >> $SCR_Log
 	  exit 2
@@ -184,7 +184,7 @@ export EC2_HOME JAVA_HOME EC2_PRIVATE_KEY EC2_CERT PATH
 	  echo "Mail user name: $MailUName" >> $SCR_Log
 	}
 # Get mail user password
-	MailUPass=$(cut -f 12 -d\& $ResFile | grep -E '[[:print:]]{6,}' )
+	MailUPass=`grep ^mail.password $ResFile | cut -d '=' -f 2`
 	[ -z "$MailUPass" ] && {
 	  echo "Mail user password is empty" >> $SCR_Log
 	  exit 2
@@ -192,7 +192,7 @@ export EC2_HOME JAVA_HOME EC2_PRIVATE_KEY EC2_CERT PATH
 	  echo "Mail user password: defined" >> $SCR_Log
 	}
 # Get Graphite server address
-	GraphSHost=$(cut -f 13 -d\& $ResFile | grep -E '[[:print:]]{6,}' )
+	GraphSHost=`grep ^graphite.host $ResFile | cut -d '=' -f 2`
 	[ -z "$GraphSHost" ] && {
 	  echo "Grathite server is not defined. JMX will not started" >> $SCR_Log
 	  JMXTr=""
@@ -201,7 +201,7 @@ export EC2_HOME JAVA_HOME EC2_PRIVATE_KEY EC2_CERT PATH
 	  JMXTr="1"
 	}
 # Get Graphite server port
-	GraphSPort=$(cut -f 14 -d\& $ResFile | grep -E '[[:digit:]]{2,}' )
+	GraphSPort=`grep ^graphite.port $ResFile | cut -d '=' -f 2`
 	[ -z "$GraphSPort" ] && {
 	  echo "Port of grathite server is not defined. JMX will not started" >> $SCR_Log
 	  JMXTr=""
