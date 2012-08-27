@@ -380,13 +380,32 @@ export EC2_HOME JAVA_HOME EC2_PRIVATE_KEY EC2_CERT PATH
 	sed -r -i -e "s/<user username=\"cloudadmin\" password=\"cloudadmin\"/<user username=\"$AgentUName\" password=\"$AgentUPass\"/g" "${APP_DIR}/app-server-tomcat/conf/tomcat-users.xml"
 
 # Create database for default repository
-	while true; do
-	  ping -c 1 -W 1 -q ${DBHost} && break  || sleep 5
+	DBPort=`echo $DBHost | cut -f 2 -d\:`
+	DBHost=`echo $DBHost | cut -f 1 -d\:`
+	echo -n "DB server on-line :" >> $SCR_Log
+	DBTime1=`date +'%s'`
+	DBTimeDiff=0
+	while [[ "$DBTimeDiff" -lt "240" ]]; do
+	  ping -c 1 -W 1 -q ${DBHost} && break  || {
+	    sleep 5
+	    DBTimeDiff=`date +'%s'`
+	    DBTimeDiff=$((DBTimeDiff-$DBTime1))
+	  }
 	done
+	
+	[[ "$DBTimeDiff" -ge "240" ]] && {
+	  echo "No" >> $SCR_Log
+	  echo "Stopping because can't create default repository" >> $SCR_Log
+	  exit 2
+	} || {
+	  echo "Yes" >> $SCR_Log
+	}
+	
+	[ -z "$DBPort" ] && DBPort='3306'
 	
 	echo -n "Create DB for default repository " >> $SCR_Log
 	SQL="create database \`${InstID}\` default charset latin1 collate latin1_general_cs;"
-	$CMDSQL "--user=${DBUName}" "--password=${DBUPass}" "--host=${DBHost}" -B -N -e "$SQL" -w --connect-timeout=20 2>>$SCR_Log && {
+	$CMDSQL "--user=${DBUName}" "--password=${DBUPass}" "--host=${DBHost}" "--port=${DBPort}" -B -N -e "$SQL" -w --connect-timeout=20 2>>$SCR_Log && {
 	  echo "OK" >> $SCR_Log
 	} || {
 	  echo "FAIL" >> $SCR_Log

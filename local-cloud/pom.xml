@@ -14,26 +14,25 @@
   <name>eXo Cloud Workspaces :: Local Cloud Scripts</name>
   <description>Cloud Workspaces Local Cloud Bundle</description>
 
-  <dependencies>
-    <dependency>
-      <groupId>com.exoplatform.cloudworkspaces</groupId>
-      <artifactId>cloud-workspaces-admin-bundle</artifactId>
-      <version>${project.version}</version>
-      <classifier>tomcat</classifier>
-      <type>zip</type>
-    </dependency>
-    <dependency>
-      <groupId>com.exoplatform.cloudworkspaces</groupId>
-      <artifactId>cloud-workspaces-platform-bundle</artifactId>
-      <version>${project.version}</version>
-      <classifier>tomcat</classifier>
-      <type>zip</type>
-    </dependency>
-  </dependencies>
-
   <profiles>
     <profile>
       <id>distrib</id>
+      <dependencies>
+        <dependency>
+          <groupId>com.exoplatform.cloudworkspaces</groupId>
+          <artifactId>cloud-workspaces-admin-bundle</artifactId>
+          <version>${project.version}</version>
+          <classifier>tomcat</classifier>
+          <type>zip</type>
+        </dependency>
+        <dependency>
+          <groupId>com.exoplatform.cloudworkspaces</groupId>
+          <artifactId>cloud-workspaces-platform-bundle</artifactId>
+          <version>${project.version}</version>
+          <classifier>tomcat</classifier>
+          <type>zip</type>
+        </dependency>
+      </dependencies>
       <build>
         <plugins>
           <plugin>
