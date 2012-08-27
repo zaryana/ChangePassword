@@ -5,4 +5,5 @@
 RETVAL=$?
 if [ ! $RETVAL -eq 0 ] ; then
   echo "Cloud stop failed."
+  exit 1
 fi 
