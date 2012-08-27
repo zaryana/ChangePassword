@@ -110,22 +110,22 @@ public class MailConfigurationUpdater extends BaseConfigurationUpdater {
       interaction.println("Mail server settings");
       answers.addBlockName("Mail server settings");
 
-      String prevCloudMailHost = ConfigUtils.findProperty(previousConfDir,
+      String prevCloudMailHost = ConfigUtils.findProperty(new File(previousTomcatDir, "bin"),
                                                           "environment.sh",
                                                           "CLOUD_MAIL_HOST");
-      String prevCloudMailPort = ConfigUtils.findProperty(previousConfDir,
+      String prevCloudMailPort = ConfigUtils.findProperty(new File(previousTomcatDir, "bin"),
                                                           "environment.sh",
                                                           "CLOUD_MAIL_PORT");
-      String prevCloudMailSsl = ConfigUtils.findProperty(previousConfDir,
+      String prevCloudMailSsl = ConfigUtils.findProperty(new File(previousTomcatDir, "bin"),
                                                          "environment.sh",
                                                          "CLOUD_MAIL_SSL");
-      String prevCloudMailUser = ConfigUtils.findProperty(previousConfDir,
+      String prevCloudMailUser = ConfigUtils.findProperty(new File(previousTomcatDir, "bin"),
                                                           "environment.sh",
                                                           "CLOUD_MAIL_USER");
-      String prevCloudMailPassword = ConfigUtils.findProperty(previousConfDir,
+      String prevCloudMailPassword = ConfigUtils.findProperty(new File(previousTomcatDir, "bin"),
                                                               "environment.sh",
                                                               "CLOUD_MAIL_PASSWORD");
-      String prevCloudMailSmtpAuth = ConfigUtils.findProperty(previousConfDir,
+      String prevCloudMailSmtpAuth = ConfigUtils.findProperty(new File(previousTomcatDir, "bin"),
                                                               "environment.sh",
                                                               "CLOUD_MAIL_SMTP_AUTH");
 
@@ -163,32 +163,50 @@ public class MailConfigurationUpdater extends BaseConfigurationUpdater {
         mailPassword = interaction.ask(cloudMailPasswordQuestion);
         mailSmtpAuth = interaction.ask(cloudMailSmtpAuthQuestion);
       }
-      ConfigUtils.writeProperty(confDir, "environment.sh", "CLOUD_MAIL_HOST", mailHost);
+      ConfigUtils.writeProperty(new File(tomcatDir, "bin"),
+                                "environment.sh",
+                                "CLOUD_MAIL_HOST",
+                                mailHost);
       answers.addAnswer(cloudMailHostQuestion, mailHost);
-      ConfigUtils.writeProperty(confDir, "environment.sh", "CLOUD_MAIL_PORT", mailPort);
+      ConfigUtils.writeProperty(new File(tomcatDir, "bin"),
+                                "environment.sh",
+                                "CLOUD_MAIL_PORT",
+                                mailPort);
       answers.addAnswer(cloudMailPortQuestion, mailPort);
-      ConfigUtils.writeProperty(confDir, "environment.sh", "CLOUD_MAIL_SSL", mailSsl);
+      ConfigUtils.writeProperty(new File(tomcatDir, "bin"),
+                                "environment.sh",
+                                "CLOUD_MAIL_SSL",
+                                mailSsl);
       answers.addAnswer(cloudMailSslQuestion, mailSsl);
-      ConfigUtils.writeProperty(confDir, "environment.sh", "CLOUD_MAIL_USER", mailUser);
+      ConfigUtils.writeProperty(new File(tomcatDir, "bin"),
+                                "environment.sh",
+                                "CLOUD_MAIL_USER",
+                                mailUser);
       answers.addAnswer(cloudMailUserQuestion, mailUser);
-      ConfigUtils.writeProperty(confDir, "environment.sh", "CLOUD_MAIL_PASSWORD", mailPassword);
+      ConfigUtils.writeProperty(new File(tomcatDir, "bin"),
+                                "environment.sh",
+                                "CLOUD_MAIL_PASSWORD",
+                                mailPassword);
       answers.addAnswer(cloudMailPasswordQuestion, mailPassword);
-      ConfigUtils.writeProperty(confDir, "environment.sh", "CLOUD_MAIL_SMTP_AUTH", mailSmtpAuth);
+      ConfigUtils.writeProperty(new File(tomcatDir, "bin"),
+                                "environment.sh",
+                                "CLOUD_MAIL_SMTP_AUTH",
+                                mailSmtpAuth);
       answers.addAnswer(cloudMailSmtpAuthQuestion, mailSmtpAuth);
 
-      String prevCloudAdminEmail = ConfigUtils.findProperty(previousConfDir,
+      String prevCloudAdminEmail = ConfigUtils.findProperty(new File(previousTomcatDir, "bin"),
                                                             "environment.sh",
                                                             "CLOUD_ADMIN_EMAIL");
-      String prevCloudLoggerEmail = ConfigUtils.findProperty(previousConfDir,
+      String prevCloudLoggerEmail = ConfigUtils.findProperty(new File(previousTomcatDir, "bin"),
                                                              "environment.sh",
                                                              "CLOUD_LOGGER_EMAIL");
-      String prevCloudSupportEmail = ConfigUtils.findProperty(previousConfDir,
+      String prevCloudSupportEmail = ConfigUtils.findProperty(new File(previousTomcatDir, "bin"),
                                                               "environment.sh",
                                                               "CLOUD_SUPPORT_EMAIL");
-      String prevCloudSupportSender = ConfigUtils.findProperty(previousConfDir,
+      String prevCloudSupportSender = ConfigUtils.findProperty(new File(previousTomcatDir, "bin"),
                                                                "environment.sh",
                                                                "CLOUD_SUPPORT_SENDER");
-      String prevCloudSalesEmail = ConfigUtils.findProperty(previousConfDir,
+      String prevCloudSalesEmail = ConfigUtils.findProperty(new File(previousTomcatDir, "bin"),
                                                             "environment.sh",
                                                             "CLOUD_SALES_EMAIL");
 
@@ -222,15 +240,30 @@ public class MailConfigurationUpdater extends BaseConfigurationUpdater {
         supportSender = interaction.ask(cloudSupportSenderQuestion);
         salesEmail = interaction.ask(cloudSalesEmailQuestion);
       }
-      ConfigUtils.writeProperty(confDir, "environment.sh", "CLOUD_ADMIN_EMAIL", adminEmail);
+      ConfigUtils.writeProperty(new File(tomcatDir, "bin"),
+                                "environment.sh",
+                                "CLOUD_ADMIN_EMAIL",
+                                adminEmail);
       answers.addAnswer(cloudAdminEmailQuestion, adminEmail);
-      ConfigUtils.writeProperty(confDir, "environment.sh", "CLOUD_LOGGER_EMAIL", loggerEmail);
+      ConfigUtils.writeProperty(new File(tomcatDir, "bin"),
+                                "environment.sh",
+                                "CLOUD_LOGGER_EMAIL",
+                                loggerEmail);
       answers.addAnswer(cloudLoggerEmailQuestion, loggerEmail);
-      ConfigUtils.writeProperty(confDir, "environment.sh", "CLOUD_SUPPORT_EMAIL", supportEmail);
+      ConfigUtils.writeProperty(new File(tomcatDir, "bin"),
+                                "environment.sh",
+                                "CLOUD_SUPPORT_EMAIL",
+                                supportEmail);
       answers.addAnswer(cloudSupportEmailQuestion, supportEmail);
-      ConfigUtils.writeProperty(confDir, "environment.sh", "CLOUD_SUPPORT_SENDER", supportSender);
+      ConfigUtils.writeProperty(new File(tomcatDir, "bin"),
+                                "environment.sh",
+                                "CLOUD_SUPPORT_SENDER",
+                                supportSender);
       answers.addAnswer(cloudSupportSenderQuestion, supportSender);
-      ConfigUtils.writeProperty(confDir, "environment.sh", "CLOUD_SALES_EMAIL", salesEmail);
+      ConfigUtils.writeProperty(new File(tomcatDir, "bin"),
+                                "environment.sh",
+                                "CLOUD_SALES_EMAIL",
+                                salesEmail);
       answers.addAnswer(cloudSalesEmailQuestion, salesEmail);
     } catch (IOException e) {
       throw new ConfigurationException("Updating mail configuration failed", e);

@@ -62,13 +62,13 @@ public class CloudConfigurationUpdater extends BaseConfigurationUpdater {
       interaction.println("Cloud settings");
       answers.addBlockName("Cloud settings");
 
-      String prevTenantMasterhost = ConfigUtils.findProperty(previousConfDir,
+      String prevTenantMasterhost = ConfigUtils.findProperty(new File(previousTomcatDir, "bin"),
                                                              "environment.sh",
                                                              "TENANT_MASTERHOST");
-      String prevAgentUsername = ConfigUtils.findProperty(previousConfDir,
+      String prevAgentUsername = ConfigUtils.findProperty(new File(previousTomcatDir, "bin"),
                                                           "environment.sh",
                                                           "CLOUD_AGENT_USERNAME");
-      String prevAgentPassword = ConfigUtils.findProperty(previousConfDir,
+      String prevAgentPassword = ConfigUtils.findProperty(new File(previousTomcatDir, "bin"),
                                                           "environment.sh",
                                                           "CLOUD_AGENT_PASSWORD");
 
@@ -95,11 +95,20 @@ public class CloudConfigurationUpdater extends BaseConfigurationUpdater {
         agentPassword = interaction.ask(agentPasswordQuestion);
       }
 
-      ConfigUtils.writeProperty(confDir, "environment.sh", "TENANT_MASTERHOST", tenantMasterhost);
+      ConfigUtils.writeProperty(new File(tomcatDir, "bin"),
+                                "environment.sh",
+                                "TENANT_MASTERHOST",
+                                tenantMasterhost);
       answers.addAnswer(tenantMasterhostQuestion, tenantMasterhost);
-      ConfigUtils.writeProperty(confDir, "environment.sh", "CLOUD_AGENT_USERNAME", agentUsername);
+      ConfigUtils.writeProperty(new File(tomcatDir, "bin"),
+                                "environment.sh",
+                                "CLOUD_AGENT_USERNAME",
+                                agentUsername);
       answers.addAnswer(agentUsernameQuestion, agentUsername);
-      ConfigUtils.writeProperty(confDir, "environment.sh", "CLOUD_AGENT_PASSWORD", agentPassword);
+      ConfigUtils.writeProperty(new File(tomcatDir, "bin"),
+                                "environment.sh",
+                                "CLOUD_AGENT_PASSWORD",
+                                agentPassword);
       answers.addAnswer(agentPasswordQuestion, agentPassword);
     } catch (IOException e) {
       throw new ConfigurationException("Updating cloud configuration failed", e);

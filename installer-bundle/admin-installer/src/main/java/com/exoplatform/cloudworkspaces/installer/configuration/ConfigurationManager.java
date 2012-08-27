@@ -81,12 +81,11 @@ public class ConfigurationManager {
       if (!tomcatDir.mkdirs())
         throw new IOException("Couldn't create directory " + tomcatDir.getAbsolutePath());
       if (!(new File(bundleDir, "admin-tomcat").renameTo(tomcatDir)))
-        throw new IOException("AAAAAAAAAAAAAA");
-      // FileUtils.copyDirs(new File(bundleDir, "admin-tomcat"), tomcatDir);
+        throw new IOException("Couldn't rename tomcat dir from bundle to admin-tomcat.new dir");
 
-      File prevEnvFile = new File(previousConfDir, "environment.sh");
+      File prevEnvFile = new File(new File(previousTomcatDir, "bin"), "environment.sh");
       if (!prevEnvFile.exists()) {
-        File envFile = new File(confDir, "environment.sh");
+        File envFile = new File(new File(tomcatDir, "bin"), "environment.sh");
         FileUtils.copyFile(envFile, prevEnvFile);
       }
 

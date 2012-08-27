@@ -63,11 +63,13 @@ public class DBConfigurationUpdater extends BaseConfigurationUpdater {
       interaction.println("Database settings");
       answers.addBlockName("Database settings");
 
-      String prevUrl = ConfigUtils.findProperty(previousConfDir, "environment.sh", "EXO_DB_HOST");
-      String prevUsername = ConfigUtils.findProperty(previousConfDir,
+      String prevUrl = ConfigUtils.findProperty(new File(previousTomcatDir, "bin"),
+                                                "environment.sh",
+                                                "EXO_DB_HOST");
+      String prevUsername = ConfigUtils.findProperty(new File(previousTomcatDir, "bin"),
                                                      "environment.sh",
                                                      "EXO_DB_USER");
-      String prevPassword = ConfigUtils.findProperty(previousConfDir,
+      String prevPassword = ConfigUtils.findProperty(new File(previousTomcatDir, "bin"),
                                                      "environment.sh",
                                                      "EXO_DB_PASSWORD");
 
@@ -94,11 +96,17 @@ public class DBConfigurationUpdater extends BaseConfigurationUpdater {
         password = interaction.ask(DBPasswordQuestion);
       }
 
-      ConfigUtils.writeProperty(confDir, "environment.sh", "EXO_DB_HOST", url);
+      ConfigUtils.writeProperty(new File(tomcatDir, "bin"), "environment.sh", "EXO_DB_HOST", url);
       answers.addAnswer(DBUrlQuestion, url);
-      ConfigUtils.writeProperty(confDir, "environment.sh", "EXO_DB_USER", username);
+      ConfigUtils.writeProperty(new File(tomcatDir, "bin"),
+                                "environment.sh",
+                                "EXO_DB_USER",
+                                username);
       answers.addAnswer(DBUsernameQuestion, username);
-      ConfigUtils.writeProperty(confDir, "environment.sh", "EXO_DB_PASSWORD", password);
+      ConfigUtils.writeProperty(new File(tomcatDir, "bin"),
+                                "environment.sh",
+                                "EXO_DB_PASSWORD",
+                                password);
       answers.addAnswer(DBPasswordQuestion, password);
     } catch (IOException e) {
       throw new ConfigurationException("Updating db configuration failed", e);

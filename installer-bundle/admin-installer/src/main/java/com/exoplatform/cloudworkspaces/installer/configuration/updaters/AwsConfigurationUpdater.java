@@ -80,16 +80,17 @@ public class AwsConfigurationUpdater extends BaseConfigurationUpdater {
       interaction.println("Aws settings");
       answers.addBlockName("Aws settings");
 
-      String prevApplicationDefaultType = ConfigUtils.findProperty(previousConfDir,
+      String prevApplicationDefaultType = ConfigUtils.findProperty(new File(previousTomcatDir,
+                                                                            "bin"),
                                                                    "environment.sh",
                                                                    "APPLICATION_DEFAULT_TYPE");
-      String prevCloudServiceType = ConfigUtils.findProperty(previousConfDir,
+      String prevCloudServiceType = ConfigUtils.findProperty(new File(previousTomcatDir, "bin"),
                                                              "environment.sh",
                                                              "CLOUD_SERVICE_TYPE");
-      String prevCloudClientName = ConfigUtils.findProperty(previousConfDir,
+      String prevCloudClientName = ConfigUtils.findProperty(new File(previousTomcatDir, "bin"),
                                                             "environment.sh",
                                                             "CLOUD_CLIENT_NAME");
-      String prevCloudAwsVersion = ConfigUtils.findProperty(previousConfDir,
+      String prevCloudAwsVersion = ConfigUtils.findProperty(new File(previousTomcatDir, "bin"),
                                                             "environment.sh",
                                                             "CLOUD_AWS_VERSION");
 
@@ -124,17 +125,26 @@ public class AwsConfigurationUpdater extends BaseConfigurationUpdater {
                                 "APPLICATION_DEFAULT_TYPE",
                                 applicationDefaultType);
       answers.addAnswer(applicationDefaultTypeQuestion, applicationDefaultType);
-      ConfigUtils.writeProperty(confDir, "environment.sh", "CLOUD_SERVICE_TYPE", cloudServiceType);
+      ConfigUtils.writeProperty(new File(tomcatDir, "bin"),
+                                "environment.sh",
+                                "CLOUD_SERVICE_TYPE",
+                                cloudServiceType);
       answers.addAnswer(cloudServiceTypeQuestion, cloudServiceType);
-      ConfigUtils.writeProperty(confDir, "environment.sh", "CLOUD_CLIENT_NAME", cloudClientName);
+      ConfigUtils.writeProperty(new File(tomcatDir, "bin"),
+                                "environment.sh",
+                                "CLOUD_CLIENT_NAME",
+                                cloudClientName);
       answers.addAnswer(cloudClientNameQuestion, cloudClientName);
-      ConfigUtils.writeProperty(confDir, "environment.sh", "CLOUD_AWS_VERSION", cloudAwsVersion);
+      ConfigUtils.writeProperty(new File(tomcatDir, "bin"),
+                                "environment.sh",
+                                "CLOUD_AWS_VERSION",
+                                cloudAwsVersion);
       answers.addAnswer(cloudAwsVersionQuestion, cloudAwsVersion);
 
-      String prevAwsIdentity = ConfigUtils.findProperty(previousConfDir,
+      String prevAwsIdentity = ConfigUtils.findProperty(new File(previousTomcatDir, "bin"),
                                                         "environment.sh",
                                                         "CLOUD_AWS_IDENTITY");
-      String prevAwsCredentials = ConfigUtils.findProperty(previousConfDir,
+      String prevAwsCredentials = ConfigUtils.findProperty(new File(previousTomcatDir, "bin"),
                                                            "environment.sh",
                                                            "CLOUD_AWS_CREDENTIALS");
 
@@ -156,9 +166,15 @@ public class AwsConfigurationUpdater extends BaseConfigurationUpdater {
         awsIdentity = interaction.ask(cloudAwsIdentityQuestion);
         awsCredentials = interaction.ask(cloudAwsCredentialsQuestion);
       }
-      ConfigUtils.writeProperty(confDir, "environment.sh", "CLOUD_AWS_IDENTITY", awsIdentity);
+      ConfigUtils.writeProperty(new File(tomcatDir, "bin"),
+                                "environment.sh",
+                                "CLOUD_AWS_IDENTITY",
+                                awsIdentity);
       answers.addAnswer(cloudAwsIdentityQuestion, awsIdentity);
-      ConfigUtils.writeProperty(confDir, "environment.sh", "CLOUD_AWS_CREDENTIALS", awsCredentials);
+      ConfigUtils.writeProperty(new File(tomcatDir, "bin"),
+                                "environment.sh",
+                                "CLOUD_AWS_CREDENTIALS",
+                                awsCredentials);
       answers.addAnswer(cloudAwsCredentialsQuestion, awsCredentials);
     } catch (IOException e) {
       throw new ConfigurationException("Updating autoscaling configuration failed", e);
