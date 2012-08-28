@@ -15,9 +15,10 @@ sed -e 's/[{}]/''/g' | awk '{n=split($0,a,","); for (i=1; i<=n; i++) {f=split(a[
 
 cd ../
 
+# TODO -noclean doesn't work correctly now: tenants aren't stopped using Stop service, so they cannot be resumed after the cloud stop, will be fixed in CLDINT-778
 if $CLEAN ; then
   # list of tenants to clean theirs DBs
-  # TODO it's not correct way as admin still runs and in theory can use tenant databases - use stop service instead
+  # TODO it's not correct way as admin still runs and in theory can use tenant databases - use stop service instead, temporary solution until CLDINT-778
   curl -s -u cloudadmin:cloudadmin 'http://localhost:8080/rest/private/cloud-admin/tenant-service/tenant-list-all' | \
   sed -e 's/["\[]/''/g' |sed -e 's/[]]/''/g' | awk '{n=split($0,a,","); for (i=1; i<=n; i++) { print a[i];  system("mysql -hlocalhost -u$EXO_DB_USER -p$EXO_DB_PASSWORD -e \"drop database " a[i] "\"") } }'
 fi
@@ -30,9 +31,11 @@ cd ../
 if $CLEAN ; then
   # remove data on admin
   rm -rf ./data/*
-  rm -rf ./exo-admin-conf/application-servers/*
   rm -rf ./logs/*
-fi 
+fi
+
+# Remove app servers metedata in anycase now, temporary solution until CLDINT-778
+rm -rf ./exo-admin-conf/application-servers/*
 
 cd ../
 
