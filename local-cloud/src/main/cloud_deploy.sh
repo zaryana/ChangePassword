@@ -35,30 +35,28 @@ is_ready() {
   local t=0
   as=$(ssh -l cloud -i ~/.ssh/wks-cloud.key $access "cat /home/cloud/cloud-workspaces/as.txt") 
   while [ "$state" != "ONLINE" ] && [ $t -lt $timeout ] ; do
-  
-   if [ "$1" == "app" ] ; then
+    if [ "$1" == "app" ] ; then
       status=$(curl --connect-timeout 900 -s  -u cloudadmin:cloudadmin --output $curl_res --write-out %{http_code}  "http://$remote_cwks/rest/private/cloud-admin/instance-service/server-state/$as")
-   else
+    else
       status=$(curl --connect-timeout 900 -s  -u cloudadmin:cloudadmin --output $curl_res --write-out %{http_code}  "http://$remote_cwks/rest/private/cloud-admin/cloudworkspaces/tenant-service/status/$1")
-   fi
-   
-   if [ $status -ne '200' ] ; then
-     echo "Unexpected status from REST call: $status, exiting.";
-     exit 1
-   fi
+    fi
+
+    if [ $status -ne '200' ] ; then
+      echo "Unexpected status from REST call: $status, exiting.";
+      exit 1
+    fi
 
     state=$(cat "$curl_res")
     sleep $tstep
     t=$((t + tstep))
     echo -ne "\rwaiting $t seconds from $timeout, app/tenant state: $state           "
   done
-  
+
   if [ $t -ge $timeout ] ; then
     echo "WARNING! Server not responding in time. See app server logs for details."
     exit 1
   fi
 }
-
 
 is_ready "app"
 
@@ -77,7 +75,6 @@ if [ ! -z $2 ] ; then
   res=$(curl --connect-timeout 900 -s  -X POST -u cloudadmin:cloudadmin "http://$remote_cwks/rest/private/cloud-admin/tenant-service/create/$2")
   is_ready "$2"
 fi
-
 
 echo ""
 echo "Local Cloud started succesfully at $remote_cwks                " # need spaces to rewrite waiting text
