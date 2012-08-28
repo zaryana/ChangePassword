@@ -100,17 +100,17 @@ public class InstanceConfigurationUpdater extends BaseConfigurationUpdater {
         securityGroupName = interaction.ask(asSecurityGroupNameQuestion);
         keyName = interaction.ask(asKeyNameQuestion);
       }
-      ConfigUtils.writeProperty(new File(tomcatDir, "bin"),
+      ConfigUtils.writeQuotedProperty(new File(tomcatDir, "bin"),
                                 "environment.sh",
                                 "AS_AVAILABILITY_ZONE",
                                 availabilityZone);
       answers.addAnswer(asAvailabilityZoneQuestion, availabilityZone);
-      ConfigUtils.writeProperty(new File(tomcatDir, "bin"),
+      ConfigUtils.writeQuotedProperty(new File(tomcatDir, "bin"),
                                 "environment.sh",
                                 "AS_SECURITY_GROUP_NAME",
                                 securityGroupName);
       answers.addAnswer(asSecurityGroupNameQuestion, securityGroupName);
-      ConfigUtils.writeProperty(new File(tomcatDir, "bin"),
+      ConfigUtils.writeQuotedProperty(new File(tomcatDir, "bin"),
                                 "environment.sh",
                                 "AS_KEY_NAME",
                                 keyName);
@@ -121,7 +121,7 @@ public class InstanceConfigurationUpdater extends BaseConfigurationUpdater {
                                                              "AS_IMAGE_ID"));
       String asImageId = interaction.ask(asImageIdQuestion);
 
-      ConfigUtils.writeProperty(new File(tomcatDir, "bin"),
+      ConfigUtils.writeQuotedProperty(new File(tomcatDir, "bin"),
                                 "environment.sh",
                                 "AS_IMAGE_ID",
                                 asImageId);

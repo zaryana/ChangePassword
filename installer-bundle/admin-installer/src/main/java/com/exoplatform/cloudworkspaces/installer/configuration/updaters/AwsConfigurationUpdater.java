@@ -120,22 +120,22 @@ public class AwsConfigurationUpdater extends BaseConfigurationUpdater {
         cloudClientName = interaction.ask(cloudClientNameQuestion);
         cloudAwsVersion = interaction.ask(cloudAwsVersionQuestion);
       }
-      ConfigUtils.writeProperty(confDir,
+      ConfigUtils.writeQuotedProperty(new File(tomcatDir, "bin"),
                                 "environment.sh",
                                 "APPLICATION_DEFAULT_TYPE",
                                 applicationDefaultType);
       answers.addAnswer(applicationDefaultTypeQuestion, applicationDefaultType);
-      ConfigUtils.writeProperty(new File(tomcatDir, "bin"),
+      ConfigUtils.writeQuotedProperty(new File(tomcatDir, "bin"),
                                 "environment.sh",
                                 "CLOUD_SERVICE_TYPE",
                                 cloudServiceType);
       answers.addAnswer(cloudServiceTypeQuestion, cloudServiceType);
-      ConfigUtils.writeProperty(new File(tomcatDir, "bin"),
+      ConfigUtils.writeQuotedProperty(new File(tomcatDir, "bin"),
                                 "environment.sh",
                                 "CLOUD_CLIENT_NAME",
                                 cloudClientName);
       answers.addAnswer(cloudClientNameQuestion, cloudClientName);
-      ConfigUtils.writeProperty(new File(tomcatDir, "bin"),
+      ConfigUtils.writeQuotedProperty(new File(tomcatDir, "bin"),
                                 "environment.sh",
                                 "CLOUD_AWS_VERSION",
                                 cloudAwsVersion);
@@ -166,12 +166,12 @@ public class AwsConfigurationUpdater extends BaseConfigurationUpdater {
         awsIdentity = interaction.ask(cloudAwsIdentityQuestion);
         awsCredentials = interaction.ask(cloudAwsCredentialsQuestion);
       }
-      ConfigUtils.writeProperty(new File(tomcatDir, "bin"),
+      ConfigUtils.writeQuotedProperty(new File(tomcatDir, "bin"),
                                 "environment.sh",
                                 "CLOUD_AWS_IDENTITY",
                                 awsIdentity);
       answers.addAnswer(cloudAwsIdentityQuestion, awsIdentity);
-      ConfigUtils.writeProperty(new File(tomcatDir, "bin"),
+      ConfigUtils.writeQuotedProperty(new File(tomcatDir, "bin"),
                                 "environment.sh",
                                 "CLOUD_AWS_CREDENTIALS",
                                 awsCredentials);

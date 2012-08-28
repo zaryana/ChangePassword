@@ -163,32 +163,32 @@ public class MailConfigurationUpdater extends BaseConfigurationUpdater {
         mailPassword = interaction.ask(cloudMailPasswordQuestion);
         mailSmtpAuth = interaction.ask(cloudMailSmtpAuthQuestion);
       }
-      ConfigUtils.writeProperty(new File(tomcatDir, "bin"),
+      ConfigUtils.writeQuotedProperty(new File(tomcatDir, "bin"),
                                 "environment.sh",
                                 "CLOUD_MAIL_HOST",
                                 mailHost);
       answers.addAnswer(cloudMailHostQuestion, mailHost);
-      ConfigUtils.writeProperty(new File(tomcatDir, "bin"),
+      ConfigUtils.writeQuotedProperty(new File(tomcatDir, "bin"),
                                 "environment.sh",
                                 "CLOUD_MAIL_PORT",
                                 mailPort);
       answers.addAnswer(cloudMailPortQuestion, mailPort);
-      ConfigUtils.writeProperty(new File(tomcatDir, "bin"),
+      ConfigUtils.writeQuotedProperty(new File(tomcatDir, "bin"),
                                 "environment.sh",
                                 "CLOUD_MAIL_SSL",
                                 mailSsl);
       answers.addAnswer(cloudMailSslQuestion, mailSsl);
-      ConfigUtils.writeProperty(new File(tomcatDir, "bin"),
+      ConfigUtils.writeQuotedProperty(new File(tomcatDir, "bin"),
                                 "environment.sh",
                                 "CLOUD_MAIL_USER",
                                 mailUser);
       answers.addAnswer(cloudMailUserQuestion, mailUser);
-      ConfigUtils.writeProperty(new File(tomcatDir, "bin"),
+      ConfigUtils.writeQuotedProperty(new File(tomcatDir, "bin"),
                                 "environment.sh",
                                 "CLOUD_MAIL_PASSWORD",
                                 mailPassword);
       answers.addAnswer(cloudMailPasswordQuestion, mailPassword);
-      ConfigUtils.writeProperty(new File(tomcatDir, "bin"),
+      ConfigUtils.writeQuotedProperty(new File(tomcatDir, "bin"),
                                 "environment.sh",
                                 "CLOUD_MAIL_SMTP_AUTH",
                                 mailSmtpAuth);
@@ -240,27 +240,27 @@ public class MailConfigurationUpdater extends BaseConfigurationUpdater {
         supportSender = interaction.ask(cloudSupportSenderQuestion);
         salesEmail = interaction.ask(cloudSalesEmailQuestion);
       }
-      ConfigUtils.writeProperty(new File(tomcatDir, "bin"),
+      ConfigUtils.writeQuotedProperty(new File(tomcatDir, "bin"),
                                 "environment.sh",
                                 "CLOUD_ADMIN_EMAIL",
                                 adminEmail);
       answers.addAnswer(cloudAdminEmailQuestion, adminEmail);
-      ConfigUtils.writeProperty(new File(tomcatDir, "bin"),
+      ConfigUtils.writeQuotedProperty(new File(tomcatDir, "bin"),
                                 "environment.sh",
                                 "CLOUD_LOGGER_EMAIL",
                                 loggerEmail);
       answers.addAnswer(cloudLoggerEmailQuestion, loggerEmail);
-      ConfigUtils.writeProperty(new File(tomcatDir, "bin"),
+      ConfigUtils.writeQuotedProperty(new File(tomcatDir, "bin"),
                                 "environment.sh",
                                 "CLOUD_SUPPORT_EMAIL",
                                 supportEmail);
       answers.addAnswer(cloudSupportEmailQuestion, supportEmail);
-      ConfigUtils.writeProperty(new File(tomcatDir, "bin"),
+      ConfigUtils.writeQuotedProperty(new File(tomcatDir, "bin"),
                                 "environment.sh",
                                 "CLOUD_SUPPORT_SENDER",
                                 supportSender);
       answers.addAnswer(cloudSupportSenderQuestion, supportSender);
-      ConfigUtils.writeProperty(new File(tomcatDir, "bin"),
+      ConfigUtils.writeQuotedProperty(new File(tomcatDir, "bin"),
                                 "environment.sh",
                                 "CLOUD_SALES_EMAIL",
                                 salesEmail);

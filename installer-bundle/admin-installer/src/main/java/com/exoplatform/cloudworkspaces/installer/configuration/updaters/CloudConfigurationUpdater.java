@@ -95,17 +95,17 @@ public class CloudConfigurationUpdater extends BaseConfigurationUpdater {
         agentPassword = interaction.ask(agentPasswordQuestion);
       }
 
-      ConfigUtils.writeProperty(new File(tomcatDir, "bin"),
+      ConfigUtils.writeQuotedProperty(new File(tomcatDir, "bin"),
                                 "environment.sh",
                                 "TENANT_MASTERHOST",
                                 tenantMasterhost);
       answers.addAnswer(tenantMasterhostQuestion, tenantMasterhost);
-      ConfigUtils.writeProperty(new File(tomcatDir, "bin"),
+      ConfigUtils.writeQuotedProperty(new File(tomcatDir, "bin"),
                                 "environment.sh",
                                 "CLOUD_AGENT_USERNAME",
                                 agentUsername);
       answers.addAnswer(agentUsernameQuestion, agentUsername);
-      ConfigUtils.writeProperty(new File(tomcatDir, "bin"),
+      ConfigUtils.writeQuotedProperty(new File(tomcatDir, "bin"),
                                 "environment.sh",
                                 "CLOUD_AGENT_PASSWORD",
                                 agentPassword);

@@ -43,7 +43,7 @@ public class ServerConfigurationUpdater extends BaseConfigurationUpdater {
           throw new IOException("Could not create application-servers directory");
       File previousApplicationServers = new File(previousConfDir, "application-servers");
       if (previousApplicationServers.exists() && previousApplicationServers.isDirectory()) {
-        for (File server : applicationServers.listFiles()) {
+        for (File server : previousApplicationServers.listFiles()) {
           File current = new File(applicationServers, server.getName());
           FileUtils.copyFile(server, current);
         }

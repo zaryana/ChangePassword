@@ -35,13 +35,13 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 
-public class M8CloudAdminServices implements CloudAdminServices {
+public class M10CloudAdminServices implements CloudAdminServices {
 
   protected final String            tenantMasterhost;
 
   protected final DefaultHttpClient httpClient;
 
-  public M8CloudAdminServices(String tenantMasterhost, String adminUsername, String adminPassword) throws InstallerException {
+  public M10CloudAdminServices(String tenantMasterhost, String adminUsername, String adminPassword) throws InstallerException {
     try {
       this.tenantMasterhost = tenantMasterhost;
       this.httpClient = new DefaultHttpClient();
@@ -274,9 +274,9 @@ public class M8CloudAdminServices implements CloudAdminServices {
     }
   }
 
-  public Map<String, String> createTenant(String tenant) throws AdminException {
+  public Map<String, String> createTenant(String tenant, String email) throws AdminException {
     HttpResponse response = doPostRequest("/rest/private/cloud-admin/tenant-service/create/"
-        + tenant);
+        + tenant + "/" + email);
     try {
       BaseResponseHandler handler = new BaseResponseHandler();
       return handler.parseToMap(handler.handleResponse(response));

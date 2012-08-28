@@ -20,6 +20,7 @@ package com.exoplatform.cloudworkspaces.installer.configuration.versions;
 
 import com.exoplatform.cloudworkspaces.installer.configuration.ConfigurationUpdater;
 import com.exoplatform.cloudworkspaces.installer.configuration.updaters.AwsConfigurationUpdater;
+import com.exoplatform.cloudworkspaces.installer.configuration.updaters.BackupConfigurationUpdater;
 import com.exoplatform.cloudworkspaces.installer.configuration.updaters.CloudConfigurationUpdater;
 import com.exoplatform.cloudworkspaces.installer.configuration.updaters.DBConfigurationUpdater;
 import com.exoplatform.cloudworkspaces.installer.configuration.updaters.InstanceConfigurationUpdater;
@@ -30,7 +31,7 @@ import com.exoplatform.cloudworkspaces.installer.configuration.updaters.TomcatUs
 import java.util.ArrayList;
 import java.util.List;
 
-public class Beta06ConfigurationPack extends ConfigurationPack {
+public class Beta07ConfigurationPack extends ConfigurationPack {
 
   @Override
   public List<ConfigurationUpdater> getUpdaters() {
@@ -42,6 +43,7 @@ public class Beta06ConfigurationPack extends ConfigurationPack {
     updaters.add(new AwsConfigurationUpdater());
     updaters.add(new InstanceConfigurationUpdater());
     updaters.add(new ServerConfigurationUpdater());
+    updaters.add(new BackupConfigurationUpdater());
     return updaters;
   }
 

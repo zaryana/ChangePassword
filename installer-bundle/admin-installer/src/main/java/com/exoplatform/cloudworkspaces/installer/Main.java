@@ -18,26 +18,14 @@
  */
 package com.exoplatform.cloudworkspaces.installer;
 
-import com.exoplatform.cloudworkspaces.installer.configuration.ConfigurationManager;
-import com.exoplatform.cloudworkspaces.installer.configuration.ConfigurationUpdater;
-import com.exoplatform.cloudworkspaces.installer.configuration.updaters.AwsConfigurationUpdater;
-import com.exoplatform.cloudworkspaces.installer.configuration.updaters.CloudConfigurationUpdater;
-import com.exoplatform.cloudworkspaces.installer.configuration.updaters.DBConfigurationUpdater;
-import com.exoplatform.cloudworkspaces.installer.configuration.updaters.InstanceConfigurationUpdater;
-import com.exoplatform.cloudworkspaces.installer.configuration.updaters.MailConfigurationUpdater;
-import com.exoplatform.cloudworkspaces.installer.configuration.updaters.TomcatUsersConfigurationUpdater;
-import com.exoplatform.cloudworkspaces.installer.downloader.IntranetBundleDownloader;
 import com.exoplatform.cloudworkspaces.installer.interaction.AnswersManager;
 import com.exoplatform.cloudworkspaces.installer.interaction.InteractionManager;
 import com.exoplatform.cloudworkspaces.installer.interaction.InteractionManagerWithAnswers;
 import com.exoplatform.cloudworkspaces.installer.interaction.StreamInteractionManager;
-import com.exoplatform.cloudworkspaces.installer.rest.M8CloudAdminServices;
 import com.exoplatform.cloudworkspaces.installer.upgrade.AdminUpgradeAlgorithm;
 import com.exoplatform.cloudworkspaces.installer.upgrade.VersionsManager;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Main {
 
@@ -63,7 +51,9 @@ public class Main {
   }
 
   public static void upgrade(String[] args) throws Exception {
-    VersionsManager versionsManager = new VersionsManager(new File("/home/koster/test/versions"));
+    VersionsManager versionsManager = new VersionsManager(Thread.currentThread()
+                                                                .getContextClassLoader()
+                                                                .getSystemResourceAsStream("versions"));
 
     String version = null;
     String answersFile = null;
@@ -118,43 +108,8 @@ public class Main {
       interaction = new InteractionManagerWithAnswers(new File(answersFile));
     }
 
-    AdminUpgradeAlgorithm algorithm = versionsManager.getAlgorithm("1.1.0-Beta05", version);
+    AdminUpgradeAlgorithm algorithm = versionsManager.getAlgorithm("1.1.0-Beta06", version);
     algorithm.upgrade(confDir, tomcatDir, dataDir, configuration, interaction, answersManager);
   }
 
-  public static void rest(String[] args) throws Exception {
-    M8CloudAdminServices services = new M8CloudAdminServices("wks-s.exoplatform.org",
-                                                             "cloudadmin",
-                                                             "cloudadmin");
-    Object map = services.createTenant("test9");
-    System.out.println(map);
-  }
-
-  public static void download(String[] args) throws Exception {
-    IntranetBundleDownloader downloader = new IntranetBundleDownloader();
-    downloader.downloadAdminTo("http://intranet.exoplatform.org/rest/jcr/repository/collaboration/Groups/platform/users/Documents/Builds/CloudWorkspaces/releases/1.1.0-Beta06/cloud-workspaces-admin-1.0.0-Beta06-tomcat.zip",
-                               "",
-                               "",
-                               new File("/home/koster/downloaded-ADMIN"));
-  }
-
-  public static void config(String[] args) throws Exception {
-    AnswersManager answers = new AnswersManager(new File("/home/koster/test/answers.txt"));
-    InteractionManager interaction = new StreamInteractionManager();
-    List<ConfigurationUpdater> updaters = new ArrayList<ConfigurationUpdater>();
-    updaters.add(new DBConfigurationUpdater());
-    updaters.add(new CloudConfigurationUpdater());
-    updaters.add(new TomcatUsersConfigurationUpdater());
-    updaters.add(new MailConfigurationUpdater());
-    updaters.add(new AwsConfigurationUpdater());
-    updaters.add(new InstanceConfigurationUpdater());
-    ConfigurationManager configurationManager = new ConfigurationManager(new File("/home/koster/test/admin-conf/conf"),
-                                                                         new File("/home/koster/test/admin-tomcat"),
-                                                                         new File("/home/koster/test/bundle"),
-                                                                         updaters,
-                                                                         interaction,
-                                                                         answers);
-    configurationManager.configure();
-    configurationManager.update();
-  }
 }

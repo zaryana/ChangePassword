@@ -2,7 +2,7 @@
 #
 # JAVA_OPTS override jvm options for example: Xmx, Xms etc.
 
-. ../exo-admin-conf/environment.sh
+./environment.sh
 
 # custom JAVA options
 [ -z "$EXO_JAVA_OPTS" ]  && EXO_JAVA_OPTS="-Xmx96m"

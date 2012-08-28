@@ -43,7 +43,7 @@ public interface CloudAdminServices {
 
   public void blockAutoscaling() throws AdminException;
 
-  public Map<String, String> createTenant(String tenant) throws AdminException;
+  public Map<String, String> createTenant(String tenant, String email) throws AdminException;
 
   public Map<String, String> tenantStatus(String tenant) throws AdminException;
 

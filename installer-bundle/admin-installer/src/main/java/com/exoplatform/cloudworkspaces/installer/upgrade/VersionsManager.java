@@ -18,8 +18,8 @@
  */
 package com.exoplatform.cloudworkspaces.installer.upgrade;
 
-import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -28,11 +28,11 @@ public class VersionsManager {
 
   private final Map<VersionEntry, AdminUpgradeAlgorithm> versions = new HashMap<VersionEntry, AdminUpgradeAlgorithm>();
 
-  public VersionsManager(File versionsListFile) throws FileNotFoundException,
+  public VersionsManager(InputStream versionsList) throws FileNotFoundException,
       ClassNotFoundException,
       InstantiationException,
       IllegalAccessException {
-    Scanner in = new Scanner(versionsListFile);
+    Scanner in = new Scanner(versionsList);
     try {
       while (in.hasNext()) {
         String from = in.next().trim();

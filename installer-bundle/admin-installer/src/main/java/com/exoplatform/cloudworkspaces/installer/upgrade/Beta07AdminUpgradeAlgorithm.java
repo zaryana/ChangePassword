@@ -22,14 +22,14 @@ import com.exoplatform.cloudworkspaces.installer.ConfigUtils;
 import com.exoplatform.cloudworkspaces.installer.InstallerConfiguration;
 import com.exoplatform.cloudworkspaces.installer.InstallerException;
 import com.exoplatform.cloudworkspaces.installer.configuration.ConfigurationManager;
-import com.exoplatform.cloudworkspaces.installer.configuration.versions.Beta06ConfigurationPack;
+import com.exoplatform.cloudworkspaces.installer.configuration.versions.Beta07ConfigurationPack;
 import com.exoplatform.cloudworkspaces.installer.downloader.BundleDownloader;
 import com.exoplatform.cloudworkspaces.installer.downloader.FromFileBundleDownloader;
 import com.exoplatform.cloudworkspaces.installer.interaction.AnswersManager;
 import com.exoplatform.cloudworkspaces.installer.interaction.InteractionManager;
 import com.exoplatform.cloudworkspaces.installer.rest.AdminException;
 import com.exoplatform.cloudworkspaces.installer.rest.CloudAdminServices;
-import com.exoplatform.cloudworkspaces.installer.rest.M8CloudAdminServices;
+import com.exoplatform.cloudworkspaces.installer.rest.M10CloudAdminServices;
 import com.exoplatform.cloudworkspaces.installer.tomcat.AdminTomcatWrapper;
 import com.exoplatform.cloudworkspaces.installer.tomcat.AdminTomcatWrapperImpl;
 
@@ -37,7 +37,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
-public class Beta06AdminUpgradeAlgorithm extends MinorAdminUpgradeAlgorithm {
+public class Beta07AdminUpgradeAlgorithm extends MinorAdminUpgradeAlgorithm {
 
   protected String demo;
 
@@ -52,7 +52,7 @@ public class Beta06AdminUpgradeAlgorithm extends MinorAdminUpgradeAlgorithm {
                                                       File bundleZip,
                                                       InteractionManager interaction,
                                                       AnswersManager answers) {
-    return new Beta06ConfigurationPack().getConfigurationManager(previousConfDir,
+    return new Beta07ConfigurationPack().getConfigurationManager(previousConfDir,
                                                                  previousTomcatDir,
                                                                  bundleZip,
                                                                  interaction,
@@ -68,7 +68,7 @@ public class Beta06AdminUpgradeAlgorithm extends MinorAdminUpgradeAlgorithm {
   public CloudAdminServices getCloudAdminServices(String tenantMasterhost,
                                                   String adminUsername,
                                                   String adminPassword) throws InstallerException {
-    return new M8CloudAdminServices(tenantMasterhost, adminUsername, adminPassword);
+    return new M10CloudAdminServices(tenantMasterhost, adminUsername, adminPassword);
   }
 
   @Override
@@ -119,11 +119,11 @@ public class Beta06AdminUpgradeAlgorithm extends MinorAdminUpgradeAlgorithm {
                              File tomcatDir,
                              File dataDir,
                              CloudAdminServices cloudAdminServices) throws InstallerException {
-    cloudAdminServices.createTenant("exoplatform");
+    cloudAdminServices.createTenant("exoplatform", "kregent@exoplatform.com");
     try {
       demo = ConfigUtils.findProperty(confDir, "admin.properties", "cloud.admin.demo.tenant.name");
       if (cloudAdminServices.tenantStatus(demo).isEmpty())
-        cloudAdminServices.createTenant(demo);
+        cloudAdminServices.createTenant(demo, "kregent@exoplatform.com");
     } catch (IOException e) {
       throw new InstallerException("Could not get demo tenant name from admin.properties configuration");
     }

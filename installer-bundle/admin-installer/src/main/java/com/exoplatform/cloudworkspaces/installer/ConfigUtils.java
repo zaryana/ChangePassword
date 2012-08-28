@@ -51,6 +51,10 @@ public class ConfigUtils {
   }
 
   public static void writeProperty(File confDir, String confFile, String key, String value) throws IOException {
+    replace(confDir, confFile, "^" + key + "=[\"]?[^\"\\n]*[\"]?$", key + "=" + value + "");
+  }
+
+  public static void writeQuotedProperty(File confDir, String confFile, String key, String value) throws IOException {
     replace(confDir, confFile, "^" + key + "=[\"]?[^\"\\n]*[\"]?$", key + "=\"" + value + "\"");
   }
 

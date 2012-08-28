@@ -96,14 +96,14 @@ public class DBConfigurationUpdater extends BaseConfigurationUpdater {
         password = interaction.ask(DBPasswordQuestion);
       }
 
-      ConfigUtils.writeProperty(new File(tomcatDir, "bin"), "environment.sh", "EXO_DB_HOST", url);
+      ConfigUtils.writeQuotedProperty(new File(tomcatDir, "bin"), "environment.sh", "EXO_DB_HOST", url);
       answers.addAnswer(DBUrlQuestion, url);
-      ConfigUtils.writeProperty(new File(tomcatDir, "bin"),
+      ConfigUtils.writeQuotedProperty(new File(tomcatDir, "bin"),
                                 "environment.sh",
                                 "EXO_DB_USER",
                                 username);
       answers.addAnswer(DBUsernameQuestion, username);
-      ConfigUtils.writeProperty(new File(tomcatDir, "bin"),
+      ConfigUtils.writeQuotedProperty(new File(tomcatDir, "bin"),
                                 "environment.sh",
                                 "EXO_DB_PASSWORD",
                                 password);
