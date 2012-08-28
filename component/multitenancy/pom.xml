@@ -5,7 +5,7 @@
   <parent>
     <groupId>com.exoplatform.cloudworkspaces</groupId>
     <artifactId>cloud-workspaces-component</artifactId>
-    <version>1.1.0-Beta07-SNAPSHOT</version>
+    <version>1.1.0-Beta07</version>
   </parent>
 
   <artifactId>cloud-workspaces-component-multitenancy</artifactId>
@@ -14,6 +14,12 @@
   <description>eXo Cloud Workspaces Multitenancy</description>
 
   <dependencies>
+    <dependency>
+      <groupId>com.exoplatform.platform.cloud</groupId>
+      <artifactId>exo-platform-cloud-services</artifactId>
+      <scope>compile</scope>
+      <type>jar</type>
+    </dependency>
     <dependency>
       <groupId>com.exoplatform.cloudworkspaces</groupId>
       <artifactId>cloud-workspaces-component-organization</artifactId>

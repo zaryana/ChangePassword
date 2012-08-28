@@ -20,7 +20,8 @@ cd ./local-cloud/app-server-tomcat
 
 RETVAL=$?
 if [ ! $RETVAL -eq 0 ] ; then
-  echo "Prepare-instance script failed, exiting now.."
+  echo "Prepare-instance script failed, exiting now."
+  exit 1
 fi
 
 read -r ID < ./template_id.txt

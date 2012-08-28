@@ -1,80 +1,83 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-    Copyright (C) 2011 eXo Platform SAS.
--->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<!-- Copyright (C) 2011 eXo Platform SAS. -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>com.exoplatform.cloudworkspaces</groupId>
     <artifactId>cloud-workspaces-parent</artifactId>
-    <version>1.1.0-Beta07-SNAPSHOT</version>
+    <version>1.1.0-Beta07</version>
   </parent>
 
   <artifactId>cloud-workspaces-local-cloud</artifactId>
   <packaging>pom</packaging>
   <name>eXo Cloud Workspaces :: Local Cloud Scripts</name>
   <description>Cloud Workspaces Local Cloud Bundle</description>
-  
-  <dependencies>
-   <dependency>
-     <groupId>com.exoplatform.cloudworkspaces</groupId>
-     <artifactId>cloud-workspaces-admin-bundle</artifactId>
-     <version>${project.version}</version>
-     <classifier>tomcat</classifier>
-     <type>zip</type>
-   </dependency>
-    <dependency>
-      <groupId>com.exoplatform.cloudworkspaces</groupId>
-      <artifactId>cloud-workspaces-platform-bundle</artifactId>
-      <version>${project.version}</version>
-      <classifier>tomcat</classifier>
-      <type>zip</type>
-     </dependency>
-  </dependencies>
-  
-  <build>
-   <plugins>
-    <plugin>
-     <artifactId>maven-assembly-plugin</artifactId>
-       <executions>
-         <execution>
-           <id>01-assembly</id>
-           <phase>package</phase>
-           <goals>
-             <goal>single</goal>
-           </goals>
-           <configuration>
-             <appendAssemblyId>false</appendAssemblyId>
-             <updateOnly>false</updateOnly>
-             <descriptors>
-               <descriptor>src/main/assembly/archive.xml</descriptor>
-             </descriptors>
-           </configuration>
-         </execution>
-      </executions>
-     </plugin>
-     <plugin>
-       <artifactId>maven-antrun-plugin</artifactId>
-       <executions>
-         <execution>
-         <id>copy-deploy-script</id>
-         <phase>process-resources</phase>
-         <configuration>
-         <tasks>
-           <copy todir="${project.build.directory}">
-           <fileset dir="${project.basedir}/src/main">
-             <include name="*.sh"/>
-           </fileset>
-          </copy>
-          <chmod file="${project.build.directory}/*.sh" perm="755"/> 
-         </tasks>
-        </configuration>
-        <goals>
-           <goal>run</goal>
-        </goals>
-        </execution>
-      </executions>
-    </plugin>
-   </plugins>
- </build>
+
+  <profiles>
+    <profile>
+      <id>distrib</id>
+      <dependencies>
+        <dependency>
+          <groupId>com.exoplatform.cloudworkspaces</groupId>
+          <artifactId>cloud-workspaces-admin-bundle</artifactId>
+          <version>${project.version}</version>
+          <classifier>tomcat</classifier>
+          <type>zip</type>
+        </dependency>
+        <dependency>
+          <groupId>com.exoplatform.cloudworkspaces</groupId>
+          <artifactId>cloud-workspaces-platform-bundle</artifactId>
+          <version>${project.version}</version>
+          <classifier>tomcat</classifier>
+          <type>zip</type>
+        </dependency>
+      </dependencies>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>01-assembly</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>single</goal>
+                </goals>
+                <configuration>
+                  <appendAssemblyId>false</appendAssemblyId>
+                  <updateOnly>false</updateOnly>
+                  <descriptors>
+                    <descriptor>src/main/assembly/archive.xml</descriptor>
+                  </descriptors>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>copy-deploy-script</id>
+                <phase>process-resources</phase>
+                <configuration>
+                  <tasks>
+                    <copy todir="${project.build.directory}">
+                      <fileset dir="${project.basedir}/src/main">
+                        <include name="*.sh" />
+                      </fileset>
+                    </copy>
+                    <chmod file="${project.build.directory}/*.sh" perm="755" />
+                  </tasks>
+                </configuration>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>

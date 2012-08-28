@@ -133,39 +133,6 @@ public class WorkspacesTenantStartFilter implements Filter {
     }
   }
 
-  public boolean isTenantExists(String tenant) throws IOException {
-
-    HttpURLConnection connection = null;
-    StringBuilder tenantStatusUrlBuilder = new StringBuilder();
-    tenantStatusUrlBuilder.append("http://");
-    tenantStatusUrlBuilder.append(System.getProperty("tenant.masterhost"));
-    tenantStatusUrlBuilder.append("/rest/cloud-admin/tenant-service/tenant-status?tenant=");
-    tenantStatusUrlBuilder.append(tenant);
-    URL tenantStatusUrl = new URL(tenantStatusUrlBuilder.toString());
-    connection = (HttpURLConnection) tenantStatusUrl.openConnection();
-    connection.setRequestMethod("GET");
-    connection.connect();
-    if (connection.getResponseCode() == 200) {
-      InputStream content = (InputStream) connection.getContent();
-      ByteArrayOutputStream bout = new ByteArrayOutputStream();
-      try {
-        int length = 0;
-        byte[] buf = new byte[10 * 1024];
-        while (length >= 0) {
-          bout.write(buf, 0, length);
-          length = content.read(buf);
-        }
-      } finally {
-        content.close();
-        bout.close();
-      }
-      String response = new String(bout.toByteArray());
-      return !response.replaceAll("\\s", "").equals("{}");
-    } else {
-      return false;
-    }
-  }
-
   @Override
   public void destroy() {
     // do nothing

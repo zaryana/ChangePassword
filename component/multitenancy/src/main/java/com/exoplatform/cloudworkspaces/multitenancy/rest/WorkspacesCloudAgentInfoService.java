@@ -18,23 +18,20 @@
  */
 package com.exoplatform.cloudworkspaces.multitenancy.rest;
 
-import com.exoplatform.cloud.determinant.TenantDeterminant;
 import com.exoplatform.cloud.multitenancy.TemporaryTenantStateHolder;
 import com.exoplatform.cloud.multitenancy.TenantRepositoryService;
-import com.exoplatform.cloud.rest.CloudAgentInfoService;
-import com.exoplatform.cloud.statistic.TenantAccessTimeStatisticCollector;
 import com.exoplatform.cloud.status.TenantInfo;
+import com.exoplatform.platform.cloud.services.multitenancy.PlatformCloudAgentInfoService;
+
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.jcr.config.RepositoryConfigurationException;
-import org.exoplatform.services.jcr.config.RepositoryEntry;
 import org.exoplatform.services.jcr.ext.backup.BackupManager;
 import org.exoplatform.services.organization.OrganizationService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -43,12 +40,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import static com.exoplatform.cloud.status.TenantInfoBuilder.online;
-
 @Path("/cloud-agent/info-service")
-public class WorkspacesCloudAgentInfoService extends CloudAgentInfoService {
-
-  private static final Logger              LOG = LoggerFactory.getLogger(WorkspacesCloudAgentInfoService.class);
+public class WorkspacesCloudAgentInfoService extends PlatformCloudAgentInfoService {
 
   private final RepositoryService          repositoryService;
 
@@ -58,7 +51,7 @@ public class WorkspacesCloudAgentInfoService extends CloudAgentInfoService {
                                          TemporaryTenantStateHolder temporaryTenantStateHolder,
                                          OrganizationService organizationService,
                                          BackupManager backupManager) {
-    super(repositoryService, temporaryTenantStateHolder, organizationService, backupManager);
+    super(repositoryService, temporaryTenantStateHolder, backupManager);
     this.repositoryService = repositoryService;
     this.temporaryTenantStateHolder = temporaryTenantStateHolder;
   }
@@ -99,41 +92,7 @@ public class WorkspacesCloudAgentInfoService extends CloudAgentInfoService {
   @Path("statistics")
   @RolesAllowed("cloud-admin")
   public Collection<TenantInfo> getTenantStatistic() {
-    TenantAccessTimeStatisticCollector accessTimeStatisticCollector = TenantAccessTimeStatisticCollector.getInstance();
-
-    Map<String, TenantInfo> result = new HashMap<String, TenantInfo>();
-    result.putAll(temporaryTenantStateHolder.getCreatingTenants());
-    result.putAll(temporaryTenantStateHolder.getStartingTenantState());
-    result.putAll(temporaryTenantStateHolder.getStoppingTenants());
-
-    String defaultRepoName = repositoryService.getConfig().getDefaultRepositoryName();
-
-    for (RepositoryEntry repositoryEntry : repositoryService.getConfig()
-                                                            .getRepositoryConfigurations()) {
-      String repositoryName = repositoryEntry.getName();
-      if (!defaultRepoName.equals(repositoryName)) {
-        // repository may be available before executing of all Tenant creation
-        // plugins
-        if (!result.containsKey(repositoryName)) {
-
-          TenantInfo tenantInfo = online(repositoryName).info();
-          result.put(repositoryName, tenantInfo);
-
-          // get last access time
-          if (defaultRepoName.equals(repositoryName)) {
-            tenantInfo.setLastAccessTime(accessTimeStatisticCollector.getAccessTime(TenantDeterminant.DEFAULT_TENANT_NAME));
-            tenantInfo.setStoppable(false);
-          } else {
-            tenantInfo.setLastAccessTime(accessTimeStatisticCollector.getAccessTime(repositoryName));
-            tenantInfo.setStoppable(true);
-          }
-        }
-      }
-    }
-
-    LOG.debug("getTenantStatistic result {}", result.values());
-
-    return result.values();
+    return super.getTenantStatistic();
   }
 
   @GET

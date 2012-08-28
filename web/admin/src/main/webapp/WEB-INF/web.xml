@@ -38,15 +38,20 @@
    </filter-mapping>
 
    <filter>
+      <filter-name>unknownTenantFilter</filter-name>
+      <filter-class>com.exoplatform.cloud.admin.http.filter.UnknownTenantFilter</filter-class>
+      <init-param>
+         <param-name>unknownTenantPage</param-name>
+         <param-value>/not-found.jsp</param-value>
+      </init-param>
+   </filter>
+
+   <filter>
       <filter-name>TenantStartFilter</filter-name>
       <filter-class>com.exoplatform.cloudworkspaces.WorkspacesTenantStartFilter</filter-class>
       <init-param>
          <param-name>resumingPage</param-name>
          <param-value>http://${tenant.masterhost}/resuming-hide.jsp</param-value>
-      </init-param>
-      <init-param>
-         <param-name>notFoundPage</param-name>
-         <param-value>http://${tenant.masterhost}/home.jsp</param-value>
       </init-param>
    </filter>
 
@@ -60,6 +65,10 @@
       <url-pattern>/*</url-pattern>
    </filter-mapping>
 
+   <filter-mapping>
+      <filter-name>unknownTenantFilter</filter-name>
+      <url-pattern>/*</url-pattern>
+   </filter-mapping>
    <filter-mapping>
       <filter-name>TenantStartFilter</filter-name>
       <url-pattern>/*</url-pattern>

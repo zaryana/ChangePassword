@@ -125,7 +125,7 @@ REMOTE_DEBUG=""
 
 export JAVA_OPTS="$EXO_JAVA_OPTS $JAVA_OPTS $EXO_CLOUD_ADMIN_OPTS $REMOTE_DEBUG $JMX_OPTS"
 export CLASSPATH="${CATALINA_HOME}/conf/:${CATALINA_HOME}/lib/jul-to-slf4j.jar:\
-${CATALINA_HOME}/lib/slf4j-api.jar:$CATALINA_HOME/lib/security-logback-logging-1.1-M8.jar:${CATALINA_HOME}/lib/logback-classic.jar:${CATALINA_HOME}/lib/logback-core.jar:\
+${CATALINA_HOME}/lib/slf4j-api.jar:$CATALINA_HOME/lib/security-logback-logging-1.1-M10.jar:${CATALINA_HOME}/lib/logback-classic.jar:${CATALINA_HOME}/lib/logback-core.jar:\
 ${CATALINA_HOME}/lib/mail.jar"
 
 # Catalina pid file
