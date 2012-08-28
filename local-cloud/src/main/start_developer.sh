@@ -7,5 +7,6 @@
 RETVAL=$?
 if [ ! $RETVAL -eq 0 ] ; then
   echo "Cloud deploy and start failed"
+  exit 1
 fi
 
