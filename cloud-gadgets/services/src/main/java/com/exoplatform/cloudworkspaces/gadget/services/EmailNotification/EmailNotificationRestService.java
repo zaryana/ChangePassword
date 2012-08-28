@@ -55,7 +55,7 @@ public class EmailNotificationRestService implements ResourceContainer {
       Node userPrivateNode = nodeCreator.getUserNode(sProvider, userId).getNode("Private");
 
       MessagesCache messagesCache = new MessagesCache(EmailNotificationService.HOME);
-      String interval = messagesCache.getDefault().getProperty("defaultInterval", "week");
+      String interval = messagesCache.getDefault().getProperty("defaultInterval", "day");
 
       boolean isSummaryMail = false;
       ArrayList<EmailNotificationPluginBean> pluginBeans = new ArrayList<EmailNotificationPluginBean>();

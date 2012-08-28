@@ -86,7 +86,7 @@ public class EmailNotificationJob extends MultiTenancyJob {
                 notificationPlugins.append(plugin.getName());
               }
             }
-            emailNotificationRestService.setUserPrefs(userId, false, setting.getProperty("defaultInterval", "week"), notificationPlugins.toString());
+            emailNotificationRestService.setUserPrefs(userId, false, setting.getProperty("defaultInterval", "day"), notificationPlugins.toString());
             isServiceRegistered = true;
           }
 
