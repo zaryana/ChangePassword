@@ -3,40 +3,45 @@
 # Unzipping platform to create template
 AS_ZIP="cloud-workspaces-platform-bundle-tomcat.zip"
 
-if [ -d ./local-cloud/app-server-tomcat ]
-then
+for f in `ls -a ./local-cloud/ | grep as`
+do
+  if [ -d ./local-cloud/$f ]
+  then
     echo "Error: Application server folder found. Seems it's not a first run, try re-deploy again."
     exit 1
-fi
+  fi
+done
 
+if [ ! -d ./local-cloud/app-server-tomcat ]
+then
+    # unzip and prpeare cloud
+    unzip -q ./local-cloud/$AS_ZIP -d ./local-cloud/
+    rm ./local-cloud/$AS_ZIP
 
-unzip -q ./local-cloud/$AS_ZIP -d ./local-cloud/
-rm ./local-cloud/$AS_ZIP
+    # Starting PLF
+    cd ./local-cloud/app-server-tomcat
+    ./prepare_instance.sh -use_profile_settings
 
-# Starting PLF
-cd ./local-cloud/app-server-tomcat
-./prepare_instance.sh -use_profile_settings
+    RETVAL=$?
+    if [ ! $RETVAL -eq 0 ] ; then
+      echo "Prepare-instance script failed, exiting now.."
+    fi
 
+    read -r ID < ./template_id.txt
 
-RETVAL=$?
-if [ ! $RETVAL -eq 0 ] ; then
-  echo "Prepare-instance script failed, exiting now.."
-fi
+    # Back to home
+    cd ../..
 
-read -r ID < ./template_id.txt
+    echo "ID:" $ID
 
+    # Set backup ID in admin conf
+    cd admin-tomcat/exo-admin-conf
+    sed -i s/cloud.admin.tenant.backup.id=NO_ID/cloud.admin.tenant.backup.id=$ID/ admin.properties
 
-# Back to home
-cd ../..
-
-echo "ID:" $ID
-
-# Set backup ID in admin conf
-cd admin-tomcat/exo-admin-conf
-sed -i s/cloud.admin.tenant.backup.id=NO_ID/cloud.admin.tenant.backup.id=$ID/ admin.properties
+    cd ../..
+fi # otherwise use prepared cloud
 
 # Starting admin
-cd ../..
 cd admin-tomcat/bin
 ./catalina.sh start
 
@@ -46,7 +51,6 @@ sleep 30s
 
 #Block autoscaling
 res=$(curl --connect-timeout 900 -s  -X POST -u cloudadmin:cloudadmin http://localhost:8080/rest/private/cloud-admin/autoscaling-service/block-autoscaling)
-
 
 as_name=$(curl --connect-timeout 900 -s  -X POST -u cloudadmin:cloudadmin http://localhost:8080/rest/private/cloud-admin/instance-service/start-server?type=local-cloud-agent)
 echo "Started app server $as_name"
