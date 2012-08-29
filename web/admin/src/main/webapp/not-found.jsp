@@ -1,15 +1,23 @@
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
-  <head>
-    
-    <title>Cloud-workspaces error</title>
-<base href="http://<%=System.getProperty("tenant.masterhost")%>"/>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="google-site-verification" content="nLMrhJKIZf-LTLYZZ6o_V_ET_aUqGRqNx_b-3nNY7ec" />
-<link href="/css/Style.css" rel="stylesheet" type="text/css" />
-<link rel="shortcut icon" type="image/png" href="/favicon.png" />
-  </head>
+<head>
+  <title>Cloud-workspaces error</title>
+  <base href="http://<%=System.getProperty("tenant.masterhost")%>"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="google-site-verification" content="nLMrhJKIZf-LTLYZZ6o_V_ET_aUqGRqNx_b-3nNY7ec" />
+  <link href="/css/Style.css" rel="stylesheet" type="text/css" />
+  <link rel="shortcut icon" type="image/png" href="/favicon.png" />
+  
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-1292368-30']);
+  _gaq.push(['_setDomainName', '.cloud-workspaces.com']);
+  _gaq.push(['_trackPageview']);
+  </script>
+  <script type="text/javascript" src="/js/common.js"></script>
+  <script type="text/javascript" data-main="static" src="/js/require-2.0.4.min.js"></script>
+</head>
   <body>
     <div class="UIPageContainer">
       <!--begin header-->
