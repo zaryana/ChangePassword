@@ -34,6 +34,14 @@ public abstract class AdminUpgradeAlgorithm {
                                File previousTomcatDir,
                                File dataDir,
                                InstallerConfiguration configuration,
-                               InteractionManager interaction, AnswersManager answers) throws InstallerException;
+                               InteractionManager interaction,
+                               AnswersManager answers) throws InstallerException;
+
+  public abstract void install(File confDir,
+                               File tomcatDir,
+                               File dataDir,
+                               InstallerConfiguration configuration,
+                               InteractionManager interaction,
+                               AnswersManager answers) throws InstallerException;
 
 }

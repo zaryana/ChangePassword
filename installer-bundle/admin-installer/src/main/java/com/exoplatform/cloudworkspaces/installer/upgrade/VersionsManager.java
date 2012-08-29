@@ -26,7 +26,9 @@ import java.util.Scanner;
 
 public class VersionsManager {
 
-  private final Map<VersionEntry, AdminUpgradeAlgorithm> versions = new HashMap<VersionEntry, AdminUpgradeAlgorithm>();
+  private final Map<VersionEntry, AdminUpgradeAlgorithm> versions        = new HashMap<VersionEntry, AdminUpgradeAlgorithm>();
+
+  private final Map<String, AdminUpgradeAlgorithm>       installVersions = new HashMap<String, AdminUpgradeAlgorithm>();
 
   public VersionsManager(InputStream versionsList) throws FileNotFoundException,
       ClassNotFoundException,
@@ -43,6 +45,7 @@ public class VersionsManager {
         Class<? extends AdminUpgradeAlgorithm> clazz = (Class<? extends AdminUpgradeAlgorithm>) getClass().getClassLoader()
                                                                                                           .loadClass(algorithm);
         versions.put(new VersionEntry(from, to), clazz.newInstance());
+        installVersions.put(to, clazz.newInstance());
       }
     } finally {
       in.close();
@@ -51,6 +54,10 @@ public class VersionsManager {
 
   public AdminUpgradeAlgorithm getAlgorithm(String fromVersion, String toVersion) {
     return versions.get(new VersionEntry(fromVersion, toVersion));
+  }
+
+  public AdminUpgradeAlgorithm getAlgorithm(String toVersion) {
+    return installVersions.get(toVersion);
   }
 
   static class VersionEntry {

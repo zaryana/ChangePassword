@@ -31,7 +31,7 @@ public class Main {
 
   public static void main(String[] args) throws Exception {
     if (args.length < 1) {
-      System.out.println("Choose upgrade or install command");
+      System.err.println("Choose upgrade or install command");
       return;
     }
     String[] newargs = new String[args.length - 1];
@@ -43,11 +43,75 @@ public class Main {
     } else if (args[0].equals("install")) {
       install(args);
     } else {
-      System.out.println("Choose upgrade or install command");
+      System.err.println("Choose upgrade or install command");
+      return;
     }
   }
 
   public static void install(String[] args) throws Exception {
+    VersionsManager versionsManager = new VersionsManager(Thread.currentThread()
+                                                                .getContextClassLoader()
+                                                                .getSystemResourceAsStream("versions"));
+
+    String version = null;
+    String answersFile = null;
+    String installConfig = "install.conf";
+    String conf = System.getenv("EXO_ADMIN_CONF_DIR");
+    String data = System.getenv("EXO_ADMIN_DATA_DIR");
+    String tomcat = "admin-tomcat";
+    String saveTo = null;
+    for (int i = 0; i < args.length; i++) {
+      if (args[i].equals("-v") || args[i].equals("--version"))
+        version = args[i + 1];
+      if (args[i].equals("-a") || args[i].equals("--answers"))
+        answersFile = args[i + 1];
+      if (args[i].equals("-i") || args[i].equals("--install-config"))
+        installConfig = args[i + 1];
+      if (args[i].equals("-t") || args[i].equals("--tomcat"))
+        tomcat = args[i + 1];
+      if (args[i].equals("-s") || args[i].equals("--save-to"))
+        saveTo = args[i + 1];
+    }
+    if (version == null) {
+      System.err.println("Set version for upgrade");
+    }
+    File installConfigFile = new File(installConfig);
+    if (!installConfigFile.exists() || !installConfigFile.isFile()) {
+      System.err.println("Install config file not exists or is not file");
+    }
+    if (conf == null) {
+      System.err.println("Set admin configuration dir in environment. Variable - EXO_ADMIN_CONF_DIR");
+      return;
+    }
+    File confDir = new File(conf);
+    if (!confDir.exists() || !confDir.isDirectory()) {
+      confDir.mkdirs();
+    }
+    if (tomcat == null)
+      System.err.println("Set path to tomcat directory. Use --tomcat");
+    File tomcatDir = new File(tomcat);
+    if (!tomcatDir.exists() || !tomcatDir.isDirectory()) {
+      System.err.println("Tomcat dir not exists or is not directory");
+    }
+    if (data == null)
+      System.err.println("Set admin configuration dir in environment. Variable - EXO_ADMIN_DATA_DIR");
+    File dataDir = new File(data);
+    if (!dataDir.exists() || !dataDir.isDirectory()) {
+      dataDir.mkdirs();
+    }
+    AnswersManager answersManager = new AnswersManager((saveTo == null) ? null : new File(saveTo));
+
+    InstallerConfiguration configuration = new InstallerConfiguration(installConfigFile);
+
+    InteractionManager interaction = null;
+    if (answersFile == null) {
+      interaction = new StreamInteractionManager();
+    } else {
+      interaction = new InteractionManagerWithAnswers(new File(answersFile));
+    }
+
+    AdminUpgradeAlgorithm algorithm = versionsManager.getAlgorithm(version);
+    algorithm.install(confDir, tomcatDir, dataDir, configuration, interaction, answersManager);
   }
 
   public static void upgrade(String[] args) throws Exception {
@@ -58,8 +122,8 @@ public class Main {
     String version = null;
     String answersFile = null;
     String installConfig = "install.conf";
-    String conf = "admin-data/conf";
-    String data = "admin-data/data";
+    String conf = System.getenv("EXO_ADMIN_CONF_DIR");
+    String data = System.getenv("EXO_ADMIN_DATA_DIR");
     String tomcat = "admin-tomcat";
     String saveTo = null;
     for (int i = 0; i < args.length; i++) {
@@ -69,33 +133,45 @@ public class Main {
         answersFile = args[i + 1];
       if (args[i].equals("-i") || args[i].equals("--install-config"))
         installConfig = args[i + 1];
-      if (args[i].equals("-c") || args[i].equals("--conf"))
-        conf = args[i + 1];
-      if (args[i].equals("-d") || args[i].equals("--data"))
-        data = args[i + 1];
       if (args[i].equals("-t") || args[i].equals("--tomcat"))
         tomcat = args[i + 1];
-      if (args[i].equals("-s") || args[i].equals("--save"))
+      if (args[i].equals("-s") || args[i].equals("--save-to"))
         saveTo = args[i + 1];
     }
     if (version == null) {
-      System.out.println("Set version for upgrade");
+      System.err.println("Set version for upgrade");
+      return;
     }
     File installConfigFile = new File(installConfig);
     if (!installConfigFile.exists() || !installConfigFile.isFile()) {
-      System.out.println("Install config file not exists or is not file");
+      System.err.println("Install config file not exists or is not file");
+      return;
+    }
+    if (conf == null) {
+      System.err.println("Set admin configuration dir in environment. Variable - EXO_ADMIN_CONF_DIR");
+      return;
     }
     File confDir = new File(conf);
     if (!confDir.exists() || !confDir.isDirectory()) {
-      System.out.println("Conf dir not exists or is not directory");
+      System.err.println("Conf dir not exists or is not directory");
+      return;
+    }
+    if (tomcat == null) {
+      System.err.println("Set path to tomcat directory. Use --tomcat");
+      return;
     }
     File tomcatDir = new File(tomcat);
     if (!tomcatDir.exists() || !tomcatDir.isDirectory()) {
-      System.out.println("Tomcat dir not exists or is not directory");
+      System.err.println("Tomcat dir not exists or is not directory");
+    }
+    if (data == null) {
+      System.err.println("Set admin configuration dir in environment. Variable - EXO_ADMIN_DATA_DIR");
+      return;
     }
     File dataDir = new File(data);
     if (!dataDir.exists() || !dataDir.isDirectory()) {
       System.out.println("Data dir not exists or is not directory");
+      return;
     }
     AnswersManager answersManager = new AnswersManager((saveTo == null) ? null : new File(saveTo));
 

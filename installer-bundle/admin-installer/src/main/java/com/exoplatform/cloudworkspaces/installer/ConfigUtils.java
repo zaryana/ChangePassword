@@ -38,6 +38,8 @@ public class ConfigUtils {
 
   public static String find(File confDir, String confFile, String regexp) throws IOException {
     File conf = new File(confDir.getAbsolutePath() + "/" + confFile);
+    if (!conf.exists())
+      return null;
     String content = readFile(conf);
     Pattern pattern = Pattern.compile(regexp, Pattern.MULTILINE);
     Matcher matcher = pattern.matcher(content);

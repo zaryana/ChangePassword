@@ -134,7 +134,6 @@ public class Beta07AdminUpgradeAlgorithm extends MinorAdminUpgradeAlgorithm {
     if (!status.isEmpty()) {
       if (status.get("state").equals("ONLINE"))
         cloudAdminServices.tenantStop(tenant);
-      cloudAdminServices.tenantDisable(tenant);
       cloudAdminServices.tenantRemove(tenant);
     }
   }
