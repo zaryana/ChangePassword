@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite failures="0" time="8.857" errors="1" skipped="0" tests="1" name="org.training.ChangePassTest">
+  <properties>
+    <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
+    <property name="sun.boot.library.path" value="/home/z/eXo/jdk1.6.0_34/jre/lib/i386"/>
+    <property name="java.vm.version" value="20.9-b04"/>
+    <property name="java.vm.vendor" value="Sun Microsystems Inc."/>
+    <property name="java.vendor.url" value="http://java.sun.com/"/>
+    <property name="path.separator" value=":"/>
+    <property name="java.vm.name" value="Java HotSpot(TM) Server VM"/>
+    <property name="file.encoding.pkg" value="sun.io"/>
+    <property name="user.country" value="CN"/>
+    <property name="sun.java.launcher" value="SUN_STANDARD"/>
+    <property name="sun.os.patch.level" value="unknown"/>
+    <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
+    <property name="user.dir" value="/home/z/eXo/workspace/ChangePassword"/>
+    <property name="java.runtime.version" value="1.6.0_34-b04"/>
+    <property name="java.awt.graphicsenv" value="sun.awt.X11GraphicsEnvironment"/>
+    <property name="basedir" value="/home/z/eXo/workspace/ChangePassword"/>
+    <property name="java.endorsed.dirs" value="/home/z/eXo/jdk1.6.0_34/jre/lib/endorsed"/>
+    <property name="os.arch" value="i386"/>
+    <property name="surefire.real.class.path" value="/home/z/eXo/workspace/ChangePassword/target/surefire/surefirebooter2864279154321270280.jar"/>
+    <property name="java.io.tmpdir" value="/tmp"/>
+    <property name="line.separator" value="
+"/>
+    <property name="java.vm.specification.vendor" value="Sun Microsystems Inc."/>
+    <property name="os.name" value="Linux"/>
+    <property name="sun.jnu.encoding" value="UTF-8"/>
+    <property name="java.library.path" value="/home/z/eXo/jdk1.6.0_34/jre/lib/i386/server:/home/z/eXo/jdk1.6.0_34/jre/lib/i386:/home/z/eXo/jdk1.6.0_34/jre/../lib/i386:/usr/java/packages/lib/i386:/lib:/usr/lib"/>
+    <property name="surefire.test.class.path" value="/home/z/eXo/workspace/ChangePassword/target/test-classes:/home/z/eXo/workspace/ChangePassword/target/classes:/home/z/eXo/exo-dependencies/repository/junit/junit/4.8/junit-4.8.jar:/home/z/eXo/exo-dependencies/repository/org/seleniumhq/selenium/selenium-java/2.25.0/selenium-java-2.25.0.jar:/home/z/eXo/exo-dependencies/repository/org/seleniumhq/selenium/selenium-android-driver/2.25.0/selenium-android-driver-2.25.0.jar:/home/z/eXo/exo-dependencies/repository/org/seleniumhq/selenium/selenium-remote-driver/2.25.0/selenium-remote-driver-2.25.0.jar:/home/z/eXo/exo-dependencies/repository/cglib/cglib-nodep/2.1_3/cglib-nodep-2.1_3.jar:/home/z/eXo/exo-dependencies/repository/org/json/json/20080701/json-20080701.jar:/home/z/eXo/exo-dependencies/repository/com/google/guava/guava/12.0/guava-12.0.jar:/home/z/eXo/exo-dependencies/repository/com/google/code/findbugs/jsr305/1.3.9/jsr305-1.3.9.jar:/home/z/eXo/exo-dependencies/repository/org/seleniumhq/selenium/selenium-chrome-driver/2.25.0/selenium-chrome-driver-2.25.0.jar:/home/z/eXo/exo-dependencies/repository/org/seleniumhq/selenium/selenium-htmlunit-driver/2.25.0/selenium-htmlunit-driver-2.25.0.jar:/home/z/eXo/exo-dependencies/repository/org/seleniumhq/selenium/selenium-api/2.25.0/selenium-api-2.25.0.jar:/home/z/eXo/exo-dependencies/repository/net/sourceforge/htmlunit/htmlunit/2.9/htmlunit-2.9.jar:/home/z/eXo/exo-dependencies/repository/xalan/xalan/2.7.1/xalan-2.7.1.jar:/home/z/eXo/exo-dependencies/repository/xalan/serializer/2.7.1/serializer-2.7.1.jar:/home/z/eXo/exo-dependencies/repository/commons-collections/commons-collections/3.2.1/commons-collections-3.2.1.jar:/home/z/eXo/exo-dependencies/repository/commons-lang/commons-lang/2.6/commons-lang-2.6.jar:/home/z/eXo/exo-dependencies/repository/org/apache/httpcomponents/httpmime/4.1.2/httpmime-4.1.2.jar:/home/z/eXo/exo-dependencies/repository/commons-codec/commons-codec/1.4/commons-codec-1.4.jar:/home/z/eXo/exo-dependencies/repository/net/sourceforge/htmlunit/htmlunit-core-js/2.9/htmlunit-core-js-2.9.jar:/home/z/eXo/exo-dependencies/repository/xerces/xercesImpl/2.9.1/xercesImpl-2.9.1.jar:/home/z/eXo/exo-dependencies/repository/xml-apis/xml-apis/1.3.04/xml-apis-1.3.04.jar:/home/z/eXo/exo-dependencies/repository/net/sourceforge/nekohtml/nekohtml/1.9.15/nekohtml-1.9.15.jar:/home/z/eXo/exo-dependencies/repository/net/sourceforge/cssparser/cssparser/0.9.5/cssparser-0.9.5.jar:/home/z/eXo/exo-dependencies/repository/org/w3c/css/sac/1.3/sac-1.3.jar:/home/z/eXo/exo-dependencies/repository/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar:/home/z/eXo/exo-dependencies/repository/org/apache/httpcomponents/httpclient/4.1.2/httpclient-4.1.2.jar:/home/z/eXo/exo-dependencies/repository/org/apache/httpcomponents/httpcore/4.1.2/httpcore-4.1.2.jar:/home/z/eXo/exo-dependencies/repository/org/seleniumhq/selenium/selenium-firefox-driver/2.25.0/selenium-firefox-driver-2.25.0.jar:/home/z/eXo/exo-dependencies/repository/commons-io/commons-io/2.0.1/commons-io-2.0.1.jar:/home/z/eXo/exo-dependencies/repository/org/apache/commons/commons-exec/1.1/commons-exec-1.1.jar:/home/z/eXo/exo-dependencies/repository/org/seleniumhq/selenium/selenium-ie-driver/2.25.0/selenium-ie-driver-2.25.0.jar:/home/z/eXo/exo-dependencies/repository/net/java/dev/jna/jna/3.4.0/jna-3.4.0.jar:/home/z/eXo/exo-dependencies/repository/net/java/dev/jna/platform/3.4.0/platform-3.4.0.jar:/home/z/eXo/exo-dependencies/repository/org/seleniumhq/selenium/selenium-iphone-driver/2.25.0/selenium-iphone-driver-2.25.0.jar:/home/z/eXo/exo-dependencies/repository/org/seleniumhq/selenium/selenium-safari-driver/2.25.0/selenium-safari-driver-2.25.0.jar:/home/z/eXo/exo-dependencies/repository/org/seleniumhq/selenium/selenium-support/2.25.0/selenium-support-2.25.0.jar:/home/z/eXo/exo-dependencies/repository/org/webbitserver/webbit/0.4.6/webbit-0.4.6.jar:/home/z/eXo/exo-dependencies/repository/org/jboss/netty/netty/3.2.7.Final/netty-3.2.7.Final.jar:"/>
+    <property name="java.specification.name" value="Java Platform API Specification"/>
+    <property name="java.class.version" value="50.0"/>
+    <property name="sun.management.compiler" value="HotSpot Tiered Compilers"/>
+    <property name="os.version" value="3.2.0-23-generic-pae"/>
+    <property name="user.home" value="/home/z"/>
+    <property name="user.timezone" value=""/>
+    <property name="java.awt.printerjob" value="sun.print.PSPrinterJob"/>
+    <property name="file.encoding" value="UTF-8"/>
+    <property name="java.specification.version" value="1.6"/>
+    <property name="user.name" value="z"/>
+    <property name="java.class.path" value="/home/z/eXo/workspace/ChangePassword/target/test-classes:/home/z/eXo/workspace/ChangePassword/target/classes:/home/z/eXo/exo-dependencies/repository/junit/junit/4.8/junit-4.8.jar:/home/z/eXo/exo-dependencies/repository/org/seleniumhq/selenium/selenium-java/2.25.0/selenium-java-2.25.0.jar:/home/z/eXo/exo-dependencies/repository/org/seleniumhq/selenium/selenium-android-driver/2.25.0/selenium-android-driver-2.25.0.jar:/home/z/eXo/exo-dependencies/repository/org/seleniumhq/selenium/selenium-remote-driver/2.25.0/selenium-remote-driver-2.25.0.jar:/home/z/eXo/exo-dependencies/repository/cglib/cglib-nodep/2.1_3/cglib-nodep-2.1_3.jar:/home/z/eXo/exo-dependencies/repository/org/json/json/20080701/json-20080701.jar:/home/z/eXo/exo-dependencies/repository/com/google/guava/guava/12.0/guava-12.0.jar:/home/z/eXo/exo-dependencies/repository/com/google/code/findbugs/jsr305/1.3.9/jsr305-1.3.9.jar:/home/z/eXo/exo-dependencies/repository/org/seleniumhq/selenium/selenium-chrome-driver/2.25.0/selenium-chrome-driver-2.25.0.jar:/home/z/eXo/exo-dependencies/repository/org/seleniumhq/selenium/selenium-htmlunit-driver/2.25.0/selenium-htmlunit-driver-2.25.0.jar:/home/z/eXo/exo-dependencies/repository/org/seleniumhq/selenium/selenium-api/2.25.0/selenium-api-2.25.0.jar:/home/z/eXo/exo-dependencies/repository/net/sourceforge/htmlunit/htmlunit/2.9/htmlunit-2.9.jar:/home/z/eXo/exo-dependencies/repository/xalan/xalan/2.7.1/xalan-2.7.1.jar:/home/z/eXo/exo-dependencies/repository/xalan/serializer/2.7.1/serializer-2.7.1.jar:/home/z/eXo/exo-dependencies/repository/commons-collections/commons-collections/3.2.1/commons-collections-3.2.1.jar:/home/z/eXo/exo-dependencies/repository/commons-lang/commons-lang/2.6/commons-lang-2.6.jar:/home/z/eXo/exo-dependencies/repository/org/apache/httpcomponents/httpmime/4.1.2/httpmime-4.1.2.jar:/home/z/eXo/exo-dependencies/repository/commons-codec/commons-codec/1.4/commons-codec-1.4.jar:/home/z/eXo/exo-dependencies/repository/net/sourceforge/htmlunit/htmlunit-core-js/2.9/htmlunit-core-js-2.9.jar:/home/z/eXo/exo-dependencies/repository/xerces/xercesImpl/2.9.1/xercesImpl-2.9.1.jar:/home/z/eXo/exo-dependencies/repository/xml-apis/xml-apis/1.3.04/xml-apis-1.3.04.jar:/home/z/eXo/exo-dependencies/repository/net/sourceforge/nekohtml/nekohtml/1.9.15/nekohtml-1.9.15.jar:/home/z/eXo/exo-dependencies/repository/net/sourceforge/cssparser/cssparser/0.9.5/cssparser-0.9.5.jar:/home/z/eXo/exo-dependencies/repository/org/w3c/css/sac/1.3/sac-1.3.jar:/home/z/eXo/exo-dependencies/repository/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar:/home/z/eXo/exo-dependencies/repository/org/apache/httpcomponents/httpclient/4.1.2/httpclient-4.1.2.jar:/home/z/eXo/exo-dependencies/repository/org/apache/httpcomponents/httpcore/4.1.2/httpcore-4.1.2.jar:/home/z/eXo/exo-dependencies/repository/org/seleniumhq/selenium/selenium-firefox-driver/2.25.0/selenium-firefox-driver-2.25.0.jar:/home/z/eXo/exo-dependencies/repository/commons-io/commons-io/2.0.1/commons-io-2.0.1.jar:/home/z/eXo/exo-dependencies/repository/org/apache/commons/commons-exec/1.1/commons-exec-1.1.jar:/home/z/eXo/exo-dependencies/repository/org/seleniumhq/selenium/selenium-ie-driver/2.25.0/selenium-ie-driver-2.25.0.jar:/home/z/eXo/exo-dependencies/repository/net/java/dev/jna/jna/3.4.0/jna-3.4.0.jar:/home/z/eXo/exo-dependencies/repository/net/java/dev/jna/platform/3.4.0/platform-3.4.0.jar:/home/z/eXo/exo-dependencies/repository/org/seleniumhq/selenium/selenium-iphone-driver/2.25.0/selenium-iphone-driver-2.25.0.jar:/home/z/eXo/exo-dependencies/repository/org/seleniumhq/selenium/selenium-safari-driver/2.25.0/selenium-safari-driver-2.25.0.jar:/home/z/eXo/exo-dependencies/repository/org/seleniumhq/selenium/selenium-support/2.25.0/selenium-support-2.25.0.jar:/home/z/eXo/exo-dependencies/repository/org/webbitserver/webbit/0.4.6/webbit-0.4.6.jar:/home/z/eXo/exo-dependencies/repository/org/jboss/netty/netty/3.2.7.Final/netty-3.2.7.Final.jar:"/>
+    <property name="java.vm.specification.version" value="1.0"/>
+    <property name="sun.arch.data.model" value="32"/>
+    <property name="java.home" value="/home/z/eXo/jdk1.6.0_34/jre"/>
+    <property name="sun.java.command" value="/home/z/eXo/workspace/ChangePassword/target/surefire/surefirebooter2864279154321270280.jar /home/z/eXo/workspace/ChangePassword/target/surefire/surefire514155970863221922tmp /home/z/eXo/workspace/ChangePassword/target/surefire/surefire3456013043036104270tmp"/>
+    <property name="java.specification.vendor" value="Sun Microsystems Inc."/>
+    <property name="user.language" value="zh"/>
+    <property name="java.vm.info" value="mixed mode"/>
+    <property name="java.version" value="1.6.0_34"/>
+    <property name="java.ext.dirs" value="/home/z/eXo/jdk1.6.0_34/jre/lib/ext:/usr/java/packages/lib/ext"/>
+    <property name="sun.boot.class.path" value="/home/z/eXo/jdk1.6.0_34/jre/lib/resources.jar:/home/z/eXo/jdk1.6.0_34/jre/lib/rt.jar:/home/z/eXo/jdk1.6.0_34/jre/lib/sunrsasign.jar:/home/z/eXo/jdk1.6.0_34/jre/lib/jsse.jar:/home/z/eXo/jdk1.6.0_34/jre/lib/jce.jar:/home/z/eXo/jdk1.6.0_34/jre/lib/charsets.jar:/home/z/eXo/jdk1.6.0_34/jre/lib/modules/jdk.boot.jar:/home/z/eXo/jdk1.6.0_34/jre/classes"/>
+    <property name="java.vendor" value="Sun Microsystems Inc."/>
+    <property name="localRepository" value="/home/z/eXo/exo-dependencies/repository"/>
+    <property name="file.separator" value="/"/>
+    <property name="java.vendor.url.bug" value="http://java.sun.com/cgi-bin/bugreport.cgi"/>
+    <property name="sun.cpu.endian" value="little"/>
+    <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
+    <property name="sun.desktop" value="gnome"/>
+    <property name="sun.cpu.isalist" value=""/>
+  </properties>
+  <testcase time="8.789" classname="org.training.ChangePassTest" name="test">
+    <error message="Unable to locate element: {&quot;method&quot;:&quot;link text&quot;,&quot;selector&quot;:&quot;Forgot Password?&quot;}
+Command duration or timeout: 44 milliseconds
+For documentation on this error, please visit: http://seleniumhq.org/exceptions/no_such_element.html
+Build info: version: &apos;2.25.0&apos;, revision: &apos;17482&apos;, time: &apos;2012-07-18 22:18:01&apos;
+System info: os.name: &apos;Linux&apos;, os.arch: &apos;i386&apos;, os.version: &apos;3.2.0-23-generic-pae&apos;, java.version: &apos;1.6.0_34&apos;
+Driver info: driver.version: RemoteWebDriver
+Session ID: ab82c1df-55d8-45d0-ba7e-c3d82b08c0d4" type="org.openqa.selenium.NoSuchElementException">org.openqa.selenium.NoSuchElementException: Unable to locate element: {&quot;method&quot;:&quot;link text&quot;,&quot;selector&quot;:&quot;Forgot Password?&quot;}
+Command duration or timeout: 44 milliseconds
+For documentation on this error, please visit: http://seleniumhq.org/exceptions/no_such_element.html
+Build info: version: &apos;2.25.0&apos;, revision: &apos;17482&apos;, time: &apos;2012-07-18 22:18:01&apos;
+System info: os.name: &apos;Linux&apos;, os.arch: &apos;i386&apos;, os.version: &apos;3.2.0-23-generic-pae&apos;, java.version: &apos;1.6.0_34&apos;
+Driver info: driver.version: RemoteWebDriver
+Session ID: ab82c1df-55d8-45d0-ba7e-c3d82b08c0d4
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:39)
+	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:27)
+	at java.lang.reflect.Constructor.newInstance(Constructor.java:513)
+	at org.openqa.selenium.remote.ErrorHandler.createThrowable(ErrorHandler.java:188)
+	at org.openqa.selenium.remote.ErrorHandler.throwIfResponseFailed(ErrorHandler.java:145)
+	at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:498)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElement(RemoteWebDriver.java:268)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElementByLinkText(RemoteWebDriver.java:305)
+	at org.openqa.selenium.By$ByLinkText.findElement(By.java:240)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElement(RemoteWebDriver.java:260)
+	at org.training.ChangePassTest.test(ChangePassTest.java:78)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:597)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:44)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:15)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:41)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:20)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:28)
+	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:31)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:76)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:50)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:193)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:52)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:191)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:42)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:184)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:236)
+	at org.apache.maven.surefire.junit4.JUnit4TestSet.execute(JUnit4TestSet.java:104)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:147)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:98)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:597)
+	at org.apache.maven.surefire.booter.ProviderFactory$ClassLoaderProxy.invoke(ProviderFactory.java:101)
+	at $Proxy0.invoke(Unknown Source)
+	at org.apache.maven.surefire.booter.SurefireStarter.invokeProvider(SurefireStarter.java:139)
+	at org.apache.maven.surefire.booter.SurefireStarter.runSuitesInProcess(SurefireStarter.java:82)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:81)
+Caused by: org.openqa.selenium.remote.ErrorHandler$UnknownServerException: Unable to locate element: {&quot;method&quot;:&quot;link text&quot;,&quot;selector&quot;:&quot;Forgot Password?&quot;}
+Build info: version: &apos;2.25.0&apos;, revision: &apos;17482&apos;, time: &apos;2012-07-18 22:18:01&apos;
+System info: os.name: &apos;Linux&apos;, os.arch: &apos;i386&apos;, os.version: &apos;3.2.0-23-generic-pae&apos;, java.version: &apos;1.6.0_34&apos;
+Driver info: driver.version: unknown
+	at &lt;anonymous class&gt;.&lt;anonymous method&gt;(file:///tmp/anonymous5682002505907168901webdriver-profile/extensions/fxdriver@googlecode.com/components/driver_component.js:6607)
+	at &lt;anonymous class&gt;.&lt;anonymous method&gt;(file:///tmp/anonymous5682002505907168901webdriver-profile/extensions/fxdriver@googlecode.com/components/driver_component.js:6615)
+	at &lt;anonymous class&gt;.&lt;anonymous method&gt;(file:///tmp/anonymous5682002505907168901webdriver-profile/extensions/fxdriver@googlecode.com/components/command_processor.js:10131)
+	at &lt;anonymous class&gt;.&lt;anonymous method&gt;(file:///tmp/anonymous5682002505907168901webdriver-profile/extensions/fxdriver@googlecode.com/components/command_processor.js:10136)
+	at &lt;anonymous class&gt;.&lt;anonymous method&gt;(file:///tmp/anonymous5682002505907168901webdriver-profile/extensions/fxdriver@googlecode.com/components/command_processor.js:10074)
+</error>
+    <system-out>@HL
+@HL-------------------------------------------------------
+@HL T E S T S
+@HL-------------------------------------------------------
+@SLRunning org.training.ChangePassTest
+</system-out>
+  </testcase>
+</testsuite>
