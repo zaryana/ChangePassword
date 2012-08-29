@@ -102,6 +102,7 @@ require([ "cloud/tenant", "cloud/marketo", "cloud/trackers" ], function(tenant, 
 
 		$("#maskLayer").hide();
 		$("#contactUsContainer").hide();
+		$("#contactUsContainer").html(""); // and clean loaded contact us page
 	}
 
 	$(function() {
