@@ -13,7 +13,7 @@
     <![CDATA[
     <link rel="stylesheet" href="css/Agenda.css" type="text/css" />
     <link type="text/css" rel="stylesheet" href="/exo-gadget-resources/skin/exo-gadget/gadget-common.css" />
-    <script type="text/javascript" src="js/jquery.js"></script>
+    <script type="text/javascript" src="/exo-gadget-resources/script/jquery/1.6.2/jquery.min.js"></script>
     <script type="text/javascript" src="/portal/javascript/merged.js"></script>
     <script type="text/javascript" src="/csResources/javascript/eXo/cs/UIDateTimePicker.js"></script>    
     <script type="text/javascript" src="js/Agenda.js"></script>
@@ -107,16 +107,59 @@
                         }
                         
                         function onSelectionChange() {
-                                var listFromTime = document.getElementById("fromTime");
-                                var selectedTime = listFromTime.options[listFromTime.selectedIndex].value;
-                                if (selectedTime.indexOf("AllDay") != -1) {
-                                        document.getElementById("to").disabled = true;
-                                        document.getElementById("toTime").disabled = true;
+                                var selectIndex = document.getElementById("fromTime").selectedIndex;
+                                var selectedDate = document.getElementById("from").value;
+                                var toInput = document.getElementById("to");
+                                var toSelect = document.getElementById("toTime");
+                                var hours = ["01 AM", "02 AM", "03 AM", "04 AM", "05 AM", "06 AM", "07 AM", "08 AM", "09 AM", "10 AM", "11 AM", "12 AM", "01 PM", "02 PM", "03 PM", "04 PM", "05 PM", "06 PM", "07 PM", "08 PM", "09 PM", "10 PM", "11 PM", "12 PM"];
+                                var hours_value = ["01AM", "02AM", "03AM", "04AM", "05AM", "06AM", "07AM", "08AM", "09AM", "10AM", "11AM", "12AM", "01PM", "02PM", "03PM", "04PM", "05PM", "06PM", "07PM", "08PM", "09PM", "10PM", "11PM", "12PM"];
+                                var html = '';
+                                if (selectIndex == 0 || selectIndex == 24) {
+                                  for (var i = 0; i < hours.length; i++) html += '<option value="' + hours_value[i] + '">' + hours[i] + '</option>';
                                 } else {
-                                        document.getElementById("to").disabled = false;
-                                        document.getElementById("toTime").disabled = false;                                
+                                  for (var i = selectIndex; i < hours.length; i++) html += '<option value="' + hours_value[i] + '">' + hours[i] + '</option>';
                                 }
-                        }                        		        
+                                $("#toTime").html(html);
+                                if (selectIndex == 0) {
+                                        toInput.disabled = true;
+                                        toSelect.disabled = true;
+                                        toInput.value = DateTimeFormater.format((new Date()),"mm/dd/yyyy");
+                                } else {
+                                        toInput.disabled = false;
+                                        toSelect.disabled = false;
+                                        if (selectIndex == 24) {
+                                          var toDateInMillis = Date.parse(selectedDate) + 24 * 3600 * 1000;
+                                          toInput.value = DateTimeFormater.format((new Date(toDateInMillis)),"mm/dd/yyyy");
+                                        } else {
+                                          toInput.value = selectedDate;
+                                        }
+                                }
+                        }
+      
+                        function changeToDate() {
+                          var hours = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"];
+                          var APM = ["AM", "PM"];
+                          var html = '';
+                          for (var i = 0; i < 2; i++)
+                            for (var j = 0; j < 12; j++) {
+                              html += '<option value="' + hours[j] + APM[i] + '">' + hours[j] +  " " + APM[i] + '</option>';
+                            }
+                          $("#toTime").html(html);
+                        }
+                        
+                        $(".Weekday").live("click", function(){
+                          var isCalendarOfFrom = $(this).closest("#UICalendarControl").next("input").attr("id");
+                          if (isCalendarOfFrom.indexOf("from") != -1) {
+                            var hrefValue = $(this).attr("href");
+                            var subHref = hrefValue.substring(0, hrefValue.lastIndexOf(","));
+                            var day = hrefValue.substring(hrefValue.lastIndexOf(',')+1, hrefValue.lastIndexOf(')'));
+                            var month = subHref.substring(subHref.lastIndexOf(',')+1, subHref.length);
+                            day = (day.length == 1) ? ("0" + day) : day;
+                            month = (month.length == 1) ? ("0" + month) : month;
+                            var year = subHref.substring(subHref.lastIndexOf(',')-4, subHref.lastIndexOf(','));
+                            $("#to").val(month + "/" + day + "/" + year);
+                          }
+                        });                       		        
 		</script>    
     
   <div id="CalendarGadget">
@@ -155,7 +198,7 @@
                           </tr>                                
                     <tr>     
                           <td><label for="to">__MSG_to__: </label></td>
-                          <td class="Row RowFromTo"><input id="to" type="text" size="10" lang="EN" onmousedown="event.cancelBubble = true" onkeyup="showCalendar();" onfocus="initCalendar(this, false);" format="MM/dd/yyyy" />
+                          <td class="Row RowFromTo"><input id="to" type="text" size="10" lang="EN" onmousedown="event.cancelBubble = true" onblur="changeToDate();" onkeyup="showCalendar();" onfocus="initCalendar(this, false);" format="MM/dd/yyyy" />
                                    <select id="toTime">
                                    </select>
                           </td>                          
