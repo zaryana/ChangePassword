@@ -26,6 +26,7 @@ import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+import java.io.Console;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -35,7 +36,28 @@ import java.net.URISyntaxException;
 
 public class IntranetBundleDownloader implements BundleDownloader {
 
-  public void downloadAdminTo(String url, String username, String password, File to) throws InstallerException {
+  protected final String url;
+
+  protected final String username;
+
+  protected final String password;
+
+  public IntranetBundleDownloader(String url) {
+    this.url = url;
+    Console console = System.console();
+    console.printf("Downloading admin bundle from intranet:\n");
+    this.username = console.readLine("Set your intranet username: ");
+    this.password = new String(console.readPassword("Set your intranetpassword: "));
+  }
+
+  public IntranetBundleDownloader(String url, String username, String password) {
+    this.url = url;
+    this.username = username;
+    this.password = password;
+  }
+
+  @Override
+  public void downloadAdminTo(File to) throws InstallerException {
     try {
       URI uri = new URI(url);
       DefaultHttpClient client = new DefaultHttpClient();
@@ -56,7 +78,7 @@ public class IntranetBundleDownloader implements BundleDownloader {
         InputStream in = response.getEntity().getContent();
         FileOutputStream out = new FileOutputStream(to);
         try {
-          byte[] buf = new byte[100 * 1024];
+          byte[] buf = new byte[10 * 1024 * 1024];
           int length = 0;
 
           while (length >= 0) {

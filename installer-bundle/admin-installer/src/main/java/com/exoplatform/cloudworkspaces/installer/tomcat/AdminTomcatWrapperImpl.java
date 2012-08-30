@@ -25,9 +25,13 @@ import java.io.IOException;
 
 public class AdminTomcatWrapperImpl implements AdminTomcatWrapper {
 
-  private final File tomcatDir;
+  private File tomcatDir;
 
-  public AdminTomcatWrapperImpl(File tomcatDir) {
+  public AdminTomcatWrapperImpl() {
+  }
+
+  @Override
+  public void bindTo(File tomcatDir) {
     this.tomcatDir = tomcatDir;
   }
 

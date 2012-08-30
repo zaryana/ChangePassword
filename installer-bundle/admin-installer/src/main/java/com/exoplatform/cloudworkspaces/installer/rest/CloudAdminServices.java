@@ -18,10 +18,14 @@
  */
 package com.exoplatform.cloudworkspaces.installer.rest;
 
+import com.exoplatform.cloudworkspaces.installer.InstallerException;
+
 import java.util.List;
 import java.util.Map;
 
 public interface CloudAdminServices {
+
+  public void bindTo(String tenantMasterhost, String username, String password) throws InstallerException;
 
   public String serverStart(String cloudType) throws AdminException;
 
@@ -44,6 +48,8 @@ public interface CloudAdminServices {
   public void blockAutoscaling() throws AdminException;
 
   public Map<String, String> createTenant(String tenant, String email) throws AdminException;
+
+  public boolean isTenantExists(String tenant) throws AdminException;
 
   public Map<String, String> tenantStatus(String tenant) throws AdminException;
 

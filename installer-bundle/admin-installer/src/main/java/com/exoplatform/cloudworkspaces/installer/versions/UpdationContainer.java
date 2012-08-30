@@ -16,25 +16,22 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package com.exoplatform.cloudworkspaces.installer;
+package com.exoplatform.cloudworkspaces.installer.versions;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Properties;
+import com.exoplatform.cloudworkspaces.installer.InstallerException;
+import com.exoplatform.cloudworkspaces.installer.interaction.AnswersManager;
+import com.exoplatform.cloudworkspaces.installer.interaction.InteractionManager;
+import com.exoplatform.cloudworkspaces.installer.upgrade.VersionEntry;
 
-public class InstallerConfiguration {
+import org.picocontainer.PicoContainer;
 
-  private final Properties properties;
+public abstract class UpdationContainer {
 
-  public InstallerConfiguration(File configurationFile) throws FileNotFoundException, IOException {
-    this.properties = new Properties();
-    this.properties.load(new FileInputStream(configurationFile));
+  public UpdationContainer() {
   }
 
-  public String getProperty(String key) {
-    return properties.getProperty(key);
-  }
+  public abstract PicoContainer getContainer(VersionEntry version,
+                                             InteractionManager interaction,
+                                             AnswersManager answers) throws InstallerException;
 
 }

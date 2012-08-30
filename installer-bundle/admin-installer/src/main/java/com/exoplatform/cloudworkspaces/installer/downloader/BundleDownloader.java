@@ -24,6 +24,6 @@ import java.io.File;
 
 public interface BundleDownloader {
 
-  public void downloadAdminTo(String url, String username, String password, File to) throws InstallerException;
+  public void downloadAdminTo(File to) throws InstallerException;
 
 }

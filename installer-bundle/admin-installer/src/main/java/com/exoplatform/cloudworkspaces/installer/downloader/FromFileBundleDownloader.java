@@ -26,10 +26,16 @@ import java.io.IOException;
 
 public class FromFileBundleDownloader implements BundleDownloader {
 
+  private final File bundle;
+
+  public FromFileBundleDownloader(File bundle) {
+    this.bundle = bundle;
+  }
+
   @Override
-  public void downloadAdminTo(String url, String username, String password, File to) throws InstallerException {
+  public void downloadAdminTo(File to) throws InstallerException {
     try {
-      FileUtils.copyFile(new File(url), to);
+      FileUtils.copyFile(bundle, to);
     } catch (IOException e) {
       throw new InstallerException(e);
     }

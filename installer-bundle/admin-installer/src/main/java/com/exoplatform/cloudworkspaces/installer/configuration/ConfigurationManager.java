@@ -33,30 +33,30 @@ public class ConfigurationManager {
 
   private final AnswersManager             answersManager;
 
-  private final File                       previousConfDir;
+  private File                             previousConfDir;
 
-  private final File                       previousTomcatDir;
+  private File                             previousTomcatDir;
+
+  private File                             bundleZip;
 
   private File                             confDir;
 
   private File                             tomcatDir;
 
-  private final File                       bundleZip;
-
   private final List<ConfigurationUpdater> updaters;
 
-  public ConfigurationManager(File previousConfDir,
-                              File previousTomcatDir,
-                              File bundleZip,
-                              List<ConfigurationUpdater> updaters,
+  public ConfigurationManager(List<ConfigurationUpdater> updaters,
                               InteractionManager interactionManager,
                               AnswersManager answersManager) {
     this.interactionManager = interactionManager;
     this.answersManager = answersManager;
+    this.updaters = updaters;
+  }
+
+  public void bindTo(File previousConfDir, File previousTomcatDir, File bundleZip) {
     this.previousConfDir = previousConfDir;
     this.previousTomcatDir = previousTomcatDir;
     this.bundleZip = bundleZip;
-    this.updaters = updaters;
   }
 
   public void configure() throws InstallerException {

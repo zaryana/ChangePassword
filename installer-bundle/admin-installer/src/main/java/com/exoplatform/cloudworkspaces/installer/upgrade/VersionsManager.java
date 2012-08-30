@@ -18,68 +18,25 @@
  */
 package com.exoplatform.cloudworkspaces.installer.upgrade;
 
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import com.exoplatform.cloudworkspaces.installer.InstallerException;
+
+import java.io.IOException;
+import java.util.Properties;
 
 public class VersionsManager {
 
-  private final Map<VersionEntry, AdminUpgradeAlgorithm> versions        = new HashMap<VersionEntry, AdminUpgradeAlgorithm>();
-
-  private final Map<String, AdminUpgradeAlgorithm>       installVersions = new HashMap<String, AdminUpgradeAlgorithm>();
-
-  public VersionsManager(InputStream versionsList) throws FileNotFoundException,
-      ClassNotFoundException,
-      InstantiationException,
-      IllegalAccessException {
-    Scanner in = new Scanner(versionsList);
+  public VersionEntry getVersionEntry(String toVersion) throws InstallerException {
     try {
-      while (in.hasNext()) {
-        String from = in.next().trim();
-        String to = in.next().trim();
-        if (to.equals("->"))
-          to = in.next().trim();
-        String algorithm = in.next().trim();
-        Class<? extends AdminUpgradeAlgorithm> clazz = (Class<? extends AdminUpgradeAlgorithm>) getClass().getClassLoader()
-                                                                                                          .loadClass(algorithm);
-        versions.put(new VersionEntry(from, to), clazz.newInstance());
-        installVersions.put(to, clazz.newInstance());
-      }
-    } finally {
-      in.close();
-    }
-  }
-
-  public AdminUpgradeAlgorithm getAlgorithm(String fromVersion, String toVersion) {
-    return versions.get(new VersionEntry(fromVersion, toVersion));
-  }
-
-  public AdminUpgradeAlgorithm getAlgorithm(String toVersion) {
-    return installVersions.get(toVersion);
-  }
-
-  static class VersionEntry {
-    final String from;
-
-    final String to;
-
-    public VersionEntry(String from, String to) {
-      this.from = from;
-      this.to = to;
+      Properties properties = new Properties();
+      properties.load(Thread.currentThread()
+                            .getContextClassLoader()
+                            .getResourceAsStream("versions/" + toVersion));
+      // properties.load(new
+      // FileInputStream("src/main/resources/versions/1.1.0-Beta07"));
+      return new VersionEntry(toVersion, properties);
+    } catch (IOException e) {
+      throw new InstallerException("Error while initializing updating algorithm to " + toVersion);
     }
 
-    @Override
-    public int hashCode() {
-      return (from + to).hashCode();
-    }
-
-    @Override
-    public boolean equals(Object q) {
-      VersionEntry o = (VersionEntry) q;
-      return (from + to).equals(o.from + o.to);
-    }
   }
-
 }

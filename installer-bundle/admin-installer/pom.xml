@@ -22,6 +22,11 @@
       <artifactId>everrest-core</artifactId>
       <version>1.0.4</version>
     </dependency>
+    <dependency>
+      <groupId>org.picocontainer</groupId>
+      <artifactId>picocontainer</artifactId>
+      <version>2.14.1</version>
+    </dependency>
   </dependencies>
 
   <build>

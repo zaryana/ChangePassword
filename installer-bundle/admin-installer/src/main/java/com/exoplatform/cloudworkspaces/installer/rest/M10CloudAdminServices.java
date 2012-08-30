@@ -37,14 +37,18 @@ import java.util.Map;
 
 public class M10CloudAdminServices implements CloudAdminServices {
 
-  protected final String            tenantMasterhost;
+  protected String                  tenantMasterhost;
 
   protected final DefaultHttpClient httpClient;
 
-  public M10CloudAdminServices(String tenantMasterhost, String adminUsername, String adminPassword) throws InstallerException {
+  public M10CloudAdminServices() {
+    this.httpClient = new DefaultHttpClient();
+  }
+
+  public void bindTo(String tenantMasterhost, String adminUsername, String adminPassword) throws InstallerException {
     try {
       this.tenantMasterhost = tenantMasterhost;
-      this.httpClient = new DefaultHttpClient();
+      this.tenantMasterhost = tenantMasterhost;
       URI masterhostUri = new URI(tenantMasterhost);
       httpClient.getCredentialsProvider()
                 .setCredentials(new AuthScope(masterhostUri.getHost(), masterhostUri.getPort()),
@@ -291,6 +295,10 @@ public class M10CloudAdminServices implements CloudAdminServices {
         throw new AdminException(e);
       }
     }
+  }
+
+  public boolean isTenantExists(String tenant) throws AdminException {
+    return !tenantStatus(tenant).isEmpty();
   }
 
   public Map<String, String> tenantStatus(String tenant) throws AdminException {

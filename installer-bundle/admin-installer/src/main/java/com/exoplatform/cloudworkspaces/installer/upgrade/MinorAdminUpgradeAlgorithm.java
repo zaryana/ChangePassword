@@ -18,7 +18,6 @@
  */
 package com.exoplatform.cloudworkspaces.installer.upgrade;
 
-import com.exoplatform.cloudworkspaces.installer.InstallerConfiguration;
 import com.exoplatform.cloudworkspaces.installer.InstallerException;
 import com.exoplatform.cloudworkspaces.installer.configuration.ConfigurationManager;
 import com.exoplatform.cloudworkspaces.installer.downloader.BundleDownloader;
@@ -36,16 +35,34 @@ import java.io.File;
  */
 public abstract class MinorAdminUpgradeAlgorithm extends AdminUpgradeAlgorithm {
 
-  public MinorAdminUpgradeAlgorithm() {
+  protected final InteractionManager   interaction;
+
+  protected final AnswersManager       answers;
+
+  protected final CloudAdminServices   cloudAdminServices;
+
+  protected final BundleDownloader     bundleDownloader;
+
+  protected final AdminTomcatWrapper   tomcat;
+
+  protected final ConfigurationManager configurationManager;
+
+  public MinorAdminUpgradeAlgorithm(InteractionManager interaction,
+                                    AnswersManager answers,
+                                    CloudAdminServices cloudAdminServices,
+                                    BundleDownloader bundleDownloader,
+                                    AdminTomcatWrapper tomcat,
+                                    ConfigurationManager configurationManager) {
+    this.interaction = interaction;
+    this.answers = answers;
+    this.cloudAdminServices = cloudAdminServices;
+    this.bundleDownloader = bundleDownloader;
+    this.tomcat = tomcat;
+    this.configurationManager = configurationManager;
   }
 
   @Override
-  public void upgrade(File previousConfDir,
-                      File previousTomcatDir,
-                      File dataDir,
-                      InstallerConfiguration configuration,
-                      InteractionManager interaction,
-                      AnswersManager answers) throws InstallerException {
+  public void upgrade(File previousConfDir, File previousTomcatDir, File dataDir) throws InstallerException {
     File bundleZip = new File(previousTomcatDir.getParentFile(), "admin-bundle-" + getVersion()
         + ".zip");
     if (bundleZip.exists()) {
@@ -53,33 +70,32 @@ public abstract class MinorAdminUpgradeAlgorithm extends AdminUpgradeAlgorithm {
         throw new InstallerException("Could not delete file " + bundleZip.getAbsolutePath());
       }
     }
-    BundleDownloader downloader = getBundleDownloader(configuration);
-    downloader.downloadAdminTo(configuration.getProperty("bundle.url"),
-                               configuration.getProperty("bundle.username"),
-                               configuration.getProperty("bundle.password"),
-                               bundleZip);
+    System.out.println("Downloading new admin bundle...");
+    bundleDownloader.downloadAdminTo(bundleZip);
 
-    ConfigurationManager configurationManager = getConfigurationManager(previousConfDir,
-                                                                        previousTomcatDir,
-                                                                        bundleZip,
-                                                                        interaction,
-                                                                        answers);
+    configurationManager.bindTo(previousConfDir, previousTomcatDir, bundleZip);
+
+    System.out.println("Start configuring admin...");
     configurationManager.configure();
 
-    CloudAdminServices cloudAdminServices = getCloudAdminServices(answers.getAnswer("tenant.masterhost"),
-                                                                  "cloudadmin",
-                                                                  answers.getAnswer("tomcat.users.admin.password"));
-    updateStarted(previousConfDir, previousTomcatDir, dataDir, cloudAdminServices);
+    cloudAdminServices.bindTo(answers.getAnswer("tenant.masterhost"),
+                              "cloudadmin",
+                              answers.getAnswer("tomcat.users.admin.password"));
+    updateStarted(previousConfDir, previousTomcatDir, dataDir);
 
-    AdminTomcatWrapper tomcat = getTomcatWrapper(previousTomcatDir);
+    tomcat.bindTo(previousTomcatDir);
+
+    System.out.println("Stopping admin tomcat...");
     tomcat.stopTomcat();
+    System.out.println("Replacing old admin with new bundle...");
     configurationManager.update();
 
     tomcatStopped(previousConfDir, previousTomcatDir, dataDir);
 
+    System.out.println("Starting admin tomcat...");
     tomcat.startTomcat();
 
-    tomcatStarted(previousConfDir, previousTomcatDir, dataDir, cloudAdminServices);
+    tomcatStarted(previousConfDir, previousTomcatDir, dataDir);
 
     boolean z = false;
     while (!z) {
@@ -90,6 +106,7 @@ public abstract class MinorAdminUpgradeAlgorithm extends AdminUpgradeAlgorithm {
         z = false;
       }
     }
+    System.out.println("Tomcat started. Starting new AS...");
 
     cloudAdminServices.blockAutoscaling();
     String newAlias = cloudAdminServices.serverStart(answers.getAnswer("application.default.type"));
@@ -106,54 +123,65 @@ public abstract class MinorAdminUpgradeAlgorithm extends AdminUpgradeAlgorithm {
     if (state == null) {
       throw new InstallerException("Instance with new application server didn't start in time");
     }
-    newAsReady(previousConfDir, previousTomcatDir, dataDir, cloudAdminServices);
+    System.out.println("New AS ready. Stopping previous AS...");
+    newAsReady(previousConfDir, previousTomcatDir, dataDir);
     for (String alias : cloudAdminServices.serverStates().keySet()) {
       if (!alias.equals(newAlias)) {
-        cloudAdminServices.serverStop(alias);
+        System.out.println("Stopping " + alias + "...");
+        try {
+          cloudAdminServices.serverStop(alias);
+        } catch (AdminException e) {
+          String serverState = cloudAdminServices.serverStates().get(alias);
+          if (serverState == null || !serverState.equals("STOPPING"))
+            throw e;
+        }
+        String serverState = cloudAdminServices.serverStates().get(alias);
+        while (serverState != null && serverState.equals("STOPPING")) {
+          try {
+            Thread.sleep(1 * 10 * 1000);
+          } catch (InterruptedException e) {
+            throw new InstallerException(e);
+          }
+          serverState = cloudAdminServices.serverStates().get(alias);
+        }
+        if (serverState != null) {
+          throw new AdminException("Error while stopping application server. Server still exists and has status "
+              + serverState);
+        }
+        System.out.println(alias + " stopped");
       }
     }
     cloudAdminServices.allowAutoscaling();
 
-    updateFinished(previousConfDir, previousTomcatDir, dataDir, cloudAdminServices);
+    updateFinished(previousConfDir, previousTomcatDir, dataDir);
+    System.out.println("Updation admin to " + getVersion() + " finished successfully");
   }
 
-  public void install(File confDir,
-                      File tomcatDir,
-                      File dataDir,
-                      InstallerConfiguration configuration,
-                      InteractionManager interaction,
-                      AnswersManager answers) throws InstallerException {
+  @Override
+  public void install(File confDir, File tomcatDir, File dataDir) throws InstallerException {
     File bundleZip = new File(tomcatDir.getParentFile(), "admin-bundle-" + getVersion() + ".zip");
     if (bundleZip.exists()) {
       if (!bundleZip.delete()) {
         throw new InstallerException("Could not delete file " + bundleZip.getAbsolutePath());
       }
     }
-    BundleDownloader downloader = getBundleDownloader(configuration);
-    downloader.downloadAdminTo(configuration.getProperty("bundle.url"),
-                               configuration.getProperty("bundle.username"),
-                               configuration.getProperty("bundle.password"),
-                               bundleZip);
+    bundleDownloader.downloadAdminTo(bundleZip);
 
-    ConfigurationManager configurationManager = getConfigurationManager(confDir,
-                                                                        tomcatDir,
-                                                                        bundleZip,
-                                                                        interaction,
-                                                                        answers);
+    configurationManager.bindTo(confDir, tomcatDir, bundleZip);
+
     configurationManager.configure();
 
-    CloudAdminServices cloudAdminServices = getCloudAdminServices(answers.getAnswer("tenant.masterhost"),
-                                                                  "cloudadmin",
-                                                                  answers.getAnswer("tomcat.users.admin.password"));
-    updateStarted(confDir, tomcatDir, dataDir, cloudAdminServices);
+    cloudAdminServices.bindTo(answers.getAnswer("tenant.masterhost"),
+                              "cloudadmin",
+                              answers.getAnswer("tomcat.users.admin.password"));
+    updateStarted(confDir, tomcatDir, dataDir);
 
-    AdminTomcatWrapper tomcat = getTomcatWrapper(tomcatDir);
     tomcat.stopTomcat();
     configurationManager.update();
 
     tomcat.startTomcat();
 
-    tomcatStarted(confDir, tomcatDir, dataDir, cloudAdminServices);
+    tomcatStarted(confDir, tomcatDir, dataDir);
 
     cloudAdminServices.blockAutoscaling();
     String newAlias = cloudAdminServices.serverStart(answers.getAnswer("application.default.type"));
@@ -170,25 +198,11 @@ public abstract class MinorAdminUpgradeAlgorithm extends AdminUpgradeAlgorithm {
     if (state == null) {
       throw new InstallerException("Instance with new application server didn't start in time");
     }
-    newAsReady(confDir, tomcatDir, dataDir, cloudAdminServices);
+    newAsReady(confDir, tomcatDir, dataDir);
     cloudAdminServices.allowAutoscaling();
 
-    updateFinished(confDir, tomcatDir, dataDir, cloudAdminServices);
+    updateFinished(confDir, tomcatDir, dataDir);
   }
-
-  public abstract BundleDownloader getBundleDownloader(InstallerConfiguration configuration) throws InstallerException;
-
-  public abstract ConfigurationManager getConfigurationManager(File previousConfDir,
-                                                               File previousTomcatDir,
-                                                               File bundleZip,
-                                                               InteractionManager interaction,
-                                                               AnswersManager answers) throws InstallerException;
-
-  public abstract AdminTomcatWrapper getTomcatWrapper(File tomcatDir) throws InstallerException;
-
-  public abstract CloudAdminServices getCloudAdminServices(String tenantMasterhost,
-                                                           String adminUsername,
-                                                           String adminPassword) throws InstallerException;
 
   public abstract String getVersion();
 
@@ -198,26 +212,14 @@ public abstract class MinorAdminUpgradeAlgorithm extends AdminUpgradeAlgorithm {
                                               File tomcatDir,
                                               File dataDir) throws InstallerException;
 
-  public abstract void updateStarted(File confDir,
-                                     File tomcatDir,
-                                     File dataDir,
-                                     CloudAdminServices cloudAdminServices) throws InstallerException;
+  public abstract void updateStarted(File confDir, File tomcatDir, File dataDir) throws InstallerException;
 
   public abstract void tomcatStopped(File confDir, File tomcatDir, File dataDir) throws InstallerException;
 
-  public abstract void tomcatStarted(File confDir,
-                                     File tomcatDir,
-                                     File dataDir,
-                                     CloudAdminServices cloudAdminServices) throws InstallerException;
+  public abstract void tomcatStarted(File confDir, File tomcatDir, File dataDir) throws InstallerException;
 
-  public abstract void newAsReady(File confDir,
-                                  File tomcatDir,
-                                  File dataDir,
-                                  CloudAdminServices cloudAdminServices) throws InstallerException;
+  public abstract void newAsReady(File confDir, File tomcatDir, File dataDir) throws InstallerException;
 
-  public abstract void updateFinished(File confDir,
-                                      File tomcatDir,
-                                      File dataDir,
-                                      CloudAdminServices cloudAdminServices) throws InstallerException;
+  public abstract void updateFinished(File confDir, File tomcatDir, File dataDir) throws InstallerException;
 
 }

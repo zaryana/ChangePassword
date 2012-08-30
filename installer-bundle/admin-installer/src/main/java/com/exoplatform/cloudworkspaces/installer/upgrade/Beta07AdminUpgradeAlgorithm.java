@@ -19,19 +19,14 @@
 package com.exoplatform.cloudworkspaces.installer.upgrade;
 
 import com.exoplatform.cloudworkspaces.installer.ConfigUtils;
-import com.exoplatform.cloudworkspaces.installer.InstallerConfiguration;
 import com.exoplatform.cloudworkspaces.installer.InstallerException;
 import com.exoplatform.cloudworkspaces.installer.configuration.ConfigurationManager;
-import com.exoplatform.cloudworkspaces.installer.configuration.versions.Beta07ConfigurationPack;
 import com.exoplatform.cloudworkspaces.installer.downloader.BundleDownloader;
-import com.exoplatform.cloudworkspaces.installer.downloader.FromFileBundleDownloader;
 import com.exoplatform.cloudworkspaces.installer.interaction.AnswersManager;
 import com.exoplatform.cloudworkspaces.installer.interaction.InteractionManager;
 import com.exoplatform.cloudworkspaces.installer.rest.AdminException;
 import com.exoplatform.cloudworkspaces.installer.rest.CloudAdminServices;
-import com.exoplatform.cloudworkspaces.installer.rest.M10CloudAdminServices;
 import com.exoplatform.cloudworkspaces.installer.tomcat.AdminTomcatWrapper;
-import com.exoplatform.cloudworkspaces.installer.tomcat.AdminTomcatWrapperImpl;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,39 +36,18 @@ public class Beta07AdminUpgradeAlgorithm extends MinorAdminUpgradeAlgorithm {
 
   protected String demo;
 
-  @Override
-  public BundleDownloader getBundleDownloader(InstallerConfiguration configuration) {
-    return new FromFileBundleDownloader();
-  }
-
-  @Override
-  public ConfigurationManager getConfigurationManager(File previousConfDir,
-                                                      File previousTomcatDir,
-                                                      File bundleZip,
-                                                      InteractionManager interaction,
-                                                      AnswersManager answers) {
-    return new Beta07ConfigurationPack().getConfigurationManager(previousConfDir,
-                                                                 previousTomcatDir,
-                                                                 bundleZip,
-                                                                 interaction,
-                                                                 answers);
-  }
-
-  @Override
-  public AdminTomcatWrapper getTomcatWrapper(File tomcatDir) {
-    return new AdminTomcatWrapperImpl(tomcatDir);
-  }
-
-  @Override
-  public CloudAdminServices getCloudAdminServices(String tenantMasterhost,
-                                                  String adminUsername,
-                                                  String adminPassword) throws InstallerException {
-    return new M10CloudAdminServices(tenantMasterhost, adminUsername, adminPassword);
+  public Beta07AdminUpgradeAlgorithm(InteractionManager interaction,
+                                     AnswersManager answers,
+                                     CloudAdminServices cloudAdminServices,
+                                     BundleDownloader bundleDownloader,
+                                     AdminTomcatWrapper tomcat,
+                                     ConfigurationManager configurationManager) {
+    super(interaction, answers, cloudAdminServices, bundleDownloader, tomcat, configurationManager);
   }
 
   @Override
   public String getVersion() {
-    return "1.1.0-Beta06";
+    return "1.1.0-Beta07";
   }
 
   @Override
@@ -86,10 +60,7 @@ public class Beta07AdminUpgradeAlgorithm extends MinorAdminUpgradeAlgorithm {
   }
 
   @Override
-  public void updateStarted(File confDir,
-                            File tomcatDir,
-                            File dataDir,
-                            CloudAdminServices cloudAdminServices) {
+  public void updateStarted(File confDir, File tomcatDir, File dataDir) {
     // do nothing
   }
 
@@ -99,31 +70,32 @@ public class Beta07AdminUpgradeAlgorithm extends MinorAdminUpgradeAlgorithm {
   }
 
   @Override
-  public void tomcatStarted(File confDir,
-                            File tomcatDir,
-                            File dataDir,
-                            CloudAdminServices cloudAdminServices) {
+  public void tomcatStarted(File confDir, File tomcatDir, File dataDir) {
     // do nothing
   }
 
   @Override
-  public void newAsReady(File confDir,
-                         File tomcatDir,
-                         File dataDir,
-                         CloudAdminServices cloudAdminServices) throws AdminException {
-    removeTenant("exoplatform", cloudAdminServices);
+  public void newAsReady(File confDir, File tomcatDir, File dataDir) throws AdminException {
+    // do nothing
   }
 
   @Override
-  public void updateFinished(File confDir,
-                             File tomcatDir,
-                             File dataDir,
-                             CloudAdminServices cloudAdminServices) throws InstallerException {
+  public void updateFinished(File confDir, File tomcatDir, File dataDir) throws InstallerException {
+    System.out.println("Removing exoplatform tenant...");
+    removeTenant("exoplatform", cloudAdminServices);
+    System.out.println("Creating exoplatform tenant...");
     cloudAdminServices.createTenant("exoplatform", "kregent@exoplatform.com");
     try {
       demo = ConfigUtils.findProperty(confDir, "admin.properties", "cloud.admin.demo.tenant.name");
-      if (cloudAdminServices.tenantStatus(demo).isEmpty())
+      if (demo == null || demo.isEmpty())
+        throw new InstallerException("cloud.admin.demo.tenant.name property not found in admin.properties");
+      if (!cloudAdminServices.isTenantExists(demo)) {
+        System.out.println("Demo tenant with name " + demo + " not found. Creating " + demo + " tenant...");
         cloudAdminServices.createTenant(demo, "kregent@exoplatform.com");
+      }
+      else {
+        System.out.println("Demo tenant with name " + demo + " found");
+      }
     } catch (IOException e) {
       throw new InstallerException("Could not get demo tenant name from admin.properties configuration");
     }

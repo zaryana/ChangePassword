@@ -23,7 +23,10 @@ import com.exoplatform.cloudworkspaces.installer.interaction.InteractionManager;
 import com.exoplatform.cloudworkspaces.installer.interaction.InteractionManagerWithAnswers;
 import com.exoplatform.cloudworkspaces.installer.interaction.StreamInteractionManager;
 import com.exoplatform.cloudworkspaces.installer.upgrade.AdminUpgradeAlgorithm;
+import com.exoplatform.cloudworkspaces.installer.upgrade.VersionEntry;
 import com.exoplatform.cloudworkspaces.installer.upgrade.VersionsManager;
+
+import org.picocontainer.PicoContainer;
 
 import java.io.File;
 
@@ -49,13 +52,10 @@ public class Main {
   }
 
   public static void install(String[] args) throws Exception {
-    VersionsManager versionsManager = new VersionsManager(Thread.currentThread()
-                                                                .getContextClassLoader()
-                                                                .getSystemResourceAsStream("versions"));
+    VersionsManager versionsManager = new VersionsManager();
 
     String version = null;
     String answersFile = null;
-    String installConfig = "install.conf";
     String conf = System.getenv("EXO_ADMIN_CONF_DIR");
     String data = System.getenv("EXO_ADMIN_DATA_DIR");
     String tomcat = "admin-tomcat";
@@ -65,8 +65,6 @@ public class Main {
         version = args[i + 1];
       if (args[i].equals("-a") || args[i].equals("--answers"))
         answersFile = args[i + 1];
-      if (args[i].equals("-i") || args[i].equals("--install-config"))
-        installConfig = args[i + 1];
       if (args[i].equals("-t") || args[i].equals("--tomcat"))
         tomcat = args[i + 1];
       if (args[i].equals("-s") || args[i].equals("--save-to"))
@@ -74,10 +72,6 @@ public class Main {
     }
     if (version == null) {
       System.err.println("Set version for upgrade");
-    }
-    File installConfigFile = new File(installConfig);
-    if (!installConfigFile.exists() || !installConfigFile.isFile()) {
-      System.err.println("Install config file not exists or is not file");
     }
     if (conf == null) {
       System.err.println("Set admin configuration dir in environment. Variable - EXO_ADMIN_CONF_DIR");
@@ -101,8 +95,6 @@ public class Main {
     }
     AnswersManager answersManager = new AnswersManager((saveTo == null) ? null : new File(saveTo));
 
-    InstallerConfiguration configuration = new InstallerConfiguration(installConfigFile);
-
     InteractionManager interaction = null;
     if (answersFile == null) {
       interaction = new StreamInteractionManager();
@@ -110,18 +102,18 @@ public class Main {
       interaction = new InteractionManagerWithAnswers(new File(answersFile));
     }
 
-    AdminUpgradeAlgorithm algorithm = versionsManager.getAlgorithm(version);
-    algorithm.install(confDir, tomcatDir, dataDir, configuration, interaction, answersManager);
+    VersionEntry entry = versionsManager.getVersionEntry(version);
+    PicoContainer container = entry.getContainerClass()
+                                   .newInstance()
+                                   .getContainer(entry, interaction, answersManager);
+    container.getComponent(AdminUpgradeAlgorithm.class).install(confDir, tomcatDir, dataDir);
   }
 
   public static void upgrade(String[] args) throws Exception {
-    VersionsManager versionsManager = new VersionsManager(Thread.currentThread()
-                                                                .getContextClassLoader()
-                                                                .getSystemResourceAsStream("versions"));
+    VersionsManager versionsManager = new VersionsManager();
 
     String version = null;
     String answersFile = null;
-    String installConfig = "install.conf";
     String conf = System.getenv("EXO_ADMIN_CONF_DIR");
     String data = System.getenv("EXO_ADMIN_DATA_DIR");
     String tomcat = "admin-tomcat";
@@ -131,8 +123,6 @@ public class Main {
         version = args[i + 1];
       if (args[i].equals("-a") || args[i].equals("--answers"))
         answersFile = args[i + 1];
-      if (args[i].equals("-i") || args[i].equals("--install-config"))
-        installConfig = args[i + 1];
       if (args[i].equals("-t") || args[i].equals("--tomcat"))
         tomcat = args[i + 1];
       if (args[i].equals("-s") || args[i].equals("--save-to"))
@@ -140,11 +130,6 @@ public class Main {
     }
     if (version == null) {
       System.err.println("Set version for upgrade");
-      return;
-    }
-    File installConfigFile = new File(installConfig);
-    if (!installConfigFile.exists() || !installConfigFile.isFile()) {
-      System.err.println("Install config file not exists or is not file");
       return;
     }
     if (conf == null) {
@@ -175,8 +160,6 @@ public class Main {
     }
     AnswersManager answersManager = new AnswersManager((saveTo == null) ? null : new File(saveTo));
 
-    InstallerConfiguration configuration = new InstallerConfiguration(installConfigFile);
-
     InteractionManager interaction = null;
     if (answersFile == null) {
       interaction = new StreamInteractionManager();
@@ -184,8 +167,11 @@ public class Main {
       interaction = new InteractionManagerWithAnswers(new File(answersFile));
     }
 
-    AdminUpgradeAlgorithm algorithm = versionsManager.getAlgorithm("1.1.0-Beta06", version);
-    algorithm.upgrade(confDir, tomcatDir, dataDir, configuration, interaction, answersManager);
+    VersionEntry entry = versionsManager.getVersionEntry(version);
+    PicoContainer container = entry.getContainerClass()
+                                   .newInstance()
+                                   .getContainer(entry, interaction, answersManager);
+    container.getComponent(AdminUpgradeAlgorithm.class).upgrade(confDir, tomcatDir, dataDir);
   }
 
 }
