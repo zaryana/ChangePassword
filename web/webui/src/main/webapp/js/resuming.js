@@ -67,12 +67,13 @@ require([ "cloud/tenant", "cloud/marketo", "cloud/trackers", "cloud/support" ], 
 		});
 	}
 	
-	// TODO temporarily solution until the CM 1.1-M9
+	// TODO temporarily solution until the CM 1.2??
 	function waitReadyWorkspace(tenantName, ready) {
 	  var isReadyUrl = location.protocol + '//' + hostName + '/rest/cloud-agent/info-service/is-ready/' + tenantName;
 	  $.ajax({
 	    url : isReadyUrl,
 	    async : false,
+	    dataType : "text",
 	    success : function(data) {
 	      if (data === "true")
 	        ready();

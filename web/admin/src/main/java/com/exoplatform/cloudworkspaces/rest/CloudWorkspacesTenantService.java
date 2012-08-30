@@ -648,6 +648,7 @@ public class CloudWorkspacesTenantService {
             + resp.getEntity(), null);
         return Response.status(resp.getStatus())
                        .entity("An problem happened during processsing this request. It was reported to developers. Please, try again later.")
+                       .type(MediaType.TEXT_PLAIN)
                        .build();
       }
       UserRequest req = new UserRequest("",
@@ -663,7 +664,7 @@ public class CloudWorkspacesTenantService {
                                         RequestState.WAITING_JOIN);
       requestDao.put(req);
       referencesManager.removeEmail(userMail);
-      return Response.ok().build();
+      return Response.ok().type(MediaType.TEXT_PLAIN).build();
     } else {
       LOG.warn(" Duplicate creation request for tenant " + tName + " from " + userMail);
       referencesManager.removeEmail(userMail);

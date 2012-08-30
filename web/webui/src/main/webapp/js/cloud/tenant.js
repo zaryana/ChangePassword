@@ -62,6 +62,7 @@ define([ "jquery" ], function() {
 			var request = $.ajax({
 				type : "POST",
 				url : tenantServicePath + "/signup",
+				dataType : "text",
 				data : data,
 				//contentType: "application/x-www-form-urlencoded",
 				statusCode : {
@@ -82,6 +83,7 @@ define([ "jquery" ], function() {
 			var request = $.ajax({
 				type : "POST",
 				url : tenantServicePath + "/create",
+				dataType : "text",
 				data : data
 			});
 
@@ -92,6 +94,7 @@ define([ "jquery" ], function() {
 			var request = $.ajax({
 				type : "POST",
 				url : tenantServicePath + "/join",
+				dataType : "text",
 				data : data,
 				statusCode : {
 					309 : redirectWrapper(callbacks)
@@ -104,7 +107,8 @@ define([ "jquery" ], function() {
 		this.start = function(data, callbacks) {
 			var request = $.ajax({
 				url : accessUrl + "/tenant-service/start?tenant=" + data.tenantname,
-				async : true
+				async : true,
+				dataType : "text"
 			});
 
 			initRequestDefaults(request, callbacks);
@@ -115,7 +119,7 @@ define([ "jquery" ], function() {
 				var request = $.ajax({
 					type : "POST",
 					url : tenantServicePath + "/status/" + data.tenantname,
-					dataType : 'text'
+					dataType : "text"
 				});
 
 				initRequestDefaults(request, callbacks);
@@ -127,7 +131,7 @@ define([ "jquery" ], function() {
 		this.isUserExists = function(data, callbacks) {
 			var request = $.ajax({
 				url : tenantServicePath + "/isuserexist/" + data.tenantname + "/" + data.username,
-				dataType : 'text'
+				dataType : "text"
 			});
 
 			initRequestDefaults(request, callbacks);
@@ -167,7 +171,7 @@ define([ "jquery" ], function() {
 			var request = $.ajax({
 				async : false,
 				url : tenantServicePath + "/usermailinfo/" + email,
-				dataType : 'json'
+				dataType : "json"
 			});
 			request.fail(function(jqXHR, textStatus, err) {
 				logError("Tenant.getUserMailInfo(): cannot process user record for " + email);

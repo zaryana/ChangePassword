@@ -33,11 +33,11 @@
 		 */
 		var loadGoogleAnalyticsTracker = function() {
 			(function() {
-				var ga = document.createElement('script');
-				ga.type = 'text/javascript';
+				var ga = document.createElement("script");
+				ga.type = "text/javascript";
 				ga.async = true;
-				ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-				var s = document.getElementsByTagName('script')[0];
+				ga.src = ("https:" == document.location.protocol ? "https://ssl" : "http://www") + ".google-analytics.com/ga.js";
+				var s = document.getElementsByTagName("script")[0];
 				s.parentNode.insertBefore(ga, s);
 			})();
 		};
@@ -47,8 +47,8 @@
 		 */
 		var loadMarketoTracker = function() {
 			$.ajax({
-				url : document.location.protocol + '//munchkin.marketo.net/munchkin.js',
-				dataType : 'script',
+				url : document.location.protocol + "//munchkin.marketo.net/munchkin.js",
+				dataType : "script",
 				cache : true,
 				success : function() {
 					Munchkin.init(MARKETO_TRACKER_ID);
@@ -74,7 +74,7 @@
 		};
 	};
 
-	if (typeof define === 'function' && define.amd) {
+	if (typeof define === "function" && define.amd) {
 		// Register as an anonymous AMD module
 		define([ "jquery", "jquery.string", "cloud/marketo" ], function() {
 			var t = new Trackers();
