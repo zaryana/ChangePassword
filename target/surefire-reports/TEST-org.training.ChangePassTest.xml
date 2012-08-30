@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite failures="0" time="8.857" errors="1" skipped="0" tests="1" name="org.training.ChangePassTest">
+<testsuite failures="0" time="10.696" errors="0" skipped="0" tests="1" name="org.training.ChangePassTest">
   <properties>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
     <property name="sun.boot.library.path" value="/home/z/eXo/jdk1.6.0_34/jre/lib/i386"/>
@@ -19,7 +19,7 @@
     <property name="basedir" value="/home/z/eXo/workspace/ChangePassword"/>
     <property name="java.endorsed.dirs" value="/home/z/eXo/jdk1.6.0_34/jre/lib/endorsed"/>
     <property name="os.arch" value="i386"/>
-    <property name="surefire.real.class.path" value="/home/z/eXo/workspace/ChangePassword/target/surefire/surefirebooter2864279154321270280.jar"/>
+    <property name="surefire.real.class.path" value="/home/z/eXo/workspace/ChangePassword/target/surefire/surefirebooter9175724574542118338.jar"/>
     <property name="java.io.tmpdir" value="/tmp"/>
     <property name="line.separator" value="
 "/>
@@ -42,7 +42,7 @@
     <property name="java.vm.specification.version" value="1.0"/>
     <property name="sun.arch.data.model" value="32"/>
     <property name="java.home" value="/home/z/eXo/jdk1.6.0_34/jre"/>
-    <property name="sun.java.command" value="/home/z/eXo/workspace/ChangePassword/target/surefire/surefirebooter2864279154321270280.jar /home/z/eXo/workspace/ChangePassword/target/surefire/surefire514155970863221922tmp /home/z/eXo/workspace/ChangePassword/target/surefire/surefire3456013043036104270tmp"/>
+    <property name="sun.java.command" value="/home/z/eXo/workspace/ChangePassword/target/surefire/surefirebooter9175724574542118338.jar /home/z/eXo/workspace/ChangePassword/target/surefire/surefire608489873669764624tmp /home/z/eXo/workspace/ChangePassword/target/surefire/surefire6564299049329336832tmp"/>
     <property name="java.specification.vendor" value="Sun Microsystems Inc."/>
     <property name="user.language" value="zh"/>
     <property name="java.vm.info" value="mixed mode"/>
@@ -58,77 +58,5 @@
     <property name="sun.desktop" value="gnome"/>
     <property name="sun.cpu.isalist" value=""/>
   </properties>
-  <testcase time="8.789" classname="org.training.ChangePassTest" name="test">
-    <error message="Unable to locate element: {&quot;method&quot;:&quot;link text&quot;,&quot;selector&quot;:&quot;Forgot Password?&quot;}
-Command duration or timeout: 44 milliseconds
-For documentation on this error, please visit: http://seleniumhq.org/exceptions/no_such_element.html
-Build info: version: &apos;2.25.0&apos;, revision: &apos;17482&apos;, time: &apos;2012-07-18 22:18:01&apos;
-System info: os.name: &apos;Linux&apos;, os.arch: &apos;i386&apos;, os.version: &apos;3.2.0-23-generic-pae&apos;, java.version: &apos;1.6.0_34&apos;
-Driver info: driver.version: RemoteWebDriver
-Session ID: ab82c1df-55d8-45d0-ba7e-c3d82b08c0d4" type="org.openqa.selenium.NoSuchElementException">org.openqa.selenium.NoSuchElementException: Unable to locate element: {&quot;method&quot;:&quot;link text&quot;,&quot;selector&quot;:&quot;Forgot Password?&quot;}
-Command duration or timeout: 44 milliseconds
-For documentation on this error, please visit: http://seleniumhq.org/exceptions/no_such_element.html
-Build info: version: &apos;2.25.0&apos;, revision: &apos;17482&apos;, time: &apos;2012-07-18 22:18:01&apos;
-System info: os.name: &apos;Linux&apos;, os.arch: &apos;i386&apos;, os.version: &apos;3.2.0-23-generic-pae&apos;, java.version: &apos;1.6.0_34&apos;
-Driver info: driver.version: RemoteWebDriver
-Session ID: ab82c1df-55d8-45d0-ba7e-c3d82b08c0d4
-	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
-	at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:39)
-	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:27)
-	at java.lang.reflect.Constructor.newInstance(Constructor.java:513)
-	at org.openqa.selenium.remote.ErrorHandler.createThrowable(ErrorHandler.java:188)
-	at org.openqa.selenium.remote.ErrorHandler.throwIfResponseFailed(ErrorHandler.java:145)
-	at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:498)
-	at org.openqa.selenium.remote.RemoteWebDriver.findElement(RemoteWebDriver.java:268)
-	at org.openqa.selenium.remote.RemoteWebDriver.findElementByLinkText(RemoteWebDriver.java:305)
-	at org.openqa.selenium.By$ByLinkText.findElement(By.java:240)
-	at org.openqa.selenium.remote.RemoteWebDriver.findElement(RemoteWebDriver.java:260)
-	at org.training.ChangePassTest.test(ChangePassTest.java:78)
-	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
-	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
-	at java.lang.reflect.Method.invoke(Method.java:597)
-	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:44)
-	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:15)
-	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:41)
-	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:20)
-	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:28)
-	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:31)
-	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:76)
-	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:50)
-	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:193)
-	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:52)
-	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:191)
-	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:42)
-	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:184)
-	at org.junit.runners.ParentRunner.run(ParentRunner.java:236)
-	at org.apache.maven.surefire.junit4.JUnit4TestSet.execute(JUnit4TestSet.java:104)
-	at org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:147)
-	at org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:98)
-	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
-	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
-	at java.lang.reflect.Method.invoke(Method.java:597)
-	at org.apache.maven.surefire.booter.ProviderFactory$ClassLoaderProxy.invoke(ProviderFactory.java:101)
-	at $Proxy0.invoke(Unknown Source)
-	at org.apache.maven.surefire.booter.SurefireStarter.invokeProvider(SurefireStarter.java:139)
-	at org.apache.maven.surefire.booter.SurefireStarter.runSuitesInProcess(SurefireStarter.java:82)
-	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:81)
-Caused by: org.openqa.selenium.remote.ErrorHandler$UnknownServerException: Unable to locate element: {&quot;method&quot;:&quot;link text&quot;,&quot;selector&quot;:&quot;Forgot Password?&quot;}
-Build info: version: &apos;2.25.0&apos;, revision: &apos;17482&apos;, time: &apos;2012-07-18 22:18:01&apos;
-System info: os.name: &apos;Linux&apos;, os.arch: &apos;i386&apos;, os.version: &apos;3.2.0-23-generic-pae&apos;, java.version: &apos;1.6.0_34&apos;
-Driver info: driver.version: unknown
-	at &lt;anonymous class&gt;.&lt;anonymous method&gt;(file:///tmp/anonymous5682002505907168901webdriver-profile/extensions/fxdriver@googlecode.com/components/driver_component.js:6607)
-	at &lt;anonymous class&gt;.&lt;anonymous method&gt;(file:///tmp/anonymous5682002505907168901webdriver-profile/extensions/fxdriver@googlecode.com/components/driver_component.js:6615)
-	at &lt;anonymous class&gt;.&lt;anonymous method&gt;(file:///tmp/anonymous5682002505907168901webdriver-profile/extensions/fxdriver@googlecode.com/components/command_processor.js:10131)
-	at &lt;anonymous class&gt;.&lt;anonymous method&gt;(file:///tmp/anonymous5682002505907168901webdriver-profile/extensions/fxdriver@googlecode.com/components/command_processor.js:10136)
-	at &lt;anonymous class&gt;.&lt;anonymous method&gt;(file:///tmp/anonymous5682002505907168901webdriver-profile/extensions/fxdriver@googlecode.com/components/command_processor.js:10074)
-</error>
-    <system-out>@HL
-@HL-------------------------------------------------------
-@HL T E S T S
-@HL-------------------------------------------------------
-@SLRunning org.training.ChangePassTest
-</system-out>
-  </testcase>
+  <testcase time="10.645" classname="org.training.ChangePassTest" name="test"/>
 </testsuite>

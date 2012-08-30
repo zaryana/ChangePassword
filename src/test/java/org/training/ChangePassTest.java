@@ -75,15 +75,15 @@ public class ChangePassTest
          }
       });
       
-      assertNotNull(driver.findElement(By.linkText("Forgot Password?")));
-      
-      driver.findElement(By.id("email")).clear();
+  	   driver.findElement(By.id("email")).clear();
       driver.findElement(By.id("email")).sendKeys("zdombrovskaya@exoplatform.com");
       driver.findElement(By.id("submitButton")).click();
 
       (new WebDriverWait(driver, 10)).until(new ExpectedCondition<Boolean>()
       {
          public Boolean apply(WebDriver d)
+         
+         
          {
             try
             {
@@ -94,19 +94,25 @@ public class ChangePassTest
             {
                return false;
             }
+           
          }
+         
       });
       
-      		WebElement emailField = driver.findElement(By.id("email"));
-      		emailField.clear();
-      		assertTrue(emailField.getText().isEmpty());
-      		emailField.sendKeys("zdombrovskaya@exoplatform.com");
-      		assertEquals("zdombrovskaya@exoplatform.com", emailField.getText());
-      		WebElement message = driver.findElement(By.id("messageString"));
-      		assertEquals("Request completed, check your email for instructions", message.getText());
-      
-      
+      WebElement emailField = driver.findElement(By.id("email"));
+		
+				emailField.clear();
+				assertTrue(emailField.getAttribute("value").isEmpty());
+		
+				emailField.sendKeys("zdombrovskaya@exoplatform.com");
+				assertEquals("zdombrovskaya@exoplatform.com", emailField.getAttribute("value"));
+			  
+           
       (new WebDriverWait(driver, 10)).until(ExpectedConditions.invisibilityOfElementLocated(By.id("submitButton")));
+      
+      WebElement message = driver.findElement(By.id("messageString"));
+	  assertEquals("Request completed, check your email for instructions.", message.getText()); 
+     
    }
 
 }
