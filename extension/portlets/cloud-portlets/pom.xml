@@ -15,10 +15,6 @@
   <packaging>war</packaging>
   <name>eXo Cloud Workspaces :: Extension Portlets - cloud-portlets</name>
   <description>Cloud Workspaces portlets</description>
-
-  <properties>
-    <org.codehaus.jackson.version>1.9.7</org.codehaus.jackson.version>
-  </properties>
   
   <dependencies>      
     <dependency>
