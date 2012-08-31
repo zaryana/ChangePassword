@@ -1,0 +1,3 @@
+from.version=1.1.0-Beta06
+bundle.url=/home/koster/test/__/cloud-workspaces-admin-1.1.0-Beta07-tomcat.zip
+update.container=com.exoplatform.cloudworkspaces.installer.versions.Beta07UpdationContainer
