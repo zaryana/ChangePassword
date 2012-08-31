@@ -84,10 +84,6 @@
   </component>
   
   <component>
-    <type>com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.plugins.UserJoinTenant.UserJoinTenantLog</type>
-  </component>
-  
-  <component>
     <type>com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.EmailNotificationRestService</type>
   </component>
        

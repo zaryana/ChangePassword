@@ -55,6 +55,9 @@
     <org.exoplatform.social.version>1.2.10</org.exoplatform.social.version>
     <org.gatein.shindig.version>2.0.2</org.gatein.shindig.version>
 
+    <!-- Third party libs -->
+    <org.codehaus.jackson.version>1.9.7</org.codehaus.jackson.version>
+
     <!-- Db libs -->
     <mysql.connector.java.version>5.1.13</mysql.connector.java.version>
     <tomcat.version>6.0.32</tomcat.version>

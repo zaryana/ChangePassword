@@ -4,60 +4,82 @@
 <title>Cloud Workspaces Email Notifications</title>
 </head>
 <body>
-	<table border="0" cellpadding="0" cellspacing="0" width="600" bgcolor="#fff" align="center" style="font-size: 12px;color:#666666;line-height:20px;font-family:verdana,arial,tahoma;">
-		<tr>
-			<td align="center"  valign="middle"  style="border:1px solid #e1e1e1;border-bottom:none;">
-				<table border="0" cellpadding="0" cellspacing="0" width="92%" bgcolor="#fff" align="center" style="font-size: 12px;color:#666666;line-height:20px;font-family:verdana,arial,tahoma">
-					<tr>
-						<td>
-							<h1 style="margin:10px 0 0;"><span style="font-family:arial,tahoma,serif;color:#417cab;font-size:22px;text-decoration:none;" >Updates From Your Social Intranet</span></h1>
-						</td>
-					</tr>
-				</table>
-			</td>
-		</tr><!--end header area-->
-		<tr>
-			<td align="center"  style="border:1px solid #e1e1e1;border-top:none;border-bottom:none;">
-				<table border="0" cellpadding="0" cellspacing="0" width="92%" bgcolor="#fff" align="center" style="font-size: 12px;color:#666666;line-height:20px;font-family:verdana,arial,tahoma">
-					<tr>
-						<td>
-							<p style="font-family:verdana,arial,tahoma;font-size:12px;">
-								Hi ${user},
-							    <p>
-							    	Here's what's been happening in your social intranet in the last ${interval}:<br/>
-							      	<ul style="padding-left: 5px;">
-							      	${notifications}
-							      	</ul>
-							    </p>
-							</p>
-						</td>
-					</tr>
-				</table>
-			</td>
-		</tr><!--end content area-->
-		<tr>
-			<td bgcolor="#0D86B1" align="center"  style="border:1px solid #0D86B1;">
-				<table border="0" cellpadding="0" cellspacing="0" width="92%"  style="font-size: 12px;color:#666666;line-height:20px;font-family:verdana,arial,tahoma">
-					<tr>
-						<td align="left" valign="top" style="font-family:Verdana,arial,tahoma,serif;color:#FFFFFF;font-size:12px; line-height: 37px;" >
-							<h3 style="margin:0px;"><a href="http://cloud-workspaces.com" target="_blank" style="margin:0px; font-family:arial,tahoma,serif;color:#FFFFFF;font-size:14px;text-decoration:none;">Cloud Workspaces</a></h3>			
-						</td>
-						<td align="right" width="270" style="line-height: 37px;">
-							<p style="font-family:arial,tahoma,serif;color:#FFFFFF; font-size:11px; margin: 0px;">Edit your notification settings <a href="${accountSettingsLink}" target="_blank" style="color:#FFFFFF; text-decoration:none; border-bottom: 1px dotted #fff;">here</a>.</p>
-						</td>
-					</tr>
-				</table>
-			</td>
-		</tr><!--end footer area-->		
-	</table>
-	<table align="center" border="0" cellpadding="0" cellspacing="0" width="636" >
-		<tr>
-			<td align="center" height="30">
-				<a href="http://cloud-workspaces.com" target="_blank" style="font-family:arial,tahoma,serif;color:#636363;font-size:11px;text-decoration:none;" title="About Cloud Workspaces" >About Cloud Workspaces </a><font color="#636363" size="1">|</font> </a>
-				<a href="http://exoplatform.com" target="_blank" style="font-family:arial,tahoma,serif;color:#636363;font-size:11px;text-decoration:none;" title="About eXo" >About eXo </a><font color="#636363" size="1">|</font>
-				<a href="http://twitter.com/exoplatform" target="_blank" style="font-family:arial,tahoma,serif;color:#407baf;font-size:11px;text-decoration:none;" title="@exoplatform on Twitter" >@exoplatform on Twitter</a>
-			</td>
-		</tr>
-	</table>		<!--end bottom area-->
+  <table border="0" cellpadding="0" cellspacing="0" width="636" bgcolor="#FFFFFF" align="center" style="font-size: 12px;color:#666666;line-height:20px;font-family:verdana,arial,tahoma;">
+    <tr bgcolor="#FFFFFF">
+      <td align="center"  valign="middle" bgcolor="#FFFFFF" style="border:1px solid #E1E1E1;border-bottom:none;">
+        <table border="0" cellpadding="0" cellspacing="0" width="92%"  bgcolor="#FFFFFF" align="center" style="font-size: 12px;color:#666666;line-height:20px;font-family:verdana,arial,tahoma">
+          <tr>
+            <td align="left">
+              <h1 style="margin:20px 0;"><span style="font-family:arial,tahoma,serif;color:#417cab;font-size:22px;text-decoration:none;">${subject}</span></h1>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr><!--end header area-->
+    <tr bgcolor="#FFFFFF">
+      <td align="center"  bgcolor="#FFFFFF" style="border:1px solid #E1E1E1;border-top:none;border-bottom:none;">
+        <table border="0" cellpadding="0" cellspacing="0" width="92%" bgcolor="#FFFFFF" align="center" style="font-size: 12px;color:#666666;line-height:20px;font-family:verdana,arial,tahoma">
+          <tr>
+            
+            <td align="left">
+              
+              <p style="font-family:verdana,arial,tahoma;font-size:12px;margin:0px 0 15px;line-height:20px;">Hi ${user},</p>
+            <%
+              if(isSummaryMail){
+            %>
+              <p style="font-family:verdana,arial,tahoma;font-size:12px;margin:15px 0;line-height:20px;">
+                Here's what's been happening in your Social Intranet in the past ${interval}:
+              </p>
+            <%} %>
+              <p style="font-family:verdana,arial,tahoma;font-size:12px;margin:15px 0;line-height:20px;">
+            <%
+              if(isSummaryMail){
+            %>
+                <ul style="font-family: verdana,arial,tahoma; padding-left: 5px;">
+                  ${notifications}
+                </ul>
+            <%} else {
+            %>
+                ${notifications}
+            <%} %>
+              </p>
+            <%
+              if(isSummaryMail){
+            %>
+              <p style="font-family:verdana,arial,tahoma;font-size:12px;margin:15px 0;line-height:20px;">
+                If you don't want to receive these notifications any more, edit your <a href="${accountSettingsLink}" target="_blank" style="color:#666666; text-decoration:none;">[account settings]</a> in your Cloud Workspaces account.
+              </p>
+            <%} %>
+              <p style="font-family:verdana,arial,tahoma;font-size:12px;margin:15px 0;line-height:20px;"><strong>The Cloud Workspaces Team</strong></p><br/>
+
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr><!--end content area-->
+    <tr>
+      <td bgcolor="#0D86B1" align="center"  style="border:1px solid #0D86B1;">
+        <table border="0" cellpadding="0" cellspacing="0" width="92%"  style="font-size: 12px;color:#666666;line-height:20px;font-family:verdana,arial,tahoma">
+          <tr>
+            <td align="left" valign="top" style="font-family:Verdana,arial,tahoma,serif;color:#FFFFFF;font-size:12px; line-height: 37px;" >
+              <h3 style="margin:0px; font-family:arial,tahoma,serif;color:#FFFFFF;font-size:14px;text-decoration:none;">Cloud Workspaces</h3>         
+            </td>
+            <td align="right" width="270" style="line-height: 37px;">
+              <p style="font-family:arial,tahoma,serif;color:#FFFFFF; font-size:11px; margin: 0px;">Edit your notification settings <a href="${accountSettingsLink}" style="color:#FFFFFF; text-decoration:none; border-bottom: 1px dotted #fff;">here</a>.</p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr><!--end footer area-->   
+  </table>
+  <table align="center" border="0" cellpadding="0" cellspacing="0" width="636" >
+    <tr>
+      <td align="center" height="30">
+        <a href="http://www.cloud-workspaces.com/about.jsp" target="_blank" style="font-family:arial,tahoma,serif;color:#636363;font-size:11px;text-decoration:none;" title="About Cloud Workspaces" >About Cloud Workspaces </a><font color="#636363" size="1">|</font> </a>
+        <a href="http://www.exoplatform.com/company/en/home" target="_blank" style="font-family:arial,tahoma,serif;color:#636363;font-size:11px;text-decoration:none;" title="About eXo" >About eXo </a><font color="#636363" size="1">|</font>
+        <a href="http://twitter.com/#!/exoplatform" target="_blank" style="font-family:arial,tahoma,serif;color:#407baf;font-size:11px;text-decoration:none;" title="@exoplatform on Twitter" >@exoplatform on Twitter</a>
+      </td>
+    </tr>
+  </table>    <!--end bottom area-->
 </body>
 </html>

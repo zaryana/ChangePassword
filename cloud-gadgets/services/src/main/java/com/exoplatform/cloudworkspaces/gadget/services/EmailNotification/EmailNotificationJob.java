@@ -1,19 +1,13 @@
 package com.exoplatform.cloudworkspaces.gadget.services.EmailNotification;
 
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
 import javax.jcr.Node;
-import javax.mail.Message.RecipientType;
-import javax.mail.Session;
 import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
 
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.ExoContainerContext;
@@ -22,7 +16,6 @@ import org.exoplatform.services.jcr.ext.common.SessionProvider;
 import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.services.mail.MailService;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.social.core.identity.model.Profile;
@@ -40,66 +33,6 @@ public class EmailNotificationJob extends MultiTenancyJob {
   @Override
   public Class<? extends MultiTenancyTask> getTask() {
     return EmailNotificationTask.class;
-  }
-
-  private static void sendMail(String subject, String content, InternetAddress from, InternetAddress to) throws Exception {
-    MailService mailService = (MailService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(MailService.class);
-    Session mailSession = mailService.getMailSession();
-    MimeMessage message = new MimeMessage(mailSession);
-
-    message.setSubject(subject);
-    message.setFrom(from);
-    message.setRecipient(RecipientType.TO, to);
-
-    MimeMultipart mailContent = new MimeMultipart("alternative");
-    MimeBodyPart text = new MimeBodyPart();
-    MimeBodyPart html = new MimeBodyPart();
-    text.setText(content);
-    html.setContent(content, "text/html; charset=ISO-8859-1");
-    mailContent.addBodyPart(text);
-    mailContent.addBodyPart(html);
-
-    message.setContent(mailContent);
-    mailService.sendMessage(message);
-  }
-
-  private static long nextDayOf(long date) {
-    Calendar now = Calendar.getInstance();
-    now.setTimeInMillis(date);
-    now.add(Calendar.DAY_OF_YEAR, 1);
-
-    now.set(Calendar.HOUR_OF_DAY, 0);
-    now.set(Calendar.MINUTE, 0);
-    now.set(Calendar.SECOND, 0);
-    now.set(Calendar.MILLISECOND, 0);
-    return now.getTimeInMillis();
-  }
-
-  private static long nextMondayOf(long date) {
-    Calendar now = Calendar.getInstance();
-    now.setTimeInMillis(date);
-    int weekday = now.get(Calendar.DAY_OF_WEEK);
-    int days = weekday == Calendar.SUNDAY ? 1 : Calendar.SATURDAY - weekday + 2;
-    now.add(Calendar.DAY_OF_YEAR, days);
-
-    now.set(Calendar.HOUR_OF_DAY, 0);
-    now.set(Calendar.MINUTE, 0);
-    now.set(Calendar.SECOND, 0);
-    now.set(Calendar.MILLISECOND, 0);
-    return now.getTimeInMillis();
-  }
-
-  private static long nextMonthOf(long date) {
-    Calendar now = Calendar.getInstance();
-    now.setTimeInMillis(date);
-    now.add(Calendar.MONTH, 1);
-    now.set(Calendar.DAY_OF_MONTH, 1);
-
-    now.set(Calendar.HOUR_OF_DAY, 0);
-    now.set(Calendar.MINUTE, 0);
-    now.set(Calendar.SECOND, 0);
-    now.set(Calendar.MILLISECOND, 0);
-    return now.getTimeInMillis();
   }
 
   public class EmailNotificationTask extends MultiTenancyTask {
@@ -153,14 +86,14 @@ public class EmailNotificationJob extends MultiTenancyJob {
                 notificationPlugins.append(plugin.getName());
               }
             }
-            emailNotificationRestService.setUserPrefs(userId, setting.getProperty("defaultInterval", "week"), notificationPlugins.toString());
+            emailNotificationRestService.setUserPrefs(userId, false, setting.getProperty("defaultInterval", "day"), notificationPlugins.toString());
             isServiceRegistered = true;
           }
 
           if (isServiceRegistered) {
             Node emailNotificationPrefs = userPrivateNode.getNode(EmailNotificationService.PREFS);
             String interval = emailNotificationPrefs.getProperty("Interval").getString();
-
+            Boolean isSummaryMail = emailNotificationPrefs.getProperty("isSummaryMail").getBoolean();
             if (!emailNotificationPrefs.hasProperty("LastRun")) {
               emailNotificationPrefs.setProperty("LastRun", System.currentTimeMillis());
               emailNotificationPrefs.save();
@@ -169,14 +102,18 @@ public class EmailNotificationJob extends MultiTenancyJob {
             long lastRun = emailNotificationPrefs.getProperty("LastRun").getLong();
             long nextRun = lastRun;
 
-            if (interval.equals("never")) {
-              continue;
-            } else if (interval.equals("day")) {
-              nextRun = nextDayOf(lastRun);
-            } else if (interval.equals("week")) {
-              nextRun = nextMondayOf(lastRun);
-            } else if (interval.equals("month")) {
-              nextRun = nextMonthOf(lastRun);
+            if (isSummaryMail) {
+              if (interval.equals("never")) {
+                continue;
+              } else if (interval.equals("day")) {
+                nextRun = DateTimeUtils.nextDayOf(lastRun);
+              } else if (interval.equals("week")) {
+                nextRun = DateTimeUtils.nextMondayOf(lastRun);
+              } else if (interval.equals("month")) {
+                nextRun = DateTimeUtils.nextMonthOf(lastRun);
+              }
+            } else {
+              nextRun = DateTimeUtils.nextMinuteOf(lastRun);
             }
 
             if (System.currentTimeMillis() < nextRun) {
@@ -192,13 +129,18 @@ public class EmailNotificationJob extends MultiTenancyJob {
             runningContext.put("userLocale", userLocale);
             runningContext.put("repoName", this.repoName);
             runningContext.put("lastRun", new Long(lastRun));
+            runningContext.put("isSummaryMail", isSummaryMail);
 
+            String mailSubject = "";
             for (EmailNotificationPlugin plugin : emailNotificationService.getPlugins()) {
               if (notificationPlugins.contains(plugin.getName())) {
-                runningContext.put("pluginMessagesCache", pluginMessagesCaches.get(plugin.getName()));
+                MessagesCache pluginMessagesCache = pluginMessagesCaches.get(plugin.getName());
+                runningContext.put("pluginMessagesCache", pluginMessagesCache);
                 String pluginNotification = plugin.exec(runningContext);
-                if (!pluginNotification.isEmpty())
+                if (!pluginNotification.isEmpty()) {
+                  mailSubject = pluginMessagesCache.get((userLocale)).getProperty("title");
                   builder.append(pluginNotification);
+                }
               }
             }
 
@@ -210,10 +152,15 @@ public class EmailNotificationJob extends MultiTenancyJob {
               continue;
 
             GroovyTemplate mailTemplate = new GroovyTemplate(templatesCache.get(userLocale));
-            Map<String, String> binding;
+            Map<String, Object> binding;
             Properties prop = messagesCache.get(userLocale);
-
-            binding = new HashMap<String, String>();
+            if(isSummaryMail){
+              mailSubject = prop.getProperty("subject");
+            }
+            
+            binding = new HashMap<String, Object>();
+            binding.put("subject", mailSubject);
+            binding.put("isSummaryMail", isSummaryMail);
             binding.put("user", user.getFirstName());
             binding.put("interval", prop.getProperty(interval));
             binding.put("notifications", notifications);
@@ -226,7 +173,7 @@ public class EmailNotificationJob extends MultiTenancyJob {
             String fromEmail = prop.getProperty("from.email");
             String fromName = prop.getProperty("from.name");
 
-            sendMail(subject, mailTemplate.render(binding), new InternetAddress(fromEmail, fromName), userAddr);
+            emailNotificationService.sendMail(subject, mailTemplate.render(binding), new InternetAddress(fromEmail, fromName), userAddr);
             LOG.info("Notification mail sent to " + userAddr.getAddress());
           }
         }

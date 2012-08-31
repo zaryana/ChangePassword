@@ -55,8 +55,9 @@ public class EmailNotificationRestService implements ResourceContainer {
       Node userPrivateNode = nodeCreator.getUserNode(sProvider, userId).getNode("Private");
 
       MessagesCache messagesCache = new MessagesCache(EmailNotificationService.HOME);
-      String interval = messagesCache.getDefault().getProperty("defaultInterval", "week");
+      String interval = messagesCache.getDefault().getProperty("defaultInterval", "day");
 
+      boolean isSummaryMail = false;
       ArrayList<EmailNotificationPluginBean> pluginBeans = new ArrayList<EmailNotificationPluginBean>();
 
       if (!userPrivateNode.hasNode(EmailNotificationService.PREFS)) {
@@ -69,6 +70,7 @@ public class EmailNotificationRestService implements ResourceContainer {
       } else {
         Node emailNotificationPrefsNode = userPrivateNode.getNode(EmailNotificationService.PREFS);
         interval = emailNotificationPrefsNode.getProperty("Interval").getString();
+        isSummaryMail = emailNotificationPrefsNode.getProperty("isSummaryMail").getBoolean();
         String pluginsProp = emailNotificationPrefsNode.getProperty("NotificationPlugins").getString();
 
         for (EmailNotificationPlugin plugin : emailNotificationService.getPlugins()) {
@@ -78,7 +80,7 @@ public class EmailNotificationRestService implements ResourceContainer {
         }
       }
 
-      return new EmailNotificationPrefsBean(interval, pluginBeans);
+      return new EmailNotificationPrefsBean(isSummaryMail, interval, pluginBeans);
 
     } catch (Exception e) {
       LOG.debug(e.getMessage(), e);
@@ -88,7 +90,7 @@ public class EmailNotificationRestService implements ResourceContainer {
     }
   }
 
-  public void setUserPrefs(String userId, String interval, String notificationPlugins) throws Exception {
+  public void setUserPrefs(String userId, Boolean isSummaryMail, String interval, String notificationPlugins) throws Exception {
     SessionProvider sProvider = SessionProvider.createSystemProvider();
     try {
       NodeHierarchyCreator nodeCreator = (NodeHierarchyCreator) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(NodeHierarchyCreator.class);
@@ -106,6 +108,7 @@ public class EmailNotificationRestService implements ResourceContainer {
         emailNotificationSettingNode = userPrivateNode.getNode(EmailNotificationService.PREFS);
       }
 
+      emailNotificationSettingNode.setProperty("isSummaryMail", isSummaryMail);
       emailNotificationSettingNode.setProperty("Interval", interval);
       emailNotificationSettingNode.setProperty("NotificationPlugins", notificationPlugins);
       emailNotificationSettingNode.save();
@@ -130,9 +133,9 @@ public class EmailNotificationRestService implements ResourceContainer {
 
   @POST
   @Path("prefs")
-  public Response setPrefs(@FormParam("interval") String interval, @FormParam("notificationPlugins") String notificationPlugins) {
+  public Response setPrefs(@FormParam("isSummaryMail") Boolean isSummaryMail, @FormParam("interval") String interval, @FormParam("notificationPlugins") String notificationPlugins) {
     try {
-      setUserPrefs(ConversationState.getCurrent().getIdentity().getUserId(), interval, notificationPlugins);
+      setUserPrefs(ConversationState.getCurrent().getIdentity().getUserId(), isSummaryMail, interval, notificationPlugins);
       return Response.ok().cacheControl(cacheControl).build();
     } catch (Exception e) {
       LOG.debug(e.getMessage(), e);
