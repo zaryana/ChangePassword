@@ -2,6 +2,8 @@
 #
 # JAVA_OPTS override jvm options for example: Xmx, Xms etc.
 
+. ./environment.sh
+
 # custom JAVA options
 CATALINA_TMPDIR="/tmp" # temporarily until CM will not fix 1.1M8
 [ -z "$EXO_JAVA_OPTS" ]  && EXO_JAVA_OPTS="-Xmx96m"
@@ -69,6 +71,13 @@ CATALINA_TMPDIR="/tmp" # temporarily until CM will not fix 1.1M8
 [ -z "$GRAPHITE_HOST" ] && GRAPHITE_HOST="localhost"
 [ -z "$GRAPHITE_PORT" ] && GRAPHITE_PORT="2003"
 
+# Instance options
+[ -z "AS_INSTANCE_TYPE" ] && AS_INSTANCE_TYPE="m1.medium"
+[ -z "AS_IMAGE_ID" ] && AS_IMAGE_ID="NO_IMAGE_ID"
+[ -z "AS_AVAILABILITY_ZONE" ] && AS_AVAILABILITY_ZONE="NO_ZONE"
+[ -z "AS_SECURITY_GROUP_NAME" ] && AS_SECURITY_GROUP_NAME="NO_GROUP"
+[ -z "AS_KEY_NAME" ] && AS_KEY_NAME="NO_KEY"
+
 # admin variables
 EXO_CLOUD_ADMIN_OPTS="-Dadmin.agent.auth.username=$CLOUD_AGENT_USERNAME \
                       -Dadmin.agent.auth.password=$CLOUD_AGENT_PASSWORD \
@@ -109,6 +118,11 @@ EXO_CLOUD_ADMIN_OPTS="-Dadmin.agent.auth.username=$CLOUD_AGENT_USERNAME \
                       -Dsandbox.tenant.name=$SANDBOX_TENANT_NAME \
                       -Dgraphite.host=$GRAPHITE_HOST \
                       -Dgraphite.port=$GRAPHITE_PORT \
+                      -Das.instance.type=$AS_INSTANCE_TYPE \
+                      -Das.image.id=$AS_IMAGE_ID \
+                      -Das.availability.zone=$AS_AVAILABILITY_ZONE \
+                      -Das.security.group.name=$AS_SECURITY_GROUP_NAME \
+                      -Das.key.name=$AS_KEY_NAME \
                       -Dlogback.configurationFile=$CATALINA_HOME/conf/logback.xml \
                       -Dlogback.smtp.appender.conf.file=${EXO_LOGBACK_SMTP_CONF}"
 
