@@ -10,8 +10,8 @@
 
   <artifactId>cloud-workspaces-component-initializer</artifactId>
   <packaging>jar</packaging>
-  <name>eXo Cloud Workspaces :: Multitenancy</name>
-  <description>eXo Cloud Workspaces Multitenancy</description>
+  <name>eXo Cloud Workspaces :: Initializer</name>
+  <description>eXo Cloud Workspaces Default Space Initializer</description>
 
   <dependencies>
     <dependency>
