@@ -67,7 +67,7 @@
 
 		// public function to use on a page
 		this.load = function() {
-			if (true || testDomainPrefix(TARGET_DOMAIN_NAME_FOR_TRACKING)) {
+			if (testDomainPrefix(TARGET_DOMAIN_NAME_FOR_TRACKING)) {
 				loadGoogleAnalyticsTracker();
 				loadMarketoTracker();
 			}
