@@ -154,7 +154,7 @@ public abstract class MinorAdminUpgradeAlgorithm extends AdminUpgradeAlgorithm {
     cloudAdminServices.allowAutoscaling();
 
     updateFinished(previousConfDir, previousTomcatDir, dataDir);
-    System.out.println("Updation admin to " + getVersion() + " finished successfully");
+    System.out.println("Admin successfully upgraded to " + getVersion());
   }
 
   @Override
@@ -202,6 +202,7 @@ public abstract class MinorAdminUpgradeAlgorithm extends AdminUpgradeAlgorithm {
     cloudAdminServices.allowAutoscaling();
 
     updateFinished(confDir, tomcatDir, dataDir);
+    System.out.println("Admin with version " + getVersion() + " successfully installed");
   }
 
   public abstract String getVersion();

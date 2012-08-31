@@ -47,7 +47,7 @@ public class IntranetBundleDownloader implements BundleDownloader {
     Console console = System.console();
     console.printf("Downloading admin bundle from intranet:\n");
     this.username = console.readLine("Set your intranet username: ");
-    this.password = new String(console.readPassword("Set your intranetpassword: "));
+    this.password = new String(console.readPassword("Set your intranet password: "));
   }
 
   public IntranetBundleDownloader(String url, String username, String password) {

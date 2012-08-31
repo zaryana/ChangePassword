@@ -31,6 +31,12 @@ import java.io.File;
 import java.io.IOException;
 
 public class InstanceConfigurationUpdater extends BaseConfigurationUpdater {
+  private final Question asInstanceTypeQuestion      = new Question("as.instance.type",
+                                                                    "Set server's instance type",
+                                                                    null,
+                                                                    "^.*$",
+                                                                    null);
+
   private final Question asImageIdQuestion           = new Question("as.image.id",
                                                                     "Set application server's image id",
                                                                     null,
@@ -77,11 +83,15 @@ public class InstanceConfigurationUpdater extends BaseConfigurationUpdater {
       String prevKeyName = ConfigUtils.findProperty(new File(previousTomcatDir, "bin"),
                                                     "environment.sh",
                                                     "AS_KEY_NAME");
+      String prevInstanceType = ConfigUtils.findProperty(new File(previousTomcatDir, "bin"),
+                                                         "environment.sh",
+                                                         "AS_INSTANCE_TYPE");
 
       clearBlock();
       addToBlock(asAvailabilityZoneQuestion, prevAvailabilityZone);
       addToBlock(asSecurityGroupNameQuestion, prevSecurityGroupName);
       addToBlock(asKeyNameQuestion, prevKeyName);
+      addToBlock(asInstanceTypeQuestion, prevInstanceType);
 
       boolean usePrev = false;
       if (wasBlockChanged()) {
@@ -91,30 +101,38 @@ public class InstanceConfigurationUpdater extends BaseConfigurationUpdater {
       String availabilityZone = prevAvailabilityZone;
       String securityGroupName = prevSecurityGroupName;
       String keyName = prevKeyName;
+      String instanceType = prevInstanceType;
       if (!usePrev) {
         asAvailabilityZoneQuestion.setDefaults(prevAvailabilityZone);
         asSecurityGroupNameQuestion.setDefaults(prevSecurityGroupName);
         asKeyNameQuestion.setDefaults(prevKeyName);
+        asInstanceTypeQuestion.setDefaults(prevInstanceType);
 
         availabilityZone = interaction.ask(asAvailabilityZoneQuestion);
         securityGroupName = interaction.ask(asSecurityGroupNameQuestion);
         keyName = interaction.ask(asKeyNameQuestion);
+        instanceType = interaction.ask(asInstanceTypeQuestion);
       }
       ConfigUtils.writeQuotedProperty(new File(tomcatDir, "bin"),
-                                "environment.sh",
-                                "AS_AVAILABILITY_ZONE",
-                                availabilityZone);
+                                      "environment.sh",
+                                      "AS_AVAILABILITY_ZONE",
+                                      availabilityZone);
       answers.addAnswer(asAvailabilityZoneQuestion, availabilityZone);
       ConfigUtils.writeQuotedProperty(new File(tomcatDir, "bin"),
-                                "environment.sh",
-                                "AS_SECURITY_GROUP_NAME",
-                                securityGroupName);
+                                      "environment.sh",
+                                      "AS_SECURITY_GROUP_NAME",
+                                      securityGroupName);
       answers.addAnswer(asSecurityGroupNameQuestion, securityGroupName);
       ConfigUtils.writeQuotedProperty(new File(tomcatDir, "bin"),
-                                "environment.sh",
-                                "AS_KEY_NAME",
-                                keyName);
+                                      "environment.sh",
+                                      "AS_KEY_NAME",
+                                      keyName);
       answers.addAnswer(asKeyNameQuestion, keyName);
+      ConfigUtils.writeQuotedProperty(new File(tomcatDir, "bin"),
+                                      "environment.sh",
+                                      "AS_INSTANCE_TYPE",
+                                      instanceType);
+      answers.addAnswer(asInstanceTypeQuestion, instanceType);
 
       asImageIdQuestion.setDefaults(ConfigUtils.findProperty(new File(previousTomcatDir, "bin"),
                                                              "environment.sh",
@@ -122,13 +140,12 @@ public class InstanceConfigurationUpdater extends BaseConfigurationUpdater {
       String asImageId = interaction.ask(asImageIdQuestion);
 
       ConfigUtils.writeQuotedProperty(new File(tomcatDir, "bin"),
-                                "environment.sh",
-                                "AS_IMAGE_ID",
-                                asImageId);
+                                      "environment.sh",
+                                      "AS_IMAGE_ID",
+                                      asImageId);
       answers.addAnswer(asImageIdQuestion, asImageId);
     } catch (IOException e) {
       throw new ConfigurationException("Updating instance configuration failed", e);
     }
   }
-
 }
