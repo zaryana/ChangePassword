@@ -7,7 +7,7 @@
     <%@ include file="common/headScript.jsp"%>
     <script type="text/javascript" data-main="signup" src="/js/require-2.0.4.min.js"></script>
   </head>
-  <body onLoad="tenants.initTryAgainPage();">
+  <body>
     <div class="UIPageContainer">
       <!--begin header-->
       <%@ include file="common/header.jsp"%>

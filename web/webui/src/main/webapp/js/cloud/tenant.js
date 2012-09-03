@@ -25,7 +25,7 @@ define([ "jquery" ], function() {
 		var tenantSecureServicePath = accessSecureUrl + "/cloudworkspaces/tenant-service"; // TODO remove
 
 		var redirectWrapper = function(callbacks) {
-			return function(data, textStatus, jqXHR) {
+			return function(jqXHR, data, textStatus) {
 				// custom redirect
 				if (callbacks.redirect) {
 					var location = jqXHR.getResponseHeader("Location");
@@ -36,7 +36,7 @@ define([ "jquery" ], function() {
 		
 		var initRequestDefaults = function(request, callbacks) {
 			request.fail(function(jqXHR, textStatus, err) {
-				if (callbacks.fail) {
+				if (callbacks.fail && jqXHR.status != 309) {
 					callbacks.fail(jqXHR.responseText, err); // return response body and textual portion of the HTTP status
 				}
 			});
