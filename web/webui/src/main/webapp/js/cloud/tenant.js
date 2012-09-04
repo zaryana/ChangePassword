@@ -117,7 +117,7 @@ define([ "jquery" ], function() {
 		this.status = function(data, callbacks) {
 			if (data.tenantname && data.tenantname.length > 0) {
 				var request = $.ajax({
-					type : "POST",
+					type : "GET",
 					url : tenantServicePath + "/status/" + data.tenantname,
 					dataType : "text"
 				});
