@@ -82,7 +82,7 @@ require([ "cloud/tenant", "cloud/marketo", "cloud/marketo.cookies", "cloud/track
 					window.location = location;
 				});
 			},
-			resuming : function(location) {
+			redirect : function(location) {
 				window.location = location;
 			},
 			wrongEmail : function(message) {

@@ -28,7 +28,7 @@ define([ "jquery" ], function() {
 			return function(jqXHR, data, textStatus) {
 				// custom redirect
 				var location = jqXHR.getResponseHeader("Location");
-				var handler = jqXHR.getResponseHeader("Location-Handler"); // 04.09.2012: tryAgain or resuming
+				var handler = jqXHR.getResponseHeader("Location-Handler"); // 04.09.2012: tryAgain handler in /signup
 				if (location) {
 					if (handler && callbacks[handler]) {
 						callbacks[handler](location);

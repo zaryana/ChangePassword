@@ -239,7 +239,6 @@ public class CloudWorkspacesTenantService {
                                  "http://"
                                      + AdminConfigurationUtil.getMasterHost(cloudAdminConfiguration)
                                      + "/resuming.jsp?email=" + userMail + "&action=signup")
-                         .header("Location-Handler", "resuming")
                          .build();
         }
         default: {
