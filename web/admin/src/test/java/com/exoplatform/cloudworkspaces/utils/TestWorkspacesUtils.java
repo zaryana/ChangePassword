@@ -67,6 +67,13 @@ public class TestWorkspacesUtils {
         { "test1@exoplatform.crimea.pa.us", "exoplatform-crimea-pa" } };
   }
 
+  @DataProvider(name = "emails3")
+  public Object[][] data3() {
+    return new Object[][] { { "test1@exoplatform.com", "test1" },
+      { "Test1@exoplatform.com", "test1" },
+      { "TEST1@exoplatform.com", "test1" }};
+  }
+
   @Test(dataProvider = "emails1")
   public void testValidateEmail(String email, boolean result) {
     Assert.assertEquals(utils.validateEmail(email), result);
@@ -76,6 +83,12 @@ public class TestWorkspacesUtils {
   public void testEmail2TenantName(String email, String result) {
     System.setProperty("cloud.admin.hostname.file", "target/test-classes/hostname.cfg");
     Assert.assertEquals(utils.email2userMailInfo(email).getTenant(), result);
+  }
+
+  @Test(dataProvider = "emails3")
+  public void testEmail2UserName(String email, String result) {
+    System.setProperty("cloud.admin.hostname.file", "target/test-classes/hostname.cfg");
+    Assert.assertEquals(utils.email2userMailInfo(email).getUsername(), result);
   }
 
 }
