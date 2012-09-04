@@ -115,7 +115,7 @@ define([ "jquery" ], function() {
 		};
 
 		this.status = function(data, callbacks) {
-			if (settings.tenantName && settings.tenantName.length > 0) {
+			if (data.tenantname && data.tenantname.length > 0) {
 				var request = $.ajax({
 					type : "POST",
 					url : tenantServicePath + "/status/" + data.tenantname,
