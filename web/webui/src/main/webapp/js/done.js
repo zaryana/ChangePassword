@@ -46,7 +46,7 @@ require([ "cloud/tenant", "cloud/marketo", "cloud/trackers", "cloud/support", "t
 								}
 							},
 							fail : function(err) {
-								logError("User exist '" + userinfo.username + "@" + userinfo.tenant + "' service failed. " + err); // for
+								logError("done.init: User Exists service failed for '" + userinfo.username + "@" + userinfo.tenant + "'. " + err); // for
 								// debug
 								$("#sign_link").html("The " + userinfo.tenant + " Workspace is beind created.<br/> We will inform you by email when ready.");
 							}
@@ -56,7 +56,7 @@ require([ "cloud/tenant", "cloud/marketo", "cloud/trackers", "cloud/support", "t
 					}
 				},
 				fail : function(err) {
-					logError("Tenant status '" + userinfo.tenant + "' service failed. " + err); // for debug
+					logError("done.init: Tenant Status '" + userinfo.tenant + "' service failed. " + err); // for debug
 					$("#sign_link").html("The " + userinfo.tenant + " Workspace is beind created.<br/> We will inform you by email when ready.");
 				}
 			});

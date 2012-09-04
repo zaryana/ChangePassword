@@ -20,6 +20,7 @@ require([ "cloud/tenant", "cloud/marketo", "cloud/trackers", "cloud/support" ], 
 
 	var email;
 	var tenantName;
+	var userName;
 	var loginUrl;
 	var signupUrl = prefixUrl + "/signup-done.jsp";
 	var resetUrl = prefixUrl + "/reset-password.jsp";
@@ -32,7 +33,22 @@ require([ "cloud/tenant", "cloud/marketo", "cloud/trackers", "cloud/support" ], 
 				var search = "ONLINE";
 				if (status.substring(0, search.length) === search) {
 					if ($.getUrlVar("action") == "signup") {
-						window.location = signupUrl;
+						tenant.isUserExists({
+							tenantname : tenantName,
+							username : userName
+						}, {
+							done : function(result) {
+								if (result == "false") {
+									window.location = signupUrl;
+								} else {
+									window.location = loginUrl;			
+								}
+							},
+							fail : function(err) {
+								logError("resuming.isOnline(): User Exists service failed for '" + userName + "@" + tenantName + "'. " + err); 
+								$("#sign_link").html("The " + tenantName + " Workspace is beind created.<br/> We will inform you by email when ready.");
+							}
+						});
 					} else if ($.getUrlVar("action") == "reset") {
 						window.location = resetUrl;
 					} else {
@@ -101,7 +117,9 @@ require([ "cloud/tenant", "cloud/marketo", "cloud/trackers", "cloud/support" ], 
 			} else {
 				// redirected on resuming page
 				email = $.getUrlVar("email");
-				tenantName = tenant.getUserInfo(email).tenant;
+				var userInfo = tenant.getUserInfo(email);
+				tenantName = userInfo.tenant;
+				userName = userInfo.username;
 				loginUrl = tenant.getLoginUrl({
 					tenantname : tenantName
 				});
