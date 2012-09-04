@@ -18,6 +18,9 @@
  */
 package com.exoplatform.cloudworkspaces.rest;
 
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
+
 import com.exoplatform.cloud.admin.CloudAdminException;
 import com.exoplatform.cloud.admin.configuration.AdminConfiguration;
 import com.exoplatform.cloud.admin.configuration.TenantInfoFieldName;
@@ -40,6 +43,7 @@ import com.exoplatform.cloudworkspaces.listener.AsyncTenantStarter;
 import com.exoplatform.cloudworkspaces.users.UserLimitsStorage;
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.http.ContentType;
+
 import org.apache.commons.configuration.Configuration;
 import org.everrest.assured.EverrestJetty;
 import org.mockito.InjectMocks;
@@ -50,13 +54,12 @@ import org.mockito.testng.MockitoTestNGListener;
 import org.testng.ITestContext;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
+
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
 
 @Listeners(value = { EverrestJetty.class, MockitoTestNGListener.class })
 public class TestCloudWorkspacesTenantService {
@@ -146,7 +149,11 @@ public class TestCloudWorkspacesTenantService {
                .when()
                .post("/rest/cloud-admin/cloudworkspaces/tenant-service/contactus");
 
-    Mockito.verify(notificationMailSender).sendContactUsEmail(EMAIL, FIRST_NAME, PHONE, SUBJECT, TEXT);
+    Mockito.verify(notificationMailSender).sendContactUsEmail(EMAIL,
+                                                              FIRST_NAME,
+                                                              PHONE,
+                                                              SUBJECT,
+                                                              TEXT);
 
     Mockito.verifyNoMoreInteractions(notificationMailSender);
   }
@@ -1403,7 +1410,7 @@ public class TestCloudWorkspacesTenantService {
                .port((Integer) context.getAttribute(EverrestJetty.JETTY_PORT))
                .expect()
                .statusCode(309)
-               .header("Location", "http://cloud-workspaces:8080/signin.jsp?email=" + EMAIL)
+               .header("Location", "http://" + TENANT + ".cloud-workspaces:8080")
                .when()
                .post("/rest/cloud-admin/cloudworkspaces/tenant-service/signup");
 
