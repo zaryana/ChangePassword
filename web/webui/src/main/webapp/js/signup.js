@@ -80,13 +80,14 @@ require([ "cloud/tenant", "cloud/marketo", "cloud/marketo.cookies", "cloud/track
 					"_mkt_trk" : $("input[name=_mkt_trk]").val()
 				}, function() {
 					window.location = location;
-					$(function() {
+					//setCookie("tryagain-message", "true", 5);
+					/*$(function() {
 						// wait for a page ready and set cookie
 						if ($("#tryAgainNote").length > 0) {
 							// we have such element so we're on Try Again page and it was submitted already - set cookie
 							setCookie("tryagainMessage", "true", 5);
 						}	
-					});
+					});*/
 				});
 			},
 			resuming : function(location) {
@@ -136,9 +137,13 @@ require([ "cloud/tenant", "cloud/marketo", "cloud/marketo.cookies", "cloud/track
 		}
 
 		// init if it's Try Again page
-		var tryagainMessage = getCookie("tryagainMessage");
-		if (tryagainMessage != null) {
-			$("#tryAgainNote").html("Sorry, we really need a company email address.");
+		if ($("#tryAgainNote").length > 0) {
+			var tryagainMessage = getCookie("cw-tryagain");
+			if (tryagainMessage) {
+				$("#tryAgainNote").html("Sorry, we really need a company email address.");
+			} else  {
+				setCookie("cw-tryagain", "true", 5);
+			}
 		}
 	});
 });
