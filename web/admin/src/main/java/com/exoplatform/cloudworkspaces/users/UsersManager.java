@@ -18,6 +18,11 @@
  */
 package com.exoplatform.cloudworkspaces.users;
 
+import com.exoplatform.cloud.admin.CloudAdminException;
+import com.exoplatform.cloud.admin.configuration.TenantInfoFieldName;
+import com.exoplatform.cloud.admin.dao.TenantInfoDataManager;
+import com.exoplatform.cloud.admin.util.AdminConfigurationUtil;
+import com.exoplatform.cloud.status.TenantState;
 import com.exoplatform.cloudworkspaces.CloudIntranetUtils;
 import com.exoplatform.cloudworkspaces.NotificationMailSender;
 import com.exoplatform.cloudworkspaces.ReferencesManager;
@@ -28,11 +33,6 @@ import com.exoplatform.cloudworkspaces.UserRequestDAO;
 import com.exoplatform.cloudworkspaces.http.WorkspacesOrganizationRequestPerformer;
 
 import org.apache.commons.configuration.Configuration;
-import com.exoplatform.cloud.admin.CloudAdminException;
-import com.exoplatform.cloud.admin.configuration.TenantInfoFieldName;
-import com.exoplatform.cloud.admin.dao.TenantInfoDataManager;
-import com.exoplatform.cloud.admin.util.AdminConfigurationUtil;
-import com.exoplatform.cloud.status.TenantState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -134,7 +134,7 @@ public class UsersManager {
           userRequestDao.delete(user);
         } catch (UserAlreadyExistsException e) {
           LOG.warn("Administrator " + userMail + " is already exists, deleting from waiting queue.");
-          notificationMailSender.sendIntranetCreatedEmail(userMail, props);
+          // notificationMailSender.sendIntranetCreatedEmail(userMail, props);
           userRequestDao.delete(user);
         }
       }
@@ -166,7 +166,8 @@ public class UsersManager {
           userRequestDao.delete(user);
         } catch (UserAlreadyExistsException e) {
           LOG.warn("User " + userMail + " is already exists, deleting from waiting queue.");
-          notificationMailSender.sendUserJoinedEmails(tenant, fName, userMail, props);
+          // notificationMailSender.sendUserJoinedEmails(tenant, fName,
+          // userMail, props);
           userRequestDao.delete(user);
         } catch (UsersLimitExceedException e) {
           // Limit reached
@@ -219,7 +220,8 @@ public class UsersManager {
         userRequestDao.delete(user);
       } catch (UserAlreadyExistsException e) {
         LOG.warn("User " + userMail + " is already exists, deleting from waiting queue.");
-        notificationMailSender.sendUserJoinedEmails(tenant, fName, userMail, props);
+        // notificationMailSender.sendUserJoinedEmails(tenant, fName, userMail,
+        // props);
         userRequestDao.delete(user);
       } catch (UsersLimitExceedException e) {
         // do nothing this user already has status WAITING_LIMIT
