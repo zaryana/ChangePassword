@@ -27,9 +27,14 @@ define([ "jquery" ], function() {
 		var redirectWrapper = function(callbacks) {
 			return function(jqXHR, data, textStatus) {
 				// custom redirect
-				if (callbacks.redirect) {
-					var location = jqXHR.getResponseHeader("Location");
-					callbacks.redirect(location);
+				var location = jqXHR.getResponseHeader("Location");
+				var handler = jqXHR.getResponseHeader("Location-Handler"); // 04.09.2012: tryAgain or resuming
+				if (location) {
+					if (handler && callbacks[handler]) {
+						callbacks[handler](location);
+					} else if (callbacks.redirect) {
+						callbacks.redirect(location);
+					}
 				}
 			};
 		};
@@ -115,7 +120,7 @@ define([ "jquery" ], function() {
 		};
 
 		this.status = function(data, callbacks) {
-			if (data.tenantname && data.tenantname.length > 0) {
+			if (settings.tenantName && settings.tenantName.length > 0) {
 				var request = $.ajax({
 					type : "POST",
 					url : tenantServicePath + "/status/" + data.tenantname,

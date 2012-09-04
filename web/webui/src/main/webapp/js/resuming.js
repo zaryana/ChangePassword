@@ -21,8 +21,8 @@ require([ "cloud/tenant", "cloud/marketo", "cloud/trackers", "cloud/support" ], 
 	var email;
 	var tenantName;
 	var loginUrl;
-	var signupUrl = location.protocol + '//' + hostName + '/signup-done.jsp';
-	var resetUrl = location.protocol + '//' + hostName + '/reset-password.jsp';
+	var signupUrl = prefixUrl + "/signup-done.jsp";
+	var resetUrl = prefixUrl + "/reset-password.jsp";
 
 	function isOnline() {
 		tenant.status({
@@ -31,9 +31,9 @@ require([ "cloud/tenant", "cloud/marketo", "cloud/trackers", "cloud/support" ], 
 			done : function(status) {
 				var search = "ONLINE";
 				if (status.substring(0, search.length) === search) {
-					if ($.getUrlVar('action') == 'signup') {
+					if ($.getUrlVar("action") == "signup") {
 						window.location = signupUrl;
-					} else if ($.getUrlVar('action') == 'reset') {
+					} else if ($.getUrlVar("action") == "reset") {
 						window.location = resetUrl;
 					} else {
 						window.location = loginUrl;
@@ -100,7 +100,7 @@ require([ "cloud/tenant", "cloud/marketo", "cloud/trackers", "cloud/support" ], 
 				tryResume(tenantName);
 			} else {
 				// redirected on resuming page
-				email = $.getUrlVar('email');
+				email = $.getUrlVar("email");
 				tenantName = tenant.getUserInfo(email).tenant;
 				loginUrl = tenant.getLoginUrl({
 					tenantname : tenantName

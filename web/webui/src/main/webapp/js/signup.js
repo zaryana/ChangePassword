@@ -42,19 +42,19 @@ require([ "cloud/tenant", "cloud/marketo", "cloud/marketo.cookies", "cloud/track
 					marketo.send({
 						"Email" : userMail,
 						"Cloud_Workspaces_User__c" : "Yes",
-						"Search_Engine__c" : $('input[name=Search_Engine__c]').val(),
-						"Search_String__c" : $('input[name=Search_String__c]').val(),
-						"Pay_Per_Click_Keyword__c" : $('input[name=Pay_Per_Click_Keyword__c]').val(),
-						"sfga" : $('input[name=sfga]').val(),
-						"lpId" : $('input[name=lpId]').val(),
-						"subId" : $('input[name=subId]').val(),
-						"formid" : $('input[name=formid]').val(),
-						"_mkt_trk" : $('input[name=_mkt_trk]').val()
+						"Search_Engine__c" : $("input[name=Search_Engine__c]").val(),
+						"Search_String__c" : $("input[name=Search_String__c]").val(),
+						"Pay_Per_Click_Keyword__c" : $("input[name=Pay_Per_Click_Keyword__c]").val(),
+						"sfga" : $("input[name=sfga]").val(),
+						"lpId" : $("input[name=lpId]").val(),
+						"subId" : $("input[name=subId]").val(),
+						"formid" : $("input[name=formid]").val(),
+						"_mkt_trk" : $("input[name=_mkt_trk]").val()
 					}, function() {
 						window.location = prefixUrl + "/signup-done.jsp";
 					});
 				} else {
-					// TODO don't need Marketo here, see wrongEmail callback below
+					// TODO don't need Marketo here, see tryAgain callback below
 					/*
 					 * marketo.send({ "Email" : $('#email').val(), "Cloud_Workspaces_User__c" : "No", "Search_Engine__c" :
 					 * $('input[name=Search_Engine__c]').val(), "Search_String__c" : $('input[name=Search_String__c]').val(),
@@ -62,31 +62,37 @@ require([ "cloud/tenant", "cloud/marketo", "cloud/marketo.cookies", "cloud/track
 					 * "LeadSource" : $('#LeadSource').val(), "lpId" : $('input[name=lpId]').val(), "subId" : $('input[name=subId]').val(),
 					 * "formid" : $('input[name=formid]').val(), "_mkt_trk" : $('input[name=_mkt_trk]').val() }, function() { });
 					 */
-					$("#messageString").html('<span class="WarningIcon">' + resp + '</span>');
+					$("#messageString").html("<span class='WarningIcon'>" + resp + "</span>");
 				}
 			},
-			redirect : function(location) {
-				window.location = location;
-			},
-			wrongEmail : function(message) {
+			tryAgain : function(location) {
 				marketo.send({
 					"Email" : userMail,
 					"Cloud_Workspaces_User__c" : "No",
-					"Search_Engine__c" : $('input[name=Search_Engine__c]').val(),
-					"Search_String__c" : $('input[name=Search_String__c]').val(),
-					"Pay_Per_Click_Keyword__c" : $('input[name=Pay_Per_Click_Keyword__c]').val(),
-					"sfga" : $('input[name=sfga]').val(),
-					"LeadSource" : $('#LeadSource').val(),
-					"lpId" : $('input[name=lpId]').val(),
-					"subId" : $('input[name=subId]').val(),
-					"formid" : $('input[name=formid]').val(),
-					"_mkt_trk" : $('input[name=_mkt_trk]').val()
+					"Search_Engine__c" : $("input[name=Search_Engine__c]").val(),
+					"Search_String__c" : $("input[name=Search_String__c]").val(),
+					"Pay_Per_Click_Keyword__c" : $("input[name=Pay_Per_Click_Keyword__c]").val(),
+					"sfga" : $("input[name=sfga]").val(),
+					"LeadSource" : $("#LeadSource").val(),
+					"lpId" : $("input[name=lpId]").val(),
+					"subId" : $("input[name=subId]").val(),
+					"formid" : $("input[name=formid]").val(),
+					"_mkt_trk" : $("input[name=_mkt_trk]").val()
 				}, function() {
-					if ($('#tryAgainNote').length > 0) {
-						// we have such element so we're on Try Again page and it was submitted already - set cookie
-						setCookie("tryagainMessage", "true", 5);
-					}
+					window.location = location;
+					$(function() {
+						// wait for a page ready and set cookie
+						if ($("#tryAgainNote").length > 0) {
+							// we have such element so we're on Try Again page and it was submitted already - set cookie
+							setCookie("tryagainMessage", "true", 5);
+						}	
+					});
 				});
+			},
+			resuming : function(location) {
+				window.location = location;
+			},
+			wrongEmail : function(message) {
 				$("#messageString").html("<span class='WarningIcon'>" + message + "</span>");
 			},
 			fail : function(err) {
@@ -94,7 +100,7 @@ require([ "cloud/tenant", "cloud/marketo", "cloud/marketo.cookies", "cloud/track
 			},
 			always : function() {
 				// finally enable button
-				$("#t_submit").removeAttr('disabled');
+				$("#t_submit").removeAttr("disabled");
 				$("#t_submit").val("Sign Up");
 			}
 		});
@@ -132,7 +138,7 @@ require([ "cloud/tenant", "cloud/marketo", "cloud/marketo.cookies", "cloud/track
 		// init if it's Try Again page
 		var tryagainMessage = getCookie("tryagainMessage");
 		if (tryagainMessage != null) {
-			$('#tryAgainNote').html("Sorry, we really need a company email address.");
+			$("#tryAgainNote").html("Sorry, we really need a company email address.");
 		}
 	});
 });

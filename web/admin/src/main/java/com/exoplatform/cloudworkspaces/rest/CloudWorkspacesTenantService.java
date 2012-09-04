@@ -158,6 +158,7 @@ public class CloudWorkspacesTenantService {
                              "http://"
                                  + AdminConfigurationUtil.getMasterHost(cloudAdminConfiguration)
                                  + "/tryagain.jsp")
+                     .header("Location-Handler", "tryAgain")
                      .build();
     }
 
@@ -238,6 +239,7 @@ public class CloudWorkspacesTenantService {
                                  "http://"
                                      + AdminConfigurationUtil.getMasterHost(cloudAdminConfiguration)
                                      + "/resuming.jsp?email=" + userMail + "&action=signup")
+                         .header("Location-Handler", "resuming")
                          .build();
         }
         default: {
