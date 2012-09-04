@@ -256,9 +256,8 @@ public class CloudWorkspacesTenantService {
             + ". Redirect to signin page.");
         return Response.status(309)
                        .header("Location",
-                               "http://"
-                                   + AdminConfigurationUtil.getMasterHost(cloudAdminConfiguration)
-                                   + "/signin.jsp?email=" + userMail)
+                               "http://" + tName + "."
+                                   + AdminConfigurationUtil.getMasterHost(cloudAdminConfiguration))
                        .build();
       }
     }
