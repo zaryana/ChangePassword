@@ -96,6 +96,8 @@
     <log4j.version>1.2.16</log4j.version>
 
     <everrest.version>1.0.4</everrest.version>
+    <picocontainer.version>2.14.1</picocontainer.version>
+    <httpcomponents.version>4.1.2</httpcomponents.version>
 
     <!-- Testing tools -->
     <testng.version>6.3.1</testng.version>
@@ -526,6 +528,11 @@
       </dependency>
       <dependency>
         <groupId>org.everrest</groupId>
+        <artifactId>everrest-core</artifactId>
+        <version>${everrest.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.everrest</groupId>
         <artifactId>everrest-groovy</artifactId>
         <version>${everrest.version}</version>
       </dependency>
@@ -533,6 +540,16 @@
         <groupId>org.everrest</groupId>
         <artifactId>everrest-assured</artifactId>
         <version>${everrest.assured.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.picocontainer</groupId>
+        <artifactId>picocontainer</artifactId>
+        <version>${picocontainer.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpclient</artifactId>
+        <version>${httpcomponents.version}</version>
       </dependency>
       <dependency>
         <groupId>dumbster</groupId>
