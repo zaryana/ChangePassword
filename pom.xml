@@ -574,6 +574,7 @@
     <module>platform-bundle</module>
     <module>installer-bundle</module>
     <module>local-cloud</module>
+    <module>test-suite</module>
   </modules>
 
 </project>
