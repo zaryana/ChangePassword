@@ -162,7 +162,7 @@ public class CloudIntranetUtils {
       }
     }
 
-    String username = email.substring(0, email.indexOf('@'));
+    String username = email.substring(0, email.indexOf('@')).toLowerCase();
     String hostname = email.substring(email.indexOf("@") + 1).toLowerCase();
     String[] subdomains = hostname.split("\\.");
     String tenantName;
