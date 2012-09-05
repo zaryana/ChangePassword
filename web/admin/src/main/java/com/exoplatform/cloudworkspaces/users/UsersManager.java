@@ -134,7 +134,6 @@ public class UsersManager {
           userRequestDao.delete(user);
         } catch (UserAlreadyExistsException e) {
           LOG.warn("Administrator " + userMail + " is already exists, deleting from waiting queue.");
-          // notificationMailSender.sendIntranetCreatedEmail(userMail, props);
           userRequestDao.delete(user);
         }
       }
@@ -166,8 +165,6 @@ public class UsersManager {
           userRequestDao.delete(user);
         } catch (UserAlreadyExistsException e) {
           LOG.warn("User " + userMail + " is already exists, deleting from waiting queue.");
-          // notificationMailSender.sendUserJoinedEmails(tenant, fName,
-          // userMail, props);
           userRequestDao.delete(user);
         } catch (UsersLimitExceedException e) {
           // Limit reached
@@ -220,8 +217,6 @@ public class UsersManager {
         userRequestDao.delete(user);
       } catch (UserAlreadyExistsException e) {
         LOG.warn("User " + userMail + " is already exists, deleting from waiting queue.");
-        // notificationMailSender.sendUserJoinedEmails(tenant, fName, userMail,
-        // props);
         userRequestDao.delete(user);
       } catch (UsersLimitExceedException e) {
         // do nothing this user already has status WAITING_LIMIT
@@ -254,27 +249,22 @@ public class UsersManager {
     String lName = user.getLastName();
     String username = utils.email2userMailInfo(userMail).getUsername();
 
-    try {
-      if (!workspacesOrganizationRequestPerformer.isNewUserAllowed(tenant, username)) {
-        throw new UsersLimitExceedException("Not enough space for this user in tenant");
-      }
-
-      if (user.getPassword().isEmpty()) {
-        throw new UsersFormNotFilledException("User's form not filled yet.");
-      }
-      LOG.info("Joining {} {} to tenant {} from queue.", new Object[] {
-          (user.isAdministrator()) ? "administrator" : "user", userMail, tenant });
-      workspacesOrganizationRequestPerformer.storeUser(tenant,
-                                                       username,
-                                                       userMail,
-                                                       fName,
-                                                       lName,
-                                                       user.getPassword(),
-                                                       user.isAdministrator());
-    } catch (UserAlreadyExistsException ex) {
-      LOG.warn((user.isAdministrator() ? "Administrator " : "User ") + userMail
-          + " is already exists, deleting from waiting queue.");
+    if (!workspacesOrganizationRequestPerformer.isNewUserAllowed(tenant, username)) {
+      throw new UsersLimitExceedException("Not enough space for this user in tenant");
     }
+
+    if (user.getPassword().isEmpty()) {
+      throw new UsersFormNotFilledException("User's form not filled yet.");
+    }
+    LOG.info("Joining {} {} to tenant {} from queue.", new Object[] {
+        (user.isAdministrator()) ? "administrator" : "user", userMail, tenant });
+    workspacesOrganizationRequestPerformer.storeUser(tenant,
+                                                     username,
+                                                     userMail,
+                                                     fName,
+                                                     lName,
+                                                     user.getPassword(),
+                                                     user.isAdministrator());
   }
 
 }

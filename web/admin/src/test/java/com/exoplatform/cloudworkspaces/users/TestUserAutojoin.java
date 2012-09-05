@@ -18,6 +18,9 @@
  */
 package com.exoplatform.cloudworkspaces.users;
 
+import com.exoplatform.cloud.admin.CloudAdminException;
+import com.exoplatform.cloud.admin.dao.TenantDataManagerException;
+import com.exoplatform.cloud.admin.dao.TenantInfoDataManager;
 import com.exoplatform.cloudworkspaces.CloudIntranetUtils;
 import com.exoplatform.cloudworkspaces.EmailBlacklist;
 import com.exoplatform.cloudworkspaces.NotificationMailSender;
@@ -29,9 +32,6 @@ import com.exoplatform.cloudworkspaces.http.WorkspacesOrganizationRequestPerform
 
 import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.Configuration;
-import com.exoplatform.cloud.admin.CloudAdminException;
-import com.exoplatform.cloud.admin.dao.TenantDataManagerException;
-import com.exoplatform.cloud.admin.dao.TenantInfoDataManager;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 import org.testng.annotations.BeforeMethod;
@@ -223,11 +223,7 @@ public class TestUserAutojoin {
                                                                  Matchers.anyString(),
                                                                  Matchers.anyString(),
                                                                  Matchers.anyBoolean());
-    Mockito.verify(notificationMailSender, Mockito.times(1))
-           .sendUserJoinedEmails(Matchers.anyString(), // Appropriate email send
-                                 Matchers.anyString(),
-                                 Matchers.anyString(),
-                                 Matchers.anyMap());
+    Mockito.verifyZeroInteractions(notificationMailSender);
 
   }
 
