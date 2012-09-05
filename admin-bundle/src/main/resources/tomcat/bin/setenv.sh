@@ -2,7 +2,7 @@
 #
 # JAVA_OPTS override jvm options for example: Xmx, Xms etc.
 
-. ./environment.sh
+#. ./environment.sh
 
 # custom JAVA options
 CATALINA_TMPDIR="/tmp" # temporarily until CM will not fix 1.1M8
