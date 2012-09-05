@@ -7,7 +7,7 @@
   <parent>
     <groupId>com.exoplatform.cloudworkspaces</groupId>
     <artifactId>cloud-workspaces-testsuite</artifactId>
-    <version>1.1.0-Beta08</version>
+    <version>1.1.0-Beta09-SNAPSHOT</version>
   </parent>
 
   <artifactId>cloud-workspaces-testsuite-selenium</artifactId>
