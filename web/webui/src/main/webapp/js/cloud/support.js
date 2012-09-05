@@ -106,7 +106,8 @@ require([ "cloud/tenant", "cloud/marketo", "cloud/trackers" ], function(tenant, 
 	}
 
 	$(function() {
-		$("#showContactUs").click(showContactUs);
+		$("#contactUsMenu").click(showContactUs);
+		$("#contactUsButton").click(showContactUs);
 	});
 
 });
