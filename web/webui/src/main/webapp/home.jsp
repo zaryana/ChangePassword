@@ -32,7 +32,7 @@
                 <h3>Resources</h3>
                 <ul>
                   <li><a href="#video">Video Tour</a> </li>
-                  <li><a href="/help.jsp">FAQ</a></li>
+                  <li><a href="/faq.jsp">FAQ</a></li>
                   <li><a href="http://community.exoplatform.org" target="_blank">Forum</a></li>
                   <li><a href="/about.jsp">About</a></li>
                 </ul>

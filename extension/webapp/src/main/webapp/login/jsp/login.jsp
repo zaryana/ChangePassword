@@ -122,7 +122,7 @@
 				  <ul class="UIMenuTop FR">
 				    <li><a class="Tab BlueTab" href="<%=hostName%>/about.jsp" target="_parent">About</a></li>
 				    <li><a class="Tab GreenTab" href="http://community.exoplatform.org/portal/public/classic/forum/cloud-workspaces/ForumService" target="_parent">Forum</a></li>
-				    <li><a class="Tab GrayTab" href="<%=hostName%>/help.jsp" target="_parent">Help</a></li>
+				    <li><a class="Tab GrayTab" href="<%=hostName%>/faq.jsp" target="_parent">FAQ</a></li>
 				    <li><a class="Tab OrangeTab" href="http://www.exoplatform.com" target="_parent">eXoplatform.com</a></li>
 				    <li class="last"><a class="Tab OrangeTab" id="showContactUs">Contact us</a></li>
 				  </ul>
