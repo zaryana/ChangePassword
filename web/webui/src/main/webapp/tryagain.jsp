@@ -29,7 +29,7 @@
 			<div class="UIPageBodyContainer">
 				<div class="UIPageBody BlacklistEmailsPage">
 					<div class="Item ClearFix">
-						<a class="Button FR" href="javascript:void(0);" onclick="showContactUsForm('/contact-us.jsp');"><img alt="" src="background/contact-us-button.png" /></a>
+						<a class="Button FR" href="javascript:void(0);" id="contactUsButton"><img alt="" src="background/contact-us-button.png" /></a>
 						<h3>Want to see Cloud Workspaces in action, but don't need your own account?</h3>
 						<p>Contact our sales team for a demo.</p>
 					</div>
