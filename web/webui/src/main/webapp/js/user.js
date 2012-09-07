@@ -245,8 +245,8 @@ require([ "cloud/tenant", "cloud/marketo", "cloud/trackers", "cloud/support" ], 
 					window.location = location;
 				},
 				done : function(resp) {
-					$("#t_submit").hide();
-					$("#messageString").html("<span style=\"color:#19BBE7;\">Request completed, check your email for instructions.</span>");
+					$("#tbl_reset").hide();
+					$("#messageString").html("<span style=\"color:#19BBE7;\">Instructions to reset your password were sent to " + $("#email").val()  + " .</span>");
 				},
 				always : function() {
 					$("#t_submit").val("Change my password");
@@ -282,11 +282,12 @@ require([ "cloud/tenant", "cloud/marketo", "cloud/trackers", "cloud/support" ], 
           $("#t_submit").val("Submit");
         },
         done : function(data) {
-          $("#t_submit").val("Submit");
+          //$("#t_submit").val("Submit");
+          $("#tbl_change").hide();
           var loginUrl = tenant.getLoginUrl({
 						tenantname : data
 					});
-          $("#messageString").html("<span style=\"color:#19BBE7;\">Success. You can now <a href='" + loginUrl +
+          $("#messageString").html("<span style=\"color:#19BBE7;\">Password changed successfully. You can now <a href='" + loginUrl +
           		"'>login</a> with your new password.</span>");
         }
 	  	});

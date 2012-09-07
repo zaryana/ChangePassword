@@ -18,7 +18,7 @@
           <form class="UIFormBox" action="javascript:void(0);" id="resetPasswordForm" method="post">
             <h1 class="TitleForm">Reset Password</h1>
             <div class="TenantFormMsg" id="messageString"></div>
-            <table>
+            <table id="tbl_reset">
               <tr>
                 <td class="Field">Your Email:</td><td><input class="required InputText" id="email" type="text" value="Enter Your Email to Reset Your Password" onclick="this.value='';" /><span class="Star">*</span></td>
               </tr>

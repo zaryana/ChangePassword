@@ -19,7 +19,7 @@
             <h1 class="TitleForm">Reset Password</h1>
             <div class="TenantFormMsg" id="messageString"></div>
             <div id="formDisplay">
-              <table>
+              <table id="tbl_change">
                 <tbody>
                   <tr>
                     <td class="Field">New Password:</td><td><input type="password" id="password" name="password" class="required InputText" /><span class="Star">*</span></td>
