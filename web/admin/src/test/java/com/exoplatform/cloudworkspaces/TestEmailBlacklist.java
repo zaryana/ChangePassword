@@ -51,11 +51,19 @@ public class TestEmailBlacklist {
 
   @DataProvider(name = "email-blacklist")
   public Object[][] emailsDataProvider() {
-    return new Object[][] { { "test0@exoplatform.com", false }, { "test1@mailinator.com", true },
-        { "email@mail.com", true }, { "email@fakemail.gov", true }, { "test@gmail.com", false },
-        { "test@vlskdfjavlejqf.com", false }, { "test@banned.mail.prefix", true },
-        { "test@banned.asdf.vz", true }, { "test@banned.com", true }, { "test@banned", false },
-        { "test@MAILinator.com", true } };
+    return new Object[][] { { "test0@exoplatform.com", false },
+        { "test1@mailinator.com", true },
+        { "email@mail.com", true },
+        { "email@fakemail.gov", true },
+        { "test@gmail.com", false },
+        { "test@vlskdfjavlejqf.com", false },
+        { "test@banned.mail.prefix", false },
+        { "test@banned.asdf.vz", false },
+        { "test@banned.com", true },
+        { "test@yahoo.org", true },
+        { "test@test.yahoo.org", true },
+        { "test@MAILinator.com", true }
+    };
   }
 
   @Test(dataProvider = "email-blacklist")

@@ -22,11 +22,12 @@ import org.apache.commons.configuration.Configuration;
 import org.picocontainer.Startable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.HashSet;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class EmailBlacklist implements Startable {
 
@@ -36,7 +37,7 @@ public class EmailBlacklist implements Startable {
 
   private final File          blacklistFile;
 
-  private HashSet<String>     blacklist;
+  private HashSet<Pattern>     blacklist;
 
   private long                lastModifiedTime           = 0;
 
@@ -72,24 +73,34 @@ public class EmailBlacklist implements Startable {
 
     if (blacklist != null) {
       String domain = email.substring(email.indexOf('@') + 1);
-      String[] parts = domain.split("[.]");
-      String prefix = parts[0];
-      for (int i = 1; i < parts.length; i++) {
-        if (blacklist.contains(prefix + ".*"))
+      for (Pattern p : blacklist) {
+        Matcher m = p.matcher(domain);
+        if (m.matches()) {
           return true;
-        prefix += "." + parts[i];
+        }
       }
-      return blacklist.contains(prefix);
     }
     return false;
   }
 
   private void reload() throws FileNotFoundException {
-    HashSet<String> newBlacklist = new HashSet<String>();
+    HashSet<Pattern> newBlacklist = new HashSet<Pattern>();
     Scanner in = new Scanner(blacklistFile);
     try {
-      while (in.hasNextLine())
-        newBlacklist.add(in.nextLine().trim());
+      while (in.hasNextLine()) {
+        String line = in.nextLine().trim();
+        StringBuilder b = new StringBuilder();
+        for(int i=0; i<line.length(); ++i) {
+          char ch = line.charAt(i);
+          if (".".indexOf(ch) != -1)
+            b.append("\\").append(ch).append("*");   //Converting "." into "\.*" - escaped dot or nothing (for cases like *.yahoo.*)
+          else if ("*".indexOf(ch) != -1)            // Example: mail.com -> mail\.*com
+            b.append("[\\d\\w]").append(ch);         //Converting "*" into "[\d\w]*" - any letter or digit, but not symbol
+          else
+            b.append(ch);
+        }
+        newBlacklist.add(Pattern.compile(b.toString()));
+       }
     } finally {
       in.close();
     }
