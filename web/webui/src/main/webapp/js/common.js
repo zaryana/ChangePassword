@@ -127,6 +127,7 @@ String.prototype.capitalize = function() {
 /* RequireJS config */
 var require = {
 	baseUrl : "/js",
+	waitSeconds : 30,
 
 	paths : {
 		"jquery" : "http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery",
