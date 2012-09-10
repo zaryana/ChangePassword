@@ -20,7 +20,6 @@ import com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.DateTim
 import com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.EmailNotificationPlugin;
 import com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.EmailNotificationService;
 import com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.Event;
-import com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.Plugin;
 import com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.utils.MessagesCache;
 
 public class ConnectionNotificationPlugin extends EmailNotificationPlugin{
@@ -44,7 +43,7 @@ public class ConnectionNotificationPlugin extends EmailNotificationPlugin{
 			ListAccess<Identity> rels = relMan.getIncomingWithListAccess(userIdentity);
 			
 			EmailNotificationService notificationService = (EmailNotificationService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(EmailNotificationService.class);      
-      Set<Event> events = notificationService.getEvents(Plugin.CONNECTION_REQUEST, userId);
+      Set<Event> events = notificationService.getEvents(this.getName(), userId);
       for (Identity rel : rels.load(0, rels.getSize())) {
         Event event = new Event(rel.getProfile().getFullName(), System.currentTimeMillis());
         if (!events.contains(event)) {
@@ -69,7 +68,7 @@ public class ConnectionNotificationPlugin extends EmailNotificationPlugin{
         builder.append("<a href='" + host + "/" + event.getAttributes().get("url") + "' target='_blank'>" + event.getIdentity() + "</a>");
       }
       
-      notificationService.setEvents(Plugin.CONNECTION_REQUEST, userId, events);
+      notificationService.setEvents(this.getName(), userId, events);
 			
 			String connectionRequests = builder.toString();
 			if(connectionRequests.isEmpty()) return "";

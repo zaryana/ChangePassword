@@ -38,8 +38,6 @@ public class EmailNotificationJob extends MultiTenancyJob {
   public class EmailNotificationTask extends MultiTenancyTask {
     public EmailNotificationTask(JobExecutionContext context, String repoName) {
       super(context, repoName);
-      EmailNotificationService emailNotificationService = (EmailNotificationService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(EmailNotificationService.class);
-      emailNotificationService.initResourceBundle(this.repoName);
     }
 
     @Override
@@ -53,13 +51,13 @@ public class EmailNotificationJob extends MultiTenancyJob {
         NodeHierarchyCreator nodeCreator = (NodeHierarchyCreator) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(NodeHierarchyCreator.class);
         EmailNotificationService emailNotificationService = (EmailNotificationService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(EmailNotificationService.class);
 
-        MessagesCache messagesCache = new MessagesCache(EmailNotificationService.HOME);
+        MessagesCache messagesCache = new MessagesCache(EmailNotificationService.class);
         Properties setting = messagesCache.getDefault();
-        EmailTemplateCache templatesCache = new EmailTemplateCache(EmailNotificationService.HOME);
+        EmailTemplateCache templatesCache = new EmailTemplateCache(EmailNotificationService.class);
         Map<String, MessagesCache> pluginMessagesCaches = new HashMap<String, MessagesCache>();
 
         for (EmailNotificationPlugin plugin : emailNotificationService.getPlugins()) {
-          pluginMessagesCaches.put(plugin.getName(), new MessagesCache(EmailNotificationService.PLUGINS + "/" + plugin.getName()));
+          pluginMessagesCaches.put(plugin.getName(), new MessagesCache(plugin.getClass()));
         }
 
         ListAccess<User> laUsers = organizationService.getUserHandler().findAllUsers();
@@ -67,12 +65,25 @@ public class EmailNotificationJob extends MultiTenancyJob {
         for (User user : laUsers.load(0, laUsers.getSize())) {
           String userId = user.getUserName();
           String userLocale = organizationService.getUserProfileHandler().findUserProfileByName(userId).getAttribute("user.language");
-          Node userPrivateNode = nodeCreator.getUserNode(sProvider, userId).getNode("Private");
-          if (userPrivateNode == null)
+          Node userAppDataNode = nodeCreator.getUserNode(sProvider, userId).getNode("ApplicationData");
+          if (userAppDataNode == null)
             continue;
 
           boolean isSendMailByDefault = Boolean.parseBoolean(setting.getProperty("isSendMailByDefault", "true"));
-          boolean isServiceRegistered = userPrivateNode.hasNode(EmailNotificationService.PREFS);
+          String emailNotificationPrefs = EmailNotificationService.APP_NAME + "/" + EmailNotificationService.PREFS;
+          boolean isServiceRegistered = userAppDataNode.hasNode(emailNotificationPrefs);
+
+          if(isServiceRegistered){
+            Node prefsNode = userAppDataNode.getNode(emailNotificationPrefs);
+            String prefsVersion = prefsNode.hasProperty("userPrefsVersion") ? prefsNode.getProperty("userPrefsVersion").getValue().getString() : "";
+            
+            // user prefs version changed, remove old prefs for it to be rebuilt
+            if(!prefsVersion.equals(setting.getProperty("userPrefsVersion", ""))){
+              prefsNode.remove();
+              userAppDataNode.save();
+              isServiceRegistered = false;
+            }
+          }
 
           if (isSendMailByDefault && !isServiceRegistered) {
             EmailNotificationRestService emailNotificationRestService = (EmailNotificationRestService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(EmailNotificationRestService.class);
@@ -91,15 +102,15 @@ public class EmailNotificationJob extends MultiTenancyJob {
           }
 
           if (isServiceRegistered) {
-            Node emailNotificationPrefs = userPrivateNode.getNode(EmailNotificationService.PREFS);
-            String interval = emailNotificationPrefs.getProperty("Interval").getString();
-            Boolean isSummaryMail = emailNotificationPrefs.getProperty("isSummaryMail").getBoolean();
-            if (!emailNotificationPrefs.hasProperty("LastRun")) {
-              emailNotificationPrefs.setProperty("LastRun", System.currentTimeMillis());
-              emailNotificationPrefs.save();
+            Node prefsNode = userAppDataNode.getNode(emailNotificationPrefs);
+            String interval = prefsNode.getProperty("Interval").getString();
+            Boolean isSummaryMail = prefsNode.getProperty("isSummaryMail").getBoolean();
+            if (!prefsNode.hasProperty("LastRun")) {
+              prefsNode.setProperty("LastRun", System.currentTimeMillis());
+              prefsNode.save();
             }
 
-            long lastRun = emailNotificationPrefs.getProperty("LastRun").getLong();
+            long lastRun = prefsNode.getProperty("LastRun").getLong();
             long nextRun = lastRun;
 
             if (isSummaryMail) {
@@ -120,7 +131,7 @@ public class EmailNotificationJob extends MultiTenancyJob {
               continue;
             }
 
-            List<String> notificationPlugins = Arrays.asList(emailNotificationPrefs.getProperty("NotificationPlugins").getString().split(","));
+            List<String> notificationPlugins = Arrays.asList(prefsNode.getProperty("NotificationPlugins").getString().split(","));
 
             StringBuilder builder = new StringBuilder();
 
@@ -144,8 +155,8 @@ public class EmailNotificationJob extends MultiTenancyJob {
               }
             }
 
-            emailNotificationPrefs.setProperty("LastRun", System.currentTimeMillis());
-            emailNotificationPrefs.save();
+            prefsNode.setProperty("LastRun", System.currentTimeMillis());
+            prefsNode.save();
 
             String notifications = builder.toString();
             if (notifications.isEmpty())

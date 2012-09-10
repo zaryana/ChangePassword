@@ -17,7 +17,6 @@
 
 package com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.cache;
 
-import com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.Plugin;
 
 /**
  * Created by The eXo Platform SAS
@@ -27,11 +26,11 @@ import com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.Plugin;
  */
 public class IdentityKey extends ScopeCacheKey {
 
-  private final Plugin plugin;
+  private final String plugin;
 
   private final String user;
 
-  public IdentityKey(final Plugin plugin, final String user) {
+  public IdentityKey(final String plugin, final String user) {
     this.plugin = plugin;
     this.user = user;
   }
