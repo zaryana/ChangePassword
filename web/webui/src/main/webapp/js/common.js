@@ -17,7 +17,8 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-var hostName = location.hostname.indexOf("www") == 0 ? location.hostname.substring(4) : location.hostname;
+//var hostName = location.hostname.indexOf("www") == 0 ? location.hostname.substring(4) : location.hostname;
+var hostName = location.hostname;
 var queryString = location.search;
 
 if (location.port) {
