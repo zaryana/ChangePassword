@@ -45,48 +45,12 @@ public class Main {
     if (args[0].equals("upgrade")) {
       upgrade(args);
     } else if (args[0].equals("install")) {
-      // TODO install(args);
+      install(args);
     } else {
       System.err.println("Choose upgrade or install command");
       return;
     }
   }
-
-  /*
-   * public static void install(String[] args) throws Exception {
-   * VersionsManager versionsManager = new VersionsManager(); String version =
-   * null; String answersFile = null; String conf =
-   * System.getenv("EXO_ADMIN_CONF_DIR"); String data =
-   * System.getenv("EXO_ADMIN_DATA_DIR"); String tomcat = "admin-tomcat"; String
-   * saveTo = null; for (int i = 0; i < args.length; i++) { if
-   * (args[i].equals("-v") || args[i].equals("--version")) version = args[i +
-   * 1]; if (args[i].equals("-a") || args[i].equals("--answers")) answersFile =
-   * args[i + 1]; if (args[i].equals("-t") || args[i].equals("--tomcat")) tomcat
-   * = args[i + 1]; if (args[i].equals("-s") || args[i].equals("--save-to"))
-   * saveTo = args[i + 1]; } if (version == null) {
-   * System.err.println("Set version for upgrade"); } if (conf == null) {
-   * System.err.println(
-   * "Set admin configuration dir in environment. Variable - EXO_ADMIN_CONF_DIR"
-   * ); return; } File confDir = new File(conf); if (!confDir.exists() ||
-   * !confDir.isDirectory()) { confDir.mkdirs(); } if (tomcat == null)
-   * System.err.println("Set path to tomcat directory. Use --tomcat"); File
-   * tomcatDir = new File(tomcat); if (!tomcatDir.exists() ||
-   * !tomcatDir.isDirectory()) {
-   * System.err.println("Tomcat dir not exists or is not directory"); } if (data
-   * == null) System.err.println(
-   * "Set admin configuration dir in environment. Variable - EXO_ADMIN_DATA_DIR"
-   * ); File dataDir = new File(data); if (!dataDir.exists() ||
-   * !dataDir.isDirectory()) { dataDir.mkdirs(); } AnswersManager answersManager
-   * = new AnswersManager((saveTo == null) ? null : new File(saveTo));
-   * InteractionManager interaction = null; if (answersFile == null) {
-   * interaction = new StreamInteractionManager(); } else { interaction = new
-   * InteractionManagerWithAnswers(new File(answersFile)); } VersionEntry entry
-   * = versionsManager.getVersionEntry(version); PicoContainer container =
-   * entry.getContainerClass().newInstance().getContainer(entry, interaction,
-   * answersManager);
-   * container.getComponent(AdminUpgradeAlgorithm.class).install(confDir,
-   * tomcatDir, dataDir); }
-   */
 
   public static void upgrade(String[] args) throws Exception {
     VersionsManager versionsManager = new VersionsManager();
@@ -179,6 +143,89 @@ public class Main {
                                                  interaction,
                                                  answersManager);
     container.getComponent(AdminUpgradeAlgorithm.class).upgrade(nextAdminDirs, isClearTenants);
+  }
+
+  public static void install(String[] args) throws Exception {
+    VersionsManager versionsManager = new VersionsManager();
+
+    String version = null;
+    String answersFile = null;
+    String conf = System.getenv("EXO_ADMIN_CONF_DIR");
+    String data = System.getenv("EXO_ADMIN_DATA_DIR");
+    String tomcat = null;
+    String saveTo = null;
+    for (int i = 0; i < args.length; i++) {
+      if (args[i].equals("-v") || args[i].equals("--version"))
+        version = args[i + 1];
+      if (args[i].equals("-a") || args[i].equals("--answers"))
+        answersFile = args[i + 1];
+      if (args[i].equals("-t") || args[i].equals("--tomcat"))
+        tomcat = args[i + 1];
+      if (args[i].equals("-s") || args[i].equals("--save-to"))
+        saveTo = args[i + 1];
+    }
+    if (version == null) {
+      System.err.println("Set version for upgrade");
+      return;
+    }
+
+    if (conf == null) {
+      System.err.println("Set admin configuration dir in environment. Variable - EXO_ADMIN_CONF_DIR");
+      return;
+    }
+    File confDir = new File(conf);
+    if (!confDir.exists()) {
+      confDir.mkdirs();
+    }
+    if (!confDir.isDirectory()) {
+      System.err.println("Conf dir is not directory");
+      return;
+    }
+
+    if (tomcat == null) {
+      System.err.println("Set path to tomcat directory. Use --tomcat");
+      return;
+    }
+    File tomcatDir = new File(tomcat);
+    if (tomcatDir.exists() && !tomcatDir.isDirectory()) {
+      System.err.println("Tomcat dir exists but it's not directory");
+      return;
+    }
+
+    if (data == null) {
+      System.err.println("Set admin configuration dir in environment. Variable - EXO_ADMIN_DATA_DIR");
+      return;
+    }
+    File dataDir = new File(data);
+    if (!dataDir.exists()) {
+      dataDir.mkdirs();
+    }
+    if (!dataDir.isDirectory()) {
+      System.out.println("Data dir not exists or is not directory");
+      return;
+    }
+
+    AnswersManager answersManager = new AnswersManager((saveTo == null) ? null : new File(saveTo));
+
+    InteractionManager interaction = null;
+    if (answersFile == null) {
+      interaction = new StreamInteractionManager();
+    } else {
+      interaction = new InteractionManagerWithAnswers(new File(answersFile));
+    }
+
+    AdminDirectories prevAdminDirs = new AdminDirectories(tomcatDir, confDir, dataDir);
+    AdminDirectories nextAdminDirs = new AdminDirectories(tomcatDir, confDir, dataDir);
+
+    VersionEntry entry = versionsManager.getVersionEntry(version);
+    PicoContainer container = entry.getContainerClass()
+                                   .newInstance()
+                                   .getContainer(prevAdminDirs,
+                                                 nextAdminDirs,
+                                                 entry,
+                                                 interaction,
+                                                 answersManager);
+    container.getComponent(AdminUpgradeAlgorithm.class).install(nextAdminDirs);
   }
 
 }

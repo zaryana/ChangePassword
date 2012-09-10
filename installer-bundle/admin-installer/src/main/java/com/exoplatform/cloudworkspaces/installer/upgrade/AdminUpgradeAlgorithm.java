@@ -28,7 +28,6 @@ public abstract class AdminUpgradeAlgorithm {
 
   public abstract void upgrade(AdminDirectories toDirs, boolean isClearTenants) throws InstallerException;
 
-  // public abstract void install(CurrentAdmin currAdmin) throws
-  // InstallerException;
+  public abstract void install(AdminDirectories toDirs) throws InstallerException;
 
 }

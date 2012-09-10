@@ -190,33 +190,86 @@ public abstract class MinorAdminUpgradeAlgorithm extends AdminUpgradeAlgorithm {
     }
   }
 
-  /*
-   * @Override public void install(File confDir, File tomcatDir, File dataDir)
-   * throws InstallerException { File bundleZip = new
-   * File(tomcatDir.getParentFile(), "admin-bundle-" + getVersion() + ".zip");
-   * if (bundleZip.exists()) { if (!bundleZip.delete()) { throw new
-   * InstallerException("Could not delete file " + bundleZip.getAbsolutePath());
-   * } } bundleDownloader.downloadAdminTo(bundleZip);
-   * configurationManager.bindTo(confDir, tomcatDir, bundleZip);
-   * configurationManager.configure();
-   * cloudAdminServices.bindTo(answers.getAnswer("tenant.masterhost"),
-   * "cloudadmin", answers.getAnswer("tomcat.users.admin.password"));
-   * updateStarted(confDir, tomcatDir, dataDir); tomcat.stopTomcat();
-   * configurationManager.update(); tomcat.startTomcat(); tomcatStarted(confDir,
-   * tomcatDir, dataDir); cloudAdminServices.blockAutoscaling(); String newAlias
-   * =
-   * cloudAdminServices.serverStart(answers.getAnswer("application.default.type"
-   * )); String state = cloudAdminServices.serverState(newAlias); while (state
-   * != null && !state.equals("ONLINE")) { try { Thread.sleep(1 * 60 * 1000); }
-   * catch (InterruptedException e) { throw new InstallerException(e); } state =
-   * cloudAdminServices.serverState(newAlias); } if (state == null) { throw new
-   * InstallerException
-   * ("Instance with new application server didn't start in time"); }
-   * newAsReady(confDir, tomcatDir, dataDir);
-   * cloudAdminServices.allowAutoscaling(); updateFinished(confDir, tomcatDir,
-   * dataDir); System.out.println("Admin with version " + getVersion() +
-   * " successfully installed"); }
-   */
+  @Override
+  public void install(AdminDirectories toDirs) throws InstallerException {
+    logger.timePrintln("Start configuring admin...");
+    configurationManager.configure();
+
+    configurationGenerated(prevAdmin, currAdmin);
+
+    updateStarted(currAdmin);
+
+    currAdmin.getAdminDirectories().moveTo(toDirs);
+
+    tomcatStopped(currAdmin);
+
+    logger.timePrintln("Starting admin tomcat...");
+    currAdmin.getAdminTomcatWrapper().startTomcat();
+
+    tomcatStarted(currAdmin);
+
+    CloudAdminServices cloudAdminServices = currAdmin.getCloudAdminServices();
+
+    boolean z = false;
+    while (!z) {
+      try {
+        cloudAdminServices.serverStates();
+        z = true;
+      } catch (AdminException e) {
+        z = false;
+      }
+    }
+    logger.timePrintln("Tomcat started. Starting new AS...");
+
+    cloudAdminServices.blockAutoscaling();
+    String newAlias = cloudAdminServices.serverStart(answers.getAnswer("application.default.type"));
+
+    String state = cloudAdminServices.serverState(newAlias);
+    while (state != null && !state.equals("ONLINE")) {
+      try {
+        Thread.sleep(1 * 60 * 1000);
+      } catch (InterruptedException e) {
+        throw new InstallerException(e);
+      }
+      state = cloudAdminServices.serverState(newAlias);
+    }
+    if (state == null) {
+      throw new InstallerException("Instance with new application server didn't start in time");
+    }
+    logger.timePrintln("New AS ready. Stopping previous AS...");
+    newAsReady(currAdmin);
+    for (String alias : cloudAdminServices.serverStates().keySet()) {
+      if (!alias.equals(newAlias)) {
+        logger.print("   ");
+        logger.timePrint("stopping " + alias + "...   ");
+        try {
+          cloudAdminServices.serverStop(alias);
+        } catch (AdminException e) {
+          String serverState = cloudAdminServices.serverStates().get(alias);
+          if (serverState == null || !serverState.equals("STOPPING"))
+            throw e;
+        }
+        String serverState = cloudAdminServices.serverStates().get(alias);
+        while (serverState != null && serverState.equals("STOPPING")) {
+          try {
+            Thread.sleep(1 * 10 * 1000);
+          } catch (InterruptedException e) {
+            throw new InstallerException(e);
+          }
+          serverState = cloudAdminServices.serverStates().get(alias);
+        }
+        if (serverState != null) {
+          throw new AdminException("Error while stopping application server. Server still exists and has status "
+              + serverState);
+        }
+        logger.println("stopped");
+      }
+    }
+    cloudAdminServices.allowAutoscaling();
+
+    updateFinished(currAdmin);
+    logger.timePrintln("Admin successfully installed with version " + getVersion());
+  }
 
   public abstract String getVersion();
 

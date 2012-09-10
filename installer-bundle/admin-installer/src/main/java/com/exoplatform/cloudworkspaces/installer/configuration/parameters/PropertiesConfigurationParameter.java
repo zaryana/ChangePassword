@@ -76,6 +76,9 @@ public class PropertiesConfigurationParameter implements ConfigurationParameter 
     ParameterEntry param = parameters.get(0);
     try {
       String value = ConfigUtils.findProperty(confDir, param.file, param.key);
+      if (value == null) {
+        return null;
+      }
       Pattern pattern = Pattern.compile(param.template.replace("{}", "(.*)"));
       Matcher matcher = pattern.matcher(value);
       matcher.find();
