@@ -32,16 +32,6 @@ public class TestAdminDirectories {
   private static final File PREFIX = new File("target/test-classes/test-directories/").getAbsoluteFile();
 
   @Test
-  public void run() throws InstallerException {
-    testMoveTo(new String[] { "new-admin-tomcat/tomcat", "new-admin-tomcat/admin-conf/conf",
-                   "new-admin-data/data" },
-               new String[] { "new-admin-tomcat", "new-admin-tomcat/admin-conf", "new-admin-data" },
-               new String[] { "admin-tomcat", "admin-tomcat/admin-conf", "admin-data" },
-               new String[] { "admin-tomcat/tomcat", "admin-tomcat/admin-conf/conf",
-                   "admin-data/data" });
-  }
-
-  @Test
   public void testIfAnyRelativeDirectories() throws InstallerException {
     String[] existed = new String[] { "new-admin-tomcat/tomcat", "new-admin-conf/conf",
         "new-admin-data/data" };
@@ -55,12 +45,11 @@ public class TestAdminDirectories {
   @Test
   public void testIfAnyRelativeDirectoriesButOldDirectoriesExists() throws InstallerException {
     String[] existed = new String[] { "new-admin-tomcat/tomcat", "new-admin-conf/conf",
-        "new-admin-data/data", "admin-tomcat/old-tomcat", "admin-conf/old-conf",
-        "admin-data/old-data" };
+        "new-admin-data/data", "admin-tomcat/old-tomcat", "admin-conf/old-conf" };
     String[] from = new String[] { "new-admin-tomcat", "new-admin-conf", "new-admin-data" };
     String[] to = new String[] { "admin-tomcat", "admin-conf", "admin-data" };
     String[] expected = new String[] { "admin-tomcat/tomcat", "admin-conf/conf", "admin-data/data",
-        "admin-tomcat.old/old-tomcat", "admin-conf.old/old-conf", "admin-data.old/old-data" };
+        "admin-tomcat.old/old-tomcat", "admin-conf.old/old-conf" };
 
     testMoveTo(existed, from, to, expected);
   }

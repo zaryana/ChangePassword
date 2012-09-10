@@ -54,6 +54,25 @@ public class AdminDirectories {
     }
   }
 
+  public static AdminDirectories createFromBundle(File bundleZip, File toDir) throws IOException,
+                                                                             InterruptedException {
+    File unzipDir = new File(toDir.getAbsolutePath() + ".unzip");
+    if (unzipDir.exists()) {
+      FileUtils.deleteDir(unzipDir);
+    }
+    FileUtils.unzipTo(bundleZip, unzipDir);
+    if (toDir.exists()) {
+      FileUtils.deleteDir(toDir);
+    }
+    File from = new File(unzipDir, "admin-tomcat");
+    if (!from.renameTo(toDir)) {
+      throw new IOException("Couldn't move directory " + from.getAbsolutePath() + " to "
+          + toDir.getAbsolutePath());
+    }
+    FileUtils.deleteDir(unzipDir);
+    return new AdminDirectories(toDir, new File(toDir, "exo-admin-conf"), new File(toDir, "data"));
+  }
+
   public File getTomcatDir() {
     return tomcatDir;
   }
@@ -101,16 +120,20 @@ public class AdminDirectories {
     if (from.equals(to)) {
       if (!isToRelative) {
         backupDir(to);
-        if (!from.renameTo(to)) {
+        try {
+          FileUtils.moveDir(from, to);
+        } catch (IOException e) {
           throw new InstallerException("Couldn't move directory " + from.getAbsolutePath()
-              + " to directory " + to.getAbsolutePath());
+              + " to directory " + to.getAbsolutePath(), e);
         }
       }
     } else {
       backupDir(to);
-      if (!from.renameTo(to)) {
+      try {
+        FileUtils.moveDir(from, to);
+      } catch (IOException e) {
         throw new InstallerException("Couldn't move directory " + from.getAbsolutePath()
-            + " to directory " + to.getAbsolutePath());
+            + " to directory " + to.getAbsolutePath(), e);
       }
     }
     if (isToRelative) {
@@ -141,7 +164,11 @@ public class AdminDirectories {
     this.tomcatDir = toTomcatDir;
 
     this.confDir = moveResourcesDir(getConfDir(), toConfDir, to.isConfRelative());
-    this.dataDir = moveResourcesDir(getDataDir(), toDataDir, to.isDataRelative());
+    this.isConfRelative = to.isConfRelative();
+    if (!to.getDataDir().exists()) {
+      this.dataDir = moveResourcesDir(getDataDir(), toDataDir, to.isDataRelative());
+      this.isDataRelative = to.isDataRelative();
+    }
   }
 
   private String getRelativePath(File baseFile, File childFile) {

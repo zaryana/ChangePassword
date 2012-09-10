@@ -41,7 +41,14 @@ public class FileUtils {
     }
   }
 
+  public static void moveDir(File from, File to) throws IOException {
+    copyDirs(from, to);
+    deleteDir(from);
+  }
+
   public static void copyDirs(File from, File to) throws IOException {
+    if (!to.exists())
+      to.mkdir();
     for (File file : from.listFiles()) {
       if (file.isDirectory()) {
         File toDir = new File(to, file.getName());
@@ -55,12 +62,14 @@ public class FileUtils {
   }
 
   public static void deleteDir(File dir) throws IOException {
-    for (File file : dir.listFiles()) {
-      if (file.isDirectory()) {
-        deleteDir(file);
-      } else {
-        if (!file.delete())
-          throw new IOException("File " + file.getAbsolutePath() + " couldn't be deleted");
+    if (dir.isDirectory()) {
+      for (File file : dir.listFiles()) {
+        if (file.isDirectory()) {
+          deleteDir(file);
+        } else {
+          if (!file.delete())
+            throw new IOException("File " + file.getAbsolutePath() + " couldn't be deleted");
+        }
       }
     }
     if (!dir.delete())
