@@ -20,12 +20,8 @@ package com.exoplatform.cloudworkspaces.installer.tomcat;
 
 import com.exoplatform.cloudworkspaces.installer.InstallerException;
 
-import java.io.File;
-
 public interface AdminTomcatWrapper {
   
-  public void bindTo(File tomcatDir);
-
   public void startTomcat() throws InstallerException;
 
   public void stopTomcat() throws InstallerException;

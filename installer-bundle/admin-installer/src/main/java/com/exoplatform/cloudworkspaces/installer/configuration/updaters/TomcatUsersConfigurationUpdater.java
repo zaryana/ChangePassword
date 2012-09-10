@@ -18,17 +18,15 @@
  */
 package com.exoplatform.cloudworkspaces.installer.configuration.updaters;
 
-import com.exoplatform.cloudworkspaces.installer.ConfigUtils;
 import com.exoplatform.cloudworkspaces.installer.InstallerException;
+import com.exoplatform.cloudworkspaces.installer.configuration.AdminConfiguration;
 import com.exoplatform.cloudworkspaces.installer.configuration.BaseConfigurationUpdater;
-import com.exoplatform.cloudworkspaces.installer.configuration.ConfigurationException;
+import com.exoplatform.cloudworkspaces.installer.configuration.CurrentAdmin;
+import com.exoplatform.cloudworkspaces.installer.configuration.PreviousAdmin;
 import com.exoplatform.cloudworkspaces.installer.configuration.PreviousQuestion;
 import com.exoplatform.cloudworkspaces.installer.configuration.Question;
 import com.exoplatform.cloudworkspaces.installer.interaction.AnswersManager;
 import com.exoplatform.cloudworkspaces.installer.interaction.InteractionManager;
-
-import java.io.File;
-import java.io.IOException;
 
 public class TomcatUsersConfigurationUpdater extends BaseConfigurationUpdater {
   private final Question tomcatAdminPassQuestion   = new Question("tomcat.users.admin.password",
@@ -44,56 +42,43 @@ public class TomcatUsersConfigurationUpdater extends BaseConfigurationUpdater {
                                                                   null);
 
   @Override
-  public void update(File confDir,
-                     File tomcatDir,
-                     File previousConfDir,
-                     File previousTomcatDir,
+  public void update(PreviousAdmin prevAdmin,
+                     CurrentAdmin currAdmin,
                      InteractionManager interaction,
                      AnswersManager answers) throws InstallerException {
-    try {
-      interaction.println("");
-      interaction.println("");
-      interaction.println("Tomcat users settings");
-      answers.addBlockName("Tomcat users settings");
+    interaction.println("");
+    interaction.println("");
+    interaction.println("Tomcat users settings");
+    answers.addBlockName("Tomcat users settings");
 
-      String prevAdminPassword = ConfigUtils.find(previousTomcatDir,
-                                                  "conf/tomcat-users.xml",
-                                                  "<user username=\"cloudadmin\" password=\"([^\"]*)\"");
-      String prevManagerPassword = ConfigUtils.find(previousTomcatDir,
-                                                    "conf/tomcat-users.xml",
-                                                    "<user username=\"cloudmanager\" password=\"([^\"]*)\"");
+    AdminConfiguration prevConfiguration = prevAdmin.getAdminConfiguration();
+    AdminConfiguration currConfiguration = currAdmin.getAdminConfiguration();
 
-      clearBlock();
-      addToBlock(tomcatAdminPassQuestion, prevAdminPassword);
-      addToBlock(tomcatManagerPassQuestion, prevManagerPassword);
+    String prevAdminPassword = prevConfiguration.get("tomcat.users.cloudadmin.password");
+    String prevManagerPassword = prevConfiguration.get("tomcat.users.cloudmanager.password");
 
-      boolean usePrev = false;
-      if (wasBlockChanged()) {
-        usePrev = interaction.ask(new PreviousQuestion(getChanges())).equals("yes");
-      }
+    clearBlock();
+    addToBlock(tomcatAdminPassQuestion, prevAdminPassword);
+    addToBlock(tomcatManagerPassQuestion, prevManagerPassword);
 
-      String adminPass = prevAdminPassword;
-      String managerPass = prevManagerPassword;
-      if (!usePrev) {
-        tomcatAdminPassQuestion.setDefaults(prevAdminPassword);
-        tomcatManagerPassQuestion.setDefaults(prevManagerPassword);
-
-        adminPass = interaction.ask(tomcatAdminPassQuestion);
-        managerPass = interaction.ask(tomcatManagerPassQuestion);
-      }
-
-      ConfigUtils.replace(tomcatDir,
-                          "conf/tomcat-users.xml",
-                          "<user username=\"cloudadmin\" password=\"cloudadmin\"",
-                          "<user username=\"cloudadmin\" password=\"" + adminPass + "\"");
-      answers.addAnswer(tomcatAdminPassQuestion, adminPass);
-      ConfigUtils.replace(tomcatDir,
-                          "conf/tomcat-users.xml",
-                          "<user username=\"cloudmanager\" password=\"cloudmanager\"",
-                          "<user username=\"cloudmanager\" password=\"" + managerPass + "\"");
-      answers.addAnswer(tomcatManagerPassQuestion, managerPass);
-    } catch (IOException e) {
-      throw new ConfigurationException("Updating tomcat-users configuration failed", e);
+    boolean usePrev = false;
+    if (wasBlockChanged()) {
+      usePrev = interaction.ask(new PreviousQuestion(getChanges())).equals("yes");
     }
+
+    String adminPass = prevAdminPassword;
+    String managerPass = prevManagerPassword;
+    if (!usePrev) {
+      tomcatAdminPassQuestion.setDefaults(prevAdminPassword);
+      tomcatManagerPassQuestion.setDefaults(prevManagerPassword);
+
+      adminPass = interaction.ask(tomcatAdminPassQuestion);
+      managerPass = interaction.ask(tomcatManagerPassQuestion);
+    }
+
+    currConfiguration.set("tomcat.users.cloudadmin.password", adminPass);
+    currConfiguration.set("tomcat.users.cloudmanager.password", managerPass);
+    answers.addAnswer(tomcatAdminPassQuestion, adminPass);
+    answers.addAnswer(tomcatManagerPassQuestion, managerPass);
   }
 }

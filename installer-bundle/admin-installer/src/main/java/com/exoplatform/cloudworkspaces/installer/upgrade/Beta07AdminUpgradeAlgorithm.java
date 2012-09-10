@@ -18,31 +18,22 @@
  */
 package com.exoplatform.cloudworkspaces.installer.upgrade;
 
-import com.exoplatform.cloudworkspaces.installer.ConfigUtils;
 import com.exoplatform.cloudworkspaces.installer.InstallerException;
-import com.exoplatform.cloudworkspaces.installer.configuration.ConfigurationManager;
-import com.exoplatform.cloudworkspaces.installer.downloader.BundleDownloader;
+import com.exoplatform.cloudworkspaces.installer.configuration.AdminConfigurationManager;
+import com.exoplatform.cloudworkspaces.installer.configuration.CurrentAdmin;
+import com.exoplatform.cloudworkspaces.installer.configuration.PreviousAdmin;
 import com.exoplatform.cloudworkspaces.installer.interaction.AnswersManager;
 import com.exoplatform.cloudworkspaces.installer.interaction.InteractionManager;
-import com.exoplatform.cloudworkspaces.installer.rest.AdminException;
 import com.exoplatform.cloudworkspaces.installer.rest.CloudAdminServices;
-import com.exoplatform.cloudworkspaces.installer.tomcat.AdminTomcatWrapper;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Map;
 
 public class Beta07AdminUpgradeAlgorithm extends MinorAdminUpgradeAlgorithm {
 
-  protected String demo;
-
-  public Beta07AdminUpgradeAlgorithm(InteractionManager interaction,
+  public Beta07AdminUpgradeAlgorithm(PreviousAdmin prevAdmin,
+                                     CurrentAdmin currAdmin,
+                                     InteractionManager interaction,
                                      AnswersManager answers,
-                                     CloudAdminServices cloudAdminServices,
-                                     BundleDownloader bundleDownloader,
-                                     AdminTomcatWrapper tomcat,
-                                     ConfigurationManager configurationManager) {
-    super(interaction, answers, cloudAdminServices, bundleDownloader, tomcat, configurationManager);
+                                     AdminConfigurationManager configurationManager) {
+    super(prevAdmin, currAdmin, interaction, answers, configurationManager);
   }
 
   @Override
@@ -51,62 +42,46 @@ public class Beta07AdminUpgradeAlgorithm extends MinorAdminUpgradeAlgorithm {
   }
 
   @Override
-  public void configurationGenerated(File previousConfDir,
-                                     File confDir,
-                                     File previousTomcatDir,
-                                     File tomcatDir,
-                                     File dataDir) {
+  public void configurationGenerated(PreviousAdmin prevAdmin, CurrentAdmin currAdmin) {
     // do nothing
   }
 
   @Override
-  public void updateStarted(File confDir, File tomcatDir, File dataDir) {
+  public void updateStarted(CurrentAdmin currAdmin) {
     // do nothing
   }
 
   @Override
-  public void tomcatStopped(File confDir, File tomcatDir, File dataDir) {
+  public void tomcatStopped(CurrentAdmin currAdmin) {
     // do nothing
   }
 
   @Override
-  public void tomcatStarted(File confDir, File tomcatDir, File dataDir) {
+  public void tomcatStarted(CurrentAdmin currAdmin) {
     // do nothing
   }
 
   @Override
-  public void newAsReady(File confDir, File tomcatDir, File dataDir) throws AdminException {
+  public void newAsReady(CurrentAdmin currAdmin) {
     // do nothing
   }
 
   @Override
-  public void updateFinished(File confDir, File tomcatDir, File dataDir) throws InstallerException {
-    System.out.println("Removing exoplatform tenant...");
+  public void updateFinished(CurrentAdmin currAdmin) throws InstallerException {
+    CloudAdminServices cloudAdminServices = currAdmin.getCloudAdminServices();
+    logger.timePrintln("Removing exoplatform tenant...");
     removeTenant("exoplatform", cloudAdminServices);
-    System.out.println("Creating exoplatform tenant...");
+    logger.timePrintln("Creating exoplatform tenant...");
     cloudAdminServices.createTenant("exoplatform", "kregent@exoplatform.com");
-    try {
-      demo = ConfigUtils.findProperty(confDir, "admin.properties", "cloud.admin.demo.tenant.name");
-      if (demo == null || demo.isEmpty())
-        throw new InstallerException("cloud.admin.demo.tenant.name property not found in admin.properties");
-      if (!cloudAdminServices.isTenantExists(demo)) {
-        System.out.println("Demo tenant with name " + demo + " not found. Creating " + demo + " tenant...");
-        cloudAdminServices.createTenant(demo, "kregent@exoplatform.com");
-      }
-      else {
-        System.out.println("Demo tenant with name " + demo + " found");
-      }
-    } catch (IOException e) {
-      throw new InstallerException("Could not get demo tenant name from admin.properties configuration");
-    }
-  }
-
-  protected void removeTenant(String tenant, CloudAdminServices cloudAdminServices) throws AdminException {
-    Map<String, String> status = cloudAdminServices.tenantStatus(tenant);
-    if (!status.isEmpty()) {
-      if (status.get("state").equals("ONLINE"))
-        cloudAdminServices.tenantStop(tenant);
-      cloudAdminServices.tenantRemove(tenant);
+    String demo = currAdmin.getAdminConfiguration().get("cloud.admin.demo.tenant.name");
+    if (demo == null || demo.isEmpty())
+      throw new InstallerException("cloud.admin.demo.tenant.name property not found in admin.properties");
+    if (!cloudAdminServices.isTenantExists(demo)) {
+      logger.timePrintln("Demo tenant with name " + demo + " not found. Creating " + demo
+          + " tenant...");
+      cloudAdminServices.createTenant(demo, "kregent@exoplatform.com");
+    } else {
+      logger.timePrintln("Demo tenant with name " + demo + " found");
     }
   }
 

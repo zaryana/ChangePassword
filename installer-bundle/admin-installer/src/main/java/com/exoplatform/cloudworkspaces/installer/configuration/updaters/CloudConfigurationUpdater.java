@@ -18,17 +18,15 @@
  */
 package com.exoplatform.cloudworkspaces.installer.configuration.updaters;
 
-import com.exoplatform.cloudworkspaces.installer.ConfigUtils;
 import com.exoplatform.cloudworkspaces.installer.InstallerException;
+import com.exoplatform.cloudworkspaces.installer.configuration.AdminConfiguration;
 import com.exoplatform.cloudworkspaces.installer.configuration.BaseConfigurationUpdater;
-import com.exoplatform.cloudworkspaces.installer.configuration.ConfigurationException;
+import com.exoplatform.cloudworkspaces.installer.configuration.CurrentAdmin;
+import com.exoplatform.cloudworkspaces.installer.configuration.PreviousAdmin;
 import com.exoplatform.cloudworkspaces.installer.configuration.PreviousQuestion;
 import com.exoplatform.cloudworkspaces.installer.configuration.Question;
 import com.exoplatform.cloudworkspaces.installer.interaction.AnswersManager;
 import com.exoplatform.cloudworkspaces.installer.interaction.InteractionManager;
-
-import java.io.File;
-import java.io.IOException;
 
 public class CloudConfigurationUpdater extends BaseConfigurationUpdater {
   private final Question tenantMasterhostQuestion = new Question("tenant.masterhost",
@@ -43,76 +41,44 @@ public class CloudConfigurationUpdater extends BaseConfigurationUpdater {
                                                                  "^.*$",
                                                                  null);
 
-  private final Question agentPasswordQuestion    = new Question("cloud.agent.password",
-                                                                 "Set cloud-agent password",
-                                                                 null,
-                                                                 "^.*$",
-                                                                 null);
-
   @Override
-  public void update(File confDir,
-                     File tomcatDir,
-                     File previousConfDir,
-                     File previousTomcatDir,
+  public void update(PreviousAdmin prevAdmin,
+                     CurrentAdmin currAdmin,
                      InteractionManager interaction,
                      AnswersManager answers) throws InstallerException {
-    try {
-      interaction.println("");
-      interaction.println("");
-      interaction.println("Cloud settings");
-      answers.addBlockName("Cloud settings");
+    interaction.println("");
+    interaction.println("");
+    interaction.println("Cloud settings");
+    answers.addBlockName("Cloud settings");
 
-      String prevTenantMasterhost = ConfigUtils.findProperty(new File(previousTomcatDir, "bin"),
-                                                             "environment.sh",
-                                                             "TENANT_MASTERHOST");
-      String prevAgentUsername = ConfigUtils.findProperty(new File(previousTomcatDir, "bin"),
-                                                          "environment.sh",
-                                                          "CLOUD_AGENT_USERNAME");
-      String prevAgentPassword = ConfigUtils.findProperty(new File(previousTomcatDir, "bin"),
-                                                          "environment.sh",
-                                                          "CLOUD_AGENT_PASSWORD");
+    AdminConfiguration prevConfiguration = prevAdmin.getAdminConfiguration();
+    AdminConfiguration currConfiguration = currAdmin.getAdminConfiguration();
 
-      clearBlock();
-      addToBlock(tenantMasterhostQuestion, prevTenantMasterhost);
-      addToBlock(agentUsernameQuestion, prevAgentUsername);
-      addToBlock(agentPasswordQuestion, prevAgentPassword);
+    String prevTenantMasterhost = prevConfiguration.get("tenant.masterhost");
+    String prevAgentUsername = prevConfiguration.get("cloud.agent.username");
 
-      boolean usePrev = false;
-      if (wasBlockChanged()) {
-        usePrev = interaction.ask(new PreviousQuestion(getChanges())).equals("yes");
-      }
+    clearBlock();
+    addToBlock(tenantMasterhostQuestion, prevTenantMasterhost);
+    addToBlock(agentUsernameQuestion, prevAgentUsername);
 
-      String tenantMasterhost = prevTenantMasterhost;
-      String agentUsername = prevAgentUsername;
-      String agentPassword = prevAgentPassword;
-      if (!usePrev) {
-        tenantMasterhostQuestion.setDefaults(prevTenantMasterhost);
-        agentUsernameQuestion.setDefaults(prevAgentUsername);
-        agentPasswordQuestion.setDefaults(prevAgentPassword);
-
-        tenantMasterhost = interaction.ask(tenantMasterhostQuestion);
-        agentUsername = interaction.ask(agentUsernameQuestion);
-        agentPassword = interaction.ask(agentPasswordQuestion);
-      }
-
-      ConfigUtils.writeQuotedProperty(new File(tomcatDir, "bin"),
-                                "environment.sh",
-                                "TENANT_MASTERHOST",
-                                tenantMasterhost);
-      answers.addAnswer(tenantMasterhostQuestion, tenantMasterhost);
-      ConfigUtils.writeQuotedProperty(new File(tomcatDir, "bin"),
-                                "environment.sh",
-                                "CLOUD_AGENT_USERNAME",
-                                agentUsername);
-      answers.addAnswer(agentUsernameQuestion, agentUsername);
-      ConfigUtils.writeQuotedProperty(new File(tomcatDir, "bin"),
-                                "environment.sh",
-                                "CLOUD_AGENT_PASSWORD",
-                                agentPassword);
-      answers.addAnswer(agentPasswordQuestion, agentPassword);
-    } catch (IOException e) {
-      throw new ConfigurationException("Updating cloud configuration failed", e);
+    boolean usePrev = false;
+    if (wasBlockChanged()) {
+      usePrev = interaction.ask(new PreviousQuestion(getChanges())).equals("yes");
     }
-  }
 
+    String tenantMasterhost = prevTenantMasterhost;
+    String agentUsername = prevAgentUsername;
+    if (!usePrev) {
+      tenantMasterhostQuestion.setDefaults(prevTenantMasterhost);
+      agentUsernameQuestion.setDefaults(prevAgentUsername);
+
+      tenantMasterhost = interaction.ask(tenantMasterhostQuestion);
+      agentUsername = interaction.ask(agentUsernameQuestion);
+    }
+
+    currConfiguration.set("tenant.masterhost", tenantMasterhost);
+    currConfiguration.set("cloud.agent.username", agentUsername);
+    answers.addAnswer(tenantMasterhostQuestion, tenantMasterhost);
+    answers.addAnswer(agentUsernameQuestion, agentUsername);
+  }
 }

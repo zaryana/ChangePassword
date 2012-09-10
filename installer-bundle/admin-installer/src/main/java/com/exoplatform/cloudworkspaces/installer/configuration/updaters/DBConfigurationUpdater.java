@@ -18,17 +18,15 @@
  */
 package com.exoplatform.cloudworkspaces.installer.configuration.updaters;
 
-import com.exoplatform.cloudworkspaces.installer.ConfigUtils;
 import com.exoplatform.cloudworkspaces.installer.InstallerException;
+import com.exoplatform.cloudworkspaces.installer.configuration.AdminConfiguration;
 import com.exoplatform.cloudworkspaces.installer.configuration.BaseConfigurationUpdater;
-import com.exoplatform.cloudworkspaces.installer.configuration.ConfigurationException;
+import com.exoplatform.cloudworkspaces.installer.configuration.CurrentAdmin;
+import com.exoplatform.cloudworkspaces.installer.configuration.PreviousAdmin;
 import com.exoplatform.cloudworkspaces.installer.configuration.PreviousQuestion;
 import com.exoplatform.cloudworkspaces.installer.configuration.Question;
 import com.exoplatform.cloudworkspaces.installer.interaction.AnswersManager;
 import com.exoplatform.cloudworkspaces.installer.interaction.InteractionManager;
-
-import java.io.File;
-import java.io.IOException;
 
 public class DBConfigurationUpdater extends BaseConfigurationUpdater {
 
@@ -51,65 +49,50 @@ public class DBConfigurationUpdater extends BaseConfigurationUpdater {
                                                            null);
 
   @Override
-  public void update(File confDir,
-                     File tomcatDir,
-                     File previousConfDir,
-                     File previousTomcatDir,
+  public void update(PreviousAdmin prevAdmin,
+                     CurrentAdmin currAdmin,
                      InteractionManager interaction,
                      AnswersManager answers) throws InstallerException {
-    try {
-      interaction.println("");
-      interaction.println("");
-      interaction.println("Database settings");
-      answers.addBlockName("Database settings");
+    interaction.println("");
+    interaction.println("");
+    interaction.println("Database settings");
+    answers.addBlockName("Database settings");
 
-      String prevUrl = ConfigUtils.findProperty(new File(previousTomcatDir, "bin"),
-                                                "environment.sh",
-                                                "EXO_DB_HOST");
-      String prevUsername = ConfigUtils.findProperty(new File(previousTomcatDir, "bin"),
-                                                     "environment.sh",
-                                                     "EXO_DB_USER");
-      String prevPassword = ConfigUtils.findProperty(new File(previousTomcatDir, "bin"),
-                                                     "environment.sh",
-                                                     "EXO_DB_PASSWORD");
+    AdminConfiguration prevConfiguration = prevAdmin.getAdminConfiguration();
+    AdminConfiguration currConfiguration = currAdmin.getAdminConfiguration();
 
-      clearBlock();
-      addToBlock(DBUrlQuestion, prevUrl);
-      addToBlock(DBUsernameQuestion, prevUsername);
-      addToBlock(DBPasswordQuestion, prevPassword);
+    String prevUrl = prevConfiguration.get("admin.db.url");
+    String prevUsername = prevConfiguration.get("admin.db.username");
+    String prevPassword = prevConfiguration.get("admin.db.password");
 
-      boolean usePrev = false;
-      if (wasBlockChanged()) {
-        usePrev = interaction.ask(new PreviousQuestion(getChanges())).equals("yes");
-      }
+    clearBlock();
+    addToBlock(DBUrlQuestion, prevUrl);
+    addToBlock(DBUsernameQuestion, prevUsername);
+    addToBlock(DBPasswordQuestion, prevPassword);
 
-      String url = prevUrl;
-      String username = prevUsername;
-      String password = prevPassword;
-      if (!usePrev) {
-        DBUrlQuestion.setDefaults(prevUrl);
-        DBUsernameQuestion.setDefaults(prevUsername);
-        DBPasswordQuestion.setDefaults(prevPassword);
-
-        url = interaction.ask(DBUrlQuestion);
-        username = interaction.ask(DBUsernameQuestion);
-        password = interaction.ask(DBPasswordQuestion);
-      }
-
-      ConfigUtils.writeQuotedProperty(new File(tomcatDir, "bin"), "environment.sh", "EXO_DB_HOST", url);
-      answers.addAnswer(DBUrlQuestion, url);
-      ConfigUtils.writeQuotedProperty(new File(tomcatDir, "bin"),
-                                "environment.sh",
-                                "EXO_DB_USER",
-                                username);
-      answers.addAnswer(DBUsernameQuestion, username);
-      ConfigUtils.writeQuotedProperty(new File(tomcatDir, "bin"),
-                                "environment.sh",
-                                "EXO_DB_PASSWORD",
-                                password);
-      answers.addAnswer(DBPasswordQuestion, password);
-    } catch (IOException e) {
-      throw new ConfigurationException("Updating db configuration failed", e);
+    boolean usePrev = false;
+    if (wasBlockChanged()) {
+      usePrev = interaction.ask(new PreviousQuestion(getChanges())).equals("yes");
     }
+
+    String url = prevUrl;
+    String username = prevUsername;
+    String password = prevPassword;
+    if (!usePrev) {
+      DBUrlQuestion.setDefaults(prevUrl);
+      DBUsernameQuestion.setDefaults(prevUsername);
+      DBPasswordQuestion.setDefaults(prevPassword);
+
+      url = interaction.ask(DBUrlQuestion);
+      username = interaction.ask(DBUsernameQuestion);
+      password = interaction.ask(DBPasswordQuestion);
+    }
+
+    currConfiguration.set("admin.db.url", url);
+    currConfiguration.set("admin.db.username", username);
+    currConfiguration.set("admin.db.password", password);
+    answers.addAnswer(DBUrlQuestion, url);
+    answers.addAnswer(DBUsernameQuestion, username);
+    answers.addAnswer(DBPasswordQuestion, password);
   }
 }

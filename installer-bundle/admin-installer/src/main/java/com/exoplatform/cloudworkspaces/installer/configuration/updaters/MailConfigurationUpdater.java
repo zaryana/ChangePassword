@@ -18,17 +18,15 @@
  */
 package com.exoplatform.cloudworkspaces.installer.configuration.updaters;
 
-import com.exoplatform.cloudworkspaces.installer.ConfigUtils;
 import com.exoplatform.cloudworkspaces.installer.InstallerException;
+import com.exoplatform.cloudworkspaces.installer.configuration.AdminConfiguration;
 import com.exoplatform.cloudworkspaces.installer.configuration.BaseConfigurationUpdater;
-import com.exoplatform.cloudworkspaces.installer.configuration.ConfigurationException;
+import com.exoplatform.cloudworkspaces.installer.configuration.CurrentAdmin;
+import com.exoplatform.cloudworkspaces.installer.configuration.PreviousAdmin;
 import com.exoplatform.cloudworkspaces.installer.configuration.PreviousQuestion;
 import com.exoplatform.cloudworkspaces.installer.configuration.Question;
 import com.exoplatform.cloudworkspaces.installer.interaction.AnswersManager;
 import com.exoplatform.cloudworkspaces.installer.interaction.InteractionManager;
-
-import java.io.File;
-import java.io.IOException;
 
 public class MailConfigurationUpdater extends BaseConfigurationUpdater {
   private final Question cloudMailHostQuestion      = new Question("cloud.mail.host",
@@ -41,12 +39,6 @@ public class MailConfigurationUpdater extends BaseConfigurationUpdater {
                                                                    "Set port of mail server",
                                                                    "465",
                                                                    "^\\d*$",
-                                                                   null);
-
-  private final Question cloudMailSslQuestion       = new Question("cloud.mail.ssl",
-                                                                   "Is enable ssl for mail server? (true or false)",
-                                                                   "true",
-                                                                   "^.*$",
                                                                    null);
 
   private final Question cloudMailUserQuestion      = new Question("cloud.mail.user",
@@ -73,12 +65,6 @@ public class MailConfigurationUpdater extends BaseConfigurationUpdater {
                                                                    "^.*$",
                                                                    null);
 
-  private final Question cloudLoggerEmailQuestion   = new Question("cloud.logger.email",
-                                                                   "Set logger email",
-                                                                   "logs@cloud-intranet.com",
-                                                                   "^.*$",
-                                                                   null);
-
   private final Question cloudSupportEmailQuestion  = new Question("cloud.support.email",
                                                                    "Set support email",
                                                                    "support@cloud-intranet.com",
@@ -98,176 +84,105 @@ public class MailConfigurationUpdater extends BaseConfigurationUpdater {
                                                                    null);
 
   @Override
-  public void update(File confDir,
-                     File tomcatDir,
-                     File previousConfDir,
-                     File previousTomcatDir,
+  public void update(PreviousAdmin prevAdmin,
+                     CurrentAdmin currAdmin,
                      InteractionManager interaction,
                      AnswersManager answers) throws InstallerException {
-    try {
-      interaction.println("");
-      interaction.println("");
-      interaction.println("Mail server settings");
-      answers.addBlockName("Mail server settings");
+    interaction.println("");
+    interaction.println("");
+    interaction.println("Mail server settings");
+    answers.addBlockName("Mail server settings");
 
-      String prevCloudMailHost = ConfigUtils.findProperty(new File(previousTomcatDir, "bin"),
-                                                          "environment.sh",
-                                                          "CLOUD_MAIL_HOST");
-      String prevCloudMailPort = ConfigUtils.findProperty(new File(previousTomcatDir, "bin"),
-                                                          "environment.sh",
-                                                          "CLOUD_MAIL_PORT");
-      String prevCloudMailSsl = ConfigUtils.findProperty(new File(previousTomcatDir, "bin"),
-                                                         "environment.sh",
-                                                         "CLOUD_MAIL_SSL");
-      String prevCloudMailUser = ConfigUtils.findProperty(new File(previousTomcatDir, "bin"),
-                                                          "environment.sh",
-                                                          "CLOUD_MAIL_USER");
-      String prevCloudMailPassword = ConfigUtils.findProperty(new File(previousTomcatDir, "bin"),
-                                                              "environment.sh",
-                                                              "CLOUD_MAIL_PASSWORD");
-      String prevCloudMailSmtpAuth = ConfigUtils.findProperty(new File(previousTomcatDir, "bin"),
-                                                              "environment.sh",
-                                                              "CLOUD_MAIL_SMTP_AUTH");
+    AdminConfiguration prevConfiguration = prevAdmin.getAdminConfiguration();
+    AdminConfiguration currConfiguration = currAdmin.getAdminConfiguration();
 
-      clearBlock();
-      addToBlock(cloudMailHostQuestion, prevCloudMailHost);
-      addToBlock(cloudMailPortQuestion, prevCloudMailPort);
-      addToBlock(cloudMailSslQuestion, prevCloudMailSsl);
-      addToBlock(cloudMailSmtpAuthQuestion, prevCloudMailSmtpAuth);
-      addToBlock(cloudMailUserQuestion, prevCloudMailUser);
-      addToBlock(cloudMailPasswordQuestion, prevCloudMailPassword);
+    String prevCloudMailHost = prevConfiguration.get("cloud.admin.mail.host");
+    String prevCloudMailPort = prevConfiguration.get("cloud.admin.mail.port");
+    String prevCloudMailUser = prevConfiguration.get("cloud.admin.mail.smtp.auth.username");
+    String prevCloudMailPassword = prevConfiguration.get("cloud.admin.mail.smtp.auth.password");
+    String prevCloudMailSmtpAuth = prevConfiguration.get("cloud.admin.mail.smtp.auth");
 
-      boolean usePrev = false;
-      if (wasBlockChanged()) {
-        usePrev = interaction.ask(new PreviousQuestion(getChanges())).equals("yes");
-      }
+    clearBlock();
+    addToBlock(cloudMailHostQuestion, prevCloudMailHost);
+    addToBlock(cloudMailPortQuestion, prevCloudMailPort);
+    addToBlock(cloudMailSmtpAuthQuestion, prevCloudMailSmtpAuth);
+    addToBlock(cloudMailUserQuestion, prevCloudMailUser);
+    addToBlock(cloudMailPasswordQuestion, prevCloudMailPassword);
 
-      String mailHost = prevCloudMailHost;
-      String mailPort = prevCloudMailPort;
-      String mailSsl = prevCloudMailSsl;
-      String mailSmtpAuth = prevCloudMailSmtpAuth;
-      String mailUser = prevCloudMailUser;
-      String mailPassword = prevCloudMailPassword;
-      if (!usePrev) {
-        cloudMailHostQuestion.setDefaults(prevCloudMailHost);
-        cloudMailPortQuestion.setDefaults(prevCloudMailPort);
-        cloudMailSslQuestion.setDefaults(prevCloudMailSsl);
-        cloudMailUserQuestion.setDefaults(prevCloudMailUser);
-        cloudMailPasswordQuestion.setDefaults(prevCloudMailPassword);
-        cloudMailSmtpAuthQuestion.setDefaults(prevCloudMailSmtpAuth);
-
-        mailHost = interaction.ask(cloudMailHostQuestion);
-        mailPort = interaction.ask(cloudMailPortQuestion);
-        mailSsl = interaction.ask(cloudMailSslQuestion);
-        mailUser = interaction.ask(cloudMailUserQuestion);
-        mailPassword = interaction.ask(cloudMailPasswordQuestion);
-        mailSmtpAuth = interaction.ask(cloudMailSmtpAuthQuestion);
-      }
-      ConfigUtils.writeQuotedProperty(new File(tomcatDir, "bin"),
-                                "environment.sh",
-                                "CLOUD_MAIL_HOST",
-                                mailHost);
-      answers.addAnswer(cloudMailHostQuestion, mailHost);
-      ConfigUtils.writeQuotedProperty(new File(tomcatDir, "bin"),
-                                "environment.sh",
-                                "CLOUD_MAIL_PORT",
-                                mailPort);
-      answers.addAnswer(cloudMailPortQuestion, mailPort);
-      ConfigUtils.writeQuotedProperty(new File(tomcatDir, "bin"),
-                                "environment.sh",
-                                "CLOUD_MAIL_SSL",
-                                mailSsl);
-      answers.addAnswer(cloudMailSslQuestion, mailSsl);
-      ConfigUtils.writeQuotedProperty(new File(tomcatDir, "bin"),
-                                "environment.sh",
-                                "CLOUD_MAIL_USER",
-                                mailUser);
-      answers.addAnswer(cloudMailUserQuestion, mailUser);
-      ConfigUtils.writeQuotedProperty(new File(tomcatDir, "bin"),
-                                "environment.sh",
-                                "CLOUD_MAIL_PASSWORD",
-                                mailPassword);
-      answers.addAnswer(cloudMailPasswordQuestion, mailPassword);
-      ConfigUtils.writeQuotedProperty(new File(tomcatDir, "bin"),
-                                "environment.sh",
-                                "CLOUD_MAIL_SMTP_AUTH",
-                                mailSmtpAuth);
-      answers.addAnswer(cloudMailSmtpAuthQuestion, mailSmtpAuth);
-
-      String prevCloudAdminEmail = ConfigUtils.findProperty(new File(previousTomcatDir, "bin"),
-                                                            "environment.sh",
-                                                            "CLOUD_ADMIN_EMAIL");
-      String prevCloudLoggerEmail = ConfigUtils.findProperty(new File(previousTomcatDir, "bin"),
-                                                             "environment.sh",
-                                                             "CLOUD_LOGGER_EMAIL");
-      String prevCloudSupportEmail = ConfigUtils.findProperty(new File(previousTomcatDir, "bin"),
-                                                              "environment.sh",
-                                                              "CLOUD_SUPPORT_EMAIL");
-      String prevCloudSupportSender = ConfigUtils.findProperty(new File(previousTomcatDir, "bin"),
-                                                               "environment.sh",
-                                                               "CLOUD_SUPPORT_SENDER");
-      String prevCloudSalesEmail = ConfigUtils.findProperty(new File(previousTomcatDir, "bin"),
-                                                            "environment.sh",
-                                                            "CLOUD_SALES_EMAIL");
-
-      clearBlock();
-      addToBlock(cloudAdminEmailQuestion, prevCloudAdminEmail);
-      addToBlock(cloudLoggerEmailQuestion, prevCloudLoggerEmail);
-      addToBlock(cloudSupportEmailQuestion, prevCloudSupportEmail);
-      addToBlock(cloudSupportSenderQuestion, prevCloudSupportSender);
-      addToBlock(cloudSalesEmailQuestion, prevCloudSalesEmail);
-
-      usePrev = false;
-      if (wasBlockChanged()) {
-        usePrev = interaction.ask(new PreviousQuestion(getChanges())).equals("yes");
-      }
-
-      String adminEmail = prevCloudAdminEmail;
-      String loggerEmail = prevCloudLoggerEmail;
-      String supportEmail = prevCloudSupportEmail;
-      String supportSender = prevCloudSupportSender;
-      String salesEmail = prevCloudSalesEmail;
-      if (!usePrev) {
-        cloudAdminEmailQuestion.setDefaults(prevCloudAdminEmail);
-        cloudLoggerEmailQuestion.setDefaults(prevCloudLoggerEmail);
-        cloudSupportEmailQuestion.setDefaults(prevCloudSupportEmail);
-        cloudSupportSenderQuestion.setDefaults(prevCloudSupportSender);
-        cloudSalesEmailQuestion.setDefaults(prevCloudSalesEmail);
-
-        adminEmail = interaction.ask(cloudAdminEmailQuestion);
-        loggerEmail = interaction.ask(cloudLoggerEmailQuestion);
-        supportEmail = interaction.ask(cloudSupportEmailQuestion);
-        supportSender = interaction.ask(cloudSupportSenderQuestion);
-        salesEmail = interaction.ask(cloudSalesEmailQuestion);
-      }
-      ConfigUtils.writeQuotedProperty(new File(tomcatDir, "bin"),
-                                "environment.sh",
-                                "CLOUD_ADMIN_EMAIL",
-                                adminEmail);
-      answers.addAnswer(cloudAdminEmailQuestion, adminEmail);
-      ConfigUtils.writeQuotedProperty(new File(tomcatDir, "bin"),
-                                "environment.sh",
-                                "CLOUD_LOGGER_EMAIL",
-                                loggerEmail);
-      answers.addAnswer(cloudLoggerEmailQuestion, loggerEmail);
-      ConfigUtils.writeQuotedProperty(new File(tomcatDir, "bin"),
-                                "environment.sh",
-                                "CLOUD_SUPPORT_EMAIL",
-                                supportEmail);
-      answers.addAnswer(cloudSupportEmailQuestion, supportEmail);
-      ConfigUtils.writeQuotedProperty(new File(tomcatDir, "bin"),
-                                "environment.sh",
-                                "CLOUD_SUPPORT_SENDER",
-                                supportSender);
-      answers.addAnswer(cloudSupportSenderQuestion, supportSender);
-      ConfigUtils.writeQuotedProperty(new File(tomcatDir, "bin"),
-                                "environment.sh",
-                                "CLOUD_SALES_EMAIL",
-                                salesEmail);
-      answers.addAnswer(cloudSalesEmailQuestion, salesEmail);
-    } catch (IOException e) {
-      throw new ConfigurationException("Updating mail configuration failed", e);
+    boolean usePrev = false;
+    if (wasBlockChanged()) {
+      usePrev = interaction.ask(new PreviousQuestion(getChanges())).equals("yes");
     }
+
+    String mailHost = prevCloudMailHost;
+    String mailPort = prevCloudMailPort;
+    String mailSmtpAuth = prevCloudMailSmtpAuth;
+    String mailUser = prevCloudMailUser;
+    String mailPassword = prevCloudMailPassword;
+    if (!usePrev) {
+      cloudMailHostQuestion.setDefaults(prevCloudMailHost);
+      cloudMailPortQuestion.setDefaults(prevCloudMailPort);
+      cloudMailUserQuestion.setDefaults(prevCloudMailUser);
+      cloudMailPasswordQuestion.setDefaults(prevCloudMailPassword);
+      cloudMailSmtpAuthQuestion.setDefaults(prevCloudMailSmtpAuth);
+
+      mailHost = interaction.ask(cloudMailHostQuestion);
+      mailPort = interaction.ask(cloudMailPortQuestion);
+      mailUser = interaction.ask(cloudMailUserQuestion);
+      mailPassword = interaction.ask(cloudMailPasswordQuestion);
+      mailSmtpAuth = interaction.ask(cloudMailSmtpAuthQuestion);
+    }
+    currConfiguration.set("cloud.admin.mail.host", mailHost);
+    currConfiguration.set("cloud.admin.mail.port", mailPort);
+    currConfiguration.set("cloud.admin.mail.smtp.auth.username", mailUser);
+    currConfiguration.set("cloud.admin.mail.smtp.auth.password", mailPassword);
+    currConfiguration.set("cloud.admin.mail.smtp.auth", mailSmtpAuth);
+    answers.addAnswer(cloudMailHostQuestion, mailHost);
+    answers.addAnswer(cloudMailPortQuestion, mailPort);
+    answers.addAnswer(cloudMailUserQuestion, mailUser);
+    answers.addAnswer(cloudMailPasswordQuestion, mailPassword);
+    answers.addAnswer(cloudMailSmtpAuthQuestion, mailSmtpAuth);
+
+    String prevCloudAdminEmail = prevConfiguration.get("cloud.admin.mail.admin.email");
+    String prevCloudSupportEmail = prevConfiguration.get("cloud.admin.mail.support.email");
+    String prevCloudSupportSender = prevConfiguration.get("cloud.admin.mail.support.from");
+    String prevCloudSalesEmail = prevConfiguration.get("cloud.admin.mail.sales.email");
+
+    clearBlock();
+    addToBlock(cloudAdminEmailQuestion, prevCloudAdminEmail);
+    addToBlock(cloudSupportEmailQuestion, prevCloudSupportEmail);
+    addToBlock(cloudSupportSenderQuestion, prevCloudSupportSender);
+    addToBlock(cloudSalesEmailQuestion, prevCloudSalesEmail);
+
+    usePrev = false;
+    if (wasBlockChanged()) {
+      usePrev = interaction.ask(new PreviousQuestion(getChanges())).equals("yes");
+    }
+
+    String adminEmail = prevCloudAdminEmail;
+    String supportEmail = prevCloudSupportEmail;
+    String supportSender = prevCloudSupportSender;
+    String salesEmail = prevCloudSalesEmail;
+    if (!usePrev) {
+      cloudAdminEmailQuestion.setDefaults(prevCloudAdminEmail);
+      cloudSupportEmailQuestion.setDefaults(prevCloudSupportEmail);
+      cloudSupportSenderQuestion.setDefaults(prevCloudSupportSender);
+      cloudSalesEmailQuestion.setDefaults(prevCloudSalesEmail);
+
+      adminEmail = interaction.ask(cloudAdminEmailQuestion);
+      supportEmail = interaction.ask(cloudSupportEmailQuestion);
+      supportSender = interaction.ask(cloudSupportSenderQuestion);
+      salesEmail = interaction.ask(cloudSalesEmailQuestion);
+    }
+    currConfiguration.set("cloud.admin.mail.admin.email", adminEmail);
+    currConfiguration.set("cloud.admin.mail.support.email", supportEmail);
+    currConfiguration.set("cloud.admin.mail.support.from", supportSender);
+    currConfiguration.set("cloud.admin.mail.sales.email", salesEmail);
+
+    answers.addAnswer(cloudAdminEmailQuestion, adminEmail);
+    answers.addAnswer(cloudSupportEmailQuestion, supportEmail);
+    answers.addAnswer(cloudSupportSenderQuestion, supportSender);
+    answers.addAnswer(cloudSalesEmailQuestion, salesEmail);
   }
 
 }

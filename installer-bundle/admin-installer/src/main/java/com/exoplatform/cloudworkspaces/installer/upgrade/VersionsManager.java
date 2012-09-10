@@ -31,8 +31,6 @@ public class VersionsManager {
       properties.load(Thread.currentThread()
                             .getContextClassLoader()
                             .getResourceAsStream("versions/" + toVersion));
-      // properties.load(new
-      // FileInputStream("src/main/resources/versions/1.1.0-Beta07"));
       return new VersionEntry(toVersion, properties);
     } catch (IOException e) {
       throw new InstallerException("Error while initializing updating algorithm to " + toVersion);

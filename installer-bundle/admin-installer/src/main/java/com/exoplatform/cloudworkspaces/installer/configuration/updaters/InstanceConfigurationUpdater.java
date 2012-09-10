@@ -18,17 +18,15 @@
  */
 package com.exoplatform.cloudworkspaces.installer.configuration.updaters;
 
-import com.exoplatform.cloudworkspaces.installer.ConfigUtils;
 import com.exoplatform.cloudworkspaces.installer.InstallerException;
+import com.exoplatform.cloudworkspaces.installer.configuration.AdminConfiguration;
 import com.exoplatform.cloudworkspaces.installer.configuration.BaseConfigurationUpdater;
-import com.exoplatform.cloudworkspaces.installer.configuration.ConfigurationException;
+import com.exoplatform.cloudworkspaces.installer.configuration.CurrentAdmin;
+import com.exoplatform.cloudworkspaces.installer.configuration.PreviousAdmin;
 import com.exoplatform.cloudworkspaces.installer.configuration.PreviousQuestion;
 import com.exoplatform.cloudworkspaces.installer.configuration.Question;
 import com.exoplatform.cloudworkspaces.installer.interaction.AnswersManager;
 import com.exoplatform.cloudworkspaces.installer.interaction.InteractionManager;
-
-import java.io.File;
-import java.io.IOException;
 
 public class InstanceConfigurationUpdater extends BaseConfigurationUpdater {
   private final Question asInstanceTypeQuestion      = new Question("as.instance.type",
@@ -62,90 +60,63 @@ public class InstanceConfigurationUpdater extends BaseConfigurationUpdater {
                                                                     null);
 
   @Override
-  public void update(File confDir,
-                     File tomcatDir,
-                     File previousConfDir,
-                     File previousTomcatDir,
+  public void update(PreviousAdmin prevAdmin,
+                     CurrentAdmin currAdmin,
                      InteractionManager interaction,
                      AnswersManager answers) throws InstallerException {
-    try {
-      interaction.println("");
-      interaction.println("");
-      interaction.println("Instance settings");
-      answers.addBlockName("Instance settings");
+    interaction.println("");
+    interaction.println("");
+    interaction.println("Instance settings");
+    answers.addBlockName("Instance settings");
 
-      String prevAvailabilityZone = ConfigUtils.findProperty(new File(previousTomcatDir, "bin"),
-                                                             "environment.sh",
-                                                             "AS_AVAILABILITY_ZONE");
-      String prevSecurityGroupName = ConfigUtils.findProperty(new File(previousTomcatDir, "bin"),
-                                                              "environment.sh",
-                                                              "AS_SECURITY_GROUP_NAME");
-      String prevKeyName = ConfigUtils.findProperty(new File(previousTomcatDir, "bin"),
-                                                    "environment.sh",
-                                                    "AS_KEY_NAME");
-      String prevInstanceType = ConfigUtils.findProperty(new File(previousTomcatDir, "bin"),
-                                                         "environment.sh",
-                                                         "AS_INSTANCE_TYPE");
+    AdminConfiguration prevConfiguration = prevAdmin.getAdminConfiguration();
+    AdminConfiguration currConfiguration = currAdmin.getAdminConfiguration();
 
-      clearBlock();
-      addToBlock(asAvailabilityZoneQuestion, prevAvailabilityZone);
-      addToBlock(asSecurityGroupNameQuestion, prevSecurityGroupName);
-      addToBlock(asKeyNameQuestion, prevKeyName);
-      addToBlock(asInstanceTypeQuestion, prevInstanceType);
+    String prevAvailabilityZone = prevConfiguration.get("types.cloud.agent.availability.zone");
+    String prevSecurityGroupName = prevConfiguration.get("types.cloud.agent.security.group.name");
+    String prevKeyName = prevConfiguration.get("types.cloud.agent.key.name");
+    String prevInstanceType = prevConfiguration.get("types.cloud.agent.instance.type");
 
-      boolean usePrev = false;
-      if (wasBlockChanged()) {
-        usePrev = interaction.ask(new PreviousQuestion(getChanges())).equals("yes");
-      }
+    clearBlock();
+    addToBlock(asAvailabilityZoneQuestion, prevAvailabilityZone);
+    addToBlock(asSecurityGroupNameQuestion, prevSecurityGroupName);
+    addToBlock(asKeyNameQuestion, prevKeyName);
+    addToBlock(asInstanceTypeQuestion, prevInstanceType);
 
-      String availabilityZone = prevAvailabilityZone;
-      String securityGroupName = prevSecurityGroupName;
-      String keyName = prevKeyName;
-      String instanceType = prevInstanceType;
-      if (!usePrev) {
-        asAvailabilityZoneQuestion.setDefaults(prevAvailabilityZone);
-        asSecurityGroupNameQuestion.setDefaults(prevSecurityGroupName);
-        asKeyNameQuestion.setDefaults(prevKeyName);
-        asInstanceTypeQuestion.setDefaults(prevInstanceType);
-
-        availabilityZone = interaction.ask(asAvailabilityZoneQuestion);
-        securityGroupName = interaction.ask(asSecurityGroupNameQuestion);
-        keyName = interaction.ask(asKeyNameQuestion);
-        instanceType = interaction.ask(asInstanceTypeQuestion);
-      }
-      ConfigUtils.writeQuotedProperty(new File(tomcatDir, "bin"),
-                                      "environment.sh",
-                                      "AS_AVAILABILITY_ZONE",
-                                      availabilityZone);
-      answers.addAnswer(asAvailabilityZoneQuestion, availabilityZone);
-      ConfigUtils.writeQuotedProperty(new File(tomcatDir, "bin"),
-                                      "environment.sh",
-                                      "AS_SECURITY_GROUP_NAME",
-                                      securityGroupName);
-      answers.addAnswer(asSecurityGroupNameQuestion, securityGroupName);
-      ConfigUtils.writeQuotedProperty(new File(tomcatDir, "bin"),
-                                      "environment.sh",
-                                      "AS_KEY_NAME",
-                                      keyName);
-      answers.addAnswer(asKeyNameQuestion, keyName);
-      ConfigUtils.writeQuotedProperty(new File(tomcatDir, "bin"),
-                                      "environment.sh",
-                                      "AS_INSTANCE_TYPE",
-                                      instanceType);
-      answers.addAnswer(asInstanceTypeQuestion, instanceType);
-
-      asImageIdQuestion.setDefaults(ConfigUtils.findProperty(new File(previousTomcatDir, "bin"),
-                                                             "environment.sh",
-                                                             "AS_IMAGE_ID"));
-      String asImageId = interaction.ask(asImageIdQuestion);
-
-      ConfigUtils.writeQuotedProperty(new File(tomcatDir, "bin"),
-                                      "environment.sh",
-                                      "AS_IMAGE_ID",
-                                      asImageId);
-      answers.addAnswer(asImageIdQuestion, asImageId);
-    } catch (IOException e) {
-      throw new ConfigurationException("Updating instance configuration failed", e);
+    boolean usePrev = false;
+    if (wasBlockChanged()) {
+      usePrev = interaction.ask(new PreviousQuestion(getChanges())).equals("yes");
     }
+
+    String availabilityZone = prevAvailabilityZone;
+    String securityGroupName = prevSecurityGroupName;
+    String keyName = prevKeyName;
+    String instanceType = prevInstanceType;
+    if (!usePrev) {
+      asAvailabilityZoneQuestion.setDefaults(prevAvailabilityZone);
+      asSecurityGroupNameQuestion.setDefaults(prevSecurityGroupName);
+      asKeyNameQuestion.setDefaults(prevKeyName);
+      asInstanceTypeQuestion.setDefaults(prevInstanceType);
+
+      availabilityZone = interaction.ask(asAvailabilityZoneQuestion);
+      securityGroupName = interaction.ask(asSecurityGroupNameQuestion);
+      keyName = interaction.ask(asKeyNameQuestion);
+      instanceType = interaction.ask(asInstanceTypeQuestion);
+    }
+    currConfiguration.set("types.cloud.agent.availability.zone", availabilityZone);
+    currConfiguration.set("types.cloud.agent.security.group.name", securityGroupName);
+    currConfiguration.set("types.cloud.agent.key.name", keyName);
+    currConfiguration.set("types.cloud.agent.instance.type", instanceType);
+    answers.addAnswer(asAvailabilityZoneQuestion, availabilityZone);
+    answers.addAnswer(asSecurityGroupNameQuestion, securityGroupName);
+    answers.addAnswer(asKeyNameQuestion, keyName);
+    answers.addAnswer(asInstanceTypeQuestion, instanceType);
+
+    String prevImageId = prevConfiguration.get("types.cloud.agent.image.id");
+    asImageIdQuestion.setDefaults(prevImageId);
+    String asImageId = interaction.ask(asImageIdQuestion);
+
+    currConfiguration.set("types.cloud.agent.image.id", asImageId);
+    answers.addAnswer(asImageIdQuestion, asImageId);
   }
 }

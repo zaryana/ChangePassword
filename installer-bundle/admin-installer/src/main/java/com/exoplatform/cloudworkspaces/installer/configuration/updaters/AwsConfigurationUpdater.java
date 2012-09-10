@@ -18,17 +18,15 @@
  */
 package com.exoplatform.cloudworkspaces.installer.configuration.updaters;
 
-import com.exoplatform.cloudworkspaces.installer.ConfigUtils;
 import com.exoplatform.cloudworkspaces.installer.InstallerException;
+import com.exoplatform.cloudworkspaces.installer.configuration.AdminConfiguration;
 import com.exoplatform.cloudworkspaces.installer.configuration.BaseConfigurationUpdater;
-import com.exoplatform.cloudworkspaces.installer.configuration.ConfigurationException;
+import com.exoplatform.cloudworkspaces.installer.configuration.CurrentAdmin;
+import com.exoplatform.cloudworkspaces.installer.configuration.PreviousAdmin;
 import com.exoplatform.cloudworkspaces.installer.configuration.PreviousQuestion;
 import com.exoplatform.cloudworkspaces.installer.configuration.Question;
 import com.exoplatform.cloudworkspaces.installer.interaction.AnswersManager;
 import com.exoplatform.cloudworkspaces.installer.interaction.InteractionManager;
-
-import java.io.File;
-import java.io.IOException;
 
 public class AwsConfigurationUpdater extends BaseConfigurationUpdater {
   private final Question applicationDefaultTypeQuestion = new Question("application.default.type",
@@ -68,117 +66,82 @@ public class AwsConfigurationUpdater extends BaseConfigurationUpdater {
                                                                        null);
 
   @Override
-  public void update(File confDir,
-                     File tomcatDir,
-                     File previousConfDir,
-                     File previousTomcatDir,
+  public void update(PreviousAdmin prevAdmin,
+                     CurrentAdmin currAdmin,
                      InteractionManager interaction,
                      AnswersManager answers) throws InstallerException {
-    try {
-      interaction.println("");
-      interaction.println("");
-      interaction.println("Aws settings");
-      answers.addBlockName("Aws settings");
+    interaction.println("");
+    interaction.println("");
+    interaction.println("Aws settings");
+    answers.addBlockName("Aws settings");
 
-      String prevApplicationDefaultType = ConfigUtils.findProperty(new File(previousTomcatDir,
-                                                                            "bin"),
-                                                                   "environment.sh",
-                                                                   "APPLICATION_DEFAULT_TYPE");
-      String prevCloudServiceType = ConfigUtils.findProperty(new File(previousTomcatDir, "bin"),
-                                                             "environment.sh",
-                                                             "CLOUD_SERVICE_TYPE");
-      String prevCloudClientName = ConfigUtils.findProperty(new File(previousTomcatDir, "bin"),
-                                                            "environment.sh",
-                                                            "CLOUD_CLIENT_NAME");
-      String prevCloudAwsVersion = ConfigUtils.findProperty(new File(previousTomcatDir, "bin"),
-                                                            "environment.sh",
-                                                            "CLOUD_AWS_VERSION");
+    AdminConfiguration prevConfiguration = prevAdmin.getAdminConfiguration();
+    AdminConfiguration currConfiguration = currAdmin.getAdminConfiguration();
+    String prevApplicationDefaultType = prevConfiguration.get("cloud.admin.application.default.type");
+    String prevCloudServiceType = prevConfiguration.get("cloud.admin.application.cloud.service.type");
+    String prevCloudClientName = prevConfiguration.get("cloud.client.name");
+    String prevCloudAwsVersion = prevConfiguration.get("aws-ec2.api-version");
 
-      clearBlock();
-      addToBlock(applicationDefaultTypeQuestion, prevApplicationDefaultType);
-      addToBlock(cloudServiceTypeQuestion, prevCloudServiceType);
-      addToBlock(cloudClientNameQuestion, prevCloudClientName);
-      addToBlock(cloudAwsVersionQuestion, prevCloudAwsVersion);
+    clearBlock();
+    addToBlock(applicationDefaultTypeQuestion, prevApplicationDefaultType);
+    addToBlock(cloudServiceTypeQuestion, prevCloudServiceType);
+    addToBlock(cloudClientNameQuestion, prevCloudClientName);
+    addToBlock(cloudAwsVersionQuestion, prevCloudAwsVersion);
 
-      boolean usePrev = false;
-      if (wasBlockChanged()) {
-        usePrev = interaction.ask(new PreviousQuestion(getChanges())).equals("yes");
-      }
-
-      String applicationDefaultType = prevApplicationDefaultType;
-      String cloudServiceType = prevCloudServiceType;
-      String cloudClientName = prevCloudClientName;
-      String cloudAwsVersion = prevCloudAwsVersion;
-      if (!usePrev) {
-        applicationDefaultTypeQuestion.setDefaults(prevApplicationDefaultType);
-        cloudServiceTypeQuestion.setDefaults(prevCloudServiceType);
-        cloudClientNameQuestion.setDefaults(prevCloudClientName);
-        cloudAwsVersionQuestion.setDefaults(prevCloudAwsVersion);
-
-        applicationDefaultType = interaction.ask(applicationDefaultTypeQuestion);
-        cloudServiceType = interaction.ask(cloudServiceTypeQuestion);
-        cloudClientName = interaction.ask(cloudClientNameQuestion);
-        cloudAwsVersion = interaction.ask(cloudAwsVersionQuestion);
-      }
-      ConfigUtils.writeQuotedProperty(new File(tomcatDir, "bin"),
-                                "environment.sh",
-                                "APPLICATION_DEFAULT_TYPE",
-                                applicationDefaultType);
-      answers.addAnswer(applicationDefaultTypeQuestion, applicationDefaultType);
-      ConfigUtils.writeQuotedProperty(new File(tomcatDir, "bin"),
-                                "environment.sh",
-                                "CLOUD_SERVICE_TYPE",
-                                cloudServiceType);
-      answers.addAnswer(cloudServiceTypeQuestion, cloudServiceType);
-      ConfigUtils.writeQuotedProperty(new File(tomcatDir, "bin"),
-                                "environment.sh",
-                                "CLOUD_CLIENT_NAME",
-                                cloudClientName);
-      answers.addAnswer(cloudClientNameQuestion, cloudClientName);
-      ConfigUtils.writeQuotedProperty(new File(tomcatDir, "bin"),
-                                "environment.sh",
-                                "CLOUD_AWS_VERSION",
-                                cloudAwsVersion);
-      answers.addAnswer(cloudAwsVersionQuestion, cloudAwsVersion);
-
-      String prevAwsIdentity = ConfigUtils.findProperty(new File(previousTomcatDir, "bin"),
-                                                        "environment.sh",
-                                                        "CLOUD_AWS_IDENTITY");
-      String prevAwsCredentials = ConfigUtils.findProperty(new File(previousTomcatDir, "bin"),
-                                                           "environment.sh",
-                                                           "CLOUD_AWS_CREDENTIALS");
-
-      clearBlock();
-      addToBlock(cloudAwsIdentityQuestion, prevAwsIdentity);
-      addToBlock(cloudAwsCredentialsQuestion, prevAwsCredentials);
-
-      usePrev = false;
-      if (wasBlockChanged()) {
-        usePrev = interaction.ask(new PreviousQuestion(getChanges())).equals("yes");
-      }
-
-      String awsIdentity = prevAwsIdentity;
-      String awsCredentials = prevAwsCredentials;
-      if (!usePrev) {
-        cloudAwsIdentityQuestion.setDefaults(prevAwsIdentity);
-        cloudAwsCredentialsQuestion.setDefaults(prevAwsCredentials);
-
-        awsIdentity = interaction.ask(cloudAwsIdentityQuestion);
-        awsCredentials = interaction.ask(cloudAwsCredentialsQuestion);
-      }
-      ConfigUtils.writeQuotedProperty(new File(tomcatDir, "bin"),
-                                "environment.sh",
-                                "CLOUD_AWS_IDENTITY",
-                                awsIdentity);
-      answers.addAnswer(cloudAwsIdentityQuestion, awsIdentity);
-      ConfigUtils.writeQuotedProperty(new File(tomcatDir, "bin"),
-                                "environment.sh",
-                                "CLOUD_AWS_CREDENTIALS",
-                                awsCredentials);
-      answers.addAnswer(cloudAwsCredentialsQuestion, awsCredentials);
-    } catch (IOException e) {
-      throw new ConfigurationException("Updating autoscaling configuration failed", e);
+    boolean usePrev = false;
+    if (wasBlockChanged()) {
+      usePrev = interaction.ask(new PreviousQuestion(getChanges())).equals("yes");
     }
+
+    String applicationDefaultType = prevApplicationDefaultType;
+    String cloudServiceType = prevCloudServiceType;
+    String cloudClientName = prevCloudClientName;
+    String cloudAwsVersion = prevCloudAwsVersion;
+    if (!usePrev) {
+      applicationDefaultTypeQuestion.setDefaults(prevApplicationDefaultType);
+      cloudServiceTypeQuestion.setDefaults(prevCloudServiceType);
+      cloudClientNameQuestion.setDefaults(prevCloudClientName);
+      cloudAwsVersionQuestion.setDefaults(prevCloudAwsVersion);
+
+      applicationDefaultType = interaction.ask(applicationDefaultTypeQuestion);
+      cloudServiceType = interaction.ask(cloudServiceTypeQuestion);
+      cloudClientName = interaction.ask(cloudClientNameQuestion);
+      cloudAwsVersion = interaction.ask(cloudAwsVersionQuestion);
+    }
+    currConfiguration.set("cloud.admin.application.default.type", applicationDefaultType);
+    currConfiguration.set("cloud.admin.application.cloud.service.type", cloudServiceType);
+    currConfiguration.set("cloud.client.name", cloudClientName);
+    currConfiguration.set("aws-ec2.api-version", cloudAwsVersion);
+    answers.addAnswer(applicationDefaultTypeQuestion, applicationDefaultType);
+    answers.addAnswer(cloudServiceTypeQuestion, cloudServiceType);
+    answers.addAnswer(cloudClientNameQuestion, cloudClientName);
+    answers.addAnswer(cloudAwsVersionQuestion, cloudAwsVersion);
+
+    String prevAwsIdentity = prevConfiguration.get("aws-ec2.identity");
+    String prevAwsCredentials = prevConfiguration.get("aws-ec2.credential");
+
+    clearBlock();
+    addToBlock(cloudAwsIdentityQuestion, prevAwsIdentity);
+    addToBlock(cloudAwsCredentialsQuestion, prevAwsCredentials);
+
+    usePrev = false;
+    if (wasBlockChanged()) {
+      usePrev = interaction.ask(new PreviousQuestion(getChanges())).equals("yes");
+    }
+
+    String awsIdentity = prevAwsIdentity;
+    String awsCredentials = prevAwsCredentials;
+    if (!usePrev) {
+      cloudAwsIdentityQuestion.setDefaults(prevAwsIdentity);
+      cloudAwsCredentialsQuestion.setDefaults(prevAwsCredentials);
+
+      awsIdentity = interaction.ask(cloudAwsIdentityQuestion);
+      awsCredentials = interaction.ask(cloudAwsCredentialsQuestion);
+    }
+    currConfiguration.set("aws-ec2.identity", awsIdentity);
+    currConfiguration.set("aws-ec2.credential", awsCredentials);
+    answers.addAnswer(cloudAwsIdentityQuestion, awsIdentity);
+    answers.addAnswer(cloudAwsCredentialsQuestion, awsCredentials);
   }
 
 }

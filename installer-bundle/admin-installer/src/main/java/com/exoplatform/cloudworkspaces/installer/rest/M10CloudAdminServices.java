@@ -19,6 +19,7 @@
 package com.exoplatform.cloudworkspaces.installer.rest;
 
 import com.exoplatform.cloudworkspaces.installer.InstallerException;
+import com.exoplatform.cloudworkspaces.installer.configuration.Admin;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;
@@ -41,19 +42,16 @@ public class M10CloudAdminServices implements CloudAdminServices {
 
   protected final DefaultHttpClient httpClient;
 
-  public M10CloudAdminServices() {
+  public M10CloudAdminServices(Admin admin) throws InstallerException {
     this.httpClient = new DefaultHttpClient();
-  }
-
-  public void bindTo(String tenantMasterhost, String adminUsername, String adminPassword) throws InstallerException {
+    this.tenantMasterhost = admin.getAdminConfiguration().get("tenant.masterhost");
+    String adminUsername = "cloudadmin";
+    String adminPassword = admin.getAdminConfiguration().get("tomcat.users.cloudadmin.password");
     try {
-      this.tenantMasterhost = tenantMasterhost;
-      this.tenantMasterhost = tenantMasterhost;
       URI masterhostUri = new URI(tenantMasterhost);
       httpClient.getCredentialsProvider()
                 .setCredentials(new AuthScope(masterhostUri.getHost(), masterhostUri.getPort()),
                                 new UsernamePasswordCredentials(adminUsername, adminPassword));
-
     } catch (URISyntaxException e) {
       throw new InstallerException(e);
     }

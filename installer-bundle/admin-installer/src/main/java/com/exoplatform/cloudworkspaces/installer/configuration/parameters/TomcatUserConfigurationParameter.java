@@ -51,13 +51,12 @@ public class TomcatUserConfigurationParameter implements ConfigurationParameter 
   @Override
   public String get(File tomcatDir, File confDir, File dataDir) throws ConfigurationException {
     try {
-      ConfigUtils.find(tomcatDir, "conf/tomcat-users.xml", "<user username=\"" + username
+      return ConfigUtils.find(tomcatDir, "conf/tomcat-users.xml", "<user username=\"" + username
           + "\" password=\"([^\"]*)\"");
     } catch (IOException e) {
       throw new ConfigurationException("Could not get password for user " + username
           + " from file " + new File(tomcatDir, "conf/tomcat-users.xml").getAbsolutePath());
     }
-    return null;
   }
 
   @Override

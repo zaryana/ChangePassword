@@ -65,13 +65,15 @@ public class AnswersManager {
   }
 
   private void saveTo(File saveTo, List<String> answers) throws IOException {
-    if (!saveTo.exists()) {
-      if (!saveTo.getParentFile().exists() && saveTo.getParentFile().mkdirs())
+    File save = saveTo.getAbsoluteFile();
+    if (!save.exists()) {
+      if (save.getParentFile() != null && !save.getParentFile().exists()
+          && save.getParentFile().mkdirs())
         throw new IOException("Couldn't create directory for answers file");
       if (!saveTo.createNewFile())
         throw new IOException("Couldn't create file for answers");
     }
-    PrintWriter out = new PrintWriter(new FileOutputStream(saveTo));
+    PrintWriter out = new PrintWriter(new FileOutputStream(save));
     for (String line : answers) {
       out.println(line);
     }

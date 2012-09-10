@@ -20,28 +20,18 @@ package com.exoplatform.cloudworkspaces.installer.configuration;
 
 import com.exoplatform.cloudworkspaces.installer.configuration.parameters.ConfigurationParameter;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class AdminConfiguration {
 
-  protected final File                                tomcatDir;
-
-  protected final File                                confDir;
-
-  protected final File                                dataDir;
+  protected final AdminDirectories                    directories;
 
   protected final Map<String, ConfigurationParameter> parameters;
 
-  public AdminConfiguration(File tomcatDir,
-                            File confDir,
-                            File dataDir,
-                            List<ConfigurationParameter> parameterList) {
-    this.tomcatDir = tomcatDir;
-    this.confDir = confDir;
-    this.dataDir = dataDir;
+  public AdminConfiguration(AdminDirectories directories, List<ConfigurationParameter> parameterList) {
+    this.directories = directories;
     this.parameters = new HashMap<String, ConfigurationParameter>();
     for (ConfigurationParameter parameter : parameterList) {
       parameters.put(parameter.getName(), parameter);
@@ -53,7 +43,7 @@ public class AdminConfiguration {
   }
 
   public String get(ConfigurationParameter key) throws ConfigurationException {
-    return key.get(tomcatDir, confDir, dataDir);
+    return key.get(directories.getTomcatDir(), directories.getConfDir(), directories.getDataDir());
   }
 
   public void set(String key, String value) throws ConfigurationException {
@@ -61,7 +51,7 @@ public class AdminConfiguration {
   }
 
   public void set(ConfigurationParameter key, String value) throws ConfigurationException {
-    key.set(tomcatDir, confDir, dataDir, value);
+    key.set(directories.getTomcatDir(), directories.getConfDir(), directories.getDataDir(), value);
   }
 
 }

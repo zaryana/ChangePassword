@@ -16,25 +16,20 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package com.exoplatform.cloudworkspaces.installer.versions;
+package com.exoplatform.cloudworkspaces.installer.configuration;
 
 import com.exoplatform.cloudworkspaces.installer.InstallerException;
-import com.exoplatform.cloudworkspaces.installer.configuration.AdminDirectories;
-import com.exoplatform.cloudworkspaces.installer.interaction.AnswersManager;
-import com.exoplatform.cloudworkspaces.installer.interaction.InteractionManager;
-import com.exoplatform.cloudworkspaces.installer.upgrade.VersionEntry;
+import com.exoplatform.cloudworkspaces.installer.rest.CloudAdminServices;
+import com.exoplatform.cloudworkspaces.installer.tomcat.AdminTomcatWrapper;
 
-import org.picocontainer.PicoContainer;
+public interface CurrentAdmin {
 
-public abstract class UpdationContainer {
+  public AdminDirectories getAdminDirectories();
 
-  public UpdationContainer() {
-  }
+  public AdminConfiguration getAdminConfiguration();
 
-  public abstract PicoContainer getContainer(AdminDirectories prevAdmin,
-                                             AdminDirectories nextAdmin,
-                                             VersionEntry version,
-                                             InteractionManager interaction,
-                                             AnswersManager answers) throws InstallerException;
+  public CloudAdminServices getCloudAdminServices() throws InstallerException;
+
+  public AdminTomcatWrapper getAdminTomcatWrapper() throws InstallerException;
 
 }

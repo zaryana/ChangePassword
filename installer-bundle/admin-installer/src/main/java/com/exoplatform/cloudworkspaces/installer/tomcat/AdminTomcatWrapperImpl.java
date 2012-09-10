@@ -19,30 +19,31 @@
 package com.exoplatform.cloudworkspaces.installer.tomcat;
 
 import com.exoplatform.cloudworkspaces.installer.InstallerException;
+import com.exoplatform.cloudworkspaces.installer.configuration.Admin;
 
 import java.io.File;
 import java.io.IOException;
 
 public class AdminTomcatWrapperImpl implements AdminTomcatWrapper {
 
-  private File tomcatDir;
+  private Admin admin;
+
+  public AdminTomcatWrapperImpl(Admin admin) {
+    this.admin = admin;
+  }
 
   public AdminTomcatWrapperImpl() {
   }
 
   @Override
-  public void bindTo(File tomcatDir) {
-    this.tomcatDir = tomcatDir;
-  }
-
-  @Override
   public void startTomcat() throws InstallerException {
-    execute("./catalina.sh start", new File(tomcatDir, "bin"));
+    execute("./catalina.sh start", new File(admin.getAdminDirectories().getTomcatDir(), "bin"));
   }
 
   @Override
   public void stopTomcat() throws InstallerException {
-    execute("./catalina.sh stop -force", new File(tomcatDir, "bin"));
+    execute("./catalina.sh stop -force",
+            new File(admin.getAdminDirectories().getTomcatDir(), "bin"));
   }
 
   private void execute(String cmd, File dir) throws InstallerException {

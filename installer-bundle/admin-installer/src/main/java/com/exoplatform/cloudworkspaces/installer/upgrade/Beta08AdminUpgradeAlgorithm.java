@@ -18,22 +18,20 @@
  */
 package com.exoplatform.cloudworkspaces.installer.upgrade;
 
-import com.exoplatform.cloudworkspaces.installer.configuration.ConfigurationManager;
-import com.exoplatform.cloudworkspaces.installer.downloader.BundleDownloader;
+import com.exoplatform.cloudworkspaces.installer.configuration.AdminConfigurationManager;
+import com.exoplatform.cloudworkspaces.installer.configuration.CurrentAdmin;
+import com.exoplatform.cloudworkspaces.installer.configuration.PreviousAdmin;
 import com.exoplatform.cloudworkspaces.installer.interaction.AnswersManager;
 import com.exoplatform.cloudworkspaces.installer.interaction.InteractionManager;
-import com.exoplatform.cloudworkspaces.installer.rest.CloudAdminServices;
-import com.exoplatform.cloudworkspaces.installer.tomcat.AdminTomcatWrapper;
 
 public class Beta08AdminUpgradeAlgorithm extends Beta07AdminUpgradeAlgorithm {
 
-  public Beta08AdminUpgradeAlgorithm(InteractionManager interaction,
+  public Beta08AdminUpgradeAlgorithm(PreviousAdmin prevAdmin,
+                                     CurrentAdmin currAdmin,
+                                     InteractionManager interaction,
                                      AnswersManager answers,
-                                     CloudAdminServices cloudAdminServices,
-                                     BundleDownloader bundleDownloader,
-                                     AdminTomcatWrapper tomcat,
-                                     ConfigurationManager configurationManager) {
-    super(interaction, answers, cloudAdminServices, bundleDownloader, tomcat, configurationManager);
+                                     AdminConfigurationManager configurationManager) {
+    super(prevAdmin, currAdmin, interaction, answers, configurationManager);
   }
 
   @Override

@@ -19,16 +19,16 @@
 package com.exoplatform.cloudworkspaces.installer.upgrade;
 
 import com.exoplatform.cloudworkspaces.installer.InstallerException;
-
-import java.io.File;
+import com.exoplatform.cloudworkspaces.installer.configuration.AdminDirectories;
 
 public abstract class AdminUpgradeAlgorithm {
 
   public AdminUpgradeAlgorithm() {
   }
 
-  public abstract void upgrade(File previousConfDir, File previousTomcatDir, File dataDir) throws InstallerException;
+  public abstract void upgrade(AdminDirectories toDirs, boolean isClearTenants) throws InstallerException;
 
-  public abstract void install(File confDir, File tomcatDir, File dataDir) throws InstallerException;
+  // public abstract void install(CurrentAdmin currAdmin) throws
+  // InstallerException;
 
 }

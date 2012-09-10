@@ -18,16 +18,13 @@
  */
 package com.exoplatform.cloudworkspaces.installer.configuration.updaters;
 
-import com.exoplatform.cloudworkspaces.installer.ConfigUtils;
 import com.exoplatform.cloudworkspaces.installer.InstallerException;
 import com.exoplatform.cloudworkspaces.installer.configuration.BaseConfigurationUpdater;
-import com.exoplatform.cloudworkspaces.installer.configuration.ConfigurationException;
+import com.exoplatform.cloudworkspaces.installer.configuration.CurrentAdmin;
+import com.exoplatform.cloudworkspaces.installer.configuration.PreviousAdmin;
 import com.exoplatform.cloudworkspaces.installer.configuration.Question;
 import com.exoplatform.cloudworkspaces.installer.interaction.AnswersManager;
 import com.exoplatform.cloudworkspaces.installer.interaction.InteractionManager;
-
-import java.io.File;
-import java.io.IOException;
 
 public class BackupConfigurationUpdater extends BaseConfigurationUpdater {
   private final Question backupIdQuestion = new Question("cloud.admin.tenant.backup.id",
@@ -37,27 +34,18 @@ public class BackupConfigurationUpdater extends BaseConfigurationUpdater {
                                                          null);
 
   @Override
-  public void update(File confDir,
-                     File tomcatDir,
-                     File previousConfDir,
-                     File previousTomcatDir,
+  public void update(PreviousAdmin prevAdmin,
+                     CurrentAdmin currAdmin,
                      InteractionManager interaction,
                      AnswersManager answers) throws InstallerException {
-    try {
-      interaction.println("");
-      interaction.println("");
-      interaction.println("Backup settings");
-      answers.addBlockName("Backup settings");
+    interaction.println("");
+    interaction.println("");
+    interaction.println("Backup settings");
+    answers.addBlockName("Backup settings");
 
-      String backupId = interaction.ask(backupIdQuestion);
+    String backupId = interaction.ask(backupIdQuestion);
 
-      ConfigUtils.writeProperty(confDir,
-                                "admin.properties",
-                                "cloud.admin.tenant.backup.id",
-                                backupId);
-    } catch (IOException e) {
-      throw new ConfigurationException("Updating cloud configuration failed", e);
-    }
+    currAdmin.getAdminConfiguration().set("cloud.admin.tenant.backup.id", backupId);
   }
 
 }

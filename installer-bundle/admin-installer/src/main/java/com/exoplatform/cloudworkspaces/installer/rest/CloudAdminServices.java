@@ -18,14 +18,10 @@
  */
 package com.exoplatform.cloudworkspaces.installer.rest;
 
-import com.exoplatform.cloudworkspaces.installer.InstallerException;
-
 import java.util.List;
 import java.util.Map;
 
 public interface CloudAdminServices {
-
-  public void bindTo(String tenantMasterhost, String username, String password) throws InstallerException;
 
   public String serverStart(String cloudType) throws AdminException;
 

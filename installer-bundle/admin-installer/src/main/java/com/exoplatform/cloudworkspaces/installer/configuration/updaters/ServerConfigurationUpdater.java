@@ -21,6 +21,8 @@ package com.exoplatform.cloudworkspaces.installer.configuration.updaters;
 import com.exoplatform.cloudworkspaces.installer.FileUtils;
 import com.exoplatform.cloudworkspaces.installer.configuration.BaseConfigurationUpdater;
 import com.exoplatform.cloudworkspaces.installer.configuration.ConfigurationException;
+import com.exoplatform.cloudworkspaces.installer.configuration.CurrentAdmin;
+import com.exoplatform.cloudworkspaces.installer.configuration.PreviousAdmin;
 import com.exoplatform.cloudworkspaces.installer.interaction.AnswersManager;
 import com.exoplatform.cloudworkspaces.installer.interaction.InteractionManager;
 
@@ -30,18 +32,18 @@ import java.io.IOException;
 public class ServerConfigurationUpdater extends BaseConfigurationUpdater {
 
   @Override
-  public void update(File confDir,
-                     File tomcatDir,
-                     File previousConfDir,
-                     File previousTomcatDir,
+  public void update(PreviousAdmin prevAdmin,
+                     CurrentAdmin currAdmin,
                      InteractionManager interaction,
                      AnswersManager answers) throws ConfigurationException {
     try {
-      File applicationServers = new File(confDir, "application-servers");
+      File applicationServers = new File(currAdmin.getAdminDirectories().getConfDir(),
+                                         "application-servers");
       if (!applicationServers.exists())
         if (!applicationServers.mkdirs())
           throw new IOException("Could not create application-servers directory");
-      File previousApplicationServers = new File(previousConfDir, "application-servers");
+      File previousApplicationServers = new File(prevAdmin.getAdminDirectories().getConfDir(),
+                                                 "application-servers");
       if (previousApplicationServers.exists() && previousApplicationServers.isDirectory()) {
         for (File server : previousApplicationServers.listFiles()) {
           File current = new File(applicationServers, server.getName());

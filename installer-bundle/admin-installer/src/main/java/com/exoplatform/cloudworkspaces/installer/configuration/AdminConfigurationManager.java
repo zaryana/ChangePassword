@@ -22,11 +22,36 @@ import com.exoplatform.cloudworkspaces.installer.InstallerException;
 import com.exoplatform.cloudworkspaces.installer.interaction.AnswersManager;
 import com.exoplatform.cloudworkspaces.installer.interaction.InteractionManager;
 
-public interface ConfigurationUpdater {
+import java.util.List;
 
-  public void update(PreviousAdmin prevAdmin,
-                     CurrentAdmin currAdmin,
-                     InteractionManager interaction,
-                     AnswersManager answers) throws InstallerException;
+public class AdminConfigurationManager {
+
+  protected final PreviousAdmin                    prevAdmin;
+
+  protected final CurrentAdmin                     currAdmin;
+
+  protected final List<ConfigurationUpdater> updaters;
+
+  protected final InteractionManager         interactionManager;
+
+  protected final AnswersManager             answersManager;
+
+  public AdminConfigurationManager(PreviousAdmin prevAdmin,
+                                   CurrentAdmin currAdmin,
+                                   List<ConfigurationUpdater> updaters,
+                                   InteractionManager interactionManager,
+                                   AnswersManager answersManager) {
+    this.prevAdmin = prevAdmin;
+    this.currAdmin = currAdmin;
+    this.updaters = updaters;
+    this.interactionManager = interactionManager;
+    this.answersManager = answersManager;
+  }
+
+  public void configure() throws InstallerException {
+    for (ConfigurationUpdater updater : updaters) {
+      updater.update(prevAdmin, currAdmin, interactionManager, answersManager);
+    }
+  }
 
 }

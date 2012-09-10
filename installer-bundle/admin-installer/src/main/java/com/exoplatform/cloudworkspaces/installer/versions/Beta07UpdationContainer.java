@@ -19,8 +19,11 @@
 package com.exoplatform.cloudworkspaces.installer.versions;
 
 import com.exoplatform.cloudworkspaces.installer.InstallerException;
-import com.exoplatform.cloudworkspaces.installer.configuration.ConfigurationManager;
+import com.exoplatform.cloudworkspaces.installer.configuration.AdminConfigurationManager;
+import com.exoplatform.cloudworkspaces.installer.configuration.AdminDirectories;
 import com.exoplatform.cloudworkspaces.installer.configuration.ConfigurationUpdater;
+import com.exoplatform.cloudworkspaces.installer.configuration.CurrentAdmin;
+import com.exoplatform.cloudworkspaces.installer.configuration.PreviousAdmin;
 import com.exoplatform.cloudworkspaces.installer.configuration.updaters.AwsConfigurationUpdater;
 import com.exoplatform.cloudworkspaces.installer.configuration.updaters.BackupConfigurationUpdater;
 import com.exoplatform.cloudworkspaces.installer.configuration.updaters.CloudConfigurationUpdater;
@@ -29,14 +32,9 @@ import com.exoplatform.cloudworkspaces.installer.configuration.updaters.Instance
 import com.exoplatform.cloudworkspaces.installer.configuration.updaters.MailConfigurationUpdater;
 import com.exoplatform.cloudworkspaces.installer.configuration.updaters.ServerConfigurationUpdater;
 import com.exoplatform.cloudworkspaces.installer.configuration.updaters.TomcatUsersConfigurationUpdater;
-import com.exoplatform.cloudworkspaces.installer.downloader.BundleDownloader;
-import com.exoplatform.cloudworkspaces.installer.downloader.FromFileBundleDownloader;
+import com.exoplatform.cloudworkspaces.installer.downloader.IntranetBundleDownloader;
 import com.exoplatform.cloudworkspaces.installer.interaction.AnswersManager;
 import com.exoplatform.cloudworkspaces.installer.interaction.InteractionManager;
-import com.exoplatform.cloudworkspaces.installer.rest.CloudAdminServices;
-import com.exoplatform.cloudworkspaces.installer.rest.M10CloudAdminServices;
-import com.exoplatform.cloudworkspaces.installer.tomcat.AdminTomcatWrapper;
-import com.exoplatform.cloudworkspaces.installer.tomcat.AdminTomcatWrapperImpl;
 import com.exoplatform.cloudworkspaces.installer.upgrade.AdminUpgradeAlgorithm;
 import com.exoplatform.cloudworkspaces.installer.upgrade.Beta07AdminUpgradeAlgorithm;
 import com.exoplatform.cloudworkspaces.installer.upgrade.VersionEntry;
@@ -45,27 +43,72 @@ import org.picocontainer.DefaultPicoContainer;
 import org.picocontainer.PicoContainer;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Beta07UpdationContainer extends UpdationContainer {
 
   @Override
-  public PicoContainer getContainer(VersionEntry version,
+  public PicoContainer getContainer(AdminDirectories prevAdminDirs,
+                                    AdminDirectories nextAdminDirs,
+                                    VersionEntry version,
                                     InteractionManager interaction,
                                     AnswersManager answers) throws InstallerException {
+
+    File bundleZip = new File(nextAdminDirs.getTomcatDir().getAbsolutePath() + ".zip");
+    if (bundleZip.exists()) {
+      if (!bundleZip.delete()) {
+        throw new InstallerException("Could not delete file " + bundleZip.getAbsolutePath());
+      }
+    }
+    System.out.println("Downloading new admin bundle...");
+    IntranetBundleDownloader bundleDownloader = new IntranetBundleDownloader(version.getBundleUrl());
+    // FromFileBundleDownloader bundleDownloader = new
+    // FromFileBundleDownloader(new File(version.getBundleUrl()));
+    bundleDownloader.downloadAdminTo(bundleZip);
+
+    AdminDirectories currAdminDirs;
+    try {
+      currAdminDirs = AdminDirectories.createFromBundle(bundleZip,
+                                                        new File(nextAdminDirs.getTomcatDir()
+                                                                              .getAbsolutePath()
+                                                            + ".new"));
+    } catch (IOException e) {
+      throw new InstallerException("Error while unzipping admin bundle", e);
+    } catch (InterruptedException e) {
+      throw new InstallerException("Error while unzipping admin bundle", e);
+    }
+
+    PreviousAdmin prevAdmin = getPreviousAdmin(prevAdminDirs);
+    CurrentAdmin currAdmin = getCurrentAdmin(currAdminDirs);
+
     DefaultPicoContainer container = new DefaultPicoContainer();
     container.addComponent(InteractionManager.class, interaction);
     container.addComponent(AnswersManager.class, answers);
-    container.addComponent(CloudAdminServices.class, M10CloudAdminServices.class);
-    container.addComponent(BundleDownloader.class,
-                           new FromFileBundleDownloader(new File(version.getBundleUrl())));
-    /*
-     * container.addComponent(BundleDownloader.class, new
-     * IntranetBundleDownloader(version.getBundleUrl()));
-     */
-    container.addComponent(AdminTomcatWrapper.class, AdminTomcatWrapperImpl.class);
+    container.addComponent(PreviousAdmin.class, prevAdmin);
+    container.addComponent(CurrentAdmin.class, currAdmin);
 
+    AdminConfigurationManager configurationManager = new AdminConfigurationManager(prevAdmin,
+                                                                                   currAdmin,
+                                                                                   getConfigurationUpdaters(),
+                                                                                   interaction,
+                                                                                   answers);
+    container.addComponent(AdminConfigurationManager.class, configurationManager);
+
+    container.addComponent(AdminUpgradeAlgorithm.class, getUpgradeAlgorithm());
+    return container;
+  }
+
+  public PreviousAdmin getPreviousAdmin(AdminDirectories prevAdminDirs) {
+    return new Beta07Admin(prevAdminDirs);
+  }
+
+  public CurrentAdmin getCurrentAdmin(AdminDirectories currAdminDirs) {
+    return new Beta07Admin(currAdminDirs);
+  }
+
+  public List<ConfigurationUpdater> getConfigurationUpdaters() {
     List<ConfigurationUpdater> updaters = new ArrayList<ConfigurationUpdater>();
     updaters.add(new DBConfigurationUpdater());
     updaters.add(new CloudConfigurationUpdater());
@@ -75,13 +118,11 @@ public class Beta07UpdationContainer extends UpdationContainer {
     updaters.add(new InstanceConfigurationUpdater());
     updaters.add(new ServerConfigurationUpdater());
     updaters.add(new BackupConfigurationUpdater());
-    ConfigurationManager configurationManager = new ConfigurationManager(updaters,
-                                                                         interaction,
-                                                                         answers);
-    container.addComponent(ConfigurationManager.class, configurationManager);
+    return updaters;
+  }
 
-    container.addComponent(AdminUpgradeAlgorithm.class, Beta07AdminUpgradeAlgorithm.class);
-    return container;
+  public Class<? extends AdminUpgradeAlgorithm> getUpgradeAlgorithm() {
+    return Beta07AdminUpgradeAlgorithm.class;
   }
 
 }
