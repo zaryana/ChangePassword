@@ -52,7 +52,8 @@ public class Beta07UpdationContainer extends UpdationContainer {
   @Override
   public PicoContainer getContainer(AdminDirectories prevAdminDirs,
                                     AdminDirectories nextAdminDirs,
-                                    VersionEntry version,
+                                    VersionEntry prevVersion,
+                                    VersionEntry nextVersion,
                                     InteractionManager interaction,
                                     AnswersManager answers) throws InstallerException {
 
@@ -63,9 +64,7 @@ public class Beta07UpdationContainer extends UpdationContainer {
       }
     }
     System.out.println("Downloading new admin bundle...");
-    IntranetBundleDownloader bundleDownloader = new IntranetBundleDownloader(version.getBundleUrl());
-    // FromFileBundleDownloader bundleDownloader = new
-    // FromFileBundleDownloader(new File(version.getBundleUrl()));
+    IntranetBundleDownloader bundleDownloader = new IntranetBundleDownloader(nextVersion.getBundleUrl());
     bundleDownloader.downloadAdminTo(bundleZip);
 
     AdminDirectories currAdminDirs;
@@ -80,8 +79,8 @@ public class Beta07UpdationContainer extends UpdationContainer {
       throw new InstallerException("Error while unzipping admin bundle", e);
     }
 
-    PreviousAdmin prevAdmin = getPreviousAdmin(prevAdminDirs);
-    CurrentAdmin currAdmin = getCurrentAdmin(currAdminDirs);
+    PreviousAdmin prevAdmin = getPreviousAdmin(prevAdminDirs, prevVersion);
+    CurrentAdmin currAdmin = getCurrentAdmin(currAdminDirs, nextVersion);
 
     DefaultPicoContainer container = new DefaultPicoContainer();
     container.addComponent(InteractionManager.class, interaction);
@@ -100,12 +99,12 @@ public class Beta07UpdationContainer extends UpdationContainer {
     return container;
   }
 
-  public PreviousAdmin getPreviousAdmin(AdminDirectories prevAdminDirs) {
-    return new Beta07Admin(prevAdminDirs);
+  public PreviousAdmin getPreviousAdmin(AdminDirectories prevAdminDirs, VersionEntry version) throws InstallerException {
+    return new Beta07Admin(prevAdminDirs, version);
   }
 
-  public CurrentAdmin getCurrentAdmin(AdminDirectories currAdminDirs) {
-    return new Beta07Admin(currAdminDirs);
+  public CurrentAdmin getCurrentAdmin(AdminDirectories currAdminDirs, VersionEntry version) throws InstallerException {
+    return new Beta07Admin(currAdminDirs, version);
   }
 
   public List<ConfigurationUpdater> getConfigurationUpdaters() {

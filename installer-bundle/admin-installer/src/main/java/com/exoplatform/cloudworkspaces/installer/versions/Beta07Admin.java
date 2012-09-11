@@ -26,13 +26,14 @@ import com.exoplatform.cloudworkspaces.installer.configuration.parameters.Proper
 import com.exoplatform.cloudworkspaces.installer.configuration.parameters.TomcatUserConfigurationParameter;
 import com.exoplatform.cloudworkspaces.installer.rest.M10CloudAdminServices;
 import com.exoplatform.cloudworkspaces.installer.tomcat.AdminTomcatWrapperImpl;
+import com.exoplatform.cloudworkspaces.installer.upgrade.VersionEntry;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Beta07Admin extends Admin {
 
-  public Beta07Admin(AdminDirectories adminDirectories) {
+  public Beta07Admin(AdminDirectories adminDirectories, VersionEntry version) {
     super(adminDirectories);
 
     this.adminConfiguration = new AdminConfiguration(this.adminDirectories,

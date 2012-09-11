@@ -18,13 +18,28 @@
  */
 package com.exoplatform.cloudworkspaces.installer.versions;
 
+import com.exoplatform.cloudworkspaces.installer.InstallerException;
 import com.exoplatform.cloudworkspaces.installer.configuration.AdminDirectories;
+import com.exoplatform.cloudworkspaces.installer.configuration.CurrentAdmin;
+import com.exoplatform.cloudworkspaces.installer.configuration.PreviousAdmin;
+import com.exoplatform.cloudworkspaces.installer.upgrade.AdminUpgradeAlgorithm;
+import com.exoplatform.cloudworkspaces.installer.upgrade.Beta09AdminUpgradeAlgorithm;
 import com.exoplatform.cloudworkspaces.installer.upgrade.VersionEntry;
 
-public class Beta08Admin extends Beta07Admin {
+public class Beta09UpdationContainer extends Beta08UpdationContainer {
 
-  public Beta08Admin(AdminDirectories adminDirectories, VersionEntry version) {
-    super(adminDirectories, version);
+  @Override
+  public PreviousAdmin getPreviousAdmin(AdminDirectories prevAdminDirs, VersionEntry version) throws InstallerException {
+    return new Beta08Admin(prevAdminDirs, version);
+  }
+
+  @Override
+  public CurrentAdmin getCurrentAdmin(AdminDirectories currAdminDirs, VersionEntry version) throws InstallerException {
+    return new Beta09Admin(currAdminDirs, version);
+  }
+
+  public Class<? extends AdminUpgradeAlgorithm> getUpgradeAlgorithm() {
+    return Beta09AdminUpgradeAlgorithm.class;
   }
 
 }

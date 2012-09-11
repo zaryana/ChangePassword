@@ -18,12 +18,13 @@
  */
 package com.exoplatform.cloudworkspaces.installer.versions;
 
+import com.exoplatform.cloudworkspaces.installer.InstallerException;
 import com.exoplatform.cloudworkspaces.installer.configuration.AdminDirectories;
 import com.exoplatform.cloudworkspaces.installer.upgrade.VersionEntry;
 
-public class Beta08Admin extends Beta07Admin {
+public class Beta09Admin extends Beta08Admin {
 
-  public Beta08Admin(AdminDirectories adminDirectories, VersionEntry version) {
+  public Beta09Admin(AdminDirectories adminDirectories, VersionEntry version) throws InstallerException {
     super(adminDirectories, version);
   }
 

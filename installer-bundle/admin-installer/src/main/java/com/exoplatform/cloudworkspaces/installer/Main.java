@@ -134,14 +134,16 @@ public class Main {
     AdminDirectories prevAdminDirs = new AdminDirectories(prevTomcatDir, confDir, dataDir);
     AdminDirectories nextAdminDirs = new AdminDirectories(tomcatDir, confDir, dataDir);
 
-    VersionEntry entry = versionsManager.getVersionEntry(version);
-    PicoContainer container = entry.getContainerClass()
-                                   .newInstance()
-                                   .getContainer(prevAdminDirs,
-                                                 nextAdminDirs,
-                                                 entry,
-                                                 interaction,
-                                                 answersManager);
+    VersionEntry nextVersion = versionsManager.getVersionEntry(version);
+    VersionEntry prevVersion = versionsManager.getVersionEntry(nextVersion.getFromVersion());
+    PicoContainer container = nextVersion.getContainerClass()
+                                         .newInstance()
+                                         .getContainer(prevAdminDirs,
+                                                       nextAdminDirs,
+                                                       prevVersion,
+                                                       nextVersion,
+                                                       interaction,
+                                                       answersManager);
     container.getComponent(AdminUpgradeAlgorithm.class).upgrade(nextAdminDirs, isClearTenants);
   }
 
@@ -217,14 +219,16 @@ public class Main {
     AdminDirectories prevAdminDirs = new AdminDirectories(tomcatDir, confDir, dataDir);
     AdminDirectories nextAdminDirs = new AdminDirectories(tomcatDir, confDir, dataDir);
 
-    VersionEntry entry = versionsManager.getVersionEntry(version);
-    PicoContainer container = entry.getContainerClass()
-                                   .newInstance()
-                                   .getContainer(prevAdminDirs,
-                                                 nextAdminDirs,
-                                                 entry,
-                                                 interaction,
-                                                 answersManager);
+    VersionEntry nextVersion = versionsManager.getVersionEntry(version);
+    VersionEntry prevVersion = versionsManager.getVersionEntry(nextVersion.getFromVersion());
+    PicoContainer container = nextVersion.getContainerClass()
+                                         .newInstance()
+                                         .getContainer(prevAdminDirs,
+                                                       nextAdminDirs,
+                                                       prevVersion,
+                                                       nextVersion,
+                                                       interaction,
+                                                       answersManager);
     container.getComponent(AdminUpgradeAlgorithm.class).install(nextAdminDirs);
   }
 

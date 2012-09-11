@@ -16,26 +16,27 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package com.exoplatform.cloudworkspaces.installer.versions;
+package com.exoplatform.cloudworkspaces.installer.upgrade;
 
-import com.exoplatform.cloudworkspaces.installer.InstallerException;
-import com.exoplatform.cloudworkspaces.installer.configuration.AdminDirectories;
+import com.exoplatform.cloudworkspaces.installer.configuration.AdminConfigurationManager;
+import com.exoplatform.cloudworkspaces.installer.configuration.CurrentAdmin;
+import com.exoplatform.cloudworkspaces.installer.configuration.PreviousAdmin;
 import com.exoplatform.cloudworkspaces.installer.interaction.AnswersManager;
 import com.exoplatform.cloudworkspaces.installer.interaction.InteractionManager;
-import com.exoplatform.cloudworkspaces.installer.upgrade.VersionEntry;
 
-import org.picocontainer.PicoContainer;
+public class Beta09AdminUpgradeAlgorithm extends Beta08AdminUpgradeAlgorithm {
 
-public abstract class UpdationContainer {
-
-  public UpdationContainer() {
+  public Beta09AdminUpgradeAlgorithm(PreviousAdmin prevAdmin,
+                                     CurrentAdmin currAdmin,
+                                     InteractionManager interaction,
+                                     AnswersManager answers,
+                                     AdminConfigurationManager configurationManager) {
+    super(prevAdmin, currAdmin, interaction, answers, configurationManager);
   }
 
-  public abstract PicoContainer getContainer(AdminDirectories prevAdmin,
-                                             AdminDirectories nextAdmin,
-                                             VersionEntry prevVersion,
-                                             VersionEntry nextVersion,
-                                             InteractionManager interaction,
-                                             AnswersManager answers) throws InstallerException;
+  @Override
+  public String getVersion() {
+    return "1.1.0-Beta09";
+  }
 
 }
