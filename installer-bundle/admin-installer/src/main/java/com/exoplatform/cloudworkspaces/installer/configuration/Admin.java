@@ -21,31 +21,29 @@ package com.exoplatform.cloudworkspaces.installer.configuration;
 import com.exoplatform.cloudworkspaces.installer.InstallerException;
 import com.exoplatform.cloudworkspaces.installer.rest.CloudAdminServices;
 import com.exoplatform.cloudworkspaces.installer.tomcat.AdminTomcatWrapper;
+import com.exoplatform.cloudworkspaces.installer.upgrade.VersionEntry;
 
 import java.lang.reflect.InvocationTargetException;
 
-public abstract class Admin implements PreviousAdmin, CurrentAdmin {
+public class Admin implements PreviousAdmin, CurrentAdmin {
 
-  protected final AdminDirectories              adminDirectories;
+  protected final AdminDirectories                    adminDirectories;
 
-  protected AdminConfiguration                  adminConfiguration;
+  protected final AdminConfiguration                  adminConfiguration;
 
-  protected Class<? extends CloudAdminServices> cloudAdminServices;
+  protected final Class<? extends CloudAdminServices> cloudAdminServices;
 
-  protected Class<? extends AdminTomcatWrapper> adminTomcatWrapper;
+  protected final Class<? extends AdminTomcatWrapper> adminTomcatWrapper;
 
-  public Admin(AdminDirectories adminDirectories) {
+  protected final VersionEntry                        version;
+
+  public Admin(AdminDirectories adminDirectories, VersionEntry version) throws InstallerException {
     this.adminDirectories = adminDirectories;
-  }
-
-  public Admin(AdminDirectories adminDirectories,
-               AdminConfiguration adminConfiguration,
-               Class<? extends CloudAdminServices> cloudAdminServices,
-               Class<? extends AdminTomcatWrapper> adminTomcatWrapper) {
-    this.adminDirectories = adminDirectories;
-    this.adminConfiguration = adminConfiguration;
-    this.cloudAdminServices = cloudAdminServices;
-    this.adminTomcatWrapper = adminTomcatWrapper;
+    this.adminConfiguration = new AdminConfiguration(this.adminDirectories,
+                                                     version.getConfigurationParameters());
+    this.cloudAdminServices = version.getCloudAdminServicesImpl();
+    this.adminTomcatWrapper = version.getAdminTomcatWrapperImpl();
+    this.version = version;
   }
 
   public AdminDirectories getAdminDirectories() {
@@ -86,5 +84,10 @@ public abstract class Admin implements PreviousAdmin, CurrentAdmin {
     } catch (NoSuchMethodException e) {
       throw new InstallerException("Exception while creating AdminTomcatWrapper instance", e);
     }
+  }
+
+  @Override
+  public VersionEntry getVersionEntry() {
+    return version;
   }
 }

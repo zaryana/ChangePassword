@@ -16,25 +16,13 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package com.exoplatform.cloudworkspaces.installer.configuration.parameters;
+package com.exoplatform.cloudworkspaces.installer.upgrade;
 
-public class ParameterEntry {
+import com.exoplatform.cloudworkspaces.installer.InstallerException;
+import com.exoplatform.cloudworkspaces.installer.configuration.CurrentAdmin;
 
-  private final String file;
+public interface UpdateFinishedHook {
 
-  private final String key;
-
-  public ParameterEntry(String file, String key) {
-    this.file = file;
-    this.key = key;
-  }
-
-  public String getFile() {
-    return file;
-  }
-
-  public String getKey() {
-    return key;
-  }
+  public void updateFinished(CurrentAdmin currAdmin) throws InstallerException;
 
 }

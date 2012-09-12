@@ -20,21 +20,15 @@ package com.exoplatform.cloudworkspaces.installer.upgrade;
 
 import com.exoplatform.cloudworkspaces.installer.InstallerException;
 
-import java.io.IOException;
-import java.util.Properties;
+import java.io.InputStream;
 
 public class VersionsManager {
 
   public VersionEntry getVersionEntry(String toVersion) throws InstallerException {
-    try {
-      Properties properties = new Properties();
-      properties.load(Thread.currentThread()
-                            .getContextClassLoader()
-                            .getResourceAsStream("versions/" + toVersion));
-      return new VersionEntry(toVersion, properties);
-    } catch (IOException e) {
-      throw new InstallerException("Error while initializing updating algorithm to " + toVersion);
-    }
-
+    InputStream stream = Thread.currentThread()
+                               .getContextClassLoader()
+                               .getResourceAsStream("versions/" + toVersion + ".xml");
+    return new VersionEntry(toVersion, stream);
   }
+
 }

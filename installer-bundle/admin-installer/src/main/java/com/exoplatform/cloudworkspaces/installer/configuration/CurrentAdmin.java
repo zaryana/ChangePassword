@@ -21,6 +21,7 @@ package com.exoplatform.cloudworkspaces.installer.configuration;
 import com.exoplatform.cloudworkspaces.installer.InstallerException;
 import com.exoplatform.cloudworkspaces.installer.rest.CloudAdminServices;
 import com.exoplatform.cloudworkspaces.installer.tomcat.AdminTomcatWrapper;
+import com.exoplatform.cloudworkspaces.installer.upgrade.VersionEntry;
 
 public interface CurrentAdmin {
 
@@ -31,5 +32,7 @@ public interface CurrentAdmin {
   public CloudAdminServices getCloudAdminServices() throws InstallerException;
 
   public AdminTomcatWrapper getAdminTomcatWrapper() throws InstallerException;
+
+  public VersionEntry getVersionEntry();
 
 }

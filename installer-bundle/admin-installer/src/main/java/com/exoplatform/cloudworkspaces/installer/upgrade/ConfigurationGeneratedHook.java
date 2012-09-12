@@ -16,16 +16,14 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package com.exoplatform.cloudworkspaces.installer.versions;
+package com.exoplatform.cloudworkspaces.installer.upgrade;
 
 import com.exoplatform.cloudworkspaces.installer.InstallerException;
-import com.exoplatform.cloudworkspaces.installer.configuration.AdminDirectories;
-import com.exoplatform.cloudworkspaces.installer.upgrade.VersionEntry;
+import com.exoplatform.cloudworkspaces.installer.configuration.CurrentAdmin;
+import com.exoplatform.cloudworkspaces.installer.configuration.PreviousAdmin;
 
-public class Beta09Admin extends Beta08Admin {
+public interface ConfigurationGeneratedHook {
 
-  public Beta09Admin(AdminDirectories adminDirectories, VersionEntry version) throws InstallerException {
-    super(adminDirectories, version);
-  }
+  public void configurationGenerated(PreviousAdmin prevAdmin, CurrentAdmin currAdmin) throws InstallerException;
 
 }

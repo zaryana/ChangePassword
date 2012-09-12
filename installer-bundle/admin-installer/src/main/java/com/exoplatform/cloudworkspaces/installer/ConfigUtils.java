@@ -29,6 +29,10 @@ public class ConfigUtils {
 
   public static void replace(File confDir, String confFile, String from, String to) throws IOException {
     File conf = new File(confDir.getAbsolutePath() + "/" + confFile);
+    replace(conf, from, to);
+  }
+
+  public static void replace(File conf, String from, String to) throws IOException {
     String content = readFile(conf);
     Pattern pattern = Pattern.compile(from, Pattern.MULTILINE);
     Matcher matcher = pattern.matcher(content);
@@ -38,6 +42,10 @@ public class ConfigUtils {
 
   public static String find(File confDir, String confFile, String regexp) throws IOException {
     File conf = new File(confDir.getAbsolutePath() + "/" + confFile);
+    return find(conf, regexp);
+  }
+
+  public static String find(File conf, String regexp) throws IOException {
     if (!conf.exists())
       return null;
     String content = readFile(conf);
@@ -49,11 +57,19 @@ public class ConfigUtils {
   }
 
   public static String findProperty(File confDir, String confFile, String key) throws IOException {
-    return find(confDir, confFile, "^" + key + "=[\"]?([^\"\\n]*)[\"]?$");
+    return findProperty(new File(confDir, confFile), key);
+  }
+
+  public static String findProperty(File confFile, String key) throws IOException {
+    return find(confFile, "^" + key + "=[\"]?([^\"\\n]*)[\"]?$");
   }
 
   public static void writeProperty(File confDir, String confFile, String key, String value) throws IOException {
-    replace(confDir, confFile, "^" + key + "=[\"]?[^\"\\n]*[\"]?$", key + "=" + value + "");
+    writeProperty(new File(confDir, confFile), key, value);
+  }
+
+  public static void writeProperty(File confFile, String key, String value) throws IOException {
+    replace(confFile, "^" + key + "=[\"]?[^\"\\n]*[\"]?$", key + "=" + value + "");
   }
 
   public static void writeQuotedProperty(File confDir, String confFile, String key, String value) throws IOException {

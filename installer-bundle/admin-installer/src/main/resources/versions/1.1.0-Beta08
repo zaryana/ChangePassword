@@ -1,3 +1,0 @@
-from.version=1.1.0-Beta07
-bundle.url=http://intranet.exoplatform.org/rest/jcr/repository/collaboration/Groups/platform/users/Documents/Builds/CloudWorkspaces/releases/1.1.0-Beta08/cloud-workspaces-admin-1.1.0-Beta08-tomcat.zip
-update.container=com.exoplatform.cloudworkspaces.installer.versions.Beta08UpdationContainer

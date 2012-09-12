@@ -16,23 +16,38 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package com.exoplatform.cloudworkspaces.installer.configuration;
+package com.exoplatform.cloudworkspaces.installer.upgrade;
 
-import com.exoplatform.cloudworkspaces.installer.InstallerException;
-import com.exoplatform.cloudworkspaces.installer.rest.CloudAdminServices;
-import com.exoplatform.cloudworkspaces.installer.tomcat.AdminTomcatWrapper;
-import com.exoplatform.cloudworkspaces.installer.upgrade.VersionEntry;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
-public interface PreviousAdmin {
+public class Logger {
+  public static void print(String message) {
+    System.out.print(message);
+  }
 
-  public AdminDirectories getAdminDirectories();
+  public static void println() {
+  }
 
-  public AdminConfiguration getAdminConfiguration();
+  public static void println(String message) {
+    System.out.println(message);
+  }
 
-  public CloudAdminServices getCloudAdminServices() throws InstallerException;
+  public static void timePrint() {
+    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    Date date = new Date();
+    System.out.print(dateFormat.format(date));
+    System.out.print(" ");
+  }
 
-  public AdminTomcatWrapper getAdminTomcatWrapper() throws InstallerException;
+  public static void timePrint(String message) {
+    timePrint();
+    System.out.print(message);
+  }
 
-  public VersionEntry getVersionEntry();
-
+  public static void timePrintln(String message) {
+    timePrint();
+    System.out.println(message);
+  }
 }

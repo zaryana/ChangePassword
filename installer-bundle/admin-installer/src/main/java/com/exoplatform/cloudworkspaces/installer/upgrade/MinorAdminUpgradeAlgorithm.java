@@ -28,9 +28,7 @@ import com.exoplatform.cloudworkspaces.installer.interaction.InteractionManager;
 import com.exoplatform.cloudworkspaces.installer.rest.AdminException;
 import com.exoplatform.cloudworkspaces.installer.rest.CloudAdminServices;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -38,9 +36,7 @@ import java.util.Scanner;
  * Just start AS with new image id wait while it became ONLINE and stop previous
  * servers
  */
-public abstract class MinorAdminUpgradeAlgorithm extends AdminUpgradeAlgorithm {
-
-  protected final Logger                    logger = new Logger();
+public class MinorAdminUpgradeAlgorithm extends AdminUpgradeAlgorithm {
 
   protected final PreviousAdmin             prevAdmin;
 
@@ -66,22 +62,22 @@ public abstract class MinorAdminUpgradeAlgorithm extends AdminUpgradeAlgorithm {
 
   @Override
   public void upgrade(AdminDirectories toDirs, boolean isClearTenants) throws InstallerException {
-    logger.timePrintln("Start configuring admin...");
+    Logger.timePrintln("Start configuring admin...");
     configurationManager.configure();
 
     configurationGenerated(prevAdmin, currAdmin);
 
     updateStarted(currAdmin);
 
-    logger.timePrintln("Stopping admin tomcat...");
+    Logger.timePrintln("Stopping admin tomcat...");
     prevAdmin.getAdminTomcatWrapper().stopTomcat();
-    logger.timePrintln("Replacing old admin with new bundle...");
+    Logger.timePrintln("Replacing old admin with new bundle...");
 
     currAdmin.getAdminDirectories().moveTo(toDirs);
 
     tomcatStopped(currAdmin);
 
-    logger.timePrintln("Starting admin tomcat...");
+    Logger.timePrintln("Starting admin tomcat...");
     currAdmin.getAdminTomcatWrapper().startTomcat();
 
     tomcatStarted(currAdmin);
@@ -97,7 +93,7 @@ public abstract class MinorAdminUpgradeAlgorithm extends AdminUpgradeAlgorithm {
         z = false;
       }
     }
-    logger.timePrintln("Tomcat started. Starting new AS...");
+    Logger.timePrintln("Tomcat started. Starting new AS...");
 
     cloudAdminServices.blockAutoscaling();
     String newAlias = cloudAdminServices.serverStart(answers.getAnswer("application.default.type"));
@@ -114,12 +110,12 @@ public abstract class MinorAdminUpgradeAlgorithm extends AdminUpgradeAlgorithm {
     if (state == null) {
       throw new InstallerException("Instance with new application server didn't start in time");
     }
-    logger.timePrintln("New AS ready. Stopping previous AS...");
+    Logger.timePrintln("New AS ready. Stopping previous AS...");
     newAsReady(currAdmin);
     for (String alias : cloudAdminServices.serverStates().keySet()) {
       if (!alias.equals(newAlias)) {
-        logger.print("   ");
-        logger.timePrint("stopping " + alias + "...   ");
+        Logger.print("   ");
+        Logger.timePrint("stopping " + alias + "...   ");
         try {
           cloudAdminServices.serverStop(alias);
         } catch (AdminException e) {
@@ -140,14 +136,14 @@ public abstract class MinorAdminUpgradeAlgorithm extends AdminUpgradeAlgorithm {
           throw new AdminException("Error while stopping application server. Server still exists and has status "
               + serverState);
         }
-        logger.println("stopped");
+        Logger.println("stopped");
       }
     }
     cloudAdminServices.allowAutoscaling();
 
     if (isClearTenants) {
-      logger.println();
-      logger.print("Are you sure you want to delete all tenants? (yes or no): ");
+      Logger.println();
+      Logger.print("Are you sure you want to delete all tenants? (yes or no): ");
       boolean mustDelete = false;
       while (true) {
         Scanner scanner = new Scanner(System.in);
@@ -160,25 +156,25 @@ public abstract class MinorAdminUpgradeAlgorithm extends AdminUpgradeAlgorithm {
           mustDelete = false;
           break;
         }
-        logger.print("Please, print yes or no: ");
+        Logger.print("Please, print yes or no: ");
       }
       if (mustDelete) {
-        logger.timePrintln("Clearing all tenants");
+        Logger.timePrintln("Clearing all tenants");
         for (String tenant : cloudAdminServices.tenantList()) {
-          logger.print("   ");
-          logger.timePrint("deleting tenant " + tenant + "...    ");
+          Logger.print("   ");
+          Logger.timePrint("deleting tenant " + tenant + "...    ");
           try {
             removeTenant(tenant, cloudAdminServices);
-            logger.println("successfull");
+            Logger.println("successfull");
           } catch (AdminException e) {
-            logger.println("failed");
+            Logger.println("failed");
           }
         }
       }
     }
 
     updateFinished(currAdmin);
-    logger.timePrintln("Admin successfully upgraded to " + getVersion());
+    Logger.timePrintln("Admin successfully upgraded to " + currAdmin.getVersionEntry().getVersion());
   }
 
   protected void removeTenant(String tenant, CloudAdminServices cloudAdminServices) throws AdminException {
@@ -192,7 +188,7 @@ public abstract class MinorAdminUpgradeAlgorithm extends AdminUpgradeAlgorithm {
 
   @Override
   public void install(AdminDirectories toDirs) throws InstallerException {
-    logger.timePrintln("Start configuring admin...");
+    Logger.timePrintln("Start configuring admin...");
     configurationManager.configure();
 
     configurationGenerated(prevAdmin, currAdmin);
@@ -203,7 +199,7 @@ public abstract class MinorAdminUpgradeAlgorithm extends AdminUpgradeAlgorithm {
 
     tomcatStopped(currAdmin);
 
-    logger.timePrintln("Starting admin tomcat...");
+    Logger.timePrintln("Starting admin tomcat...");
     currAdmin.getAdminTomcatWrapper().startTomcat();
 
     tomcatStarted(currAdmin);
@@ -219,7 +215,7 @@ public abstract class MinorAdminUpgradeAlgorithm extends AdminUpgradeAlgorithm {
         z = false;
       }
     }
-    logger.timePrintln("Tomcat started. Starting new AS...");
+    Logger.timePrintln("Tomcat started. Starting new AS...");
 
     cloudAdminServices.blockAutoscaling();
     String newAlias = cloudAdminServices.serverStart(answers.getAnswer("application.default.type"));
@@ -236,12 +232,12 @@ public abstract class MinorAdminUpgradeAlgorithm extends AdminUpgradeAlgorithm {
     if (state == null) {
       throw new InstallerException("Instance with new application server didn't start in time");
     }
-    logger.timePrintln("New AS ready. Stopping previous AS...");
+    Logger.timePrintln("New AS ready. Stopping previous AS...");
     newAsReady(currAdmin);
     for (String alias : cloudAdminServices.serverStates().keySet()) {
       if (!alias.equals(newAlias)) {
-        logger.print("   ");
-        logger.timePrint("stopping " + alias + "...   ");
+        Logger.print("   ");
+        Logger.timePrint("stopping " + alias + "...   ");
         try {
           cloudAdminServices.serverStop(alias);
         } catch (AdminException e) {
@@ -262,56 +258,67 @@ public abstract class MinorAdminUpgradeAlgorithm extends AdminUpgradeAlgorithm {
           throw new AdminException("Error while stopping application server. Server still exists and has status "
               + serverState);
         }
-        logger.println("stopped");
+        Logger.println("stopped");
       }
     }
     cloudAdminServices.allowAutoscaling();
 
     updateFinished(currAdmin);
-    logger.timePrintln("Admin successfully installed with version " + getVersion());
+    Logger.timePrintln("Admin successfully installed with version "
+        + currAdmin.getVersionEntry().getVersion());
   }
 
-  public abstract String getVersion();
-
-  public abstract void configurationGenerated(PreviousAdmin prevAdmin, CurrentAdmin currAdmin) throws InstallerException;
-
-  public abstract void updateStarted(CurrentAdmin currAdmin) throws InstallerException;
-
-  public abstract void tomcatStopped(CurrentAdmin currAdmin) throws InstallerException;
-
-  public abstract void tomcatStarted(CurrentAdmin currAdmin) throws InstallerException;
-
-  public abstract void newAsReady(CurrentAdmin currAdmin) throws InstallerException;
-
-  public abstract void updateFinished(CurrentAdmin currAdmin) throws InstallerException;
-
-  static class Logger {
-    public void print(String message) {
-      System.out.print(message);
+  public void configurationGenerated(PreviousAdmin prevAdmin, CurrentAdmin currAdmin) throws InstallerException {
+    List<Object> hooks = currAdmin.getVersionEntry()
+                                  .getUpdationAlgorithmConfiguration()
+                                  .getHooks("configuration-generated");
+    for (Object hook : hooks) {
+      ((ConfigurationGeneratedHook) hook).configurationGenerated(prevAdmin, currAdmin);
     }
+  }
 
-    public void println() {
+  public void updateStarted(CurrentAdmin currAdmin) throws InstallerException {
+    List<Object> hooks = currAdmin.getVersionEntry()
+                                  .getUpdationAlgorithmConfiguration()
+                                  .getHooks("update-started");
+    for (Object hook : hooks) {
+      ((UpdateStartedHook) hook).updateStarted(currAdmin);
     }
+  }
 
-    public void println(String message) {
-      System.out.println(message);
+  public void tomcatStopped(CurrentAdmin currAdmin) throws InstallerException {
+    List<Object> hooks = currAdmin.getVersionEntry()
+                                  .getUpdationAlgorithmConfiguration()
+                                  .getHooks("tomcat-stopped");
+    for (Object hook : hooks) {
+      ((TomcatStoppedHook) hook).tomcatStopped(currAdmin);
     }
+  }
 
-    public void timePrint() {
-      DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-      Date date = new Date();
-      System.out.print(dateFormat.format(date));
-      System.out.print(" ");
+  public void tomcatStarted(CurrentAdmin currAdmin) throws InstallerException {
+    List<Object> hooks = currAdmin.getVersionEntry()
+                                  .getUpdationAlgorithmConfiguration()
+                                  .getHooks("tomcat-started");
+    for (Object hook : hooks) {
+      ((TomcatStartedHook) hook).tomcatStarted(currAdmin);
     }
+  }
 
-    public void timePrint(String message) {
-      timePrint();
-      System.out.print(message);
+  public void newAsReady(CurrentAdmin currAdmin) throws InstallerException {
+    List<Object> hooks = currAdmin.getVersionEntry()
+                                  .getUpdationAlgorithmConfiguration()
+                                  .getHooks("new-as-ready");
+    for (Object hook : hooks) {
+      ((NewAsReadyHook) hook).newAsReady(currAdmin);
     }
+  }
 
-    public void timePrintln(String message) {
-      timePrint();
-      System.out.println(message);
+  public void updateFinished(CurrentAdmin currAdmin) throws InstallerException {
+    List<Object> hooks = currAdmin.getVersionEntry()
+                                  .getUpdationAlgorithmConfiguration()
+                                  .getHooks("update-finished");
+    for (Object hook : hooks) {
+      ((UpdateFinishedHook) hook).updateFinished(currAdmin);
     }
   }
 

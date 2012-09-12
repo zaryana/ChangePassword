@@ -1,0 +1,380 @@
+<version>
+  <from-version>1.1.0-Beta08</from-version>
+  <download>
+    <url>http://intranet.exoplatform.org/rest/jcr/repository/collaboration/Groups/platform/users/Documents/Builds/CloudWorkspaces/releases/1.1.0-Beta09/cloud-workspaces-admin-1.1.0-Beta09-tomcat.zip</url>
+  </download>
+  <container>com.exoplatform.cloudworkspaces.installer.versions.UpdationContainerImpl</container>
+
+  <admin>
+    <rest>com.exoplatform.cloudworkspaces.installer.rest.M10CloudAdminServices</rest>
+    <tomcat>com.exoplatform.cloudworkspaces.installer.tomcat.AdminTomcatWrapperImpl</tomcat>
+  </admin>
+  <updation>
+    <algorithm>com.exoplatform.cloudworkspaces.installer.upgrade.MinorAdminUpgradeAlgorithm</algorithm>
+    <hooks>
+      <configuration-generated/>
+      <update-started/>
+      <tomcat-stopped/>
+      <tomcat-started/>
+      <new-as-ready/>
+      <update-finished>
+        <hook class="com.exoplatform.cloudworkspaces.installer.upgrade.hooks.TenantRemoveHook">
+          <tenant>exoplatform</tenant>
+        </hook>
+        <hook class="com.exoplatform.cloudworkspaces.installer.upgrade.hooks.TenantCreateHook">
+          <tenant>exoplatform</tenant>
+          <email>intranet_admin@exoplatform.com</email>
+        </hook>
+        <hook class="com.exoplatform.cloudworkspaces.installer.upgrade.hooks.DemoTenantCreateHook">
+          <email>intranet_admin@exoplatform.com</email>
+        </hook>
+      </update-finished>
+    </hooks>
+  </updation>
+  <configuration>
+    <updaters>
+      <updater>com.exoplatform.cloudworkspaces.installer.configuration.updaters.DBConfigurationUpdater</updater>
+      <updater>com.exoplatform.cloudworkspaces.installer.configuration.updaters.CloudConfigurationUpdater</updater>
+      <updater>com.exoplatform.cloudworkspaces.installer.configuration.updaters.TomcatUsersConfigurationUpdater</updater>
+      <updater>com.exoplatform.cloudworkspaces.installer.configuration.updaters.MailConfigurationUpdater</updater>
+      <updater>com.exoplatform.cloudworkspaces.installer.configuration.updaters.AwsConfigurationUpdater</updater>
+      <updater>com.exoplatform.cloudworkspaces.installer.configuration.updaters.InstanceConfigurationUpdater</updater>
+      <updater>com.exoplatform.cloudworkspaces.installer.configuration.updaters.ServerConfigurationUpdater</updater>
+      <updater>com.exoplatform.cloudworkspaces.installer.configuration.updaters.BackupConfigurationUpdater</updater>
+    </updaters>
+    <parameters>
+      <group name="Cloud settings">
+        <parameter>
+          <name>tenant.masterhost</name>
+          <default>cloud-workspaces.com</default>
+          <sources>
+            <source type="properties">
+              <file>${conf}/admin.properties</file>
+              <key>cloud.admin.frontend.server.host</key>
+            </source>
+          </sources>
+        </parameter>
+        <parameter>
+          <name>cloud.agent.username</name>
+          <default>cloud-agent</default>
+          <sources>
+            <source type="properties">
+              <file>${conf}/application-types/cloud-agent.properties</file>
+              <key>username</key>
+            </source>
+          </sources>
+        </parameter>
+        <parameter>
+          <name>cloud.admin.tenant.backup.id</name>
+          <sources>
+            <source type="properties">
+              <file>${conf}/admin.properties</file>
+              <key>cloud.admin.tenant.backup.id</key>
+            </source>
+          </sources>
+        </parameter>
+        <parameter>
+          <name>cloud.admin.demo.tenant.name</name>
+          <sources>
+            <source type="properties">
+              <file>${conf}/admin.properties</file>
+              <key>cloud.admin.demo.tenant.name</key>
+            </source>
+          </sources>
+        </parameter>
+      </group>
+  
+      <group name="Database settings">
+        <parameter>
+          <name>admin.db.url</name>
+          <default>localhost:3306</default>
+          <sources>
+            <source type="properties">
+              <file>${conf}/db-servers/db1.properties</file>
+              <key>url</key>
+              <mask>jdbc:mysql://{}/</mask>
+            </source>
+            <source type="properties">
+              <file>${conf}/application-types/cloud-agent.properties</file>
+              <key>db.url</key>
+            </source>
+          </sources>
+        </parameter>
+        <parameter>
+          <name>admin.db.username</name>
+          <default>dbuser</default>
+          <sources>
+            <source type="properties">
+              <file>${conf}/db-servers/db1.properties</file>
+              <key>username</key>
+            </source>
+            <source type="properties">
+              <file>${conf}/application-types/cloud-agent.properties</file>
+              <key>db.username</key>
+            </source>
+          </sources>
+        </parameter>
+        <parameter>
+          <name>admin.db.password</name>
+          <default>dbpass</default>
+          <sources>
+            <source type="properties">
+              <file>${conf}/db-servers/db1.properties</file>
+              <key>password</key>
+            </source>
+            <source type="properties">
+              <file>${conf}/application-types/cloud-agent.properties</file>
+              <key>db.password</key>
+            </source>
+          </sources>
+        </parameter>
+      </group>
+  
+      <group name="Mail settings">
+        <parameter>
+          <name>cloud.admin.mail.host</name>
+          <default>smtp.gmail.com</default>
+          <sources>
+            <source type="properties">
+              <file>${conf}/admin.properties</file>
+              <key>cloud.admin.mail.host</key>
+            </source>
+            <source type="properties">
+              <file>${conf}/application-types/cloud-agent.properties</file>
+              <key>mail.host</key>
+            </source>
+          </sources>
+        </parameter>
+        <parameter>
+          <name>cloud.admin.mail.port</name>
+          <default>465</default>
+          <sources>
+            <source type="properties">
+              <file>${conf}/admin.properties</file>
+              <key>cloud.admin.mail.port</key>
+            </source>
+            <source type="properties">
+              <file>${conf}/application-types/cloud-agent.properties</file>
+              <key>mail.port</key>
+            </source>
+          </sources>
+        </parameter>
+        <parameter>
+          <name>cloud.admin.mail.smtp.auth</name>
+          <default>true</default>
+          <sources>
+            <source type="properties">
+              <file>${conf}/admin.properties</file>
+              <key>cloud.admin.mail.smtp.auth</key>
+            </source>
+          </sources>
+        </parameter>
+        <parameter>
+          <name>cloud.admin.mail.smtp.auth.username</name>
+          <default>exo.plf.cloud.test1@gmail.com</default>
+          <sources>
+            <source type="properties">
+              <file>${conf}/admin.properties</file>
+              <key>cloud.admin.mail.smtp.auth.username</key>
+            </source>
+            <source type="properties">
+              <file>${conf}/application-types/cloud-agent.properties</file>
+              <key>mail.user</key>
+            </source>
+          </sources>
+        </parameter>
+        <parameter>
+          <name>cloud.admin.mail.smtp.auth.password</name>
+          <default>exo.plf.cloud.test112321</default>
+          <sources>
+            <source type="properties">
+              <file>${conf}/admin.properties</file>
+              <key>cloud.admin.mail.smtp.auth.password</key>
+            </source>
+            <source type="properties">
+              <file>${conf}/application-types/cloud-agent.properties</file>
+              <key>mail.password</key>
+            </source>
+          </sources>
+        </parameter>
+        <parameter>
+          <name>cloud.admin.mail.admin.email</name>
+          <default>exo.plf.cloud.test1@gmail.com</default>
+          <sources>
+            <source type="properties">
+              <file>${conf}/admin.properties</file>
+              <key>cloud.admin.mail.admin.email</key>
+            </source>
+            <source type="properties">
+              <file>${conf}/application-types/cloud-agent.properties</file>
+              <key>mail.admin.email</key>
+            </source>
+          </sources>
+        </parameter>
+        <parameter>
+          <name>cloud.admin.mail.support.email</name>
+          <default>exo.plf.cloud.test1@gmail.com</default>
+          <sources>
+            <source type="properties">
+              <file>${conf}/admin.properties</file>
+              <key>cloud.admin.mail.support.email</key>
+            </source>
+          </sources>
+        </parameter>
+        <parameter>
+          <name>cloud.admin.mail.support.from</name>
+          <default>exo.plf.cloud.test1@gmail.com</default>
+          <sources>
+            <source type="properties">
+              <file>${conf}/admin.properties</file>
+              <key>cloud.admin.mail.support.from</key>
+            </source>
+          </sources>
+        </parameter>
+        <parameter>
+          <name>cloud.admin.mail.sales.email</name>
+          <default>exo.plf.cloud.test1@gmail.com</default>
+          <sources>
+            <source type="properties">
+              <file>${conf}/admin.properties</file>
+              <key>cloud.admin.mail.sales.email</key>
+            </source>
+          </sources>
+        </parameter>
+      </group>
+  
+      <group name="AWS settings">
+        <parameter>
+          <name>cloud.admin.application.default.type</name>
+          <default>cloud-agent</default>
+          <sources>
+            <source type="properties">
+              <file>${conf}/admin.properties</file>
+              <key>cloud.admin.application.default.type</key>
+            </source>
+          </sources>
+        </parameter>
+        <parameter>
+          <name>cloud.admin.application.cloud.service.type</name>
+          <default>com.exoplatform.cloud.admin.instance.aws.AWSCloudServerClient</default>
+          <sources>
+            <source type="properties">
+              <file>${conf}/admin.properties</file>
+              <key>cloud.admin.application.cloud.service.type</key>
+            </source>
+          </sources>
+        </parameter>
+        <parameter>
+          <name>cloud.client.name</name>
+          <default>aws-ec2</default>
+          <sources>
+            <source type="properties">
+              <file>${conf}/admin.properties</file>
+              <key>cloud.client.name</key>
+            </source>
+          </sources>
+        </parameter>
+        <parameter>
+          <name>aws-ec2.api-version</name>
+          <default>2011-05-15</default>
+          <sources>
+            <source type="properties">
+              <file>${conf}/admin.properties</file>
+              <key>aws-ec2.api-version</key>
+            </source>
+          </sources>
+        </parameter>
+        <parameter>
+          <name>aws-ec2.identity</name>
+          <sources>
+            <source type="properties">
+              <file>${conf}/admin.properties</file>
+              <key>aws-ec2.identity</key>
+            </source>
+          </sources>
+        </parameter>
+        <parameter>
+          <name>aws-ec2.credential</name>
+          <sources>
+            <source type="properties">
+              <file>${conf}/admin.properties</file>
+              <key>aws-ec2.credential</key>
+            </source>
+          </sources>
+        </parameter>
+      </group>
+  
+      <group name="Instance settings">
+        <parameter>
+          <name>types.cloud.agent.availability.zone</name>
+          <sources>
+            <source type="properties">
+              <file>${conf}/application-types/cloud-agent.properties</file>
+              <key>availability.zone</key>
+            </source>
+          </sources>
+        </parameter>
+        <parameter>
+          <name>types.cloud.agent.security.group.name</name>
+          <sources>
+            <source type="properties">
+              <file>${conf}/application-types/cloud-agent.properties</file>
+              <key>security.group.name</key>
+            </source>
+          </sources>
+        </parameter>
+        <parameter>
+          <name>types.cloud.agent.key.name</name>
+          <sources>
+            <source type="properties">
+              <file>${conf}/application-types/cloud-agent.properties</file>
+              <key>key.name</key>
+            </source>
+          </sources>
+        </parameter>
+        <parameter>
+          <name>types.cloud.agent.instance.type</name>
+          <default>m1.large</default>
+          <sources>
+            <source type="properties">
+              <file>${conf}/application-types/cloud-agent.properties</file>
+              <key>instance.type</key>
+            </source>
+          </sources>
+        </parameter>
+        <parameter>
+          <name>types.cloud.agent.image.id</name>
+          <sources>
+            <source type="properties">
+              <file>${conf}/application-types/cloud-agent.properties</file>
+              <key>image.id</key>
+            </source>
+          </sources>
+        </parameter>
+      </group>
+  
+      <group name="Tomcat users">
+        <parameter>
+          <name>tomcat.users.cloudadmin.password</name>
+          <default>cloudadmin</default>
+          <sources>
+            <source type="xml">
+              <file>${tomcat}/conf/tomcat-users.xml</file>
+              <xpath>/tomcat-users/user[@username='cloudadmin']/@password</xpath>
+            </source>
+          </sources>
+        </parameter>
+        <parameter>
+          <name>tomcat.users.cloudmanager.password</name>
+          <default>cloudmanager</default>
+          <sources>
+            <source type="xml">
+              <file>${tomcat}/conf/tomcat-users.xml</file>
+              <xpath>/tomcat-users/user[@username='cloudmanager']/@password</xpath>
+            </source>
+          </sources>
+        </parameter>
+      </group>
+    </parameters>
+  </configuration>
+</version>

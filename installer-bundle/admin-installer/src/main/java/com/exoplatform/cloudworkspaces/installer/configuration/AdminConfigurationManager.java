@@ -26,9 +26,9 @@ import java.util.List;
 
 public class AdminConfigurationManager {
 
-  protected final PreviousAdmin                    prevAdmin;
+  protected final PreviousAdmin              prevAdmin;
 
-  protected final CurrentAdmin                     currAdmin;
+  protected final CurrentAdmin               currAdmin;
 
   protected final List<ConfigurationUpdater> updaters;
 
@@ -40,7 +40,7 @@ public class AdminConfigurationManager {
                                    CurrentAdmin currAdmin,
                                    List<ConfigurationUpdater> updaters,
                                    InteractionManager interactionManager,
-                                   AnswersManager answersManager) {
+                                   AnswersManager answersManager) throws InstallerException {
     this.prevAdmin = prevAdmin;
     this.currAdmin = currAdmin;
     this.updaters = updaters;

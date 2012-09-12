@@ -19,23 +19,17 @@
 package com.exoplatform.cloudworkspaces.installer.configuration;
 
 import com.exoplatform.cloudworkspaces.installer.configuration.parameters.ConfigurationParameter;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.exoplatform.cloudworkspaces.installer.configuration.parameters.ConfigurationParametersSet;
 
 public class AdminConfiguration {
 
-  protected final AdminDirectories                    directories;
+  protected final AdminDirectories           directories;
 
-  protected final Map<String, ConfigurationParameter> parameters;
+  protected final ConfigurationParametersSet parameters;
 
-  public AdminConfiguration(AdminDirectories directories, List<ConfigurationParameter> parameterList) {
+  public AdminConfiguration(AdminDirectories directories, ConfigurationParametersSet parameters) {
     this.directories = directories;
-    this.parameters = new HashMap<String, ConfigurationParameter>();
-    for (ConfigurationParameter parameter : parameterList) {
-      parameters.put(parameter.getName(), parameter);
-    }
+    this.parameters = parameters;
   }
 
   public String get(String key) throws ConfigurationException {
@@ -43,7 +37,9 @@ public class AdminConfiguration {
   }
 
   public String get(ConfigurationParameter key) throws ConfigurationException {
-    return key.get(directories.getTomcatDir(), directories.getConfDir(), directories.getDataDir());
+    if (key == null)
+      return null;
+    return key.get(directories);
   }
 
   public void set(String key, String value) throws ConfigurationException {
@@ -51,7 +47,9 @@ public class AdminConfiguration {
   }
 
   public void set(ConfigurationParameter key, String value) throws ConfigurationException {
-    key.set(directories.getTomcatDir(), directories.getConfDir(), directories.getDataDir(), value);
+    if (key == null)
+      throw new ConfigurationException("Configuration property with key " + key + " not found");
+    key.set(directories, value);
   }
 
 }

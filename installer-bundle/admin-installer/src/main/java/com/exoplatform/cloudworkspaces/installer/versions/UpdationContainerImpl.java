@@ -19,24 +19,15 @@
 package com.exoplatform.cloudworkspaces.installer.versions;
 
 import com.exoplatform.cloudworkspaces.installer.InstallerException;
+import com.exoplatform.cloudworkspaces.installer.configuration.Admin;
 import com.exoplatform.cloudworkspaces.installer.configuration.AdminConfigurationManager;
 import com.exoplatform.cloudworkspaces.installer.configuration.AdminDirectories;
-import com.exoplatform.cloudworkspaces.installer.configuration.ConfigurationUpdater;
 import com.exoplatform.cloudworkspaces.installer.configuration.CurrentAdmin;
 import com.exoplatform.cloudworkspaces.installer.configuration.PreviousAdmin;
-import com.exoplatform.cloudworkspaces.installer.configuration.updaters.AwsConfigurationUpdater;
-import com.exoplatform.cloudworkspaces.installer.configuration.updaters.BackupConfigurationUpdater;
-import com.exoplatform.cloudworkspaces.installer.configuration.updaters.CloudConfigurationUpdater;
-import com.exoplatform.cloudworkspaces.installer.configuration.updaters.DBConfigurationUpdater;
-import com.exoplatform.cloudworkspaces.installer.configuration.updaters.InstanceConfigurationUpdater;
-import com.exoplatform.cloudworkspaces.installer.configuration.updaters.MailConfigurationUpdater;
-import com.exoplatform.cloudworkspaces.installer.configuration.updaters.ServerConfigurationUpdater;
-import com.exoplatform.cloudworkspaces.installer.configuration.updaters.TomcatUsersConfigurationUpdater;
 import com.exoplatform.cloudworkspaces.installer.downloader.IntranetBundleDownloader;
 import com.exoplatform.cloudworkspaces.installer.interaction.AnswersManager;
 import com.exoplatform.cloudworkspaces.installer.interaction.InteractionManager;
 import com.exoplatform.cloudworkspaces.installer.upgrade.AdminUpgradeAlgorithm;
-import com.exoplatform.cloudworkspaces.installer.upgrade.Beta07AdminUpgradeAlgorithm;
 import com.exoplatform.cloudworkspaces.installer.upgrade.VersionEntry;
 
 import org.picocontainer.DefaultPicoContainer;
@@ -44,10 +35,8 @@ import org.picocontainer.PicoContainer;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
-public class Beta07UpdationContainer extends UpdationContainer {
+public class UpdationContainerImpl extends UpdationContainer {
 
   @Override
   public PicoContainer getContainer(AdminDirectories prevAdminDirs,
@@ -79,8 +68,8 @@ public class Beta07UpdationContainer extends UpdationContainer {
       throw new InstallerException("Error while unzipping admin bundle", e);
     }
 
-    PreviousAdmin prevAdmin = getPreviousAdmin(prevAdminDirs, prevVersion);
-    CurrentAdmin currAdmin = getCurrentAdmin(currAdminDirs, nextVersion);
+    PreviousAdmin prevAdmin = new Admin(prevAdminDirs, prevVersion);
+    CurrentAdmin currAdmin = new Admin(currAdminDirs, nextVersion);
 
     DefaultPicoContainer container = new DefaultPicoContainer();
     container.addComponent(InteractionManager.class, interaction);
@@ -90,38 +79,14 @@ public class Beta07UpdationContainer extends UpdationContainer {
 
     AdminConfigurationManager configurationManager = new AdminConfigurationManager(prevAdmin,
                                                                                    currAdmin,
-                                                                                   getConfigurationUpdaters(),
+                                                                                   nextVersion.getConfigurationUpdaters(),
                                                                                    interaction,
                                                                                    answers);
     container.addComponent(AdminConfigurationManager.class, configurationManager);
 
-    container.addComponent(AdminUpgradeAlgorithm.class, getUpgradeAlgorithm());
+    container.addComponent(AdminUpgradeAlgorithm.class,
+                           nextVersion.getUpdationAlgorithmConfiguration().getAlgorithmClass());
     return container;
-  }
-
-  public PreviousAdmin getPreviousAdmin(AdminDirectories prevAdminDirs, VersionEntry version) throws InstallerException {
-    return new Beta07Admin(prevAdminDirs, version);
-  }
-
-  public CurrentAdmin getCurrentAdmin(AdminDirectories currAdminDirs, VersionEntry version) throws InstallerException {
-    return new Beta07Admin(currAdminDirs, version);
-  }
-
-  public List<ConfigurationUpdater> getConfigurationUpdaters() {
-    List<ConfigurationUpdater> updaters = new ArrayList<ConfigurationUpdater>();
-    updaters.add(new DBConfigurationUpdater());
-    updaters.add(new CloudConfigurationUpdater());
-    updaters.add(new TomcatUsersConfigurationUpdater());
-    updaters.add(new MailConfigurationUpdater());
-    updaters.add(new AwsConfigurationUpdater());
-    updaters.add(new InstanceConfigurationUpdater());
-    updaters.add(new ServerConfigurationUpdater());
-    updaters.add(new BackupConfigurationUpdater());
-    return updaters;
-  }
-
-  public Class<? extends AdminUpgradeAlgorithm> getUpgradeAlgorithm() {
-    return Beta07AdminUpgradeAlgorithm.class;
   }
 
 }

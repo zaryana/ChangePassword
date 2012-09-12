@@ -18,6 +18,11 @@
  */
 package com.exoplatform.cloudworkspaces.installer.configuration.parameters;
 
+import com.exoplatform.cloudworkspaces.installer.InstallerException;
+import com.exoplatform.cloudworkspaces.installer.XmlUtils;
+
+import org.w3c.dom.Node;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,24 +30,28 @@ public class ConfigurationParametersSet {
 
   private Map<String, Map<String, ConfigurationParameter>> parameters;
 
-  public ConfigurationParametersSet() {
+  public ConfigurationParametersSet(Node parameters) throws InstallerException {
     this.parameters = new HashMap<String, Map<String, ConfigurationParameter>>();
-  }
 
-  void addParameter(String container, String key, ConfigurationParameter parameter) {
-    if (!parameters.containsKey(container))
-      parameters.put(container, new HashMap<String, ConfigurationParameter>());
-    parameters.get(container).put(key, parameter);
+    for (Node group : XmlUtils.getChildren(parameters, "group")) {
+      String groupName = group.getAttributes().getNamedItem("name").getTextContent();
+      this.parameters.put(groupName, new HashMap<String, ConfigurationParameter>());
+
+      for (Node curr : XmlUtils.getChildren(group, "parameter")) {
+        ConfigurationParameter parameter = new ConfigurationParameter(curr);
+        this.parameters.get(groupName).put(parameter.getName(), parameter);
+      }
+    }
   }
 
   public Map<String, Map<String, ConfigurationParameter>> getParameters() {
     return parameters;
   }
 
-  public ConfigurationParameter get(String type) {
-    for (Map<String, ConfigurationParameter> container : parameters.values()) {
-      if (container.containsKey(type)) {
-        return container.get(type);
+  public ConfigurationParameter get(String key) {
+    for (Map<String, ConfigurationParameter> group : parameters.values()) {
+      if (group.containsKey(key)) {
+        return group.get(key);
       }
     }
     return null;

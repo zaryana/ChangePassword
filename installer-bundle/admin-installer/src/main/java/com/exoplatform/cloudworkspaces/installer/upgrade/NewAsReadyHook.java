@@ -16,23 +16,13 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package com.exoplatform.cloudworkspaces.installer.configuration;
+package com.exoplatform.cloudworkspaces.installer.upgrade;
 
 import com.exoplatform.cloudworkspaces.installer.InstallerException;
-import com.exoplatform.cloudworkspaces.installer.rest.CloudAdminServices;
-import com.exoplatform.cloudworkspaces.installer.tomcat.AdminTomcatWrapper;
-import com.exoplatform.cloudworkspaces.installer.upgrade.VersionEntry;
+import com.exoplatform.cloudworkspaces.installer.configuration.CurrentAdmin;
 
-public interface PreviousAdmin {
+public interface NewAsReadyHook {
 
-  public AdminDirectories getAdminDirectories();
-
-  public AdminConfiguration getAdminConfiguration();
-
-  public CloudAdminServices getCloudAdminServices() throws InstallerException;
-
-  public AdminTomcatWrapper getAdminTomcatWrapper() throws InstallerException;
-
-  public VersionEntry getVersionEntry();
+  public void newAsReady(CurrentAdmin currAdmin) throws InstallerException;
 
 }

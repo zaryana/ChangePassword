@@ -18,56 +18,46 @@
  */
 package com.exoplatform.cloudworkspaces.installer.configuration.parameters;
 
-import com.exoplatform.cloudworkspaces.installer.InstallerException;
 import com.exoplatform.cloudworkspaces.installer.XmlUtils;
 import com.exoplatform.cloudworkspaces.installer.configuration.AdminDirectories;
 import com.exoplatform.cloudworkspaces.installer.configuration.ConfigurationException;
 
 import org.w3c.dom.Node;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.File;
 
-public class ConfigurationParameter {
+public abstract class InFileParameterSource extends ParameterSource {
 
-  private final String                name;
+  protected final String file;
 
-  private final String                defaults;
-
-  private final List<ParameterSource> sources = new ArrayList<ParameterSource>();
-
-  public ConfigurationParameter(Node xmlNode) throws InstallerException {
-    Node name = XmlUtils.getChild(xmlNode, "name");
-    if (name == null)
-      throw new ConfigurationException("Property name not found in parameter configuration");
-    this.name = name.getTextContent();
-    Node defaults = XmlUtils.getChild(xmlNode, "default");
-    if (defaults != null)
-      this.defaults = defaults.getTextContent();
-    else
-      this.defaults = null;
-
-    for (Node source : XmlUtils.getChildren(XmlUtils.getChild(xmlNode, "sources"), "source")) {
-      this.sources.add(ParameterSourceFactory.getSource(source));
-    }
+  public InFileParameterSource(Node node) throws ConfigurationException {
+    super(node);
+    Node file = XmlUtils.getChild(node, "file");
+    if (file == null)
+      throw new ConfigurationException("Property file not found in source");
+    this.file = file.getTextContent();
   }
 
-  public String getName() {
-    return name;
-  }
+  public abstract String get(File confFile) throws ConfigurationException;
 
-  public String getDefault() {
-    return defaults;
-  }
+  public abstract void set(File confFile, String value) throws ConfigurationException;
 
+  @Override
   public String get(AdminDirectories directories) throws ConfigurationException {
-    return sources.get(0).get(directories);
+    String file = this.file.replace("${tomcat}", directories.getTomcatDir().getAbsolutePath());
+    file = file.replace("${conf}", directories.getConfDir().getAbsolutePath());
+    file = file.replace("${data}", directories.getDataDir().getAbsolutePath());
+    file = file.replace("//", "/");
+    return get(new File(file));
   }
 
+  @Override
   public void set(AdminDirectories directories, String value) throws ConfigurationException {
-    for (ParameterSource source : sources) {
-      source.set(directories, value);
-    }
+    String file = this.file.replace("${tomcat}", directories.getTomcatDir().getAbsolutePath());
+    file = file.replace("${conf}", directories.getConfDir().getAbsolutePath());
+    file = file.replace("${data}", directories.getDataDir().getAbsolutePath());
+    file = file.replace("//", "/");
+    set(new File(file), value);
   }
 
 }

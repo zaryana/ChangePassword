@@ -18,25 +18,11 @@
  */
 package com.exoplatform.cloudworkspaces.installer.upgrade;
 
-import com.exoplatform.cloudworkspaces.installer.configuration.AdminConfigurationManager;
+import com.exoplatform.cloudworkspaces.installer.InstallerException;
 import com.exoplatform.cloudworkspaces.installer.configuration.CurrentAdmin;
-import com.exoplatform.cloudworkspaces.installer.configuration.PreviousAdmin;
-import com.exoplatform.cloudworkspaces.installer.interaction.AnswersManager;
-import com.exoplatform.cloudworkspaces.installer.interaction.InteractionManager;
 
-public class Beta09AdminUpgradeAlgorithm extends Beta08AdminUpgradeAlgorithm {
+public interface TomcatStoppedHook {
 
-  public Beta09AdminUpgradeAlgorithm(PreviousAdmin prevAdmin,
-                                     CurrentAdmin currAdmin,
-                                     InteractionManager interaction,
-                                     AnswersManager answers,
-                                     AdminConfigurationManager configurationManager) {
-    super(prevAdmin, currAdmin, interaction, answers, configurationManager);
-  }
-
-  @Override
-  public String getVersion() {
-    return "1.1.0-Beta09";
-  }
+  public void tomcatStopped(CurrentAdmin currAdmin) throws InstallerException;
 
 }
