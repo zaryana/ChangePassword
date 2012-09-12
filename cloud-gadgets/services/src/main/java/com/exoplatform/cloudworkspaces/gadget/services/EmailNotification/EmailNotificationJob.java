@@ -12,6 +12,7 @@ import javax.mail.internet.InternetAddress;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.groovyscript.GroovyTemplate;
+import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.services.jcr.ext.common.SessionProvider;
 import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
 import org.exoplatform.services.log.ExoLogger;
@@ -62,10 +63,16 @@ public class EmailNotificationJob extends MultiTenancyJob {
           pluginMessagesCaches.put(plugin.getName(), new MessagesCache(EmailNotificationService.PLUGINS + "/" + plugin.getName()));
         }
 
+        UserACL userACL = (UserACL) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(UserACL.class);
+        String superUserName = userACL.getSuperUser();
+
         ListAccess<User> laUsers = organizationService.getUserHandler().findAllUsers();
 
         for (User user : laUsers.load(0, laUsers.getSize())) {
           String userId = user.getUserName();
+          if(null != superUserName && superUserName.equals(userId)) // skip running for root
+            continue;
+          
           String userLocale = organizationService.getUserProfileHandler().findUserProfileByName(userId).getAttribute("user.language");
           Node userPrivateNode = nodeCreator.getUserNode(sProvider, userId).getNode("Private");
           if (userPrivateNode == null)
@@ -169,11 +176,7 @@ public class EmailNotificationJob extends MultiTenancyJob {
             Profile userProfile = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, userId, false).getProfile();
             InternetAddress userAddr = new InternetAddress(userProfile.getEmail(), userProfile.getFullName());
 
-            String subject = prop.getProperty("subject");
-            String fromEmail = prop.getProperty("from.email");
-            String fromName = prop.getProperty("from.name");
-
-            emailNotificationService.sendMail(subject, mailTemplate.render(binding), new InternetAddress(fromEmail, fromName), userAddr);
+            emailNotificationService.sendMail(prop.getProperty("subject"), mailTemplate.render(binding), new InternetAddress(System.getProperty("gatein.email.smtp.from"), "eXo Cloud Workspaces"), userAddr);
             LOG.info("Notification mail sent to " + userAddr.getAddress());
           }
         }
