@@ -12,6 +12,8 @@ import javax.mail.internet.InternetAddress;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.groovyscript.GroovyTemplate;
+import org.exoplatform.services.jcr.RepositoryService;
+import org.exoplatform.services.jcr.core.ManageableRepository;
 import org.exoplatform.services.jcr.ext.common.SessionProvider;
 import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
 import org.exoplatform.services.log.ExoLogger;
@@ -38,6 +40,13 @@ public class EmailNotificationJob extends MultiTenancyJob {
   public class EmailNotificationTask extends MultiTenancyTask {
     public EmailNotificationTask(JobExecutionContext context, String repoName) {
       super(context, repoName);
+      try {
+        MessagesCache messagesCache = new MessagesCache(EmailNotificationService.class);
+        Boolean.parseBoolean(messagesCache.getDefault().getProperty("cleanOldJcrData", "false"));
+        cleanOldJcrData(repoName);
+      } catch (Exception e) {
+        LOG.debug("Exception when cleaning old JCR data: " + e.getMessage(), e);
+      }
     }
 
     @Override
@@ -196,5 +205,50 @@ public class EmailNotificationJob extends MultiTenancyJob {
     }
 
   }
+  
+  
+  private void cleanOldJcrData(String currentRepoName) throws Exception {
+    SessionProvider sProvider = SessionProvider.createSystemProvider();
+    try {
+      RepositoryService repoService = (RepositoryService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(RepositoryService.class);
+      if (currentRepoName == null || currentRepoName.isEmpty()) {
+        currentRepoName = repoService.getCurrentRepository().getConfiguration().getName();
+      }
+      ManageableRepository currentRepo = repoService.getRepository(currentRepoName);
+      javax.jcr.Session session = sProvider.getSession(currentRepo.getConfiguration().getDefaultWorkspaceName(), currentRepo);
+
+      Node exoAppNode = session.getRootNode().getNode("exo:applications");
+
+      // remove exo:applications/EmailNotification node
+      if (exoAppNode.hasNode("EmailNotification")) {
+        exoAppNode.getNode("EmailNotification").remove();
+        exoAppNode.save();
+      }
+
+      NodeHierarchyCreator nodeCreator = (NodeHierarchyCreator) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(NodeHierarchyCreator.class);
+      OrganizationService organizationService = (OrganizationService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(OrganizationService.class);
+
+      ListAccess<User> laUsers = organizationService.getUserHandler().findAllUsers();
+      for (User user : laUsers.load(0, laUsers.getSize())) {
+        Node userPrivateNode = nodeCreator.getUserNode(sProvider, user.getUserName()).getNode("Private");
+        
+        if(userPrivateNode.hasNode("EmailNotificationPrefs")){
+          userPrivateNode.getNode("EmailNotificationPrefs").remove();
+          userPrivateNode.save();
+        }
+
+        if(userPrivateNode.hasNode("EmailNotificationStorage")){
+          userPrivateNode.getNode("EmailNotificationStorage").remove();
+          userPrivateNode.save();
+        }
+      }
+      
+    } catch (Exception e) {
+      throw e;
+    } finally {
+      sProvider.close();
+    }
+  }
+
 
 }
