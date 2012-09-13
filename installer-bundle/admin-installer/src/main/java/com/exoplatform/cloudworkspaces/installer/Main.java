@@ -19,6 +19,9 @@
 package com.exoplatform.cloudworkspaces.installer;
 
 import com.exoplatform.cloudworkspaces.installer.configuration.AdminDirectories;
+import com.exoplatform.cloudworkspaces.installer.downloader.BundleDownloader;
+import com.exoplatform.cloudworkspaces.installer.downloader.FromFileBundleDownloader;
+import com.exoplatform.cloudworkspaces.installer.downloader.IntranetBundleDownloader;
 import com.exoplatform.cloudworkspaces.installer.interaction.AnswersManager;
 import com.exoplatform.cloudworkspaces.installer.interaction.InteractionManager;
 import com.exoplatform.cloudworkspaces.installer.interaction.InteractionManagerWithAnswers;
@@ -62,6 +65,7 @@ public class Main {
     String prevTomcat = null;
     String tomcat = null;
     String saveTo = null;
+    String bundle = null;
     boolean isClearTenants = false;
     for (int i = 0; i < args.length; i++) {
       if (args[i].equals("-v") || args[i].equals("--version"))
@@ -74,6 +78,8 @@ public class Main {
         tomcat = args[i + 1];
       if (args[i].equals("-s") || args[i].equals("--save-to"))
         saveTo = args[i + 1];
+      if (args[i].equals("-b") || args[i].equals("--bundle"))
+        bundle = args[i + 1];
       if (args[i].equals("--clear-tenants"))
         isClearTenants = true;
     }
@@ -136,12 +142,21 @@ public class Main {
 
     VersionEntry nextVersion = versionsManager.getVersionEntry(version);
     VersionEntry prevVersion = versionsManager.getVersionEntry(nextVersion.getFromVersion());
+
+    BundleDownloader downloader = null;
+    if (bundle == null) {
+      downloader = new IntranetBundleDownloader(nextVersion.getBundleUrl());
+    } else {
+      downloader = new FromFileBundleDownloader(new File(bundle));
+    }
+
     PicoContainer container = nextVersion.getContainerClass()
                                          .newInstance()
                                          .getContainer(prevAdminDirs,
                                                        nextAdminDirs,
                                                        prevVersion,
                                                        nextVersion,
+                                                       downloader,
                                                        interaction,
                                                        answersManager);
     container.getComponent(AdminUpgradeAlgorithm.class).upgrade(nextAdminDirs, isClearTenants);
@@ -156,6 +171,7 @@ public class Main {
     String data = System.getenv("EXO_ADMIN_DATA_DIR");
     String tomcat = null;
     String saveTo = null;
+    String bundle = null;
     for (int i = 0; i < args.length; i++) {
       if (args[i].equals("-v") || args[i].equals("--version"))
         version = args[i + 1];
@@ -165,6 +181,8 @@ public class Main {
         tomcat = args[i + 1];
       if (args[i].equals("-s") || args[i].equals("--save-to"))
         saveTo = args[i + 1];
+      if (args[i].equals("-b") || args[i].equals("--bundle"))
+        bundle = args[i + 1];
     }
     if (version == null) {
       System.err.println("Set version for upgrade");
@@ -221,12 +239,21 @@ public class Main {
 
     VersionEntry nextVersion = versionsManager.getVersionEntry(version);
     VersionEntry prevVersion = versionsManager.getVersionEntry(nextVersion.getFromVersion());
+
+    BundleDownloader downloader = null;
+    if (bundle == null) {
+      downloader = new IntranetBundleDownloader(nextVersion.getBundleUrl());
+    } else {
+      downloader = new FromFileBundleDownloader(new File(bundle));
+    }
+
     PicoContainer container = nextVersion.getContainerClass()
                                          .newInstance()
                                          .getContainer(prevAdminDirs,
                                                        nextAdminDirs,
                                                        prevVersion,
                                                        nextVersion,
+                                                       downloader,
                                                        interaction,
                                                        answersManager);
     container.getComponent(AdminUpgradeAlgorithm.class).install(nextAdminDirs);

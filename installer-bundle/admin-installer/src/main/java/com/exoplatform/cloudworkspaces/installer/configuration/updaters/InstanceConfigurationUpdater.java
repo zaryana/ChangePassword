@@ -72,10 +72,10 @@ public class InstanceConfigurationUpdater extends BaseConfigurationUpdater {
     AdminConfiguration prevConfiguration = prevAdmin.getAdminConfiguration();
     AdminConfiguration currConfiguration = currAdmin.getAdminConfiguration();
 
-    String prevAvailabilityZone = prevConfiguration.get("types.cloud.agent.availability.zone");
-    String prevSecurityGroupName = prevConfiguration.get("types.cloud.agent.security.group.name");
-    String prevKeyName = prevConfiguration.get("types.cloud.agent.key.name");
-    String prevInstanceType = prevConfiguration.get("types.cloud.agent.instance.type");
+    String prevAvailabilityZone = prevConfiguration.getCurrentOrDefault("types.cloud.agent.availability.zone");
+    String prevSecurityGroupName = prevConfiguration.getCurrentOrDefault("types.cloud.agent.security.group.name");
+    String prevKeyName = prevConfiguration.getCurrentOrDefault("types.cloud.agent.key.name");
+    String prevInstanceType = prevConfiguration.getCurrentOrDefault("types.cloud.agent.instance.type");
 
     clearBlock();
     addToBlock(asAvailabilityZoneQuestion, prevAvailabilityZone);
@@ -112,7 +112,7 @@ public class InstanceConfigurationUpdater extends BaseConfigurationUpdater {
     answers.addAnswer(asKeyNameQuestion, keyName);
     answers.addAnswer(asInstanceTypeQuestion, instanceType);
 
-    String prevImageId = prevConfiguration.get("types.cloud.agent.image.id");
+    String prevImageId = prevConfiguration.getCurrentOrDefault("types.cloud.agent.image.id");
     asImageIdQuestion.setDefaults(prevImageId);
     String asImageId = interaction.ask(asImageIdQuestion);
 

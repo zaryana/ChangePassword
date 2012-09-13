@@ -2,8 +2,6 @@
 #
 # JAVA_OPTS override jvm options for example: Xmx, Xms etc.
 
-#. ./environment.sh
-
 # custom JAVA options
 CATALINA_TMPDIR="/tmp" # temporarily until CM will not fix 1.1M8
 [ -z "$EXO_JAVA_OPTS" ]  && EXO_JAVA_OPTS="-Xmx96m"
@@ -16,7 +14,7 @@ CATALINA_TMPDIR="/tmp" # temporarily until CM will not fix 1.1M8
 
 # Set global cloud names
 # master tenant name
-[ -z "$TENANT_MASTERHOST" ]  && TENANT_MASTERHOST="cloud-workspaces.com"
+TENANT_MASTERHOST="cloud-workspaces.com"
 
 # dir for admin data
 [ -z "$EXO_ADMIN_DATA_DIR" ]  && EXO_ADMIN_DATA_DIR="$CATALINA_HOME/data"
@@ -30,99 +28,19 @@ CATALINA_TMPDIR="/tmp" # temporarily until CM will not fix 1.1M8
 # logback smtp appender configuration file
 [ -z "${EXO_LOGBACK_SMTP_CONF}" ] && EXO_LOGBACK_SMTP_CONF="${CATALINA_HOME}/conf/logback-smtp-appender.xml"
 
-# admin email
-[ -z "$CLOUD_MAIL_HOST" ]  && CLOUD_MAIL_HOST="smtp.gmail.com"
-[ -z "$CLOUD_MAIL_PORT" ]  && CLOUD_MAIL_PORT="465"
-[ -z "$CLOUD_MAIL_SSL" ]  && CLOUD_MAIL_SSL="true"
-[ -z "$CLOUD_MAIL_USER" ]  && CLOUD_MAIL_USER="exo.plf.cloud.test1@gmail.com"
-[ -z "$CLOUD_MAIL_PASSWORD" ]  && CLOUD_MAIL_PASSWORD="exo.plf.cloud.test112321"
-[ -z "$CLOUD_MAIL_SMTP_SOCKETFACTORY_CLASS" ]  && CLOUD_MAIL_SMTP_SOCKETFACTORY_CLASS="javax.net.ssl.SSLSocketFactory"
-[ -z "$CLOUD_MAIL_SMTP_SOCKETFACTORY_FALLBACK" ]  && CLOUD_MAIL_SMTP_SOCKETFACTORY_FALLBACK="false"
-[ -z "$CLOUD_MAIL_SMTP_SOCKETFACTORY_PORT" ]  && CLOUD_MAIL_SMTP_SOCKETFACTORY_PORT="465"
-[ -z "$CLOUD_MAIL_SMTP_AUTH" ]  && CLOUD_MAIL_SMTP_AUTH="true"
-[ -z "$CLOUD_ADMIN_EMAIL" ]  && CLOUD_ADMIN_EMAIL="exo.plf.cloud.test1@gmail.com"
-[ -z "$CLOUD_LOGGER_EMAIL" ]  && CLOUD_LOGGER_EMAIL="exo.plf.cloud.test1@gmail.com"
-[ -z "$CLOUD_SUPPORT_EMAIL" ]  && CLOUD_SUPPORT_EMAIL="exo.plf.cloud.test1@gmail.com"
-[ -z "$CLOUD_SUPPORT_SENDER" ]  && CLOUD_SUPPORT_SENDER="exo.plf.cloud.test1@gmail.com"
-[ -z "$CLOUD_SALES_EMAIL" ]  && CLOUD_SALES_EMAIL="exo.plf.cloud.test1@gmail.com"
-
-# admin credentials
-[ -z "$CLOUD_AGENT_USERNAME" ]  && CLOUD_AGENT_USERNAME="cloudadmin"
-[ -z "$CLOUD_AGENT_PASSWORD" ]  && CLOUD_AGENT_PASSWORD="cloudadmin"
-[ -z "$CLOUD_AGENT_DB_SCHEMES_DIR" ]  && CLOUD_AGENT_DB_SCHEMES_DIR="../../cloud/databases"
-
 # needs for showing logs of application servers through apache
-[ -z "$APPLICATION_SERVER_LOGS_PORT" ] && APPLICATION_SERVER_LOGS_PORT="8085"
-
-# DB connection send to agent
-[ -z "$EXO_DB_HOST" ] && EXO_DB_HOST="localhost:3306"
-[ -z "$EXO_DB_USER" ] && EXO_DB_USER="dbuser"
-[ -z "$EXO_DB_PASSWORD" ] && EXO_DB_PASSWORD="dbpass"
-
-# Cloud service configuration
-[ -z "$APPLICATION_DEFAULT_TYPE" ] && APPLICATION_DEFAULT_TYPE="local-cloud-agent"
-[ -z "$CLOUD_SERVICE_TYPE" ] && CLOUD_SERVICE_TYPE="com.exoplatform.platform.cloud.admin.connector.LocalhostCloudServerClient"
-[ -z "$CLOUD_CLIENT_NAME" ] && CLOUD_CLIENT_NAME="localhost"
-[ -z "$CLOUD_AWS_VERSION" ] && CLOUD_AWS_VERSION="2011-05-15"
-[ -z "$CLOUD_AWS_IDENTITY" ] && CLOUD_AWS_IDENTITY="NO_IDENTITY"
-[ -z "$CLOUD_AWS_CREDENTIALS" ] && CLOUD_AWS_CREDENTIALS="NO_CREDENTIALS"
-
-# Graphite options
-[ -z "$GRAPHITE_HOST" ] && GRAPHITE_HOST="localhost"
-[ -z "$GRAPHITE_PORT" ] && GRAPHITE_PORT="2003"
-
-# Instance options
-[ -z "AS_INSTANCE_TYPE" ] && AS_INSTANCE_TYPE="m1.medium"
-[ -z "AS_IMAGE_ID" ] && AS_IMAGE_ID="NO_IMAGE_ID"
-[ -z "AS_AVAILABILITY_ZONE" ] && AS_AVAILABILITY_ZONE="NO_ZONE"
-[ -z "AS_SECURITY_GROUP_NAME" ] && AS_SECURITY_GROUP_NAME="NO_GROUP"
-[ -z "AS_KEY_NAME" ] && AS_KEY_NAME="NO_KEY"
+APPLICATION_SERVER_LOGS_PORT="8085"
 
 # admin variables
-EXO_CLOUD_ADMIN_OPTS="-Dadmin.agent.auth.username=$CLOUD_AGENT_USERNAME \
-                      -Dadmin.agent.auth.password=$CLOUD_AGENT_PASSWORD \
-                      -Dapplication.server.logs.port=$APPLICATION_SERVER_LOGS_PORT \
-                      -Dadmin.agent.db.url=$EXO_DB_HOST \
-                      -Dadmin.agent.db.username=$EXO_DB_USER \
-                      -Dadmin.agent.db.password=$EXO_DB_PASSWORD \
-                      -Dadmin.agent.db.schemes.dir=$CLOUD_AGENT_DB_SCHEMES_DIR \
-                      -Dapplication.default.type=$APPLICATION_DEFAULT_TYPE \
-                      -Dcloud.service.type=$CLOUD_SERVICE_TYPE \
-                      -Dcloud.client.name=$CLOUD_CLIENT_NAME \
-                      -Dcloud.aws.version=$CLOUD_AWS_VERSION \
-                      -Dcloud.aws.identity=$CLOUD_AWS_IDENTITY \
-                      -Dcloud.aws.credentials=$CLOUD_AWS_CREDENTIALS \
+EXO_CLOUD_ADMIN_OPTS="-Dapplication.server.logs.port=$APPLICATION_SERVER_LOGS_PORT \
                       -Dcloud.admin.log.dir=$EXO_ADMIN_LOGS_DIR \
-                      -Dcloud.admin.mail.host=$CLOUD_MAIL_HOST \
-                      -Dcloud.admin.mail.port=$CLOUD_MAIL_PORT \
-                      -Dcloud.admin.mail.ssl=$CLOUD_MAIL_SSL \
-                      -Dcloud.admin.mail.user=$CLOUD_MAIL_USER \
                       -Dcloud.admin.crypt.registration.password=true \
-                      -Dcloud.admin.mail.password=$CLOUD_MAIL_PASSWORD \
-                      -Dcloud.admin.mail.smtp.socketFactory.class=$CLOUD_MAIL_SMTP_SOCKETFACTORY_CLASS \
-                      -Dcloud.admin.mail.smtp.socketFactory.fallback=$CLOUD_MAIL_SMTP_SOCKETFACTORY_FALLBACK \
-                      -Dcloud.admin.mail.smtp.socketFactory.port=$CLOUD_MAIL_SMTP_SOCKETFACTORY_PORT \
-                      -Dcloud.admin.mail.smtp.auth=$CLOUD_MAIL_SMTP_AUTH \
-                      -Dcloud.admin.mail.admin.email=$CLOUD_ADMIN_EMAIL \
-                      -Dcloud.admin.mail.logger.email=$CLOUD_LOGGER_EMAIL \
-                      -Dcloud.admin.mail.support.email=$CLOUD_SUPPORT_EMAIL \
-                      -Dcloud.admin.mail.support.from=$CLOUD_SUPPORT_SENDER \
-                      -Dcloud.admin.mail.sales.email=$CLOUD_SALES_EMAIL \
                       -Dcloud.admin.data.dir=$EXO_ADMIN_DATA_DIR \
                       -Dtenant.masterhost=$TENANT_MASTERHOST \
                       -Dcloud.admin.configuration.dir=$EXO_ADMIN_CONF_DIR \
                       -Dcloud.admin.userlimit=$EXO_ADMIN_CONF_DIR/user-limits.properties \
-                      -Dcloud.admin.hostname.file=$EXO_ADMIN_CONF_DIR/hostname.cfg \
                       -Dcloud.admin.configuration.file=$EXO_ADMIN_CONF_DIR/admin.properties \
                       -Dcloud.admin.hostname.file=$EXO_ADMIN_CONF_DIR/hostname.cfg \
-                      -Dsandbox.tenant.name=$SANDBOX_TENANT_NAME \
-                      -Dgraphite.host=$GRAPHITE_HOST \
-                      -Dgraphite.port=$GRAPHITE_PORT \
-                      -Das.instance.type=$AS_INSTANCE_TYPE \
-                      -Das.image.id=$AS_IMAGE_ID \
-                      -Das.availability.zone=$AS_AVAILABILITY_ZONE \
-                      -Das.security.group.name=$AS_SECURITY_GROUP_NAME \
-                      -Das.key.name=$AS_KEY_NAME \
                       -Dlogback.configurationFile=$CATALINA_HOME/conf/logback.xml \
                       -Dlogback.smtp.appender.conf.file=${EXO_LOGBACK_SMTP_CONF}"
 

@@ -77,10 +77,10 @@ public class AwsConfigurationUpdater extends BaseConfigurationUpdater {
 
     AdminConfiguration prevConfiguration = prevAdmin.getAdminConfiguration();
     AdminConfiguration currConfiguration = currAdmin.getAdminConfiguration();
-    String prevApplicationDefaultType = prevConfiguration.get("cloud.admin.application.default.type");
-    String prevCloudServiceType = prevConfiguration.get("cloud.admin.application.cloud.service.type");
-    String prevCloudClientName = prevConfiguration.get("cloud.client.name");
-    String prevCloudAwsVersion = prevConfiguration.get("aws-ec2.api-version");
+    String prevApplicationDefaultType = prevConfiguration.getCurrentOrDefault("cloud.admin.application.default.type");
+    String prevCloudServiceType = prevConfiguration.getCurrentOrDefault("cloud.admin.application.cloud.service.type");
+    String prevCloudClientName = prevConfiguration.getCurrentOrDefault("cloud.client.name");
+    String prevCloudAwsVersion = prevConfiguration.getCurrentOrDefault("aws-ec2.api-version");
 
     clearBlock();
     addToBlock(applicationDefaultTypeQuestion, prevApplicationDefaultType);
@@ -117,8 +117,8 @@ public class AwsConfigurationUpdater extends BaseConfigurationUpdater {
     answers.addAnswer(cloudClientNameQuestion, cloudClientName);
     answers.addAnswer(cloudAwsVersionQuestion, cloudAwsVersion);
 
-    String prevAwsIdentity = prevConfiguration.get("aws-ec2.identity");
-    String prevAwsCredentials = prevConfiguration.get("aws-ec2.credential");
+    String prevAwsIdentity = prevConfiguration.getCurrentOrDefault("aws-ec2.identity");
+    String prevAwsCredentials = prevConfiguration.getCurrentOrDefault("aws-ec2.credential");
 
     clearBlock();
     addToBlock(cloudAwsIdentityQuestion, prevAwsIdentity);

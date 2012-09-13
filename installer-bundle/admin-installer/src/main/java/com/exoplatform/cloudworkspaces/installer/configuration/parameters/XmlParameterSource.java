@@ -60,6 +60,9 @@ public class XmlParameterSource extends InFileParameterSource {
   @Override
   public String get(File confFile) throws ConfigurationException {
     try {
+      if (!confFile.exists() || !confFile.isFile()) {
+        return null;
+      }
       Document document = DocumentBuilderFactory.newInstance()
                                                 .newDocumentBuilder()
                                                 .parse(new FileInputStream(confFile));

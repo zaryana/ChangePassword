@@ -42,6 +42,29 @@ public class AdminConfiguration {
     return key.get(directories);
   }
 
+  public String getDefault(String key) throws ConfigurationException {
+    return getDefault(parameters.get(key));
+  }
+
+  public String getDefault(ConfigurationParameter key) throws ConfigurationException {
+    if (key == null)
+      return null;
+    return key.getDefault();
+  }
+
+  public String getCurrentOrDefault(String key) throws ConfigurationException {
+    return getCurrentOrDefault(parameters.get(key));
+  }
+
+  public String getCurrentOrDefault(ConfigurationParameter key) throws ConfigurationException {
+    if (key == null)
+      return null;
+    String current = get(key);
+    if (current != null)
+      return current;
+    return getDefault(key);
+  }
+
   public void set(String key, String value) throws ConfigurationException {
     set(parameters.get(key), value);
   }

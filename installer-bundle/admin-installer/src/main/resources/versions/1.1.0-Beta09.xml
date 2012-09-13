@@ -1,7 +1,7 @@
 <version>
   <from-version>1.1.0-Beta08</from-version>
   <download>
-    <url>http://intranet.exoplatform.org/rest/jcr/repository/collaboration/Groups/platform/users/Documents/Builds/CloudWorkspaces/releases/1.1.0-Beta09/cloud-workspaces-admin-1.1.0-Beta09-tomcat.zip</url>
+    <url>http://intranet.exoplatform.org/rest/jcr/repository/collaboration/Groups/platform/users/Documents/Builds/CloudWorkspaces/releases/temp/CLDINT-222/cloud-workspaces-admin-1.1.0-Beta09-SNAPSHOT-tomcat.zip</url>
   </download>
   <container>com.exoplatform.cloudworkspaces.installer.versions.UpdationContainerImpl</container>
 
@@ -37,6 +37,7 @@
       <updater>com.exoplatform.cloudworkspaces.installer.configuration.updaters.CloudConfigurationUpdater</updater>
       <updater>com.exoplatform.cloudworkspaces.installer.configuration.updaters.TomcatUsersConfigurationUpdater</updater>
       <updater>com.exoplatform.cloudworkspaces.installer.configuration.updaters.MailConfigurationUpdater</updater>
+      <updater>com.exoplatform.cloudworkspaces.installer.configuration.updaters.GraphiteConfigurationUpdater</updater>
       <updater>com.exoplatform.cloudworkspaces.installer.configuration.updaters.AwsConfigurationUpdater</updater>
       <updater>com.exoplatform.cloudworkspaces.installer.configuration.updaters.InstanceConfigurationUpdater</updater>
       <updater>com.exoplatform.cloudworkspaces.installer.configuration.updaters.ServerConfigurationUpdater</updater>
@@ -48,9 +49,9 @@
           <name>tenant.masterhost</name>
           <default>cloud-workspaces.com</default>
           <sources>
-            <source type="properties">
-              <file>${conf}/admin.properties</file>
-              <key>cloud.admin.frontend.server.host</key>
+            <source type="sh">
+              <file>${tomcat}/bin/setenv.sh</file>
+              <key>TENANT_MASTERHOST</key>
             </source>
           </sources>
         </parameter>
@@ -60,6 +61,10 @@
           <sources>
             <source type="properties">
               <file>${conf}/application-types/cloud-agent.properties</file>
+              <key>username</key>
+            </source>
+            <source type="properties">
+              <file>${conf}/application-types/local-cloud-agent.properties</file>
               <key>username</key>
             </source>
           </sources>
@@ -371,6 +376,29 @@
             <source type="xml">
               <file>${tomcat}/conf/tomcat-users.xml</file>
               <xpath>/tomcat-users/user[@username='cloudmanager']/@password</xpath>
+            </source>
+          </sources>
+        </parameter>
+      </group>
+
+      <group name="Graphite settings">
+        <parameter>
+          <name>graphite.host</name>
+          <default>localhost</default>
+          <sources>
+            <source type="properties">
+              <file>${conf}/application-types/cloud-agent.properties</file>
+              <key>graphite.host</key>
+            </source>
+          </sources>
+        </parameter>
+        <parameter>
+          <name>graphite.port</name>
+          <default>2003</default>
+          <sources>
+            <source type="properties">
+              <file>${conf}/application-types/cloud-agent.properties</file>
+              <key>graphite.port</key>
             </source>
           </sources>
         </parameter>

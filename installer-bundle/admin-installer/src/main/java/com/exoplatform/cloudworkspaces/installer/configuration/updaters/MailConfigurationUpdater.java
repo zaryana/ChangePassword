@@ -39,7 +39,7 @@ public class MailConfigurationUpdater extends BaseConfigurationUpdater {
                                                                    "Set port of mail server",
                                                                    "465",
                                                                    "^\\d*$",
-                                                                   null);
+                                                                   "Port must contain only digits");
 
   private final Question cloudMailUserQuestion      = new Question("cloud.mail.user",
                                                                    "Set username for mail server",
@@ -96,11 +96,11 @@ public class MailConfigurationUpdater extends BaseConfigurationUpdater {
     AdminConfiguration prevConfiguration = prevAdmin.getAdminConfiguration();
     AdminConfiguration currConfiguration = currAdmin.getAdminConfiguration();
 
-    String prevCloudMailHost = prevConfiguration.get("cloud.admin.mail.host");
-    String prevCloudMailPort = prevConfiguration.get("cloud.admin.mail.port");
-    String prevCloudMailUser = prevConfiguration.get("cloud.admin.mail.smtp.auth.username");
-    String prevCloudMailPassword = prevConfiguration.get("cloud.admin.mail.smtp.auth.password");
-    String prevCloudMailSmtpAuth = prevConfiguration.get("cloud.admin.mail.smtp.auth");
+    String prevCloudMailHost = prevConfiguration.getCurrentOrDefault("cloud.admin.mail.host");
+    String prevCloudMailPort = prevConfiguration.getCurrentOrDefault("cloud.admin.mail.port");
+    String prevCloudMailUser = prevConfiguration.getCurrentOrDefault("cloud.admin.mail.smtp.auth.username");
+    String prevCloudMailPassword = prevConfiguration.getCurrentOrDefault("cloud.admin.mail.smtp.auth.password");
+    String prevCloudMailSmtpAuth = prevConfiguration.getCurrentOrDefault("cloud.admin.mail.smtp.auth");
 
     clearBlock();
     addToBlock(cloudMailHostQuestion, prevCloudMailHost);
@@ -143,10 +143,10 @@ public class MailConfigurationUpdater extends BaseConfigurationUpdater {
     answers.addAnswer(cloudMailPasswordQuestion, mailPassword);
     answers.addAnswer(cloudMailSmtpAuthQuestion, mailSmtpAuth);
 
-    String prevCloudAdminEmail = prevConfiguration.get("cloud.admin.mail.admin.email");
-    String prevCloudSupportEmail = prevConfiguration.get("cloud.admin.mail.support.email");
-    String prevCloudSupportSender = prevConfiguration.get("cloud.admin.mail.support.from");
-    String prevCloudSalesEmail = prevConfiguration.get("cloud.admin.mail.sales.email");
+    String prevCloudAdminEmail = prevConfiguration.getCurrentOrDefault("cloud.admin.mail.admin.email");
+    String prevCloudSupportEmail = prevConfiguration.getCurrentOrDefault("cloud.admin.mail.support.email");
+    String prevCloudSupportSender = prevConfiguration.getCurrentOrDefault("cloud.admin.mail.support.from");
+    String prevCloudSalesEmail = prevConfiguration.getCurrentOrDefault("cloud.admin.mail.sales.email");
 
     clearBlock();
     addToBlock(cloudAdminEmailQuestion, prevCloudAdminEmail);

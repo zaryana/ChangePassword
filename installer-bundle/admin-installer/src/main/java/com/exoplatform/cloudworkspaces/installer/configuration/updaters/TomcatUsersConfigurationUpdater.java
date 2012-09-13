@@ -54,8 +54,8 @@ public class TomcatUsersConfigurationUpdater extends BaseConfigurationUpdater {
     AdminConfiguration prevConfiguration = prevAdmin.getAdminConfiguration();
     AdminConfiguration currConfiguration = currAdmin.getAdminConfiguration();
 
-    String prevAdminPassword = prevConfiguration.get("tomcat.users.cloudadmin.password");
-    String prevManagerPassword = prevConfiguration.get("tomcat.users.cloudmanager.password");
+    String prevAdminPassword = prevConfiguration.getCurrentOrDefault("tomcat.users.cloudadmin.password");
+    String prevManagerPassword = prevConfiguration.getCurrentOrDefault("tomcat.users.cloudmanager.password");
 
     clearBlock();
     addToBlock(tomcatAdminPassQuestion, prevAdminPassword);

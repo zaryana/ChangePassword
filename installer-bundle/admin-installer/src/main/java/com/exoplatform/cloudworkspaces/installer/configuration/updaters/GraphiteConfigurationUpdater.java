@@ -28,18 +28,19 @@ import com.exoplatform.cloudworkspaces.installer.configuration.Question;
 import com.exoplatform.cloudworkspaces.installer.interaction.AnswersManager;
 import com.exoplatform.cloudworkspaces.installer.interaction.InteractionManager;
 
-public class CloudConfigurationUpdater extends BaseConfigurationUpdater {
-  private final Question tenantMasterhostQuestion = new Question("tenant.masterhost",
-                                                                 "Set tenant masterhost",
-                                                                 "cloud-workspaces.com",
-                                                                 "^.*$",
-                                                                 null);
+public class GraphiteConfigurationUpdater extends BaseConfigurationUpdater {
 
-  private final Question agentUsernameQuestion    = new Question("cloud.agent.username",
-                                                                 "Set cloud-agent username",
-                                                                 null,
-                                                                 "^.*$",
-                                                                 null);
+  private final Question graphiteHostQuestion = new Question("graphite.host",
+                                                             "Set graphite host. For example: localhost",
+                                                             "localhost",
+                                                             "^.*$",
+                                                             null);
+
+  private final Question graphitePortQuestion = new Question("graphite.port",
+                                                             "Set graphite port",
+                                                             "2003",
+                                                             "^.*$",
+                                                             null);
 
   @Override
   public void update(PreviousAdmin prevAdmin,
@@ -48,37 +49,38 @@ public class CloudConfigurationUpdater extends BaseConfigurationUpdater {
                      AnswersManager answers) throws InstallerException {
     interaction.println("");
     interaction.println("");
-    interaction.println("Cloud settings");
-    answers.addBlockName("Cloud settings");
+    interaction.println("Graphite settings");
+    answers.addBlockName("Graphite settings");
 
     AdminConfiguration prevConfiguration = prevAdmin.getAdminConfiguration();
     AdminConfiguration currConfiguration = currAdmin.getAdminConfiguration();
 
-    String prevTenantMasterhost = prevConfiguration.getCurrentOrDefault("tenant.masterhost");
-    String prevAgentUsername = prevConfiguration.getCurrentOrDefault("cloud.agent.username");
+    String prevGraphiteHost = prevConfiguration.getCurrentOrDefault("graphite.host");
+    String prevGraphitePort = prevConfiguration.getCurrentOrDefault("graphite.port");
 
     clearBlock();
-    addToBlock(tenantMasterhostQuestion, prevTenantMasterhost);
-    addToBlock(agentUsernameQuestion, prevAgentUsername);
+    addToBlock(graphiteHostQuestion, prevGraphiteHost);
+    addToBlock(graphitePortQuestion, prevGraphitePort);
 
     boolean usePrev = false;
     if (wasBlockChanged()) {
       usePrev = interaction.ask(new PreviousQuestion(getChanges())).equals("yes");
     }
 
-    String tenantMasterhost = prevTenantMasterhost;
-    String agentUsername = prevAgentUsername;
+    String graphiteHost = prevGraphiteHost;
+    String graphitePort = prevGraphitePort;
     if (!usePrev) {
-      tenantMasterhostQuestion.setDefaults(prevTenantMasterhost);
-      agentUsernameQuestion.setDefaults(prevAgentUsername);
+      graphiteHostQuestion.setDefaults(prevGraphiteHost);
+      graphitePortQuestion.setDefaults(prevGraphitePort);
 
-      tenantMasterhost = interaction.ask(tenantMasterhostQuestion);
-      agentUsername = interaction.ask(agentUsernameQuestion);
+      graphiteHost = interaction.ask(graphiteHostQuestion);
+      graphitePort = interaction.ask(graphitePortQuestion);
     }
 
-    currConfiguration.set("tenant.masterhost", tenantMasterhost);
-    currConfiguration.set("cloud.agent.username", agentUsername);
-    answers.addAnswer(tenantMasterhostQuestion, tenantMasterhost);
-    answers.addAnswer(agentUsernameQuestion, agentUsername);
+    currConfiguration.set("graphite.host", graphiteHost);
+    currConfiguration.set("graphite.port", graphitePort);
+    answers.addAnswer(graphiteHostQuestion, graphiteHost);
+    answers.addAnswer(graphitePortQuestion, graphitePort);
   }
+
 }

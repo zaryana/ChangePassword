@@ -24,7 +24,7 @@ import com.exoplatform.cloudworkspaces.installer.configuration.AdminConfiguratio
 import com.exoplatform.cloudworkspaces.installer.configuration.AdminDirectories;
 import com.exoplatform.cloudworkspaces.installer.configuration.CurrentAdmin;
 import com.exoplatform.cloudworkspaces.installer.configuration.PreviousAdmin;
-import com.exoplatform.cloudworkspaces.installer.downloader.IntranetBundleDownloader;
+import com.exoplatform.cloudworkspaces.installer.downloader.BundleDownloader;
 import com.exoplatform.cloudworkspaces.installer.interaction.AnswersManager;
 import com.exoplatform.cloudworkspaces.installer.interaction.InteractionManager;
 import com.exoplatform.cloudworkspaces.installer.upgrade.AdminUpgradeAlgorithm;
@@ -43,6 +43,7 @@ public class UpdationContainerImpl extends UpdationContainer {
                                     AdminDirectories nextAdminDirs,
                                     VersionEntry prevVersion,
                                     VersionEntry nextVersion,
+                                    BundleDownloader downloader,
                                     InteractionManager interaction,
                                     AnswersManager answers) throws InstallerException {
 
@@ -53,8 +54,7 @@ public class UpdationContainerImpl extends UpdationContainer {
       }
     }
     System.out.println("Downloading new admin bundle...");
-    IntranetBundleDownloader bundleDownloader = new IntranetBundleDownloader(nextVersion.getBundleUrl());
-    bundleDownloader.downloadAdminTo(bundleZip);
+    downloader.downloadAdminTo(bundleZip);
 
     AdminDirectories currAdminDirs;
     try {

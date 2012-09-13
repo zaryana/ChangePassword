@@ -20,6 +20,7 @@ package com.exoplatform.cloudworkspaces.installer.versions;
 
 import com.exoplatform.cloudworkspaces.installer.InstallerException;
 import com.exoplatform.cloudworkspaces.installer.configuration.AdminDirectories;
+import com.exoplatform.cloudworkspaces.installer.downloader.BundleDownloader;
 import com.exoplatform.cloudworkspaces.installer.interaction.AnswersManager;
 import com.exoplatform.cloudworkspaces.installer.interaction.InteractionManager;
 import com.exoplatform.cloudworkspaces.installer.upgrade.VersionEntry;
@@ -35,6 +36,7 @@ public abstract class UpdationContainer {
                                              AdminDirectories nextAdmin,
                                              VersionEntry prevVersion,
                                              VersionEntry nextVersion,
+                                             BundleDownloader downloader,
                                              InteractionManager interaction,
                                              AnswersManager answers) throws InstallerException;
 

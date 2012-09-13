@@ -73,7 +73,11 @@ public class ConfigUtils {
   }
 
   public static void writeQuotedProperty(File confDir, String confFile, String key, String value) throws IOException {
-    replace(confDir, confFile, "^" + key + "=[\"]?[^\"\\n]*[\"]?$", key + "=\"" + value + "\"");
+    writeQuotedProperty(new File(confDir, confFile), key, value);
+  }
+
+  public static void writeQuotedProperty(File confFile, String key, String value) throws IOException {
+    replace(confFile, "^" + key + "=[\"]?[^\"\\n]*[\"]?$", key + "=\"" + value + "\"");
   }
 
   public static String readFile(File file) throws IOException {

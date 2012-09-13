@@ -33,6 +33,7 @@ public class ParameterSourceFactory {
   static {
     sources.put("properties", PropertiesParameterSource.class);
     sources.put("xml", XmlParameterSource.class);
+    sources.put("sh", ShParameterSource.class);
   }
 
   public static ParameterSource getSource(Node source) throws InstallerException {

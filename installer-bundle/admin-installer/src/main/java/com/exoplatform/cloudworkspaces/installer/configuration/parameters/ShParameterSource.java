@@ -19,57 +19,24 @@
 package com.exoplatform.cloudworkspaces.installer.configuration.parameters;
 
 import com.exoplatform.cloudworkspaces.installer.ConfigUtils;
-import com.exoplatform.cloudworkspaces.installer.XmlUtils;
 import com.exoplatform.cloudworkspaces.installer.configuration.ConfigurationException;
 
 import org.w3c.dom.Node;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-public class PropertiesParameterSource extends InFileParameterSource {
+public class ShParameterSource extends PropertiesParameterSource {
 
-  protected final String key;
-
-  protected final String mask;
-
-  public PropertiesParameterSource(Node node) throws ConfigurationException {
+  public ShParameterSource(Node node) throws ConfigurationException {
     super(node);
-    Node key = XmlUtils.getChild(node, "key");
-    if (key == null)
-      throw new ConfigurationException("Property key not found in properties source");
-    this.key = key.getTextContent();
-    Node mask = XmlUtils.getChild(node, "mask");
-    if (mask != null)
-      this.mask = mask.getTextContent();
-    else
-      this.mask = "{}";
-  }
-
-  @Override
-  public String get(File confFile) throws ConfigurationException {
-    try {
-      String value = ConfigUtils.findProperty(confFile, key);
-      if (value == null) {
-        return null;
-      }
-      Pattern pattern = Pattern.compile(mask.replace("{}", "(.*)"));
-      Matcher matcher = pattern.matcher(value);
-      matcher.find();
-      return matcher.group(1);
-    } catch (IOException e) {
-      throw new ConfigurationException("Could not get property with key " + key + " from file "
-          + confFile.getAbsolutePath());
-    }
   }
 
   @Override
   public void set(File confFile, String value) throws ConfigurationException {
     try {
       String maskedValue = mask.replace("{}", value);
-      ConfigUtils.writeProperty(confFile, key, maskedValue);
+      ConfigUtils.writeQuotedProperty(confFile, key, maskedValue);
     } catch (IOException e) {
       throw new ConfigurationException("Could not set property with key " + key + " and value "
           + value + " to file " + confFile.getAbsolutePath());

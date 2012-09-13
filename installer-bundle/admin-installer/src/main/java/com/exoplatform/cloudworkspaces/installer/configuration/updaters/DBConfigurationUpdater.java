@@ -61,9 +61,9 @@ public class DBConfigurationUpdater extends BaseConfigurationUpdater {
     AdminConfiguration prevConfiguration = prevAdmin.getAdminConfiguration();
     AdminConfiguration currConfiguration = currAdmin.getAdminConfiguration();
 
-    String prevUrl = prevConfiguration.get("admin.db.url");
-    String prevUsername = prevConfiguration.get("admin.db.username");
-    String prevPassword = prevConfiguration.get("admin.db.password");
+    String prevUrl = prevConfiguration.getCurrentOrDefault("admin.db.url");
+    String prevUsername = prevConfiguration.getCurrentOrDefault("admin.db.username");
+    String prevPassword = prevConfiguration.getCurrentOrDefault("admin.db.password");
 
     clearBlock();
     addToBlock(DBUrlQuestion, prevUrl);
