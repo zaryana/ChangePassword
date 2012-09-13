@@ -1,3 +1,11 @@
+.UIToolbarContainer .MenuItemContainer .MenuItem a.LastVisited {
+    background-color: white;
+    cursor: default;
+    font-weight: bold;
+    padding: 0 22px;
+    text-decoration: none;
+}
+
 .OfficeMiddleTDContainer {
   border-left: solid 1px #E2DDC7 !important;
 }
