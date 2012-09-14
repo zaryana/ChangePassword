@@ -70,14 +70,14 @@ public class EmailNotificationService {
 	}
 	
 	public Set<Event> getEvents(String plugin, String user) throws Exception {
-	  CacheData<Set<Event>> data = eventsCache.get(new IdentityKey(plugin, user));
-    if (data != null) {
+/*	  CacheData<Set<Event>> data = eventsCache.get(new IdentityKey(plugin, user));
+    if (data != null && data.build().isEmpty()==false) {
       return (Set<Event>) data.build();
-    }
+    }*/
     SessionProvider sProvider = SessionProvider.createSystemProvider();
     NodeHierarchyCreator nodeCreator = (NodeHierarchyCreator) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(NodeHierarchyCreator.class);
     Node userAppDataNode = nodeCreator.getUserNode(sProvider, user).getNode("ApplicationData");
-    String emailNotificationStorage = EmailNotificationService.APP_NAME + "/" + EmailNotificationService.PREFS;
+    String emailNotificationStorage = EmailNotificationService.APP_NAME + "/" + EmailNotificationService.STORAGE;
     if (userAppDataNode != null && userAppDataNode.hasNode(emailNotificationStorage)) {
       Node storage = userAppDataNode.getNode(emailNotificationStorage);
       Set<Event> events = getEventsFromStorage(storage, plugin);
@@ -88,10 +88,10 @@ public class EmailNotificationService {
 	}
 
   public void setEvents(String plugin, String user, Set<Event> events) throws Exception {
-    CacheData<Set<Event>> data = eventsCache.get(new IdentityKey(plugin, user));
+    /*   CacheData<Set<Event>> data = eventsCache.get(new IdentityKey(plugin, user));
     if (data != null && data.build().equals(events)) {
       return;
-    }
+    }*/
     SessionProvider sProvider = SessionProvider.createSystemProvider();
     NodeHierarchyCreator nodeCreator = (NodeHierarchyCreator) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(NodeHierarchyCreator.class);
     Node userAppDataNode = nodeCreator.getUserNode(sProvider, user).getNode("ApplicationData");
