@@ -67,6 +67,7 @@ public class UpdationContainerImpl extends UpdationContainer {
     } catch (InterruptedException e) {
       throw new InstallerException("Error while unzipping admin bundle", e);
     }
+    bundleZip.deleteOnExit();
 
     PreviousAdmin prevAdmin = new Admin(prevAdminDirs, prevVersion);
     CurrentAdmin currAdmin = new Admin(currAdminDirs, nextVersion);
