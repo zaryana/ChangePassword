@@ -18,26 +18,28 @@
  */
 package com.exoplatform.cw;
 
-import com.exoplatform.cw.core.MailValidate;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.PageFactory;
+
 import com.exoplatform.cw.core.Calendar;
 import com.exoplatform.cw.core.CwLoginPage;
 import com.exoplatform.cw.core.Documents;
+import com.exoplatform.cw.core.FooterUIElements;
 import com.exoplatform.cw.core.ForumPage;
+import com.exoplatform.cw.core.HeaderUIElements;
+import com.exoplatform.cw.core.MailValidate;
 import com.exoplatform.cw.core.MyProfilePage;
 import com.exoplatform.cw.core.MySpacePage;
+import com.exoplatform.cw.core.RegistrationDonePage;
+import com.exoplatform.cw.core.RegistrationWorkspacePage;
+import com.exoplatform.cw.core.ResetPasswordPage;
+import com.exoplatform.cw.core.SignUpDonePage;
 import com.exoplatform.cw.core.SignUpPage;
+import com.exoplatform.cw.core.SpaceSettingsPage;
 import com.exoplatform.cw.core.TopMenusPage;
 import com.exoplatform.cw.core.Wiki;
 import com.exoplatform.cw.core.WorkSpacePage;
-import com.exoplatform.cw.core.SignUpDonePage;
-import com.exoplatform.cw.core.HeaderUIElements;
-import com.exoplatform.cw.core.FooterUIElements;
-import com.exoplatform.cw.core.RegistrationWorkspacePage;
-import com.exoplatform.cw.core.RegistrationDonePage;
 import com.thoughtworks.selenium.Selenium;
-
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.support.PageFactory;
 
 /**
  * 
@@ -47,109 +49,112 @@ import org.openqa.selenium.support.PageFactory;
  * @version $
  */
 
-public class CW
-{
+public class CW {
 
-   private Selenium selenium;
+	private Selenium selenium;
 
-   private WebDriver driver;
+	private WebDriver driver;
 
-   private static CW instance;
+	private static CW instance;
 
-   public static CW getInstance()
-   {
-      return instance;
-   }
+	public static CW getInstance() {
+		return instance;
+	}
 
-   public SignUpPage SIGNUPPAGE;
+	public SignUpPage SIGNUPPAGE;
 
-   public CwLoginPage LOGIN_PAGE;
+	public CwLoginPage LOGIN_PAGE;
 
-   public WorkSpacePage WORKSPACE;
+	public WorkSpacePage WORKSPACE;
 
-   public MyProfilePage PROFILE;
+	public MyProfilePage PROFILE;
 
-   public TopMenusPage TOPMENUS;
+	public TopMenusPage TOPMENUS;
 
-   public MySpacePage MYSPACE;
+	public MySpacePage SPACES;
 
-   public Calendar CALENDAR;
+	public Calendar CALENDAR;
 
-   public ForumPage FORUM;
+	public ForumPage FORUM;
 
-   public Documents DOCUMENTS;
+	public Documents DOCUMENTS;
 
-   public Wiki WIKI;
+	public Wiki WIKI;
 
-   public SignUpDonePage SIGNUPDONE;
+	public SignUpDonePage SIGNUPDONE;
 
-   public HeaderUIElements HEADER;
+	public HeaderUIElements HEADER;
 
-   public FooterUIElements FOOTER;
+	public FooterUIElements FOOTER;
 
-   public MailValidate MAIL;
+	public MailValidate MAIL;
 
-   public RegistrationWorkspacePage REGISTRATION;
+	public RegistrationWorkspacePage REGISTRATION;
 
-   public RegistrationDonePage REGISTRATIONDONE;
+	public RegistrationDonePage REGISTRATIONDONE;
 
-   public CW(Selenium selenium, String workspaceURL, WebDriver driver)
-   {
-      this.selenium = selenium;
-      this.workspaceURL = workspaceURL;
-      this.driver = driver;
-      instance = this;
+	public ResetPasswordPage RESET_PASSWORD;
 
-      SIGNUPPAGE = PageFactory.initElements(driver, SignUpPage.class);
-      LOGIN_PAGE = PageFactory.initElements(driver, CwLoginPage.class);
-      WORKSPACE = PageFactory.initElements(driver, WorkSpacePage.class);
-      PROFILE = PageFactory.initElements(driver, MyProfilePage.class);
-      TOPMENUS = PageFactory.initElements(driver, TopMenusPage.class);
-      MYSPACE = PageFactory.initElements(driver, MySpacePage.class);
-      CALENDAR = PageFactory.initElements(driver, Calendar.class);
-      FORUM = PageFactory.initElements(driver, ForumPage.class);
-      DOCUMENTS = PageFactory.initElements(driver, Documents.class);
-      WIKI = PageFactory.initElements(driver, Wiki.class);
-      SIGNUPDONE = PageFactory.initElements(driver, SignUpDonePage.class);
-      FOOTER = PageFactory.initElements(driver, FooterUIElements.class);
-      HEADER = PageFactory.initElements(driver, HeaderUIElements.class);
-      MAIL = PageFactory.initElements(driver, MailValidate.class);
-      REGISTRATION = PageFactory.initElements(driver, RegistrationWorkspacePage.class);
-      REGISTRATIONDONE = PageFactory.initElements(driver, RegistrationDonePage.class);
-   }
+	public SpaceSettingsPage SPACE_SETTINGS;
 
-   public Selenium getSelenium()
-   {
-      return selenium;
-   }
+	public CW(Selenium selenium, String workspaceURL, WebDriver driver) {
+		this.selenium = selenium;
+		this.workspaceURL = workspaceURL;
+		this.driver = driver;
+		instance = this;
 
-   public WebDriver driver()
-   {
-      return driver;
-   }
+		SIGNUPPAGE = PageFactory.initElements(driver, SignUpPage.class);
+		LOGIN_PAGE = PageFactory.initElements(driver, CwLoginPage.class);
+		WORKSPACE = PageFactory.initElements(driver, WorkSpacePage.class);
+		PROFILE = PageFactory.initElements(driver, MyProfilePage.class);
+		TOPMENUS = PageFactory.initElements(driver, TopMenusPage.class);
+		SPACES = PageFactory.initElements(driver, MySpacePage.class);
+		CALENDAR = PageFactory.initElements(driver, Calendar.class);
+		FORUM = PageFactory.initElements(driver, ForumPage.class);
+		DOCUMENTS = PageFactory.initElements(driver, Documents.class);
+		WIKI = PageFactory.initElements(driver, Wiki.class);
+		SIGNUPDONE = PageFactory.initElements(driver, SignUpDonePage.class);
+		FOOTER = PageFactory.initElements(driver, FooterUIElements.class);
+		HEADER = PageFactory.initElements(driver, HeaderUIElements.class);
+		MAIL = PageFactory.initElements(driver, MailValidate.class);
+		REGISTRATION = PageFactory.initElements(driver,
+				RegistrationWorkspacePage.class);
+		REGISTRATIONDONE = PageFactory.initElements(driver,
+				RegistrationDonePage.class);
+		RESET_PASSWORD = PageFactory.initElements(driver,
+				ResetPasswordPage.class);
+		SPACE_SETTINGS = PageFactory.initElements(driver,
+				SpaceSettingsPage.class);
+	}
 
-   /**
-    * Select main frame of IDE.
-    * 
-    * This method is used, after typing text in editor. To type text you must select editor iframe. After typing, to return to
-    * them main frame, use selectMainFrame()
-    * 
-    */
-   public void selectMainFrame()
-   {
-      driver().switchTo().defaultContent();
-   }
+	public Selenium getSelenium() {
+		return selenium;
+	}
 
-   private String workspaceURL;
+	public WebDriver driver() {
+		return driver;
+	}
 
-   public void setWorkspaceURL(String workspaceURL)
-   {
-      this.workspaceURL = workspaceURL;
-   }
+	/**
+	 * Select main frame of IDE.
+	 * 
+	 * This method is used, after typing text in editor. To type text you must
+	 * select editor iframe. After typing, to return to them main frame, use
+	 * selectMainFrame()
+	 * 
+	 */
+	public void selectMainFrame() {
+		driver().switchTo().defaultContent();
+	}
 
-   public String getWorkspaceURL()
-   {
-      return workspaceURL;
-   }
+	private String workspaceURL;
+
+	public void setWorkspaceURL(String workspaceURL) {
+		this.workspaceURL = workspaceURL;
+	}
+
+	public String getWorkspaceURL() {
+		return workspaceURL;
+	}
 
 }

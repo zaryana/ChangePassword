@@ -10,6 +10,7 @@ cw.seconduser.root.name=login for invited yser
 cw.seconduser.root.password=password for invited user
 4. Set your host with domen prefix 
 cw.host=your domen 
+cw.tenant=your tenant
 for example if we created tenant on mail@ukr.net 
 After configuration properties, run tests next command:
-mvn clean integration-test -Pselenium-test -Dtest=CWTestSuite
+mvn clean integration-test -Pselenium-test -Dtest=PlatformTestSuite

@@ -1,53 +1,43 @@
 package com.exoplatform.cw.core;
 
-import com.exoplatform.cw.BaseTest;
-
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-public class SignUpDonePage extends BaseTest
-{
-   //Locators basic elements Dialog About Menu
-   private interface Locators
-   {
+import com.exoplatform.cw.BaseTest;
 
-      String PAGE_BODI_CONTAINER = "div.ThanksPages";
-   }
+public class SignUpDonePage extends BaseTest {
+	// Locators basic elements Dialog About Menu
+	private interface Locators {
 
-   @FindBy(css = Locators.PAGE_BODI_CONTAINER)
-   private WebElement bodyContainer;
+		String PAGE_BODI_CONTAINER = "div.ThanksPages";
+	}
 
-   /**
-    * wait body container
-    * @throws Exception
-    */
-   public void waitBodyContainer() throws Exception
-   {
-      new WebDriverWait(driver, 10).until(new ExpectedCondition<Boolean>()
-      {
-         @Override
-         public Boolean apply(WebDriver elem)
-         {
-            try
-            {
-               return bodyContainer != null && bodyContainer.isDisplayed();
-            }
-            catch (Exception e)
-            {
-               return false;
-            }
-         }
-      });
-   }
+	@FindBy(css = Locators.PAGE_BODI_CONTAINER)
+	private WebElement bodyContainer;
 
-   public String getAllTextFromBodyContainer()
-   {
-      return bodyContainer.getText();
+	/**
+	 * wait body container
+	 * 
+	 * @throws Exception
+	 */
+	public void waitBodyContainer() throws Exception {
+		new WebDriverWait(driver, 30).until(new ExpectedCondition<Boolean>() {
+			@Override
+			public Boolean apply(WebDriver elem) {
+				try {
+					return bodyContainer != null && bodyContainer.isDisplayed();
+				} catch (Exception e) {
+					return false;
+				}
+			}
+		});
+	}
 
-   }
+	public String getAllTextFromBodyContainer() {
+		return bodyContainer.getText();
+
+	}
 }

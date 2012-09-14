@@ -18,17 +18,13 @@
  */
 package com.exoplatform.cw.core;
 
-import com.exoplatform.cw.BaseTest;
-
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-
+import com.exoplatform.cw.BaseTest;
 
 /**
  * Created by The eXo Platform SAS .
@@ -37,101 +33,91 @@ import org.openqa.selenium.support.ui.WebDriverWait;
  * @version $
  */
 
-public class SignUpPage extends BaseTest
-{
+public class SignUpPage extends BaseTest {
 
-   //Locators basic elements Dialog About Menu
-   private interface Locators
-   {
-      String UI_FORM = "UIForm";
+	// Locators basic elements Dialog About Menu
+	private interface Locators {
+		String UI_FORM = "UIForm";
 
-      String SIGN_INFO = "SignUpInfo";
+		String SIGN_INFO = "SignUpInfo";
 
-      String INPUT_ID = "email";
+		String INPUT_ID = "email";
 
-      String SIGN_UP_BUTTON = "t_submit";
+		String SIGN_UP_BUTTON = "t_submit";
 
-      String SIGN_IN_ALREDY_REGISTERED_LINK = "Already registered? Sign In";
+		String SIGN_IN_ALREDY_REGISTERED_LINK = "Already registered? Sign In";
 
-      String INFO =
-         "Cloud Workspaces is currently in private beta. To participate, register with your work email address. We'll keep you updated when your company's social intranet is ready.";
-   }
+		String INFO = "Cloud Workspaces is currently in private beta. To participate, register with your work email address. We'll keep you updated when your company's social intranet is ready.";
+	}
 
-   //WebElemnts DialogAbout menu
-   @FindBy(id = Locators.INPUT_ID)
-   private WebElement input;
+	// WebElemnts DialogAbout menu
+	@FindBy(id = Locators.INPUT_ID)
+	private WebElement input;
 
-   @FindBy(className = Locators.SIGN_INFO)
-   private WebElement signUpInfo;
+	@FindBy(className = Locators.SIGN_INFO)
+	private WebElement signUpInfo;
 
-   @FindBy(id = Locators.SIGN_UP_BUTTON)
-   private WebElement signUpBtn;
+	@FindBy(id = Locators.SIGN_UP_BUTTON)
+	private WebElement signUpBtn;
 
-   @FindBy(linkText = Locators.SIGN_IN_ALREDY_REGISTERED_LINK)
-   private WebElement linksOnSignForm;
+	@FindBy(linkText = Locators.SIGN_IN_ALREDY_REGISTERED_LINK)
+	private WebElement linksOnSignForm;
 
-   @FindBy(className = Locators.UI_FORM)
-   private WebElement signForm;
+	@FindBy(className = Locators.UI_FORM)
+	private WebElement signForm;
 
-   //wait appear sign form
-   /**
-    * wait base elements of sign form
-    * @throws Exception
-    */
-   public void waitSignForm() throws Exception
-   {
-      new WebDriverWait(driver, 20).until(new ExpectedCondition<Boolean>()
-      {
-         @Override
-         public Boolean apply(WebDriver elem)
-         {
-            try
-            {
-               return input != null && input.isDisplayed() && signUpBtn != null && signUpBtn.isDisplayed()
-                  && signForm != null && signForm.isDisplayed();
-            }
-            catch (Exception e)
-            {
-               return false;
-            }
-         }
-      });
-   }
+	// wait appear sign form
+	/**
+	 * wait base elements of sign form
+	 * 
+	 * @throws Exception
+	 */
+	public void waitSignForm() throws Exception {
+		new WebDriverWait(driver, 30).until(new ExpectedCondition<Boolean>() {
+			@Override
+			public Boolean apply(WebDriver elem) {
+				try {
+					return input != null && input.isDisplayed()
+							&& signUpBtn != null && signUpBtn.isDisplayed()
+							&& signForm != null && signForm.isDisplayed();
+				} catch (Exception e) {
+					return false;
+				}
+			}
+		});
+	}
 
-   /**
-    * Type info to email field
-    * @param mail
-    */
-   public void typeAdress(String mail)
-   {
-      input.sendKeys(mail);
-   }
+	/**
+	 * Type info to email field
+	 * 
+	 * @param mail
+	 */
+	public void typeAdress(String mail) {
+		input.sendKeys(mail);
+	}
 
-   /**
-    * clear email field
-    * 
-    */
-   public void clearField()
-   {
-      input.clear();
-   }
+	/**
+	 * clear email field
+	 * 
+	 */
+	public void clearField() {
+		input.clear();
+	}
 
-   /**
-    * clear email field
-    * 
-    */
-   public String getTextField()
-   {
-      return input.getText();
+	/**
+	 * clear email field
+	 * 
+	 */
+	public String getTextField() {
+		return input.getText();
 
-   }
+	}
 
-   /**
-    * click on sighn up button
-    */
-   public void signBtnClick()
-   {
-      signUpBtn.click();
-   }
+	/**
+	 * click on sighn up button
+	 */
+	public void signBtnClick() {
+		signUpBtn.click();
+	}
 
 }

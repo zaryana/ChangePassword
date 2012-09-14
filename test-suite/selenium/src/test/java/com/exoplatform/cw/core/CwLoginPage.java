@@ -18,13 +18,13 @@
  */
 package com.exoplatform.cw.core;
 
-import com.exoplatform.cw.BaseTest;
-
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
+import com.exoplatform.cw.BaseTest;
 
 /**
  * Created by The eXo Platform SAS .
@@ -33,143 +33,146 @@ import org.openqa.selenium.support.ui.WebDriverWait;
  * @version $
  */
 
-public class CwLoginPage extends BaseTest
-{
+public class CwLoginPage extends BaseTest {
 
-   //Locators basic elements Dialog About Menu
-   private interface Locators
-   {
+	// Locators basic elements Dialog About Menu
+	private interface Locators {
 
-      String LOGIN_FORM = "UILogin";
+		String LOGIN_FORM = "UILogin";
 
-      String USER_NAME_FIELD = "username";
+		String USER_NAME_FIELD = "username";
 
-      String PASSWORD_FIELD = "password";
+		String PASSWORD_FIELD = "password";
 
-      String REMEMBE_ME_CHEKBOX = "rememberme";
+		String REMEMBE_ME_CHEKBOX = "rememberme";
 
-      String CONTAINER_LOGINFORM_STAGING_CLASS = "UIPageBodyContainer";
+		String CONTAINER_LOGINFORM_STAGING_CLASS = "UIPageBodyContainer";
 
-      String LOGIN_BTN_STAGING = "UIPortalLoginFormAction";
+		String LOGIN_BTN_STAGING = "UIPortalLoginFormAction";
 
-      //String SIGN_IN_LINK="Sign in";
+		String FORGOT_PASSWORD_BTN = "//a[text()='Forgot Password?']";
 
-   }
+		// String SIGN_IN_LINK="Sign in";
 
-   //basic page elements
-   @FindBy(className = Locators.LOGIN_FORM)
-   private WebElement loginForm;
+	}
 
-   @FindBy(id = Locators.USER_NAME_FIELD)
-   private WebElement userName;
+	// basic page elements
+	@FindBy(className = Locators.LOGIN_FORM)
+	private WebElement loginForm;
 
-   @FindBy(id = Locators.PASSWORD_FIELD)
-   private WebElement password;
+	@FindBy(id = Locators.USER_NAME_FIELD)
+	private WebElement userName;
 
-   @FindBy(id = Locators.REMEMBE_ME_CHEKBOX)
-   private WebElement rememberChekbox;
+	@FindBy(id = Locators.PASSWORD_FIELD)
+	private WebElement password;
 
-   @FindBy(id = Locators.LOGIN_BTN_STAGING)
-   private WebElement signInBtn;
+	@FindBy(id = Locators.REMEMBE_ME_CHEKBOX)
+	private WebElement rememberChekbox;
 
-   @FindBy(className = Locators.CONTAINER_LOGINFORM_STAGING_CLASS)
-   private WebElement loginContainer;
+	@FindBy(id = Locators.LOGIN_BTN_STAGING)
+	private WebElement signInBtn;
 
-   @FindBy(id = Locators.LOGIN_BTN_STAGING)
-   private WebElement loginBtnStaging;
+	@FindBy(className = Locators.CONTAINER_LOGINFORM_STAGING_CLASS)
+	private WebElement loginContainer;
 
-   /**
-    * wait base elements on staging
-    * Login form
-    * @throws Exception
-    */
-   public void waitAppearLoginPageStaging() throws Exception
-   {
-      new WebDriverWait(driver, 10).until(new ExpectedCondition<Boolean>()
-      {
-         @Override
-         public Boolean apply(WebDriver elem)
-         {
+	@FindBy(id = Locators.LOGIN_BTN_STAGING)
+	private WebElement loginBtnStaging;
 
-            return userName.isDisplayed() && userName != null
-               && password != null && password.isDisplayed() && loginContainer != null && loginContainer.isDisplayed()
-               && loginBtnStaging != null && loginBtnStaging.isDisplayed();
+	@FindBy(xpath = Locators.FORGOT_PASSWORD_BTN)
+	private WebElement forgotPasswordBtn;
 
-         }
-      });
-   }
+	/**
+	 * wait base elements on staging Login form
+	 * 
+	 * @throws Exception
+	 */
+	public void waitAppearLoginPageStaging() throws Exception {
+		new WebDriverWait(driver, 30).until(new ExpectedCondition<Boolean>() {
+			@Override
+			public Boolean apply(WebDriver elem) {
 
-   /**
-   * wait base elements of sign form
-   * @throws Exception
-   */
-   public void waitAppearLoginPage() throws Exception
-   {
-      new WebDriverWait(driver, 10).until(new ExpectedCondition<Boolean>()
-      {
-         @Override
-         public Boolean apply(WebDriver elem)
-         {
-            try
-            {
-               return loginForm != null && loginForm.isDisplayed() && userName.isDisplayed() && userName != null
-                  && password != null && password.isDisplayed() && rememberChekbox != null
-                  && rememberChekbox.isDisplayed() && signInBtn != null && signInBtn.isDisplayed();
-            }
-            catch (Exception e)
-            {
-               return false;
-            }
-         }
-      });
-   }
+				return userName.isDisplayed() && userName != null
+						&& password != null && password.isDisplayed()
+						&& loginContainer != null
+						&& loginContainer.isDisplayed()
+						&& loginBtnStaging != null
+						&& loginBtnStaging.isDisplayed()
+						&& forgotPasswordBtn.isDisplayed();
 
-   /**
-    * type user name from conf file
-    */
-   public void typeUserName()
-   {
-      userName.sendKeys(USER_NAME);
-   }
+			}
+		});
+	}
 
-   /**
-    * type second user name from conf file
-    */
-   public void typeSecondUserName()
-   {
-      userName.sendKeys(SECOND_USER_NAME);
-   }
+	/**
+	 * wait base elements of sign form
+	 * 
+	 * @throws Exception
+	 */
+	public void waitAppearLoginPage() throws Exception {
+		new WebDriverWait(driver, 30).until(new ExpectedCondition<Boolean>() {
+			@Override
+			public Boolean apply(WebDriver elem) {
+				try {
+					return loginForm != null && loginForm.isDisplayed()
+							&& userName.isDisplayed() && userName != null
+							&& password != null && password.isDisplayed()
+							&& rememberChekbox != null
+							&& rememberChekbox.isDisplayed()
+							&& signInBtn != null && signInBtn.isDisplayed();
+				} catch (Exception e) {
+					return false;
+				}
+			}
+		});
+	}
 
-   /**
-    * type user password from conf file 
-    */
-   public void typeUserPass()
-   {
-      password.sendKeys(USER_PASSWORD);
-   }
+	/**
+	 * type user name from conf file
+	 */
+	public void typeUserName() {
+		userName.sendKeys(USER_NAME);
+	}
 
-   /**
-    * type user password from conf file 
-    */
-   public void typeSecondUserPass()
-   {
-      password.sendKeys(SECOND_USER_PASSWORD);
-   }
+	/**
+	 * type second user name from conf file
+	 */
+	public void typeSecondUserName() {
+		userName.sendKeys(SECOND_USER_NAME);
+	}
 
-   /**
-    *  click in sign in button 
-    */
-   public void clickOnSignBtn()
-   {
-      signInBtn.click();
-   }
+	/**
+	 * type user password from conf file
+	 */
+	public void typeUserPass() {
+		password.sendKeys(USER_PASSWORD);
+	}
 
-   /**
-    *  click on login btn in staging
-    */
-   public void clickOnLoginBtnStg()
-   {
-      loginBtnStaging.click();
-   }
+	/**
+	 * type user password from conf file
+	 */
+	public void typeSecondUserPass() {
+		password.sendKeys(SECOND_USER_PASSWORD);
+	}
+
+	/**
+	 * click in sign in button
+	 */
+	public void clickOnSignBtn() {
+		signInBtn.click();
+	}
+
+	/**
+	 * click on login btn in staging
+	 */
+	public void clickOnLoginBtnStg() {
+		loginBtnStaging.click();
+	}
+
+	/**
+	 * click on forgot password button
+	 */
+	public void clickOnForgotPasswordBtn() {
+		forgotPasswordBtn.click();
+	}
 
 }

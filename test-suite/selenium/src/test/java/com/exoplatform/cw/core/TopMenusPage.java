@@ -18,8 +18,6 @@
  */
 package com.exoplatform.cw.core;
 
-import com.exoplatform.cw.BaseTest;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -28,6 +26,8 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import com.exoplatform.cw.BaseTest;
+
 /**
  * Created by The eXo Platform SAS .
  * 
@@ -35,179 +35,160 @@ import org.openqa.selenium.support.ui.WebDriverWait;
  * @version $
  */
 
-public class TopMenusPage extends BaseTest
-{
+public class TopMenusPage extends BaseTest {
 
-   //Locators basic elements For Top Menu
-   private interface Locators
-   {
-      String INTRANETLINK = "ul#PortalNavigationTopContainer>li>a";
+	// Locators basic elements For Top Menu
+	private interface Locators {
+		String INTRANETLINK = "ul#PortalNavigationTopContainer>li>a";
 
-      String MY_SPACES_LINK = "Browse";
+		String MY_SPACES_LINK = "Browse";
 
-      String HOME_ICON_LINK = "HomeLink";
+		String HOME_ICON_LINK = "HomeLink";
 
-      String MY_SPACES_MENU_LINK = "My Spaces";
+		String MY_SPACES_MENU_LINK = "My Spaces";
 
-      String USER_NAVIGATION_LINK = "li#UserNavigationTabsContainer>a";
+		String USER_NAVIGATION_LINK = "li#UserNavigationTabsContainer>a";
 
-      String LOGOUTUSER_LINK = "Logout";
+		String LOGOUTUSER_LINK = "Logout";
 
-      String SUBLINK = "%s";
+		String SUBLINK = "%s";
 
-   }
+	}
 
-   @FindBy(className = Locators.HOME_ICON_LINK)
-   private WebElement goToHomeIcon;
+	@FindBy(className = Locators.HOME_ICON_LINK)
+	private WebElement goToHomeIcon;
 
-   @FindBy(linkText = Locators.MY_SPACES_MENU_LINK)
-   private WebElement mySpacesTopMenu;
+	@FindBy(linkText = Locators.MY_SPACES_MENU_LINK)
+	private WebElement mySpacesTopMenu;
 
-   @FindBy(css = Locators.USER_NAVIGATION_LINK)
-   private WebElement userNavigation;
+	@FindBy(css = Locators.USER_NAVIGATION_LINK)
+	private WebElement userNavigation;
 
-   @FindBy(linkText = Locators.LOGOUTUSER_LINK)
-   private WebElement logout;
+	@FindBy(linkText = Locators.LOGOUTUSER_LINK)
+	private WebElement logout;
 
-   @FindBy(css = Locators.INTRANETLINK)
-   private WebElement intranetLink;
+	@FindBy(css = Locators.INTRANETLINK)
+	private WebElement intranetLink;
 
-   @FindBy(linkText = Locators.MY_SPACES_LINK)
-   private WebElement mySpacesLink;
+	@FindBy(linkText = Locators.MY_SPACES_LINK)
+	private WebElement mySpacesLink;
 
-   /**
-    * click on home icon on tom menus
-    */
-   public void clickMySpacesMenu()
-   {
-      mySpacesTopMenu.click();
-   }
+	/**
+	 * click on home icon on tom menus
+	 */
+	public void clickMySpacesMenu() {
+		mySpacesTopMenu.click();
+	}
 
-   /**
-    * click on hom icon on tom menus
-    */
-   public void clickOnGoToHome()
-   {
-      goToHomeIcon.click();
-   }
+	/**
+	 * click on hom icon on tom menus
+	 */
+	public void clickOnGoToHome() {
+		goToHomeIcon.click();
+	}
 
-   /**
-    * click on hom icon on tom menus
-    */
-   public void mooveMouseToUserForm()
-   {
-      new Actions(driver).moveToElement(userNavigation).build().perform();
+	/**
+	 * click on hom icon on tom menus
+	 */
+	public void mooveMouseToUserForm() {
+		new Actions(driver).moveToElement(userNavigation).build().perform();
 
-   }
+	}
 
-   /**
-    * click for logout
-    */
-   public void logoutUser()
-   {
-      logout.click();
-   }
+	/**
+	 * click for logout
+	 */
+	public void logoutUser() {
+		logout.click();
+	}
 
-   /**
-    * Move mouse to navigation menu
-    * @param topMenu
-    */
-   public void mooveMouseToMySpacesMenu()
-   {
-      new Actions(driver).moveToElement(mySpacesLink).build().perform();
-   }
+	/**
+	 * Move mouse to navigation menu
+	 * 
+	 * @param topMenu
+	 */
+	public void mooveMouseToMySpacesMenu() {
+		new Actions(driver).moveToElement(mySpacesLink).build().perform();
+	}
 
-   /**
-    * Move mouse to navigation menu
-    * @param topMenu
-    */
-   public void mooveMouseToIntranetMenu()
-   {
-      new Actions(driver).moveToElement(intranetLink).build().perform();
-   }
+	/**
+	 * Move mouse to navigation menu
+	 * 
+	 * @param topMenu
+	 */
+	public void mooveMouseToIntranetMenu() {
+		new Actions(driver).moveToElement(intranetLink).build().perform();
+	}
 
-   /**
-    * wait appearance basic elements 
-    * from CW page
-    * @throws Exception
-    */
-   public void waitSubLink(final String subLnk) throws Exception
-   {
-      new WebDriverWait(driver, 5).until(new ExpectedCondition<Boolean>()
-      {
-         @Override
-         public Boolean apply(WebDriver elem)
-         {
-            WebElement lnk = driver.findElement(By.partialLinkText(String.format(Locators.SUBLINK, subLnk)));
-            return lnk != null && lnk.isDisplayed();
-         }
-      });
-   }
+	/**
+	 * wait appearance basic elements from CW page
+	 * 
+	 * @throws Exception
+	 */
+	public void waitSubLink(final String subLnk) throws Exception {
+		new WebDriverWait(driver, 30).until(new ExpectedCondition<Boolean>() {
+			@Override
+			public Boolean apply(WebDriver elem) {
+				WebElement lnk = driver.findElement(By.partialLinkText(String
+						.format(Locators.SUBLINK, subLnk)));
+				return lnk != null && lnk.isDisplayed();
+			}
+		});
+	}
 
-   /**
-    * wait link with text on page
-    * from CW page
-    * @throws Exception
-    */
-   public void waitLink(final String subLnk) throws Exception
-   {
-      new WebDriverWait(driver, 5).until(new ExpectedCondition<Boolean>()
-      {
-         @Override
-         public Boolean apply(WebDriver elem)
-         {
-            WebElement lnk = driver.findElement(By.partialLinkText(String.format(Locators.SUBLINK, subLnk)));
-            return lnk != null && lnk.isDisplayed();
-         }
-      });
-   }
+	/**
+	 * wait link with text on page from CW page
+	 * 
+	 * @throws Exception
+	 */
+	public void waitLink(final String subLnk) throws Exception {
+		new WebDriverWait(driver, 30).until(new ExpectedCondition<Boolean>() {
+			@Override
+			public Boolean apply(WebDriver elem) {
+				WebElement lnk = driver.findElement(By.partialLinkText(String
+						.format(Locators.SUBLINK, subLnk)));
+				return lnk != null && lnk.isDisplayed();
+			}
+		});
+	}
 
-   /**
-    * Move mouse to sublink menu
-    * @param topMenu
-    * @throws Exception 
-    */
-   public void mooveMouseToTopSubMenu(String topMenu) throws Exception
-   {
-      waitSubLink(topMenu);
-      WebElement sub = driver.findElement(By.linkText(String.format(Locators.SUBLINK, topMenu)));
-      new Actions(driver).moveToElement(sub).build().perform();
-   }
+	/**
+	 * Move mouse to sublink menu
+	 * 
+	 * @param topMenu
+	 * @throws Exception
+	 */
+	public void moveMouseToTopSubMenu(String topMenu) throws Exception {
+		waitSubLink(topMenu);
+		WebElement sub = driver.findElement(By.partialLinkText(String.format(
+				Locators.SUBLINK, topMenu)));
+		new Actions(driver).moveToElement(sub).build().perform();
+	}
 
-   /**
-    * Move mouse to sublink menu
-    * @param topMenu
-    * @throws Exception 
-    */
-   public void mooveMooseToTopSubMenu(String topMenu) throws Exception
-   {
-      waitSubLink(topMenu);
-      WebElement sub = driver.findElement(By.partialLinkText(String.format(Locators.SUBLINK, topMenu)));
-      new Actions(driver).moveToElement(sub).build().perform();
-   }
+	/**
+	 * Move mouse to sublink menu
+	 * 
+	 * @param topMenu
+	 * @throws Exception
+	 */
+	public void clickOnSublink(String topMenu) throws Exception {
+		waitSubLink(topMenu);
+		WebElement sub = driver.findElement(By.linkText(String.format(
+				Locators.SUBLINK, topMenu)));
+		sub.click();
+	}
 
-   /**
-    * Move mouse to sublink menu
-    * @param topMenu
-    * @throws Exception 
-    */
-   public void clickOnSublink(String topMenu) throws Exception
-   {
-      waitSubLink(topMenu);
-      WebElement sub = driver.findElement(By.linkText(String.format(Locators.SUBLINK, topMenu)));
-      sub.click();
-   }
-
-   /**
-    * Move mouse to sublink menu
-    * @param topMenu
-    * @throws Exception 
-    */
-   public void clickOnLink(String topMenu) throws Exception
-   {
-      waitSubLink(topMenu);
-      WebElement sub = driver.findElement(By.partialLinkText(String.format(Locators.SUBLINK, topMenu)));
-      sub.click();
-   }
+	/**
+	 * Move mouse to sublink menu
+	 * 
+	 * @param topMenu
+	 * @throws Exception
+	 */
+	public void clickOnLink(String topMenu) throws Exception {
+		waitSubLink(topMenu);
+		WebElement sub = driver.findElement(By.partialLinkText(String.format(
+				Locators.SUBLINK, topMenu)));
+		sub.click();
+	}
 
 }

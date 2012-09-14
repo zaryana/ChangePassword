@@ -1,106 +1,103 @@
 package com.exoplatform.cw.core;
 
-import com.exoplatform.cw.BaseTest;
-
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-public class HeaderUIElements extends BaseTest
-{
+import com.exoplatform.cw.BaseTest;
 
-   private interface Locators
-   {
-      String UI_HEADER_ID = "UIHeader";
+public class HeaderUIElements extends BaseTest {
 
-      String HEADER_LINKS_CLASS = "MainContent";
+	private interface Locators {
+		String UI_HEADER_ID = "UIHeader";
 
-      String EXO_LOGO_LOCATOR = "//img[@src='/background/logo.png']";
+		String HEADER_LINKS_CLASS = "MainContent";
 
-      String ABOUT_LINK = "//ul[@class=\"UIMenuTop FR\"]//a[@class and text()='About']";
+		String EXO_LOGO_LOCATOR = "//img[@src='/background/logo.png']";
 
-      String FORUM_LINK = "//ul[@class=\"UIMenuTop FR\"]//a[@class and text()='Forum'] ";
+		String ABOUT_LINK = "//ul[@class=\"UIMenuTop FR\"]//a[@class and text()='About']";
 
-      //for old versions
-      //String HELP = "//ul[@class=\"UIMenuTop FR\"]//a[@class and text()='Help'] ";
-      
-      String HELP = "//ul[@class=\"UIMenuTop FR\"]//a[@class and text()='FAQ'] ";
+		String FORUM_LINK = "//ul[@class=\"UIMenuTop FR\"]//a[@class and text()='Forum'] ";
 
-      String EXO_LINK = "//ul[@class=\"UIMenuTop FR\"]//a[@class and text()='eXoplatform.com']";
+		// for old versions
+		// String HELP =
+		// "//ul[@class=\"UIMenuTop FR\"]//a[@class and text()='Help'] ";
 
-      String CONTACT_AS_LINK = "//ul[@class=\"UIMenuTop FR\"]//a[@class and text()='Contact us']";
+		String HELP = "//ul[@class=\"UIMenuTop FR\"]//a[@class and text()='FAQ'] ";
 
-      String HEADER_CLOUD_WORKSPACES = "div.ClouIntranet>h1";
+		String EXO_LINK = "//ul[@class=\"UIMenuTop FR\"]//a[@class and text()='eXoplatform.com']";
 
-      String SPAN_CLOUD_WORKSPACES = "div.ClouIntranet>span";
+		String CONTACT_AS_LINK = "//ul[@class=\"UIMenuTop FR\"]//a[@class and text()='Contact us']";
 
-   }
+		String HEADER_CLOUD_WORKSPACES = "div.ClouIntranet>h1";
 
-   //WebElemnts Base Header Elements
-   @FindBy(id = Locators.UI_HEADER_ID)
-   private WebElement headerContainer;
+		String SPAN_CLOUD_WORKSPACES = "div.ClouIntranet>span";
 
-   @FindBy(className = Locators.HEADER_LINKS_CLASS)
-   private WebElement hederMainLinksContainer;
+	}
 
-   @FindBy(xpath = Locators.EXO_LOGO_LOCATOR)
-   private WebElement exoLogo;
+	// WebElemnts Base Header Elements
+	@FindBy(id = Locators.UI_HEADER_ID)
+	private WebElement headerContainer;
 
-   @FindBy(xpath = Locators.ABOUT_LINK)
-   private WebElement about;
+	@FindBy(className = Locators.HEADER_LINKS_CLASS)
+	private WebElement hederMainLinksContainer;
 
-   @FindBy(xpath = Locators.FORUM_LINK)
-   private WebElement forum;
+	@FindBy(xpath = Locators.EXO_LOGO_LOCATOR)
+	private WebElement exoLogo;
 
-   @FindBy(xpath = Locators.HELP)
-   private WebElement help;
+	@FindBy(xpath = Locators.ABOUT_LINK)
+	private WebElement about;
 
-   @FindBy(xpath = Locators.EXO_LINK)
-   private WebElement mainLink;
+	@FindBy(xpath = Locators.FORUM_LINK)
+	private WebElement forum;
 
-   @FindBy(xpath = Locators.CONTACT_AS_LINK)
-   private WebElement contactAs;
+	@FindBy(xpath = Locators.HELP)
+	private WebElement help;
 
-   @FindBy(css = Locators.HEADER_CLOUD_WORKSPACES)
-   private WebElement firstHeader;
+	@FindBy(xpath = Locators.EXO_LINK)
+	private WebElement mainLink;
 
-   @FindBy(css = Locators.SPAN_CLOUD_WORKSPACES)
-   private WebElement secondHeader;
+	@FindBy(xpath = Locators.CONTACT_AS_LINK)
+	private WebElement contactAs;
 
-   /**
-    * wait base elements of sign form
-    * @throws Exception
-    */
-   public void waitHeaderElements() throws Exception
-   {
-      new WebDriverWait(driver, 10).until(new ExpectedCondition<Boolean>()
-      {
-         @Override
-         public Boolean apply(WebDriver elem)
-         {
-            try
-            {
-               return headerContainer != null && headerContainer.isDisplayed() && hederMainLinksContainer != null
-                  && hederMainLinksContainer.isDisplayed() && exoLogo != null && exoLogo.isDisplayed() && about != null
-                  && about.isDisplayed() && forum != null && forum.isDisplayed() && help != null && help.isDisplayed()
-                  && mainLink != null && mainLink.isDisplayed() && contactAs != null && contactAs.isDisplayed();
-            }
-            catch (Exception e)
-            {
-               return false;
-            }
-         }
-      });
-   }
+	@FindBy(css = Locators.HEADER_CLOUD_WORKSPACES)
+	private WebElement firstHeader;
 
-   public String getHeader()
-   {
-      String header = firstHeader.getText() + "\n" + secondHeader.getText();
-      return header;
-   }
+	@FindBy(css = Locators.SPAN_CLOUD_WORKSPACES)
+	private WebElement secondHeader;
+
+	/**
+	 * wait base elements of sign form
+	 * 
+	 * @throws Exception
+	 */
+	public void waitHeaderElements() throws Exception {
+		new WebDriverWait(driver, 30).until(new ExpectedCondition<Boolean>() {
+			@Override
+			public Boolean apply(WebDriver elem) {
+				try {
+					return headerContainer != null
+							&& headerContainer.isDisplayed()
+							&& hederMainLinksContainer != null
+							&& hederMainLinksContainer.isDisplayed()
+							&& exoLogo != null && exoLogo.isDisplayed()
+							&& about != null && about.isDisplayed()
+							&& forum != null && forum.isDisplayed()
+							&& help != null && help.isDisplayed()
+							&& mainLink != null && mainLink.isDisplayed()
+							&& contactAs != null && contactAs.isDisplayed();
+				} catch (Exception e) {
+					return false;
+				}
+			}
+		});
+	}
+
+	public String getHeader() {
+		String header = firstHeader.getText() + "\n" + secondHeader.getText();
+		return header;
+	}
 
 }
