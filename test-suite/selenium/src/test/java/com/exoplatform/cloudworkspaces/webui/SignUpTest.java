@@ -37,6 +37,7 @@ public class SignUpTest extends BaseTest
    @Test
    public void testSignUp() throws Exception
    {
+	  driver.get(CW_HOST);
       CW.SIGNUPPAGE.waitSignForm();
       CW.SIGNUPPAGE.clearField();
       assertEquals("", CW.SIGNUPPAGE.getTextField());

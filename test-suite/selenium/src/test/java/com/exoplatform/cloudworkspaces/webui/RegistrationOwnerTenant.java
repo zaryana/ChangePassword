@@ -20,7 +20,8 @@ package com.exoplatform.cloudworkspaces.webui;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import com.exoplatform.cw.BaseMail;
+import com.exoplatform.cw.BaseTest;
+
 import org.junit.Test;
 
 /**
@@ -29,7 +30,7 @@ import org.junit.Test;
  * @version $Id:
  *
  */
-public class RegistrationOwnerTenant extends BaseMail
+public class RegistrationOwnerTenant extends BaseTest
 {
 
    private static final String HEADER_SIGN_UP_PAGE = "Cloud Workspaces\n" + "The Free Social Intranet for Your Company";
@@ -41,6 +42,7 @@ public class RegistrationOwnerTenant extends BaseMail
       //      Date now = new Date();
       //      String date = format.format(now);
       //      System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<:"+now);
+	  driver.get(MAIL_HOST);
       CW.MAIL.waitGmailLoginForm();
       CW.MAIL.typeLogin("musienko_maksim");
       CW.MAIL.typePassword("vfrcbv_1978");
