@@ -18,13 +18,13 @@
       <tomcat-started/>
       <new-as-ready/>
       <update-finished>
-        <hook class="com.exoplatform.cloudworkspaces.installer.upgrade.hooks.TenantRemoveHook">
+        <!--hook class="com.exoplatform.cloudworkspaces.installer.upgrade.hooks.TenantRemoveHook">
           <tenant>exoplatform</tenant>
         </hook>
         <hook class="com.exoplatform.cloudworkspaces.installer.upgrade.hooks.TenantCreateHook">
           <tenant>exoplatform</tenant>
           <email>intranet_admin@exoplatform.com</email>
-        </hook>
+        </hook-->
         <hook class="com.exoplatform.cloudworkspaces.installer.upgrade.hooks.DemoTenantCreateHook">
           <email>intranet_admin@exoplatform.com</email>
         </hook>
