@@ -78,7 +78,6 @@
   
   
   <!-- EMAIL NOTIFICATION -->
-  
   <component>
     <type>com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.EmailNotificationService</type>
   </component>

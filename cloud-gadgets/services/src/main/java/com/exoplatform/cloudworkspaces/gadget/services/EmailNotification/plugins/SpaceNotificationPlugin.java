@@ -18,7 +18,6 @@ import com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.DateTim
 import com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.EmailNotificationPlugin;
 import com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.EmailNotificationService;
 import com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.Event;
-import com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.Plugin;
 import com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.utils.MessagesCache;
 
 public class SpaceNotificationPlugin extends EmailNotificationPlugin{
@@ -39,7 +38,7 @@ public class SpaceNotificationPlugin extends EmailNotificationPlugin{
 			ListAccess<Space> invitedSpaces = spaceSvc.getInvitedSpacesWithListAccess(userId);
 			
 			EmailNotificationService notificationService = (EmailNotificationService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(EmailNotificationService.class);			
-			Set<Event> events = notificationService.getEvents(Plugin.SPACE_INVITATION, userId);
+			Set<Event> events = notificationService.getEvents(this.getName(), userId);
       for (Space space : invitedSpaces.load(0, invitedSpaces.getSize())) {
         Event event = new Event(space.getPrettyName(), System.currentTimeMillis());
         if (!events.contains(event)) {
@@ -63,7 +62,7 @@ public class SpaceNotificationPlugin extends EmailNotificationPlugin{
         builder.append("<a href='" + host + "/" + messagesCache.getDefault().getProperty("invitedSpaceLink") + "' target='_blank'>" + event.getIdentity() + "</a>");
       }
 			
-			notificationService.setEvents(Plugin.SPACE_INVITATION, userId, events);
+			notificationService.setEvents(this.getName(), userId, events);
 
 			String spaceRequests = builder.toString();
 			if(spaceRequests.isEmpty()) return "";

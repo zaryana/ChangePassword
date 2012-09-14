@@ -1,46 +1,35 @@
 package com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.utils;
 
-import javax.jcr.Node;
-import javax.jcr.Session;
+import java.io.InputStream;
 
-import org.exoplatform.container.ExoContainerContext;
-import org.exoplatform.services.jcr.RepositoryService;
-import org.exoplatform.services.jcr.core.ManageableRepository;
-import org.exoplatform.services.jcr.ext.common.SessionProvider;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 
+import com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.EmailNotificationService;
+
 public class EmailTemplateCache extends LocaleCache<String> {
-	private static Log LOG = ExoLogger.getLogger(EmailTemplateCache.class);
-	private String resourcePath;
+  private static Log LOG = ExoLogger.getLogger(EmailTemplateCache.class);
+  private Class cls;
 
-	public EmailTemplateCache(String resourcePath) {
-		super();
-		this.resourcePath = resourcePath;
-	}
+  public EmailTemplateCache(Class cls) {
+    super();
+    this.cls = cls;
+  }
 
-	@Override
-	protected String getFromSource(String locale) throws Exception {
-		String template = "";
+  @Override
+  protected String getFromSource(String locale) throws Exception {
+    String template = "";
 
-		SessionProvider sProvider = SessionProvider.createSystemProvider();
-		try {
-			RepositoryService repoService = (RepositoryService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(RepositoryService.class);
-			ManageableRepository currentRepo = repoService.getCurrentRepository();
-			Session session = sProvider.getSession(currentRepo.getConfiguration().getDefaultWorkspaceName(), currentRepo);	
-			
-			Node resourceNode = session.getRootNode().getNode(resourcePath);
-			String templateFileName = locale + ".html";
-			if(!resourceNode.hasNode(templateFileName)) templateFileName = "default.html";
-			template = resourceNode.getNode(templateFileName).getNode("jcr:content").getProperty("jcr:data").getString();
-			cache.put(locale, template);
-		}catch(Exception e) {
-			LOG.debug(e.getMessage(), e);
-		}finally{
-			sProvider.close();
-		}
+    InputStream is = cls.getResourceAsStream(EmailNotificationService.RESOURCE_DIR + locale + ".html");
+    if (null == is)
+      is = cls.getResourceAsStream(EmailNotificationService.RESOURCE_DIR + "default.html");
 
-		return template;
-	}
+    if (null != is) {
+      template = new java.util.Scanner(is).useDelimiter("\\A").next();
+      cache.put(locale, template);
+      is.close();
+    }
+
+    return template;
+  }
 }
-

@@ -14,7 +14,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.RuntimeDelegate;
 
 import org.exoplatform.container.ExoContainerContext;
-import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.jcr.ext.common.SessionProvider;
 import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
 import org.exoplatform.services.log.ExoLogger;
@@ -40,41 +39,37 @@ public class EmailNotificationRestService implements ResourceContainer {
   }
 
   public EmailNotificationPrefsBean getUserPrefs(String userId) throws Exception {
-
-    RepositoryService repoService = (RepositoryService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(RepositoryService.class);
-    String currentRepoName = repoService.getCurrentRepository().getConfiguration().getName();
     EmailNotificationService emailNotificationService = (EmailNotificationService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(EmailNotificationService.class);
-    emailNotificationService.initResourceBundle(currentRepoName);
-
     SessionProvider sProvider = SessionProvider.createSystemProvider();
     try {
       NodeHierarchyCreator nodeCreator = (NodeHierarchyCreator) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(NodeHierarchyCreator.class);
       OrganizationService organizationService = (OrganizationService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(OrganizationService.class);
 
       String userLocale = organizationService.getUserProfileHandler().findUserProfileByName(userId).getAttribute("user.language");
-      Node userPrivateNode = nodeCreator.getUserNode(sProvider, userId).getNode("Private");
+      Node userAppDataNode = nodeCreator.getUserNode(sProvider, userId).getNode("ApplicationData");
 
-      MessagesCache messagesCache = new MessagesCache(EmailNotificationService.HOME);
+      MessagesCache messagesCache = new MessagesCache(EmailNotificationService.class);
       String interval = messagesCache.getDefault().getProperty("defaultInterval", "day");
 
       boolean isSummaryMail = false;
       ArrayList<EmailNotificationPluginBean> pluginBeans = new ArrayList<EmailNotificationPluginBean>();
 
-      if (!userPrivateNode.hasNode(EmailNotificationService.PREFS)) {
+      String emailNotificationPrefs = EmailNotificationService.APP_NAME + "/" + EmailNotificationService.PREFS;
+      if (!userAppDataNode.hasNode(emailNotificationPrefs)) {
         for (EmailNotificationPlugin plugin : emailNotificationService.getPlugins()) {
-          MessagesCache pluginMessages = new MessagesCache(EmailNotificationService.PLUGINS + "/" + plugin.getName());
+          MessagesCache pluginMessages = new MessagesCache(plugin.getClass());
           String settingMessage = pluginMessages.get(userLocale).getProperty("setting");
           boolean isDefault = Boolean.parseBoolean(pluginMessages.getDefault().getProperty("isDefault", "true"));
           pluginBeans.add(new EmailNotificationPluginBean(plugin.getName(), settingMessage, isDefault));
         }
       } else {
-        Node emailNotificationPrefsNode = userPrivateNode.getNode(EmailNotificationService.PREFS);
+        Node emailNotificationPrefsNode = userAppDataNode.getNode(emailNotificationPrefs);
         interval = emailNotificationPrefsNode.getProperty("Interval").getString();
         isSummaryMail = emailNotificationPrefsNode.getProperty("isSummaryMail").getBoolean();
         String pluginsProp = emailNotificationPrefsNode.getProperty("NotificationPlugins").getString();
 
         for (EmailNotificationPlugin plugin : emailNotificationService.getPlugins()) {
-          MessagesCache pluginMessages = new MessagesCache(EmailNotificationService.PLUGINS + "/" + plugin.getName());
+          MessagesCache pluginMessages = new MessagesCache(plugin.getClass());
           String settingMessage = pluginMessages.get(userLocale).getProperty("setting");
           pluginBeans.add(new EmailNotificationPluginBean(plugin.getName(), settingMessage, pluginsProp.contains(plugin.getName())));
         }
@@ -94,24 +89,30 @@ public class EmailNotificationRestService implements ResourceContainer {
     SessionProvider sProvider = SessionProvider.createSystemProvider();
     try {
       NodeHierarchyCreator nodeCreator = (NodeHierarchyCreator) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(NodeHierarchyCreator.class);
-      Node userPrivateNode = nodeCreator.getUserNode(sProvider, userId).getNode("Private");
-
-      Node emailNotificationSettingNode;
-      if (!userPrivateNode.hasNode(EmailNotificationService.PREFS)) {
-        emailNotificationSettingNode = userPrivateNode.addNode(EmailNotificationService.PREFS);
-        // hide this node
-        if (emailNotificationSettingNode.canAddMixin("exo:hiddenable")) {
-          emailNotificationSettingNode.addMixin("exo:hiddenable");
-        }
-        userPrivateNode.save();
+      Node userAppDataNode = nodeCreator.getUserNode(sProvider, userId).getNode("ApplicationData");
+      
+      Node emailNotifNode, prefsNode;
+      if (!userAppDataNode.hasNode(EmailNotificationService.APP_NAME)){
+        emailNotifNode = userAppDataNode.addNode(EmailNotificationService.APP_NAME);
+        userAppDataNode.save();
       } else {
-        emailNotificationSettingNode = userPrivateNode.getNode(EmailNotificationService.PREFS);
+        emailNotifNode = userAppDataNode.getNode(EmailNotificationService.APP_NAME);
+      }
+      
+      if (!emailNotifNode.hasNode(EmailNotificationService.PREFS)){
+        prefsNode = emailNotifNode.addNode(EmailNotificationService.PREFS);
+        emailNotifNode.save();
+      } else {
+        prefsNode = emailNotifNode.getNode(EmailNotificationService.PREFS);
       }
 
-      emailNotificationSettingNode.setProperty("isSummaryMail", isSummaryMail);
-      emailNotificationSettingNode.setProperty("Interval", interval);
-      emailNotificationSettingNode.setProperty("NotificationPlugins", notificationPlugins);
-      emailNotificationSettingNode.save();
+      MessagesCache messagesCache = new MessagesCache(EmailNotificationService.class);
+      prefsNode.setProperty("userPrefsVersion", messagesCache.getDefault().getProperty("userPrefsVersion", ""));
+      prefsNode.setProperty("isSummaryMail", isSummaryMail);
+      prefsNode.setProperty("Interval", interval);
+      prefsNode.setProperty("NotificationPlugins", notificationPlugins);
+      prefsNode.save();
+      
     } catch (Exception e) {
       LOG.debug(e.getMessage(), e);
       throw e;

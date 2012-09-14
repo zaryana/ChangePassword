@@ -19,7 +19,6 @@ import com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.DateTim
 import com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.EmailNotificationPlugin;
 import com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.EmailNotificationService;
 import com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.Event;
-import com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.Plugin;
 import com.exoplatform.cloudworkspaces.gadget.services.EmailNotification.utils.MessagesCache;
 
 public class UserJoinTenantNotificationPlugin extends EmailNotificationPlugin{
@@ -39,7 +38,7 @@ public class UserJoinTenantNotificationPlugin extends EmailNotificationPlugin{
 			IdentityManager idMan = (IdentityManager) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(IdentityManager.class);
 			
 			EmailNotificationService notificationService = (EmailNotificationService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(EmailNotificationService.class);      
-      Set<Event> events = notificationService.getEvents(Plugin.USER_JOIN_TENANT, null);
+      Set<Event> events = notificationService.getEvents(this.getName(), userId);
       
 			StringBuilder builder = new StringBuilder();
 			String host = context.get("repoName") + "." + System.getProperty("tenant.masterhost");
@@ -59,7 +58,7 @@ public class UserJoinTenantNotificationPlugin extends EmailNotificationPlugin{
         builder.append("<a href='" + host + "/" + userProfile.getUrl() + "' target='_blank'>" + userProfile.getFullName() + "</a>");
       }
 			
-			notificationService.setEvents(Plugin.USER_JOIN_TENANT, null, events);
+			notificationService.setEvents(this.getName(), userId, events);
 			
 			String usersJoined = builder.toString();
 			if(usersJoined.isEmpty()) return "";
