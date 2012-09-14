@@ -34,14 +34,11 @@ public abstract class BaseConfigurationUpdater implements ConfigurationUpdater {
   }
 
   protected boolean wasBlockChanged() {
-    boolean wasChanged = false;
     for (BlockEntry entry : block) {
-      if (entry.getAnswer() == null)
+      if (entry.getAnswer() == null || entry.getAnswer().isEmpty())
         return false;
-      if (!entry.getAnswer().equals(entry.getQuestion().getDefaults()))
-        wasChanged = true;
     }
-    return wasChanged;
+    return true;
   }
 
   protected String[][] getChanges() {
