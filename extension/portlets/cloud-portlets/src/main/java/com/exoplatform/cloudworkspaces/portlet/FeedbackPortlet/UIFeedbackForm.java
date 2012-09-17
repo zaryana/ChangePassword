@@ -106,7 +106,7 @@ public class UIFeedbackForm extends UIForm {
       MimeBodyPart text = new MimeBodyPart();
       MimeBodyPart html = new MimeBodyPart();
       text.setText(content);
-      html.setContent(content, "text/html; charset=ISO-8859-1");
+      html.setContent(content, "text/html;charset=UTF-8");
       mailContent.addBodyPart(text);
       mailContent.addBodyPart(html);
 
