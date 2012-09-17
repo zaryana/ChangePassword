@@ -30,7 +30,7 @@
  	if(password == null) password = "";
 
   ResourceBundleService service = (ResourceBundleService) PortalContainer.getCurrentInstance(session.getServletContext())
-  														.getComponentInstanceOfType(ResourceBundleService.class);
+      .getComponentInstanceOfType(ResourceBundleService.class);
   ResourceBundle res = service.getResourceBundle(service.getSharedResourceBundleNames(), request.getLocale()) ;
   
   Cookie cookie = new Cookie(InitiateLoginServlet.COOKIE_NAME, "");
@@ -95,38 +95,41 @@
 <body onload="init();">
   <div id="fb-root"></div>
   <script>
-	(function(d, s, id) {
-		var js, fjs = d.getElementsByTagName(s)[0];
-		if (d.getElementById(id))
-		  return;
-		js = d.createElement(s);
-		js.id = id;
-		js.src = "https://connect.facebook.net/en_US/all.js#xfbml=1";
-		fjs.parentNode.insertBefore(js, fjs);
-	}(document, 'script', 'facebook-jssdk'));
-
-	function init() {
-      if (window.name == "true") {
-        $("#messageString").show();
-        window.name = "false";
-      } else {
-        $("#messageString").hide();
-        $("#username").val("");
-	  }
-	  $("#password").val("");
-	}
+  	(function(d, s, id) {
+  		var js, fjs = d.getElementsByTagName(s)[0];
+  		if (d.getElementById(id))
+  			return;
+  		js = d.createElement(s);
+  		js.id = id;
+  		js.src = "https://connect.facebook.net/en_US/all.js#xfbml=1";
+  		fjs.parentNode.insertBefore(js, fjs);
+  	}(document, 'script', 'facebook-jssdk'));
+  
+  	function init() {
+  		if (window.name == "true") {
+  			$("#messageString").show();
+  			window.name = "false";
+  		} else {
+  			$("#messageString").hide();
+  			$("#username").val("");
+  		}
+  		$("#password").val("");
+  	}
   </script>
   <div class="UIPageContainer">
     <div class="UIHeader" id="UIHeader">
       <div class="MainContent">
         <ul class="UIMenuTop FR">
           <li><a class="Tab BlueTab" href="<%=hostName%>/about.jsp" target="_parent">About</a></li>
-          <li><a class="Tab GreenTab" href="http://community.exoplatform.org/portal/public/classic/forum/cloud-workspaces/ForumService" target="_parent">Forum</a></li>
+          <li><a class="Tab GreenTab"
+            href="http://community.exoplatform.org/portal/public/classic/forum/cloud-workspaces/ForumService"
+            target="_parent">Forum</a></li>
           <li><a class="Tab GrayTab" href="<%=hostName%>/faq.jsp" target="_parent">FAQ</a></li>
           <li><a class="Tab OrangeTab" href="http://www.exoplatform.com" target="_parent">eXoplatform.com</a></li>
-          <li class="last"><a class="Tab OrangeTab" id="showContactUs">Contact us</a></li>
+          <li class="last"><a class="Tab OrangeTab" id="contactUsMenu">Contact us</a></li>
         </ul>
-        <div class="Logo FL"><a href="<%= "http://" + System.getProperty("tenant.masterhost") %>" id="homeLink"><img src="/background/logo.png" /></a>
+        <div class="Logo FL">
+          <a href="<%= "http://" + System.getProperty("tenant.masterhost") %>" id="homeLink"><img src="/background/logo.png"/></a>
         </div>
         <div class="ClouIntranet FR">
           <h1>Cloud Workspaces</h1>
@@ -139,7 +142,8 @@
 
     <div class="UIPageBodyContainer">
       <div class="UIPageBody FormPages">
-        <form class="LoginForm UIFormBox SigninForm" name="signinForm" method="post" action="<%= contextPath + "/login"%>">
+        <form class="LoginForm UIFormBox SigninForm" name="signinForm" method="post"
+          action="<%= contextPath + "/login"%>">
           <h1 class="TitleForm" id="titleForm">
             Login to <strong> <%=tname%></strong>
           </h1>
@@ -160,7 +164,8 @@
               <tbody>
                 <tr>
                   <td class="FieldLoginPage">Username:</td>
-                  <td><input type="text" id="username" name="username" class="required InputText" value="<%=username%>" /></td>
+                  <td><input type="text" id="username" name="username" class="required InputText"
+                    value="<%=username%>" /></td>
                   <td></td>
                 </tr>
                 <tr>
@@ -181,7 +186,7 @@
                   <td class="FieldLoginPage"></td>
                   <td><input type="submit" onclick="login();" value="Login" id="UIPortalLoginFormAction"
                     class="Button">
-                  <div style="margin: 10px 5px;">
+                    <div style="margin: 10px 5px;">
                       <span style="font-size: 16px; margin-left: 14px; color: #414141;">or </span><a
                         class="LoginPage" href="<%=masterhostUrl%>/">Join Cloud Workspaces</a>
                     </div></td>
@@ -190,16 +195,24 @@
               </tbody>
             </table>
             <script type='text/javascript'>
-              function login() {
-              	window.name = "true";
-              	var username = $("#username").val();
-              	var index = username.indexOf('@');
-              	if (index != -1) {
-              	  username = username.substring(0, index);
-              	}
-                $("#username").val(username);
-                document.signinForm.submit();
-              }
+				function login() {
+					window.name = "true";
+					var username = $(
+							"#username")
+							.val();
+					var index = username
+							.indexOf('@');
+					if (index != -1) {
+						username = username
+								.substring(
+										0,
+										index);
+					}
+					$("#username").val(
+							username);
+					document.signinForm
+							.submit();
+				}
 			</script>
           </div>
         </form>
