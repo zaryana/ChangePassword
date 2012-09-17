@@ -18,6 +18,7 @@
  */
 package com.exoplatform.cw.core;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -103,6 +104,27 @@ public class MyProfilePage extends BaseTest {
 			}
 		});
 	}
+	
+	/**
+	 * wait for save uploaded avatar is disappeared
+	 * 
+	 * @throws Exception
+	 */
+	public void waitSaveAvatarFormDisappear() throws Exception {
+		new WebDriverWait(driver, 30).until(new ExpectedCondition<Boolean>() {
+			@Override
+			public Boolean apply(WebDriver elem) {
+				try {
+					WebElement view = driver.findElement(By
+							.linkText(Locators.SAVE_AVATAR_BUTTON_LINK));
+					return false;
+				} catch (Exception e) {
+					return true;
+				}
+			}
+		});
+	}
+	
 
 	/**
 	 * @param numMess

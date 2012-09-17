@@ -33,6 +33,7 @@ public class ChangeAvatarTest extends BaseTest {
 		CW.PROFILE.confirmClick();
 		CW.PROFILE.waitConfirmSaveAvatarForm();
 		CW.PROFILE.clickSaveAvatar();
+		CW.PROFILE.waitSaveAvatarFormDisappear();
 	}
 
 

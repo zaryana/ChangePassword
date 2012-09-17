@@ -442,9 +442,13 @@ public class ForumPage extends BaseTest {
 	 * @throws Exception
 	 */
 	public void typeMess(String mess) throws Exception {
+		Thread.sleep(3000);
 		driver.switchTo().frame(iframeMessageField);
+		Thread.sleep(3000);
 		driver.switchTo().frame(editableMessageIframe);
+		Thread.sleep(3000);
 		messageField.sendKeys(mess);
+		Thread.sleep(3000);
 		selectMainFrame();
 	}
 
@@ -458,7 +462,9 @@ public class ForumPage extends BaseTest {
 		driver.switchTo().frame(postIframe);
 		waitMessageIframe();
 		driver.switchTo().frame(editableMessageIframe);
+		Thread.sleep(2000);
 		messageField.sendKeys(mess);
+		Thread.sleep(2000);
 		selectMainFrame();
 	}
 
@@ -508,24 +514,21 @@ public class ForumPage extends BaseTest {
 
 	/**
 	 * for typing path to attached files
-	 * 
-	 * @param numMess
-	 * @param nameBtn
+	 *
+	 * @param path
 	 */
 	public void typeToUplodField(String path) {
 		uploadField.sendKeys(path);
-
 	}
 
 	/**
 	 * for typing for search on disscutions page
-	 * 
-	 * @param numMess
-	 * @param nameBtn
+	 *
+	 * @param text
 	 */
-	public void typeToSearch(String word) {
+	public void typeToSearch(String text) {
 		searchField.clear();
-		searchField.sendKeys(word);
+		searchField.sendKeys(text);
 	}
 
 	/**
@@ -571,5 +574,4 @@ public class ForumPage extends BaseTest {
 	public void typeMessageInQuckReplyTextArea(String message) {
 		quickReplyTextArea.sendKeys(message);
 	}
-
 }

@@ -401,6 +401,7 @@ public class MySpacePage extends BaseTest {
 	 * @throws Exception
 	 */
 	public void createOpenSpace(String spaceName) throws Exception {
+		CW.TOPMENUS.waitLink("Browse");
 		CW.TOPMENUS.moveMouseToTopSubMenu("Browse");
 		CW.TOPMENUS.waitSubLink("Spaces");
 		CW.TOPMENUS.clickOnSublink("Spaces");
@@ -430,6 +431,7 @@ public class MySpacePage extends BaseTest {
 	 * @throws Exception
 	 */
 	public void createSpaceWithValidation(String spaceName) throws Exception {
+		CW.TOPMENUS.waitLink("Browse");
 		CW.TOPMENUS.moveMouseToTopSubMenu("Browse");
 		CW.TOPMENUS.waitSubLink("Spaces");
 		CW.TOPMENUS.clickOnSublink("Spaces");
@@ -450,6 +452,7 @@ public class MySpacePage extends BaseTest {
 	 * @throws Exception
 	 */
 	public void deleteSpace(String spaceName) throws Exception {
+		CW.TOPMENUS.waitLink("Browse");
 		CW.TOPMENUS.moveMouseToTopSubMenu("Browse");
 		CW.TOPMENUS.waitSubLink("Spaces");
 		CW.TOPMENUS.clickOnSublink("Spaces");

@@ -149,7 +149,8 @@ public abstract class BaseTest {
 	}
 
 	@AfterClass
-	public static void killFireFox() {
+	public static void killFireFox() throws Exception {
+		logout();
 		driver.close();
 	}
 
@@ -230,8 +231,10 @@ public abstract class BaseTest {
 	 * 
 	 * @throws Exception
 	 */
-	public void logout() throws Exception {
+	public static void logout() throws Exception {
+		CW.TOPMENUS.waitUserMenu();
 		CW.TOPMENUS.mooveMouseToUserForm();
+		CW.TOPMENUS.waitUserMenuLogoutButton();
 		CW.TOPMENUS.logoutUser();
 	}
 }

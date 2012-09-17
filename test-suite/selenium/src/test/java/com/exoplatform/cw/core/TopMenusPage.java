@@ -190,5 +190,27 @@ public class TopMenusPage extends BaseTest {
 				Locators.SUBLINK, topMenu)));
 		sub.click();
 	}
-
+	
+	/**
+	 * wait user menu
+	 */
+	public void waitUserMenu(){
+		new WebDriverWait(driver, 30).until(new ExpectedCondition<Boolean>() {
+			@Override
+		public Boolean apply(WebDriver elem) {
+					return userNavigation != null && userNavigation.isDisplayed();
+		}
+	});	
+}
+	/**
+	 * wait logout button
+	 */
+	public void waitUserMenuLogoutButton(){
+		new WebDriverWait(driver, 30).until(new ExpectedCondition<Boolean>() {
+			@Override
+		public Boolean apply(WebDriver elem) {
+					return logout != null && logout.isDisplayed();
+		}
+	});	
+}
 }
