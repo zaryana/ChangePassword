@@ -152,6 +152,29 @@
       </plugin>
 
       <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>set-version</id>
+            <phase>process-resources</phase>
+            <configuration>
+              <tasks>
+                <replace file="${project.build.directory}/classes/version" token="{version}" value="${project.version}"/>
+                <exec executable="git" outputproperty="version.hash">
+                  <arg value="describe"/>
+                  <arg value="--tags"/>
+                </exec>
+                <replace file="${project.build.directory}/classes/version" token="{version.hash}" value="${version.hash}"/>
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
         <artifactId>maven-war-plugin</artifactId>
         <configuration>
           <archiveClasses>false</archiveClasses>

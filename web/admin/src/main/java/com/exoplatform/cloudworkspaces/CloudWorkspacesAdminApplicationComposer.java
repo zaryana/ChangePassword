@@ -41,6 +41,7 @@ import com.exoplatform.cloudworkspaces.listener.TenantCreatedListener;
 import com.exoplatform.cloudworkspaces.listener.UserLimitSupervisor;
 import com.exoplatform.cloudworkspaces.listener.WorkspacesServerOnlineListenersInvoker;
 import com.exoplatform.cloudworkspaces.rest.CloudWorkspacesInfoService;
+import com.exoplatform.cloudworkspaces.rest.CloudWorkspacesProductService;
 import com.exoplatform.cloudworkspaces.rest.CloudWorkspacesTenantService;
 import com.exoplatform.cloudworkspaces.users.UserLimitsStorage;
 import com.exoplatform.cloudworkspaces.users.UsersManager;
@@ -94,9 +95,6 @@ public class CloudWorkspacesAdminApplicationComposer extends CloudAdminApplicati
     container.removeComponent(TenantOperationMailSenderInitiator.class);
     container.addComponent(WorkspacesTenantOperationMailSenderInitiator.class);
 
-    // container.removeComponent(ApplicationServerDataGenerator.class);
-    // container.addComponent(ApplicationServerDataGenerator.class,
-    // WorkspacesUserDataGenerator.class);
     container.addComponent(ApplicationServerDataGenerator.class, PropertiesUserDataGenerator.class);
 
     container.removeComponent(ServerStatusMailer.class);
@@ -109,26 +107,6 @@ public class CloudWorkspacesAdminApplicationComposer extends CloudAdminApplicati
     container.addComponent(ServerStateChangesProxyReconfigurationInitiator.class,
                            WorkspacesServerStateChangesProxyReconfigurationInitiator.class);
 
-    /*
-     * // configure CM patch utils
-     * container.addComponent(WorkspacesErrorMailSenderImpl.class);
-     */
-
-    /*
-     * // CLDINT-618
-     * container.removeComponent(ProxyLoadBalancerConfigurator.class);
-     * container.addComponent(ProxyLoadBalancerConfigurator.class,
-     * WorkspacesProxyLoadBalancerConfigurator.class);
-     */
-
-    /*
-     * // CLDINT-614
-     * container.removeComponent(ServerStateChangesProxyReconfigurationInitiator
-     * .class);
-     * container.addComponent(ServerStateChangesProxyReconfigurationInitiator
-     * .class, WorkspacesServerStateChangesProxyReconfigurationInitiator.class);
-     */
-
     container.addComponent(DemoTenantOnlineKeeper.class);
     container.addComponent(DemoTenantOnlineListener.class);
   }
@@ -138,6 +116,7 @@ public class CloudWorkspacesAdminApplicationComposer extends CloudAdminApplicati
     super.doComposeRequest(container);
     container.addComponent(CloudWorkspacesTenantService.class);
     container.addComponent(CloudWorkspacesInfoService.class);
+    container.addComponent(CloudWorkspacesProductService.class);
 
     container.addComponent(DummyConfigurationService.class);
     container.addComponent(CLIResourcesService.class);

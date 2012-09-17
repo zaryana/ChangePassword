@@ -33,6 +33,13 @@ import com.exoplatform.cloudworkspaces.installer.upgrade.VersionsManager;
 import org.picocontainer.PicoContainer;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 public class Main {
 
@@ -141,7 +148,10 @@ public class Main {
     AdminDirectories nextAdminDirs = new AdminDirectories(tomcatDir, confDir, dataDir);
 
     VersionEntry nextVersion = versionsManager.getVersionEntry(version);
-    VersionEntry prevVersion = versionsManager.getVersionEntry(nextVersion.getFromVersion());
+    String prevVersionStr = getCurrentVersion(prevTomcatDir);
+    if (prevVersionStr == null)
+      prevVersionStr = nextVersion.getFromVersion();
+    VersionEntry prevVersion = versionsManager.getVersionEntry(prevVersionStr);
 
     BundleDownloader downloader = null;
     if (bundle == null) {
@@ -259,4 +269,24 @@ public class Main {
     container.getComponent(AdminUpgradeAlgorithm.class).install(nextAdminDirs);
   }
 
+  public static String getCurrentVersion(File prevTomcat) throws FileNotFoundException, IOException {
+    File rootWarFile = new File(prevTomcat, "webapps/ROOT.war");
+    ZipInputStream zin = new ZipInputStream(new FileInputStream(rootWarFile));
+    try {
+      ZipEntry entry = zin.getNextEntry();
+      InputStream stream = null;
+      while (entry != null) {
+        if (entry.getName().equals("WEB-INF/classes/version") && !entry.isDirectory()) {
+          stream = zin;
+          break;
+        }
+        entry = zin.getNextEntry();
+      }
+      Properties properties = new Properties();
+      properties.load(stream);
+      return properties.getProperty("version");
+    } finally {
+      zin.close();
+    }
+  }
 }
