@@ -282,6 +282,8 @@ public class Main {
         }
         entry = zin.getNextEntry();
       }
+      if (stream == null)
+        return null;
       Properties properties = new Properties();
       properties.load(stream);
       return properties.getProperty("version");
