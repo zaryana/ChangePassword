@@ -105,7 +105,11 @@ public class RequestToJoinSpacePlugin extends EmailNotificationPlugin {
       
       String spaceRequests = builder.toString();
       String userRequests = builder2.toString();
-      if(spaceRequests.isEmpty()) return "";
+      if(spaceRequests.isEmpty()){
+        Identity userIdentityObj = idMan.getOrCreateIdentity(OrganizationIdentityProvider.NAME, userId, false);
+        LOG.info("There are not any Request To Join Space Notification will be sent to " + userIdentityObj.getProfile().getEmail());
+        return "";
+      }
 
       GroovyTemplate g;
       if (isSummaryMail) {
@@ -117,7 +121,10 @@ public class RequestToJoinSpacePlugin extends EmailNotificationPlugin {
       binding.put("spaces", spaceRequests);
       binding.put("users", userRequests);
       binding.put("tenantName", (String)context.get("repoName"));
-
+      
+      Identity userIdentityObj = idMan.getOrCreateIdentity(OrganizationIdentityProvider.NAME, userId, false);
+      LOG.info("Request To Join Space Notification will be sent to " + userIdentityObj.getProfile().getEmail());
+      
       return g.render(binding);
       
     } catch (Exception e) {

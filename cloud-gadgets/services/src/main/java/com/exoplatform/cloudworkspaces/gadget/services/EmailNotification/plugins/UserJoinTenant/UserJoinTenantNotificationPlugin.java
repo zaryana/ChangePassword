@@ -61,7 +61,11 @@ public class UserJoinTenantNotificationPlugin extends EmailNotificationPlugin{
 			notificationService.setEvents(this.getName(), userId, events);
 			
 			String usersJoined = builder.toString();
-			if(usersJoined.isEmpty()) return "";
+			if(usersJoined.isEmpty()) {
+			  Identity userIdentityObj = idMan.getOrCreateIdentity(OrganizationIdentityProvider.NAME, userId, false);
+			  LOG.info("There are not any User Join Tenant Notification will be sent to " + userIdentityObj.getProfile().getEmail());
+			  return "";
+			}
 
 			GroovyTemplate g;
       if (isSummaryMail) {
@@ -73,6 +77,9 @@ public class UserJoinTenantNotificationPlugin extends EmailNotificationPlugin{
 			binding.put("users", usersJoined);
 			binding.put("tenantName", (String)context.get("repoName"));
 			
+      Identity userIdentityObj = idMan.getOrCreateIdentity(OrganizationIdentityProvider.NAME, userId, false);
+      LOG.info("User Join Tenant Notification will be sent to " + userIdentityObj.getProfile().getEmail());
+      
 			return g.render(binding);
 		} catch (Exception e) {
 			LOG.debug(e.getMessage(), e);

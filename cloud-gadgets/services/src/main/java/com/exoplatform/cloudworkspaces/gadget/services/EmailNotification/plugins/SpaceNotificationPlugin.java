@@ -11,6 +11,9 @@ import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.groovyscript.GroovyTemplate;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 
@@ -32,6 +35,9 @@ public class SpaceNotificationPlugin extends EmailNotificationPlugin{
 			long lastRun = (Long)context.get("lastRun");
 			boolean isSummaryMail = (Boolean) context.get("isSummaryMail");
 
+      IdentityManager idMan = (IdentityManager) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(IdentityManager.class);
+      Identity userIdentityObj = idMan.getOrCreateIdentity(OrganizationIdentityProvider.NAME, userId, false);
+      
 			LOG.debug("SpaceNotificationPlugin running for " + userId);
 
 			SpaceService spaceSvc = (SpaceService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(SpaceService.class);
@@ -65,7 +71,10 @@ public class SpaceNotificationPlugin extends EmailNotificationPlugin{
 			notificationService.setEvents(this.getName(), userId, events);
 
 			String spaceRequests = builder.toString();
-			if(spaceRequests.isEmpty()) return "";
+			if(spaceRequests.isEmpty()){
+			  LOG.info("There are not any Invitation To Join Space Notification will be sent to " + userIdentityObj.getProfile().getEmail());
+			  return "";
+			}
 
 			GroovyTemplate g;
       if (isSummaryMail) {
@@ -77,6 +86,8 @@ public class SpaceNotificationPlugin extends EmailNotificationPlugin{
 			binding.put("spaces", spaceRequests);
       binding.put("tenantName", (String)context.get("repoName"));
 
+      LOG.info("Invitation To Join Space Notification will be sent to " + userIdentityObj.getProfile().getEmail());
+      
 			return g.render(binding);
 
 		} catch (Exception e) {

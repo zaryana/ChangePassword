@@ -71,7 +71,10 @@ public class ConnectionNotificationPlugin extends EmailNotificationPlugin{
       notificationService.setEvents(this.getName(), userId, events);
 			
 			String connectionRequests = builder.toString();
-			if(connectionRequests.isEmpty()) return "";
+			if(connectionRequests.isEmpty()){
+			  LOG.info("There are not any Connection Notification will be sent to " + userIdentity.getProfile().getEmail());
+			  return "";
+			}
 
       GroovyTemplate g;
       if (isSummaryMail) {
@@ -83,6 +86,8 @@ public class ConnectionNotificationPlugin extends EmailNotificationPlugin{
 			binding.put("connections", connectionRequests);
       binding.put("tenantName", (String)context.get("repoName"));
 			
+      LOG.info("Connection Notification will be sent to " + userIdentity.getProfile().getEmail());
+      
 			return g.render(binding);
 
 		} catch (Exception e) {
