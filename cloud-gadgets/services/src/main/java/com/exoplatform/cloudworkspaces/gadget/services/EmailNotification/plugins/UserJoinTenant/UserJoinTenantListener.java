@@ -21,7 +21,7 @@ public class UserJoinTenantListener extends UserEventListener{
     OrganizationService organizationService = (OrganizationService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(OrganizationService.class);
     Event event = new Event(newUser.getUserName(), System.currentTimeMillis());
     ListAccess<User> laUsers = organizationService.getUserHandler().findAllUsers();
-    for (User user : laUsers.load(0, laUsers.getSize())) {		
+    for (User user : laUsers.load(0, laUsers.getSize())) {    
       Set<Event> events = notificationService.getEvents("UserJoinTenantNotificationPlugin", user.getUserName());
       Event eventObj = new Event(event.getIdentity(), event.getCreatedDate());
       if (!events.contains(eventObj)) {

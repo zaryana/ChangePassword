@@ -59,18 +59,18 @@ public class EmailNotificationService {
     this.executor = Executors.newCachedThreadPool();
     this.mailService = mailService;
   }
-	
-	public List<EmailNotificationPlugin> getPlugins() {
-		return plugins;
-	}
+  
+  public List<EmailNotificationPlugin> getPlugins() {
+    return plugins;
+  }
 
-	public void addNotificationPlugin(EmailNotificationPlugin plugin) {
-		plugins.add(plugin);
-		LOG.info("Plugin added: " + plugin.getName() + " - " + plugin.getDescription());
-	}
-	
-	public Set<Event> getEvents(String plugin, String user) throws Exception {
-/*	  CacheData<Set<Event>> data = eventsCache.get(new IdentityKey(plugin, user));
+  public void addNotificationPlugin(EmailNotificationPlugin plugin) {
+    plugins.add(plugin);
+    LOG.info("Plugin added: " + plugin.getName() + " - " + plugin.getDescription());
+  }
+  
+  public Set<Event> getEvents(String plugin, String user) throws Exception {
+/*    CacheData<Set<Event>> data = eventsCache.get(new IdentityKey(plugin, user));
     if (data != null && data.build().isEmpty()==false) {
       return (Set<Event>) data.build();
     }*/
@@ -85,7 +85,7 @@ public class EmailNotificationService {
       return events;
     }
     return new HashSet<Event>();
-	}
+  }
 
   public void setEvents(String plugin, String user, Set<Event> events) throws Exception {
     /*   CacheData<Set<Event>> data = eventsCache.get(new IdentityKey(plugin, user));
@@ -143,8 +143,8 @@ public class EmailNotificationService {
       }
     });
   }
-	
-	private Set<Event> getEventsFromStorage(Node storage, String plugin) throws Exception {
+  
+  private Set<Event> getEventsFromStorage(Node storage, String plugin) throws Exception {
     if (storage.hasNode(plugin)) {
       Node pluginNode = storage.getNode(plugin);
       InputStream inputStream = pluginNode.getProperty("events").getStream();
@@ -171,7 +171,7 @@ public class EmailNotificationService {
     pluginNode.setProperty("events", bis);
     pluginNode.save();
   }
-	  
+    
 }
 
 

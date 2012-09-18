@@ -4,6 +4,6 @@ import java.util.Map;
 import org.exoplatform.container.component.BaseComponentPlugin;
 
 public abstract class EmailNotificationPlugin extends BaseComponentPlugin{
-	public abstract String exec(Map<String, Object> context);
+  public abstract String exec(Map<String, Object> context);
 }
 
