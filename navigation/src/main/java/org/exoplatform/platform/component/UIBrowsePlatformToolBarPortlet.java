@@ -16,8 +16,6 @@
  */
 package org.exoplatform.platform.component;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import org.exoplatform.container.ExoContainer;
@@ -28,13 +26,9 @@ import org.exoplatform.portal.mop.user.UserNavigation;
 import org.exoplatform.portal.mop.user.UserNode;
 import org.exoplatform.portal.mop.user.UserPortal;
 import org.exoplatform.portal.webui.util.Util;
-import org.exoplatform.services.organization.OrganizationService;
-import org.exoplatform.services.organization.User;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
-import org.exoplatform.portal.mop.user.UserNodeFilterConfig;
-import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -92,7 +86,6 @@ public class UIBrowsePlatformToolBarPortlet extends UIPortletApplication {
     String userId = Util.getPortalRequestContext().getRemoteUser();
     VisitedSpaceService visitedSpaceService = getApplicationComponent(VisitedSpaceService.class);
     List<String> lastVisitedSpace = visitedSpaceService.getVisitedSpacesList(userId);
-    SpaceService spaceService = getApplicationComponent(SpaceService.class);
     return lastVisitedSpace;
   }
   

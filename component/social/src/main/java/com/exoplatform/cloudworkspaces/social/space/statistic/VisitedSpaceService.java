@@ -48,7 +48,7 @@ public class VisitedSpaceService {
     this.spaceService = (SpaceService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(SpaceService.class);
   }
 
-  public void saveLastVisitedSpaces(final String spaceId, final String userId) {
+  public void saveLastVisitedSpaces(final String spaceId, final String pageUri, final String userId) {
   
     try {
       this.currentRepo = repoService.getCurrentRepository().getConfiguration().getName();
@@ -88,9 +88,9 @@ public class VisitedSpaceService {
         }
 
         String[] spaces = visitedSpace.getSpaceAccessStatistics();
-        String prettyName = spaceId.split("/")[1];
+        String spaceItem = spaceId + "@" + pageUri;
         if (spaces == null || spaces.length == 0) {
-          spaces = (String[]) ArrayUtils.add(null, prettyName);
+          spaces = (String[]) ArrayUtils.add(null, spaceItem);
           visitedSpace.setSpaceAccessStatistics(spaces);
           getSession().save();
           return;
@@ -99,26 +99,28 @@ public class VisitedSpaceService {
         int i = 0;
         while (i < spaces.length) {
           String spaceAccessEntryTmp = spaces[i];
-	  if (spaceAccessEntryTmp.equals(prettyName)) {
-	    if (i == (spaces.length - 1)) return;
-	    else {
-	      for (int j=i; j < spaces.length-1 ; j++) {
-	        spaces[j] = spaces[j+1];
-	      }
-	      spaces[spaces.length-1] = spaceAccessEntryTmp;
-	      visitedSpace.setSpaceAccessStatistics(spaces);
-	      getSession().save();
-	      return;
+          String prettyName = (spaceAccessEntryTmp.contains("@")) ? spaceAccessEntryTmp.split("@")[0] : spaceAccessEntryTmp;
+          if (prettyName.equals(spaceId)){
+        	if (i == (spaces.length - 1)) {
+        	  spaces[i] = spaceItem;
+        	} else {
+        	  for (int j=i; j < spaces.length-1 ; j++) {
+        	    spaces[j] = spaces[j+1];
+        	  }
+        	  spaces[spaces.length-1] = spaceItem;
+        	}
+        	visitedSpace.setSpaceAccessStatistics(spaces);
+        	getSession().save();
+           	return;        		  
+          } 
+          i++;
 	    }
-	  }
-	  i++;
-	}
           
         if (spaces.length == LAST_VISITED_SPACES_NUMBER_TO_DISPLAY) {
           spaces = (String[]) ArrayUtils.remove(spaces, 0);
         }
 
-        spaces = (String[]) ArrayUtils.add(spaces, prettyName);
+        spaces = (String[]) ArrayUtils.add(spaces, spaceItem);
         visitedSpace.setSpaceAccessStatistics(spaces);
         getSession().save();
       }
@@ -144,7 +146,8 @@ public class VisitedSpaceService {
     
     List<String> spacesList = new ArrayList<String>();
     for (int i = spaces.length-1; i >= 0 ; i--) {
-      Space space = spaceService.getSpaceByPrettyName(spaces[i]);
+      String prettyName = (spaces[i].contains("@")) ? spaces[i].split("@")[0] : spaces[i];
+      Space space = spaceService.getSpaceByPrettyName(prettyName);
       if (space != null) spacesList.add(spaces[i]);
     } 
     return spacesList;

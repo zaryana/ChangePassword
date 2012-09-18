@@ -25,10 +25,8 @@ public class VisitedSpaceFilter implements Filter {
     }
     String spaceId = uri.split(":spaces:")[1];
     spaceId = spaceId.split("/", 2)[0];
-    spaceId = spaceId.replace(":", "/");
-    spaceId = new StringBuffer().append("spaces/").append(spaceId).toString();
 
-    getVisitedSpaceService().saveLastVisitedSpaces(spaceId, httpServletRequest.getRemoteUser());
+    getVisitedSpaceService().saveLastVisitedSpaces(spaceId, uri, httpServletRequest.getRemoteUser());
     chain.doFilter(request, response);
   }
 
