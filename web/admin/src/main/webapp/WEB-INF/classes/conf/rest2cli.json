@@ -222,34 +222,5 @@
     "path": "/cloud-admin/cloudworkspaces/info-service/server-logs",
     "method": "GET",
     "description" : "Get list of all registered application servers and links to their logs."   
-},
-{
-    "command": ["tenant info"],
-    "path": "/cloud-admin/tenant-service/tenantinfo",
-    "method": "POST",
-    "description" : "Set properties to tenant info, Options: -n, --name - name of tenant, -k, --key - key of property, -v, --value - value of property.",
-    "params": [
-      {
-      "name": "name",
-      "type": "PATH",
-      "options":[-n, --name],
-      "hasArg": true,
-      "mandatory": true
-      },
-      {
-      "name": "key",
-      "type": "QUERY",
-      "options":[-k, --key],
-      "hasArg": true,
-      "mandatory": true
-      },
-      {
-      "name": "value",
-      "type": "QUERY",
-      "options":[-v, --value],
-      "hasArg": true,
-      "mandatory": true
-      }
-    ]
 }
 ]

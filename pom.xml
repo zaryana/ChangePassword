@@ -47,7 +47,7 @@
     <org.exoplatform.jcr.version>1.14.8-CR01</org.exoplatform.jcr.version>
     <org.exoplatform.jcr-services.version>1.14.8-CR01</org.exoplatform.jcr-services.version>
     <com.exoplatform.cloud-management.version>1.1-M11</com.exoplatform.cloud-management.version>
-    <org.exoplatform.ide.version>1.2.0-M8</org.exoplatform.ide.version>
+    <org.exoplatform.ide.version>1.2.0-M9</org.exoplatform.ide.version>
     <org.exoplatform.portal.version>3.2.5-PLF</org.exoplatform.portal.version>
     <org.exoplatform.cs.version>2.2.10</org.exoplatform.cs.version>
     <org.exoplatform.ks.version>2.2.10</org.exoplatform.ks.version>
