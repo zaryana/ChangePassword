@@ -126,7 +126,7 @@
             target="_parent">Forum</a></li>
           <li><a class="Tab GrayTab" href="<%=hostName%>/faq.jsp" target="_parent">FAQ</a></li>
           <li><a class="Tab OrangeTab" href="http://www.exoplatform.com" target="_parent">eXoplatform.com</a></li>
-          <li class="last"><a class="Tab OrangeTab" id="contactUsMenu">Contact us</a></li>
+          <li class="last"><a class="Tab OrangeTab" id="contactUsMenu" href="javascript:void(0);">Contact us</a></li>
         </ul>
         <div class="Logo FL">
           <a href="<%= "http://" + System.getProperty("tenant.masterhost") %>" id="homeLink"><img src="/background/logo.png"/></a>
