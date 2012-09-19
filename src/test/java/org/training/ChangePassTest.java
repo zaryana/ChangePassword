@@ -26,6 +26,7 @@ public class ChangePassTest
    public void startDriver()
    {
       driver = new FirefoxDriver();
+      driver.manage().window().maximize();
    }
 
    @After
@@ -37,9 +38,10 @@ public class ChangePassTest
    @Test
    public void test()
    {
+      
       driver.get("http://exoplatform.cloud-workspaces.com/");
 
-      (new WebDriverWait(driver, 10)).until(new ExpectedCondition<Boolean>()
+      (new WebDriverWait(driver, 30)).until(new ExpectedCondition<Boolean>()
       {
          public Boolean apply(WebDriver d)
          {
@@ -57,7 +59,7 @@ public class ChangePassTest
              
      driver.findElement(By.linkText("Forgot Password?")).click();
     
-      (new WebDriverWait(driver, 10)).until(new ExpectedCondition<Boolean>()
+      (new WebDriverWait(driver, 30)).until(new ExpectedCondition<Boolean>()
       {
          public Boolean apply(WebDriver d)
          {
@@ -76,7 +78,7 @@ public class ChangePassTest
       driver.findElement(By.id("email")).sendKeys("zdombrovskaya@exoplatform.com");
       driver.findElement(By.id("t_submit")).click();
 
-      (new WebDriverWait(driver, 10)).until(new ExpectedCondition<Boolean>()
+      (new WebDriverWait(driver, 30)).until(new ExpectedCondition<Boolean>()
       {
          public Boolean apply(WebDriver d)
                   
@@ -102,7 +104,7 @@ public class ChangePassTest
 				assertEquals("zdombrovskaya@exoplatform.com", emailField.getAttribute("value"));
 			  
            
-      (new WebDriverWait(driver, 10)).until(ExpectedConditions.invisibilityOfElementLocated(By.id("t_submit")));
+      (new WebDriverWait(driver, 30)).until(ExpectedConditions.invisibilityOfElementLocated(By.id("t_submit")));
       
       WebElement message = driver.findElement(By.id("messageString"));
 	  assertEquals("Instructions to reset your password were sent to zdombrovskaya@exoplatform.com .", message.getText()); 
