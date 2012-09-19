@@ -74,7 +74,7 @@ public class ChangePassTest
       
       driver.findElement(By.id("email")).clear();
       driver.findElement(By.id("email")).sendKeys("zdombrovskaya@exoplatform.com");
-      driver.findElement(By.id("t_submit")).click();
+      driver.findElement(By.id("submitButton")).click();
 
       (new WebDriverWait(driver, 10)).until(new ExpectedCondition<Boolean>()
       {
@@ -102,7 +102,7 @@ public class ChangePassTest
 				assertEquals("zdombrovskaya@exoplatform.com", emailField.getAttribute("value"));
 			  
            
-      (new WebDriverWait(driver, 10)).until(ExpectedConditions.invisibilityOfElementLocated(By.id("t_submit")));
+      (new WebDriverWait(driver, 10)).until(ExpectedConditions.invisibilityOfElementLocated(By.id("submitButton")));
       
       WebElement message = driver.findElement(By.id("messageString"));
 	  assertEquals("Instructions to reset your password were sent to zdombrovskaya@exoplatform.com .", message.getText()); 
