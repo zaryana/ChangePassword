@@ -46,8 +46,8 @@ cp -R ../$TOMCAT_DIR $TOMCAT_DIR
 cd app-server-tomcat/bin
 sed -i s/TENANT_MASTERHOST=\"cloud-workspaces.com\"/TENANT_MASTERHOST=\"$TENANT_MASTERHOST\"/ setenv.sh
 sed -i s/EXO_DB_HOST=\"localhost:3306\"/EXO_DB_HOST=\"$DB_HOST:3306\"/ setenv.sh
-sed -i s/EXO_DB_USER=\"clouduser\"/EXO_DB_USER=\"$DB_USER\"/ setenv.sh
-sed -i s/EXO_DB_PASSWORD=\"cloud12321\"/EXO_DB_PASSWORD=\"$DB_PASSWORD\"/ setenv.sh
+sed -i s/EXO_DB_USER=\"cloud\"/EXO_DB_USER=\"$DB_USER\"/ setenv.sh
+sed -i s/EXO_DB_PASSWORD=\"cloud\"/EXO_DB_PASSWORD=\"$DB_PASSWORD\"/ setenv.sh
 sed -i s/TENANT_REPOSITORY=\"repository\"/TENANT_REPOSITORY=\"$DEFAULT_DATABASE\"/ setenv.sh
 
 # create default database

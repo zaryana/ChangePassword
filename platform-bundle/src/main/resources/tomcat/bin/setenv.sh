@@ -33,8 +33,8 @@
 
 # cloud database
 [ -z "$EXO_DB_HOST" ]  && EXO_DB_HOST="localhost:3306"
-[ -z "$EXO_DB_USER" ]  && EXO_DB_USER="clouduser"
-[ -z "$EXO_DB_PASSWORD" ]  && EXO_DB_PASSWORD="cloud12321"
+[ -z "$EXO_DB_USER" ]  && EXO_DB_USER="cloud"
+[ -z "$EXO_DB_PASSWORD" ]  && EXO_DB_PASSWORD="cloud"
 
 # dir for jcr data for all tenants
 [ -z "$EXO_TENANT_DATA_DIR" ]  && EXO_TENANT_DATA_DIR="$CATALINA_HOME/gatein/data/jcr"
