@@ -89,7 +89,18 @@ import com.exoplatform.cloudworkspaces.portlet.FeedbackPortlet.*;
                             return false;
                         });
                     });
+                    // Get all textareas that have a "maxlength" property. Now, and when later adding HTML using jQuery-scripting:
+                    j('textarea[maxlength]').live('keyup blur', function() {
+                       // Store the maxlength and value of the field.
+                       var maxlength = j(this).attr('maxlength');
+                       var val = j(this).val();
 
+                       // Trim the field if it has content over the maxlength.
+                       if (val.length > maxlength) {
+                          j(this).val(val.slice(0, maxlength));
+                       }
+                    });      
+                    j("#uiTxtFeedback").attr("maxlength", 4096);
 
                     j(window).resize(adjustPortletLocation).scroll(adjustPortletLocation);
 
