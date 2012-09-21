@@ -41,16 +41,22 @@
   
   .Buttons {
     text-align: left;
-    padding-top: 25px;
+    padding-top: 30px;
   }
   
   .UIAction .CancelButton {
     padding: 0 11px;
   }
   
-  .UIAction .NotifyMessage {
+  .NotifyDiv {
+    position: relative;
+    margin: 12px 5px;
+  }
+  
+  .NotifyDiv .NotifySpan {
+    position: absolute;
     display: none;
-    margin: 0 3px 12px 6px;
+    color: #115EAE;
   }
 </style>
 
@@ -84,8 +90,8 @@
       </select>
   </div>
 
+  <div class="NotifyDiv"><span id="$portletId-notifyMsg" class="NotifySpan"><%=_ctx.appRes(uicomponent.getId() + ".label.NotifyMsg")%></span></div>
   <div class="UIAction Buttons">
-    <div id="$portletId-notifyMsg" class="NotifyMessage"><%=_ctx.appRes(uicomponent.getId() + ".label.NotifyMsg")%></div>
     <span class="ActionButton LightBlueStyle">
       <a id="$portletId-btnSave" href="#" class="AddSpaceIcon"/><%=_ctx.appRes(uicomponent.getId() + ".label.Save")%></a>
     </span>
@@ -142,7 +148,7 @@
         });
         jq("#$portletId-notifyMsg").fadeIn(1000);
 
-        jq("#$portletId-notifyMsg").fadeOut(2000);
+        jq("#$portletId-notifyMsg").fadeOut(3000);
         
       });
                 
