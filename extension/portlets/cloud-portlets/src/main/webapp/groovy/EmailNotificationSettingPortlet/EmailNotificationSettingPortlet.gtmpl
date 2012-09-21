@@ -39,15 +39,18 @@
     margin-right: 6px;
   }
   
-  #$portletId-btnSave {
+  .Buttons {
     text-align: left;
     padding-top: 25px;
   }
   
-  #$portletId-btnCancel {
-    font-size: 12px;
-    font-weight: normal;
+  .UIAction .CancelButton {
+    padding: 0 11px;
+  }
+  
+  .UIAction .NotifyMessage {
     display: none;
+    margin: 0 3px 12px 6px;
   }
 </style>
 
@@ -55,7 +58,7 @@
 
 <div class="UISocApplication UIProfile Container">
   <div class="UIHeaderSection">
-    <h2 id="headerTitle" class="ClearFix"><%=_ctx.appRes(uicomponent.getId() + ".label.NotificationSettings")%> <a id="$portletId-btnCancel" class="ColorLink" href="#">(<%=_ctx.appRes(uicomponent.getId() + ".label.cancel")%>)</a></h2>
+    <h2 id="headerTitle" class="ClearFix"><%=_ctx.appRes(uicomponent.getId() + ".label.NotificationSettings")%></h2>
   </div>
   
   <div class="UISocTitleBar">
@@ -81,10 +84,14 @@
       </select>
   </div>
 
-  <div id="$portletId-btnSave" class="UIAction">
+  <div class="UIAction Buttons">
+    <div id="$portletId-notifyMsg" class="NotifyMessage"><%=_ctx.appRes(uicomponent.getId() + ".label.NotifyMsg")%></div>
     <span class="ActionButton LightBlueStyle">
-      <a href="#" class="AddSpaceIcon"/><%=_ctx.appRes(uicomponent.getId() + ".label.Save")%></a>
+      <a id="$portletId-btnSave" href="#" class="AddSpaceIcon"/><%=_ctx.appRes(uicomponent.getId() + ".label.Save")%></a>
     </span>
+    <span class="ActionButton LightBlueStyle CancelButton">
+      <a id="$portletId-btnCancel" href="#" class="AddSpaceIcon"/><%=_ctx.appRes(uicomponent.getId() + ".label.cancel")%></a>
+    </span>    
   </div>
         
 </div>
@@ -133,18 +140,19 @@
         jq.each(oldPrefs.notificationPlugins, function(i, plugin){
           plugin.selected = jq.inArray(plugin.name, notificationPlugins) != -1;
         });
-        jq("#$portletId-btnCancel").hide();
+        jq("#$portletId-notifyMsg").fadeIn(1000);
+
+        jq("#$portletId-notifyMsg").fadeOut(2000);
+        
       });
                 
     });
     
     jq("#$portletId-btnCancel").click(function(){
       renderPrefs(oldPrefs);
-      jq("#$portletId-btnCancel").hide();
     });
 
     jq("#$portletId-interval,#$portletId-isSummaryMail,.$portletId-NotifyOption").live("change", function(){
-      jq("#$portletId-btnCancel").show();
       onChangeSummary(jq("#$portletId-isSummaryMail").is(':checked'));
     });
 
