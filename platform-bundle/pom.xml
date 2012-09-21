@@ -293,6 +293,10 @@
                       file="${project.basedir}/src/main/resources/tomcat/gatein/conf/jcr/jbosscache/local/cache-config.xml"
                       tofile="${project.build.directory}/platform-cloud-tomcat/gatein/conf/jcr/jbosscache/local/cache-config.xml"
                       overwrite="true" />
+                    <copy todir="${project.build.directory}/tomcat" overwrite="true">
+                      <fileset dir="${project.basedir}/src/main/resources/tomcat" includes="**/*.sh" />
+                    </copy>
+                    <replace file="${project.build.directory}/tomcat/bin/setenv.sh" token="CM_VERSION" value="${com.exoplatform.cloud-management.version}" />
                   </target>
                 </configuration>
                 <goals>

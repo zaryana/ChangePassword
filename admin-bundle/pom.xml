@@ -152,6 +152,7 @@
                       <copy todir="${project.build.directory}/admin-tomcat/bin" overwrite="true">
                         <fileset dir="${basedir}/src/main/resources/tomcat/bin"/>
                       </copy>
+                      <replace file="${project.build.directory}/admin-tomcat/bin/setenv.sh" token="CM_VERSION" value="${com.exoplatform.cloud-management.version}" />
                       <copy todir="${project.build.directory}/admin-tomcat/conf" overwrite="true">
                         <fileset dir="${basedir}/src/main/resources/tomcat/conf"/>
                       </copy>

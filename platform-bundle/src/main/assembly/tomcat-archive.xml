@@ -21,7 +21,7 @@
       </fileSet>
       <!-- Patched executable files -->
       <fileSet>
-         <directory>src/main/resources/tomcat</directory>
+         <directory>target/tomcat</directory>
          <outputDirectory>app-server-tomcat</outputDirectory>
          <includes>
            <include>**/*.sh</include>
