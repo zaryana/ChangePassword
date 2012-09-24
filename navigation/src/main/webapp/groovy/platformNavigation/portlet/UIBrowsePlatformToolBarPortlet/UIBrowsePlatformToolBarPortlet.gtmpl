@@ -27,8 +27,15 @@ void renderSpacesList() {
   def spacesList = uicomponent.getLastVisitedSpaces();
   if(spacesList == null || spacesList.isEmpty()) return ;
   for (space in spacesList) {
-    def spaceUrl = LinkProvider.getSpaceUri(space);
-    def spaceName = uicomponent.getSpaceDisplayName(space);
+    def spaceUrl = null;
+    def spaceName = null;
+    if (!space.contains("@")) {
+      spaceUrl = LinkProvider.getSpaceUri(space);
+      spaceName = uicomponent.getSpaceDisplayName(space);
+    } else {
+      spaceUrl = space.split("@")[1];
+      spaceName = uicomponent.getSpaceDisplayName(space.split("@")[0]);      
+    }
     print """
       <li class="MenuItem">
     """;
