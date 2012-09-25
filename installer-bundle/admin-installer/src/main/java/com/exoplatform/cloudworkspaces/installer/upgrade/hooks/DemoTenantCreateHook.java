@@ -22,8 +22,8 @@ import com.exoplatform.cloudworkspaces.installer.InstallerException;
 import com.exoplatform.cloudworkspaces.installer.XmlUtils;
 import com.exoplatform.cloudworkspaces.installer.configuration.CurrentAdmin;
 import com.exoplatform.cloudworkspaces.installer.rest.CloudAdminServices;
+import com.exoplatform.cloudworkspaces.installer.upgrade.Hook.UpdateFinishedHook;
 import com.exoplatform.cloudworkspaces.installer.upgrade.Logger;
-import com.exoplatform.cloudworkspaces.installer.upgrade.UpdateFinishedHook;
 
 import org.w3c.dom.Node;
 

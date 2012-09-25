@@ -20,15 +20,14 @@ package com.exoplatform.cloudworkspaces.installer.configuration.updaters;
 
 import com.exoplatform.cloudworkspaces.installer.InstallerException;
 import com.exoplatform.cloudworkspaces.installer.configuration.AdminConfiguration;
-import com.exoplatform.cloudworkspaces.installer.configuration.BaseConfigurationUpdater;
+import com.exoplatform.cloudworkspaces.installer.configuration.ConfigurationUpdater;
 import com.exoplatform.cloudworkspaces.installer.configuration.CurrentAdmin;
 import com.exoplatform.cloudworkspaces.installer.configuration.PreviousAdmin;
-import com.exoplatform.cloudworkspaces.installer.configuration.PreviousQuestion;
 import com.exoplatform.cloudworkspaces.installer.configuration.Question;
 import com.exoplatform.cloudworkspaces.installer.interaction.AnswersManager;
 import com.exoplatform.cloudworkspaces.installer.interaction.InteractionManager;
 
-public class MailConfigurationUpdater extends BaseConfigurationUpdater {
+public class MailConfigurationUpdater implements ConfigurationUpdater {
   private final Question cloudMailHostQuestion      = new Question("cloud.mail.host",
                                                                    "Set host of mail server",
                                                                    null,
@@ -102,30 +101,22 @@ public class MailConfigurationUpdater extends BaseConfigurationUpdater {
     String prevCloudMailPassword = prevConfiguration.getCurrentOrDefault("cloud.admin.mail.smtp.auth.password");
     String prevCloudMailSmtpAuth = prevConfiguration.getCurrentOrDefault("cloud.admin.mail.smtp.auth");
 
-    clearBlock();
-    addToBlock(cloudMailHostQuestion, prevCloudMailHost);
-    addToBlock(cloudMailPortQuestion, prevCloudMailPort);
-    addToBlock(cloudMailSmtpAuthQuestion, prevCloudMailSmtpAuth);
-    addToBlock(cloudMailUserQuestion, prevCloudMailUser);
-    addToBlock(cloudMailPasswordQuestion, prevCloudMailPassword);
-
-    boolean usePrev = false;
-    if (wasBlockChanged()) {
-      usePrev = interaction.ask(new PreviousQuestion(getChanges())).equals("yes");
-    }
+    cloudMailHostQuestion.setDefaults(prevCloudMailHost);
+    cloudMailPortQuestion.setDefaults(prevCloudMailPort);
+    cloudMailSmtpAuthQuestion.setDefaults(prevCloudMailSmtpAuth);
+    cloudMailUserQuestion.setDefaults(prevCloudMailUser);
+    cloudMailPasswordQuestion.setDefaults(prevCloudMailPassword);
 
     String mailHost = prevCloudMailHost;
     String mailPort = prevCloudMailPort;
     String mailSmtpAuth = prevCloudMailSmtpAuth;
     String mailUser = prevCloudMailUser;
     String mailPassword = prevCloudMailPassword;
-    if (!usePrev) {
-      cloudMailHostQuestion.setDefaults(prevCloudMailHost);
-      cloudMailPortQuestion.setDefaults(prevCloudMailPort);
-      cloudMailUserQuestion.setDefaults(prevCloudMailUser);
-      cloudMailPasswordQuestion.setDefaults(prevCloudMailPassword);
-      cloudMailSmtpAuthQuestion.setDefaults(prevCloudMailSmtpAuth);
-
+    if (!interaction.askGroup(cloudMailHostQuestion,
+                              cloudMailPortQuestion,
+                              cloudMailSmtpAuthQuestion,
+                              cloudMailUserQuestion,
+                              cloudMailPasswordQuestion)) {
       mailHost = interaction.ask(cloudMailHostQuestion);
       mailPort = interaction.ask(cloudMailPortQuestion);
       mailUser = interaction.ask(cloudMailUserQuestion);
@@ -148,27 +139,19 @@ public class MailConfigurationUpdater extends BaseConfigurationUpdater {
     String prevCloudSupportSender = prevConfiguration.getCurrentOrDefault("cloud.admin.mail.support.from");
     String prevCloudSalesEmail = prevConfiguration.getCurrentOrDefault("cloud.admin.mail.sales.email");
 
-    clearBlock();
-    addToBlock(cloudAdminEmailQuestion, prevCloudAdminEmail);
-    addToBlock(cloudSupportEmailQuestion, prevCloudSupportEmail);
-    addToBlock(cloudSupportSenderQuestion, prevCloudSupportSender);
-    addToBlock(cloudSalesEmailQuestion, prevCloudSalesEmail);
-
-    usePrev = false;
-    if (wasBlockChanged()) {
-      usePrev = interaction.ask(new PreviousQuestion(getChanges())).equals("yes");
-    }
+    cloudAdminEmailQuestion.setDefaults(prevCloudAdminEmail);
+    cloudSupportEmailQuestion.setDefaults(prevCloudSupportEmail);
+    cloudSupportSenderQuestion.setDefaults(prevCloudSupportSender);
+    cloudSalesEmailQuestion.setDefaults(prevCloudSalesEmail);
 
     String adminEmail = prevCloudAdminEmail;
     String supportEmail = prevCloudSupportEmail;
     String supportSender = prevCloudSupportSender;
     String salesEmail = prevCloudSalesEmail;
-    if (!usePrev) {
-      cloudAdminEmailQuestion.setDefaults(prevCloudAdminEmail);
-      cloudSupportEmailQuestion.setDefaults(prevCloudSupportEmail);
-      cloudSupportSenderQuestion.setDefaults(prevCloudSupportSender);
-      cloudSalesEmailQuestion.setDefaults(prevCloudSalesEmail);
-
+    if (!interaction.askGroup(cloudAdminEmailQuestion,
+                              cloudSupportEmailQuestion,
+                              cloudSupportSenderQuestion,
+                              cloudSalesEmailQuestion)) {
       adminEmail = interaction.ask(cloudAdminEmailQuestion);
       supportEmail = interaction.ask(cloudSupportEmailQuestion);
       supportSender = interaction.ask(cloudSupportSenderQuestion);

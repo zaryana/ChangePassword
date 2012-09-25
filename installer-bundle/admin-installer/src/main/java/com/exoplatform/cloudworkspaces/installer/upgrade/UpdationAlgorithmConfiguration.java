@@ -30,9 +30,12 @@ import java.util.List;
 
 public class UpdationAlgorithmConfiguration {
 
-  private final Node node;
+  private final VersionEntry version;
 
-  public UpdationAlgorithmConfiguration(Node node) {
+  private final Node   node;
+
+  public UpdationAlgorithmConfiguration(VersionEntry version, Node node) {
+    this.version = version;
     this.node = node;
   }
 
@@ -53,26 +56,34 @@ public class UpdationAlgorithmConfiguration {
 
     for (Node hook : XmlUtils.getChildren(XmlUtils.getChild(node, "hooks", hookName), "hook")) {
       String name = hook.getAttributes().getNamedItem("class").getTextContent();
-      try {
-        Class<?> clazz = Thread.currentThread().getContextClassLoader().loadClass(name);
-        hooks.add(clazz.getConstructor(Node.class).newInstance(hook));
-      } catch (DOMException e) {
-        throw new InstallerException("Error happened while " + hookName + " getting hooks from xml",
-                                     e);
-      } catch (ClassNotFoundException e) {
-        throw new InstallerException("Hook " + name + " not found", e);
-      } catch (IllegalArgumentException e) {
-        throw new InstallerException("Error happened while creating " + name + " hook instance", e);
-      } catch (SecurityException e) {
-        throw new InstallerException("Error happened while creating " + name + " hook instance", e);
-      } catch (InstantiationException e) {
-        throw new InstallerException("Error happened while creating " + name + " hook instance", e);
-      } catch (IllegalAccessException e) {
-        throw new InstallerException("Error happened while creating " + name + " hook instance", e);
-      } catch (InvocationTargetException e) {
-        throw new InstallerException("Error happened while creating " + name + " hook instance", e);
-      } catch (NoSuchMethodException e) {
-        throw new InstallerException("Error happened while creating " + name + " hook instance", e);
+      if (version.isProfileAllowed(hook)) {
+        try {
+          Class<?> clazz = Thread.currentThread().getContextClassLoader().loadClass(name);
+          hooks.add(clazz.getConstructor(Node.class).newInstance(hook));
+        } catch (DOMException e) {
+          throw new InstallerException("Error happened while " + hookName
+              + " getting hooks from xml", e);
+        } catch (ClassNotFoundException e) {
+          throw new InstallerException("Hook " + name + " not found", e);
+        } catch (IllegalArgumentException e) {
+          throw new InstallerException("Error happened while creating " + name + " hook instance",
+                                       e);
+        } catch (SecurityException e) {
+          throw new InstallerException("Error happened while creating " + name + " hook instance",
+                                       e);
+        } catch (InstantiationException e) {
+          throw new InstallerException("Error happened while creating " + name + " hook instance",
+                                       e);
+        } catch (IllegalAccessException e) {
+          throw new InstallerException("Error happened while creating " + name + " hook instance",
+                                       e);
+        } catch (InvocationTargetException e) {
+          throw new InstallerException("Error happened while creating " + name + " hook instance",
+                                       e);
+        } catch (NoSuchMethodException e) {
+          throw new InstallerException("Error happened while creating " + name + " hook instance",
+                                       e);
+        }
       }
     }
     return hooks;

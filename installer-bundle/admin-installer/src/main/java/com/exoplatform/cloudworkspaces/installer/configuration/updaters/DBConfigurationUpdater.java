@@ -20,15 +20,14 @@ package com.exoplatform.cloudworkspaces.installer.configuration.updaters;
 
 import com.exoplatform.cloudworkspaces.installer.InstallerException;
 import com.exoplatform.cloudworkspaces.installer.configuration.AdminConfiguration;
-import com.exoplatform.cloudworkspaces.installer.configuration.BaseConfigurationUpdater;
+import com.exoplatform.cloudworkspaces.installer.configuration.ConfigurationUpdater;
 import com.exoplatform.cloudworkspaces.installer.configuration.CurrentAdmin;
 import com.exoplatform.cloudworkspaces.installer.configuration.PreviousAdmin;
-import com.exoplatform.cloudworkspaces.installer.configuration.PreviousQuestion;
 import com.exoplatform.cloudworkspaces.installer.configuration.Question;
 import com.exoplatform.cloudworkspaces.installer.interaction.AnswersManager;
 import com.exoplatform.cloudworkspaces.installer.interaction.InteractionManager;
 
-public class DBConfigurationUpdater extends BaseConfigurationUpdater {
+public class DBConfigurationUpdater implements ConfigurationUpdater {
 
   private final Question DBUrlQuestion      = new Question("database.url",
                                                            "Set database url (with port). For example: localhost:3306",
@@ -65,29 +64,18 @@ public class DBConfigurationUpdater extends BaseConfigurationUpdater {
     String prevUsername = prevConfiguration.getCurrentOrDefault("admin.db.username");
     String prevPassword = prevConfiguration.getCurrentOrDefault("admin.db.password");
 
-    clearBlock();
-    addToBlock(DBUrlQuestion, prevUrl);
-    addToBlock(DBUsernameQuestion, prevUsername);
-    addToBlock(DBPasswordQuestion, prevPassword);
-
-    boolean usePrev = false;
-    if (wasBlockChanged()) {
-      usePrev = interaction.ask(new PreviousQuestion(getChanges())).equals("yes");
-    }
+    DBUrlQuestion.setDefaults(prevUrl);
+    DBUsernameQuestion.setDefaults(prevUsername);
+    DBPasswordQuestion.setDefaults(prevPassword);
 
     String url = prevUrl;
     String username = prevUsername;
     String password = prevPassword;
-    if (!usePrev) {
-      DBUrlQuestion.setDefaults(prevUrl);
-      DBUsernameQuestion.setDefaults(prevUsername);
-      DBPasswordQuestion.setDefaults(prevPassword);
-
+    if (!interaction.askGroup(DBUrlQuestion, DBUsernameQuestion, DBPasswordQuestion)) {
       url = interaction.ask(DBUrlQuestion);
       username = interaction.ask(DBUsernameQuestion);
       password = interaction.ask(DBPasswordQuestion);
     }
-
     currConfiguration.set("admin.db.url", url);
     currConfiguration.set("admin.db.username", username);
     currConfiguration.set("admin.db.password", password);

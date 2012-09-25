@@ -27,6 +27,13 @@ import com.exoplatform.cloudworkspaces.installer.interaction.AnswersManager;
 import com.exoplatform.cloudworkspaces.installer.interaction.InteractionManager;
 import com.exoplatform.cloudworkspaces.installer.rest.AdminException;
 import com.exoplatform.cloudworkspaces.installer.rest.CloudAdminServices;
+import com.exoplatform.cloudworkspaces.installer.upgrade.Hook.BeforeConfigurationGeneratingHook;
+import com.exoplatform.cloudworkspaces.installer.upgrade.Hook.ConfigurationGeneratedHook;
+import com.exoplatform.cloudworkspaces.installer.upgrade.Hook.NewAsReadyHook;
+import com.exoplatform.cloudworkspaces.installer.upgrade.Hook.TomcatStartedHook;
+import com.exoplatform.cloudworkspaces.installer.upgrade.Hook.TomcatStoppedHook;
+import com.exoplatform.cloudworkspaces.installer.upgrade.Hook.UpdateFinishedHook;
+import com.exoplatform.cloudworkspaces.installer.upgrade.Hook.UpdateStartedHook;
 
 import java.util.List;
 import java.util.Map;
@@ -63,6 +70,9 @@ public class MinorAdminUpgradeAlgorithm extends AdminUpgradeAlgorithm {
   @Override
   public void upgrade(AdminDirectories toDirs, boolean isClearTenants) throws InstallerException {
     Logger.timePrintln("Start configuring admin...");
+
+    beforeConfigurationGenerating(prevAdmin, currAdmin);
+
     configurationManager.configure();
 
     configurationGenerated(prevAdmin, currAdmin);
@@ -189,6 +199,9 @@ public class MinorAdminUpgradeAlgorithm extends AdminUpgradeAlgorithm {
   @Override
   public void install(AdminDirectories toDirs) throws InstallerException {
     Logger.timePrintln("Start configuring admin...");
+    
+    beforeConfigurationGenerating(prevAdmin, currAdmin);
+    
     configurationManager.configure();
 
     configurationGenerated(prevAdmin, currAdmin);
@@ -266,6 +279,15 @@ public class MinorAdminUpgradeAlgorithm extends AdminUpgradeAlgorithm {
     updateFinished(currAdmin);
     Logger.timePrintln("Admin successfully installed with version "
         + currAdmin.getVersionEntry().getVersion());
+  }
+
+  public void beforeConfigurationGenerating(PreviousAdmin prevAdmin, CurrentAdmin currAdmin) throws InstallerException {
+    List<Object> hooks = currAdmin.getVersionEntry()
+                                  .getUpdationAlgorithmConfiguration()
+                                  .getHooks("before-configuration-generating");
+    for (Object hook : hooks) {
+      ((BeforeConfigurationGeneratingHook) hook).beforeConfigurationGenerating(prevAdmin, currAdmin);
+    }
   }
 
   public void configurationGenerated(PreviousAdmin prevAdmin, CurrentAdmin currAdmin) throws InstallerException {

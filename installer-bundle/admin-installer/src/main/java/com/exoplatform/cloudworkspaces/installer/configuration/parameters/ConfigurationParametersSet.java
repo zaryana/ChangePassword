@@ -20,6 +20,7 @@ package com.exoplatform.cloudworkspaces.installer.configuration.parameters;
 
 import com.exoplatform.cloudworkspaces.installer.InstallerException;
 import com.exoplatform.cloudworkspaces.installer.XmlUtils;
+import com.exoplatform.cloudworkspaces.installer.upgrade.VersionEntry;
 
 import org.w3c.dom.Node;
 
@@ -30,16 +31,20 @@ public class ConfigurationParametersSet {
 
   private Map<String, Map<String, ConfigurationParameter>> parameters;
 
-  public ConfigurationParametersSet(Node parameters) throws InstallerException {
+  public ConfigurationParametersSet(VersionEntry version, Node parameters) throws InstallerException {
     this.parameters = new HashMap<String, Map<String, ConfigurationParameter>>();
 
     for (Node group : XmlUtils.getChildren(parameters, "group")) {
-      String groupName = group.getAttributes().getNamedItem("name").getTextContent();
-      this.parameters.put(groupName, new HashMap<String, ConfigurationParameter>());
+      if (version.isProfileAllowed(group)) {
+        String groupName = group.getAttributes().getNamedItem("name").getTextContent();
+        this.parameters.put(groupName, new HashMap<String, ConfigurationParameter>());
 
-      for (Node curr : XmlUtils.getChildren(group, "parameter")) {
-        ConfigurationParameter parameter = new ConfigurationParameter(curr);
-        this.parameters.get(groupName).put(parameter.getName(), parameter);
+        for (Node curr : XmlUtils.getChildren(group, "parameter")) {
+          if (version.isProfileAllowed(curr)) {
+            ConfigurationParameter parameter = new ConfigurationParameter(curr);
+            this.parameters.get(groupName).put(parameter.getName(), parameter);
+          }
+        }
       }
     }
   }

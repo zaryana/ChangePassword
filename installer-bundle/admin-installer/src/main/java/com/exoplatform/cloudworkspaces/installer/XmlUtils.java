@@ -49,6 +49,8 @@ public class XmlUtils {
 
   public static List<Node> getChildren(Node node, String tag) {
     ArrayList<Node> result = new ArrayList<Node>();
+    if (node == null)
+      return result;
     NodeList nodes = node.getChildNodes();
     for (int i = 0; i < nodes.getLength(); i++) {
       Node curr = nodes.item(i);

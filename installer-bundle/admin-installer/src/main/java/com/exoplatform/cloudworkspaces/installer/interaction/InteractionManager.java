@@ -27,6 +27,10 @@ public interface InteractionManager {
   public Map<Question, String> askQuestions(Question[] questions);
 
   public String ask(Question questions);
+  
+  public boolean askGroup(Question... questions);
+  
+  public void setAnswer(String key, String value);
 
   public void print(String message);
 

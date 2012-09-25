@@ -37,11 +37,13 @@
       <updater>com.exoplatform.cloudworkspaces.installer.configuration.updaters.CloudConfigurationUpdater</updater>
       <updater>com.exoplatform.cloudworkspaces.installer.configuration.updaters.TomcatUsersConfigurationUpdater</updater>
       <updater>com.exoplatform.cloudworkspaces.installer.configuration.updaters.MailConfigurationUpdater</updater>
-      <updater>com.exoplatform.cloudworkspaces.installer.configuration.updaters.GraphiteConfigurationUpdater</updater>
-      <updater>com.exoplatform.cloudworkspaces.installer.configuration.updaters.AwsConfigurationUpdater</updater>
-      <updater>com.exoplatform.cloudworkspaces.installer.configuration.updaters.InstanceConfigurationUpdater</updater>
+      <updater>com.exoplatform.cloudworkspaces.installer.configuration.updaters.CloudClientConfigurationUpdater</updater>
       <updater>com.exoplatform.cloudworkspaces.installer.configuration.updaters.ServerConfigurationUpdater</updater>
       <updater>com.exoplatform.cloudworkspaces.installer.configuration.updaters.BackupConfigurationUpdater</updater>
+
+      <updater profile="aws">com.exoplatform.cloudworkspaces.installer.configuration.updaters.GraphiteConfigurationUpdater</updater>
+      <updater profile="aws">com.exoplatform.cloudworkspaces.installer.configuration.updaters.AwsConfigurationUpdater</updater>
+      <updater profile="aws">com.exoplatform.cloudworkspaces.installer.configuration.updaters.InstanceConfigurationUpdater</updater>
     </updaters>
     <parameters>
       <group name="Cloud settings">
@@ -248,7 +250,7 @@
         </parameter>
       </group>
   
-      <group name="AWS settings">
+      <group name="Cloud client settings">
         <parameter>
           <name>cloud.admin.application.default.type</name>
           <default>cloud-agent</default>
@@ -279,6 +281,9 @@
             </source>
           </sources>
         </parameter>
+      </group>
+
+      <group name="AWS settings" profile="aws">
         <parameter>
           <name>aws-ec2.api-version</name>
           <default>2011-05-15</default>
@@ -309,7 +314,7 @@
         </parameter>
       </group>
   
-      <group name="Instance settings">
+      <group name="Instance settings" profile="aws">
         <parameter>
           <name>types.cloud.agent.availability.zone</name>
           <sources>
@@ -381,7 +386,7 @@
         </parameter>
       </group>
 
-      <group name="Graphite settings">
+      <group name="Graphite settings" profile="aws">
         <parameter>
           <name>graphite.host</name>
           <default>localhost</default>

@@ -20,15 +20,14 @@ package com.exoplatform.cloudworkspaces.installer.configuration.updaters;
 
 import com.exoplatform.cloudworkspaces.installer.InstallerException;
 import com.exoplatform.cloudworkspaces.installer.configuration.AdminConfiguration;
-import com.exoplatform.cloudworkspaces.installer.configuration.BaseConfigurationUpdater;
+import com.exoplatform.cloudworkspaces.installer.configuration.ConfigurationUpdater;
 import com.exoplatform.cloudworkspaces.installer.configuration.CurrentAdmin;
 import com.exoplatform.cloudworkspaces.installer.configuration.PreviousAdmin;
-import com.exoplatform.cloudworkspaces.installer.configuration.PreviousQuestion;
 import com.exoplatform.cloudworkspaces.installer.configuration.Question;
 import com.exoplatform.cloudworkspaces.installer.interaction.AnswersManager;
 import com.exoplatform.cloudworkspaces.installer.interaction.InteractionManager;
 
-public class CloudConfigurationUpdater extends BaseConfigurationUpdater {
+public class CloudConfigurationUpdater implements ConfigurationUpdater {
   private final Question tenantMasterhostQuestion = new Question("tenant.masterhost",
                                                                  "Set tenant masterhost",
                                                                  "cloud-workspaces.com",
@@ -57,25 +56,15 @@ public class CloudConfigurationUpdater extends BaseConfigurationUpdater {
     String prevTenantMasterhost = prevConfiguration.getCurrentOrDefault("tenant.masterhost");
     String prevAgentUsername = prevConfiguration.getCurrentOrDefault("cloud.agent.username");
 
-    clearBlock();
-    addToBlock(tenantMasterhostQuestion, prevTenantMasterhost);
-    addToBlock(agentUsernameQuestion, prevAgentUsername);
-
-    boolean usePrev = false;
-    if (wasBlockChanged()) {
-      usePrev = interaction.ask(new PreviousQuestion(getChanges())).equals("yes");
-    }
+    tenantMasterhostQuestion.setDefaults(prevTenantMasterhost);
+    agentUsernameQuestion.setDefaults(prevAgentUsername);
 
     String tenantMasterhost = prevTenantMasterhost;
     String agentUsername = prevAgentUsername;
-    if (!usePrev) {
-      tenantMasterhostQuestion.setDefaults(prevTenantMasterhost);
-      agentUsernameQuestion.setDefaults(prevAgentUsername);
-
+    if (!interaction.askGroup(tenantMasterhostQuestion, agentUsernameQuestion)) {
       tenantMasterhost = interaction.ask(tenantMasterhostQuestion);
       agentUsername = interaction.ask(agentUsernameQuestion);
     }
-
     currConfiguration.set("tenant.masterhost", tenantMasterhost);
     currConfiguration.set("cloud.agent.username", agentUsername);
     answers.addAnswer(tenantMasterhostQuestion, tenantMasterhost);

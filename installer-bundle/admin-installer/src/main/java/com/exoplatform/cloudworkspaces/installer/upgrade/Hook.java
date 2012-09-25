@@ -22,8 +22,34 @@ import com.exoplatform.cloudworkspaces.installer.InstallerException;
 import com.exoplatform.cloudworkspaces.installer.configuration.CurrentAdmin;
 import com.exoplatform.cloudworkspaces.installer.configuration.PreviousAdmin;
 
-public interface ConfigurationGeneratedHook {
+public interface Hook {
+  
+  public static interface BeforeConfigurationGeneratingHook extends Hook {
+    public void beforeConfigurationGenerating(PreviousAdmin prevAdmin, CurrentAdmin currAdmin) throws InstallerException;
+  }
 
-  public void configurationGenerated(PreviousAdmin prevAdmin, CurrentAdmin currAdmin) throws InstallerException;
+  public static interface ConfigurationGeneratedHook extends Hook {
+    public void configurationGenerated(PreviousAdmin prevAdmin, CurrentAdmin currAdmin) throws InstallerException;
+  }
+
+  public interface NewAsReadyHook extends Hook {
+    public void newAsReady(CurrentAdmin currAdmin) throws InstallerException;
+  }
+
+  public interface TomcatStartedHook extends Hook {
+    public void tomcatStarted(CurrentAdmin currAdmin) throws InstallerException;
+  }
+
+  public interface TomcatStoppedHook extends Hook {
+    public void tomcatStopped(CurrentAdmin currAdmin) throws InstallerException;
+  }
+
+  public interface UpdateFinishedHook extends Hook {
+    public void updateFinished(CurrentAdmin currAdmin) throws InstallerException;
+  }
+
+  public interface UpdateStartedHook extends Hook {
+    public void updateStarted(CurrentAdmin currAdmin) throws InstallerException;
+  }
 
 }

@@ -29,9 +29,11 @@ import java.util.Scanner;
 
 public class StreamInteractionManager implements InteractionManager {
 
-  private final Scanner     in;
+  protected final Map<String, String> answers = new HashMap<String, String>();
 
-  private final PrintStream out;
+  private final Scanner               in;
+
+  private final PrintStream           out;
 
   public StreamInteractionManager() {
     this.in = new Scanner(System.in);
@@ -50,6 +52,11 @@ public class StreamInteractionManager implements InteractionManager {
       answers.put(question, ask(question));
     }
     return answers;
+  }
+
+  @Override
+  public void setAnswer(String key, String value) {
+    answers.put(key, value);
   }
 
   @Override
@@ -77,6 +84,33 @@ public class StreamInteractionManager implements InteractionManager {
       }
     }
     return answer;
+  }
+
+  @Override
+  public boolean askGroup(Question... questions) {
+    out.println();
+    out.println("Detected previous settings:\n");
+    for (Question question : questions) {
+      out.print(question.getParameter());
+      out.print('=');
+      if (answers.containsKey(question.getParameter())) {
+        out.println(answers.get(question.getParameter()));
+      } else {
+        out.println(question.getDefaults());
+      }
+    }
+    String answer = "";
+    while (answer.isEmpty() || !answer.matches("yes|no")) {
+      out.println("Do you want to use this settings? [yes]: ");
+      answer = in.nextLine().trim();
+      if (answer.isEmpty()) {
+        answer = "yes";
+      }
+      if (!answer.matches("yes|no")) {
+        System.out.println("Write yes or no");
+      }
+    }
+    return answer.equals("yes");
   }
 
   @Override

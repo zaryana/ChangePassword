@@ -19,8 +19,8 @@
 package com.exoplatform.cloudworkspaces.installer.configuration.updaters;
 
 import com.exoplatform.cloudworkspaces.installer.FileUtils;
-import com.exoplatform.cloudworkspaces.installer.configuration.BaseConfigurationUpdater;
 import com.exoplatform.cloudworkspaces.installer.configuration.ConfigurationException;
+import com.exoplatform.cloudworkspaces.installer.configuration.ConfigurationUpdater;
 import com.exoplatform.cloudworkspaces.installer.configuration.CurrentAdmin;
 import com.exoplatform.cloudworkspaces.installer.configuration.PreviousAdmin;
 import com.exoplatform.cloudworkspaces.installer.interaction.AnswersManager;
@@ -29,7 +29,7 @@ import com.exoplatform.cloudworkspaces.installer.interaction.InteractionManager;
 import java.io.File;
 import java.io.IOException;
 
-public class ServerConfigurationUpdater extends BaseConfigurationUpdater {
+public class ServerConfigurationUpdater implements ConfigurationUpdater {
 
   @Override
   public void update(PreviousAdmin prevAdmin,

@@ -20,15 +20,14 @@ package com.exoplatform.cloudworkspaces.installer.configuration.updaters;
 
 import com.exoplatform.cloudworkspaces.installer.InstallerException;
 import com.exoplatform.cloudworkspaces.installer.configuration.AdminConfiguration;
-import com.exoplatform.cloudworkspaces.installer.configuration.BaseConfigurationUpdater;
+import com.exoplatform.cloudworkspaces.installer.configuration.ConfigurationUpdater;
 import com.exoplatform.cloudworkspaces.installer.configuration.CurrentAdmin;
 import com.exoplatform.cloudworkspaces.installer.configuration.PreviousAdmin;
-import com.exoplatform.cloudworkspaces.installer.configuration.PreviousQuestion;
 import com.exoplatform.cloudworkspaces.installer.configuration.Question;
 import com.exoplatform.cloudworkspaces.installer.interaction.AnswersManager;
 import com.exoplatform.cloudworkspaces.installer.interaction.InteractionManager;
 
-public class InstanceConfigurationUpdater extends BaseConfigurationUpdater {
+public class InstanceConfigurationUpdater implements ConfigurationUpdater {
   private final Question asInstanceTypeQuestion      = new Question("as.instance.type",
                                                                     "Set server's instance type",
                                                                     null,
@@ -77,27 +76,19 @@ public class InstanceConfigurationUpdater extends BaseConfigurationUpdater {
     String prevKeyName = prevConfiguration.getCurrentOrDefault("types.cloud.agent.key.name");
     String prevInstanceType = prevConfiguration.getCurrentOrDefault("types.cloud.agent.instance.type");
 
-    clearBlock();
-    addToBlock(asAvailabilityZoneQuestion, prevAvailabilityZone);
-    addToBlock(asSecurityGroupNameQuestion, prevSecurityGroupName);
-    addToBlock(asKeyNameQuestion, prevKeyName);
-    addToBlock(asInstanceTypeQuestion, prevInstanceType);
-
-    boolean usePrev = false;
-    if (wasBlockChanged()) {
-      usePrev = interaction.ask(new PreviousQuestion(getChanges())).equals("yes");
-    }
+    asAvailabilityZoneQuestion.setDefaults(prevAvailabilityZone);
+    asSecurityGroupNameQuestion.setDefaults(prevSecurityGroupName);
+    asKeyNameQuestion.setDefaults(prevKeyName);
+    asInstanceTypeQuestion.setDefaults(prevInstanceType);
 
     String availabilityZone = prevAvailabilityZone;
     String securityGroupName = prevSecurityGroupName;
     String keyName = prevKeyName;
     String instanceType = prevInstanceType;
-    if (!usePrev) {
-      asAvailabilityZoneQuestion.setDefaults(prevAvailabilityZone);
-      asSecurityGroupNameQuestion.setDefaults(prevSecurityGroupName);
-      asKeyNameQuestion.setDefaults(prevKeyName);
-      asInstanceTypeQuestion.setDefaults(prevInstanceType);
-
+    if (!interaction.askGroup(asAvailabilityZoneQuestion,
+                              asSecurityGroupNameQuestion,
+                              asKeyNameQuestion,
+                              asInstanceTypeQuestion)) {
       availabilityZone = interaction.ask(asAvailabilityZoneQuestion);
       securityGroupName = interaction.ask(asSecurityGroupNameQuestion);
       keyName = interaction.ask(asKeyNameQuestion);

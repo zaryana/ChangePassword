@@ -46,14 +46,17 @@ public class VersionEntry {
 
   private final String   version;
 
+  private final String   profile;
+
   private final Node     versionNode;
 
   private final Document xml;
 
   private final XPath    xPath;
 
-  public VersionEntry(String version, InputStream stream) throws InstallerException {
+  public VersionEntry(String version, String profile, InputStream stream) throws InstallerException {
     this.version = version;
+    this.profile = profile;
     try {
       this.xml = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(stream);
       this.xPath = XPathFactory.newInstance().newXPath();
@@ -71,6 +74,10 @@ public class VersionEntry {
 
   public String getVersion() {
     return version;
+  }
+
+  public String getProfile() {
+    return profile;
   }
 
   public String getFromVersion() throws InstallerException {
@@ -121,13 +128,13 @@ public class VersionEntry {
   }
 
   public UpdationAlgorithmConfiguration getUpdationAlgorithmConfiguration() {
-    return new UpdationAlgorithmConfiguration(XmlUtils.getChild(versionNode, "updation"));
+    return new UpdationAlgorithmConfiguration(this, XmlUtils.getChild(versionNode, "updation"));
   }
 
   public ConfigurationParametersSet getConfigurationParameters() throws InstallerException {
     Node parameters = XmlUtils.getChild(versionNode, "configuration", "parameters");
 
-    ConfigurationParametersSet result = new ConfigurationParametersSet(parameters);
+    ConfigurationParametersSet result = new ConfigurationParametersSet(this, parameters);
     return result;
   }
 
@@ -136,21 +143,41 @@ public class VersionEntry {
     for (Node updater : XmlUtils.getChildren(XmlUtils.getChild(versionNode,
                                                                "configuration",
                                                                "updaters"), "updater")) {
-      String clazz = updater.getTextContent();
-      try {
-        updaters.add((ConfigurationUpdater) Thread.currentThread()
-                                                  .getContextClassLoader()
-                                                  .loadClass(clazz)
-                                                  .newInstance());
-      } catch (InstantiationException e) {
-        throw new InstallerException("Couldn't used configuration updater " + clazz);
-      } catch (IllegalAccessException e) {
-        throw new InstallerException("Couldn't used configuration updater " + clazz);
-      } catch (ClassNotFoundException e) {
-        throw new InstallerException("Couldn't used configuration updater " + clazz);
+      if (isProfileAllowed(updater)) {
+        String clazz = updater.getTextContent();
+        try {
+          updaters.add((ConfigurationUpdater) Thread.currentThread()
+                                                    .getContextClassLoader()
+                                                    .loadClass(clazz)
+                                                    .newInstance());
+        } catch (InstantiationException e) {
+          throw new InstallerException("Couldn't used configuration updater " + clazz);
+        } catch (IllegalAccessException e) {
+          throw new InstallerException("Couldn't used configuration updater " + clazz);
+        } catch (ClassNotFoundException e) {
+          throw new InstallerException("Couldn't used configuration updater " + clazz);
+        }
       }
     }
     return updaters;
+  }
+
+  public boolean isProfileAllowed(Node node) {
+    Node profileNode = node.getAttributes().getNamedItem("profile");
+    boolean isAllowed = false;
+    if (profileNode == null) {
+      isAllowed = true;
+    } else {
+      String profilesStr = profileNode.getTextContent();
+      String[] profiles = profilesStr.split("\\s*,\\s*");
+      for (String currProfile : profiles) {
+        if (currProfile.equals(this.profile)) {
+          isAllowed = true;
+          break;
+        }
+      }
+    }
+    return isAllowed;
   }
 
   @Override

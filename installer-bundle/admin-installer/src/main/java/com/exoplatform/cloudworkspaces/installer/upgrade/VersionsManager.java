@@ -24,11 +24,11 @@ import java.io.InputStream;
 
 public class VersionsManager {
 
-  public VersionEntry getVersionEntry(String toVersion) throws InstallerException {
+  public VersionEntry getVersionEntry(String toVersion, String profile) throws InstallerException {
     InputStream stream = Thread.currentThread()
                                .getContextClassLoader()
                                .getResourceAsStream("versions/" + toVersion + ".xml");
-    return new VersionEntry(toVersion, stream);
+    return new VersionEntry(toVersion, profile, stream);
   }
 
 }

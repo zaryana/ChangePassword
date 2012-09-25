@@ -19,7 +19,6 @@
 package com.exoplatform.cloudworkspaces.installer.interaction;
 
 import com.exoplatform.cloudworkspaces.installer.InstallerException;
-import com.exoplatform.cloudworkspaces.installer.configuration.PreviousQuestion;
 import com.exoplatform.cloudworkspaces.installer.configuration.Question;
 
 import java.io.File;
@@ -28,18 +27,15 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
 public class InteractionManagerWithAnswers extends StreamInteractionManager {
 
-  private final Map<String, String> answers;
-
   public InteractionManagerWithAnswers(File answers, Map<String, String> priorityAnswers) throws InstallerException {
     super();
     try {
-      this.answers = readAnswers(answers);
+      readAnswersTo(answers, this.answers);
       for (String key : priorityAnswers.keySet()) {
         this.answers.put(key, priorityAnswers.get(key));
       }
@@ -51,32 +47,33 @@ public class InteractionManagerWithAnswers extends StreamInteractionManager {
   public InteractionManagerWithAnswers(InputStream in, OutputStream out, File answers) throws InstallerException {
     super(in, out);
     try {
-      this.answers = readAnswers(answers);
+      readAnswersTo(answers, this.answers);
     } catch (IOException e) {
       throw new InstallerException("File with answers " + answers.getAbsolutePath() + " not found");
     }
   }
 
-  private Map<String, String> readAnswers(File answers) throws FileNotFoundException, IOException {
-    HashMap<String, String> results = new HashMap<String, String>();
+  private void readAnswersTo(File answers, Map<String, String> answersMap) throws FileNotFoundException,
+                                                                          IOException {
     Properties properties = new Properties();
     properties.load(new FileInputStream(answers));
     for (String key : properties.stringPropertyNames()) {
-      results.put(key, properties.getProperty(key));
+      answersMap.put(key, properties.getProperty(key));
     }
-    return results;
   }
 
   @Override
   public String ask(Question question) {
-    if (question instanceof PreviousQuestion) {
-      return "no";
-    }
     if (answers.containsKey(question.getParameter())) {
       println(question.getParameter() + "=" + answers.get(question.getParameter()));
       return answers.get(question.getParameter());
     }
     return super.ask(question);
+  }
+
+  @Override
+  public boolean askGroup(Question... questions) {
+    return false;
   }
 
 }

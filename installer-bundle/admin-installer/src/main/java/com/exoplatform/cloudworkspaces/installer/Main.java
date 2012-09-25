@@ -54,17 +54,23 @@ public class Main {
     for (int i = 1; i < args.length; i++) {
       newargs[i - 1] = args[i];
     }
-    if (args[0].equals("upgrade")) {
-      upgrade(args);
-    } else if (args[0].equals("install")) {
-      install(args);
+    if (args[0].indexOf(':') < 0) {
+      System.err.println("Choose command with format:\ncommand:profile\nWhere command - upgrade or install\nand profile - profile for your type of cloud");
+      return;
+    }
+    String cmd = args[0].substring(0, args[0].indexOf(':'));
+    String profile = args[0].substring(args[0].indexOf(':') + 1);
+    if (cmd.equals("upgrade")) {
+      upgrade(profile, newargs);
+    } else if (cmd.equals("install")) {
+      install(profile, newargs);
     } else {
       System.err.println("Choose upgrade or install command");
       return;
     }
   }
 
-  public static void upgrade(String[] args) throws Exception {
+  public static void upgrade(String profile, String[] args) throws Exception {
     VersionsManager versionsManager = new VersionsManager();
 
     String version = null;
@@ -157,11 +163,11 @@ public class Main {
     AdminDirectories prevAdminDirs = new AdminDirectories(prevTomcatDir, confDir, dataDir);
     AdminDirectories nextAdminDirs = new AdminDirectories(tomcatDir, confDir, dataDir);
 
-    VersionEntry nextVersion = versionsManager.getVersionEntry(version);
+    VersionEntry nextVersion = versionsManager.getVersionEntry(version, profile);
     String prevVersionStr = getCurrentVersion(prevTomcatDir);
     if (prevVersionStr == null)
       prevVersionStr = nextVersion.getFromVersion();
-    VersionEntry prevVersion = versionsManager.getVersionEntry(prevVersionStr);
+    VersionEntry prevVersion = versionsManager.getVersionEntry(prevVersionStr, profile);
 
     BundleDownloader downloader = null;
     if (bundle == null) {
@@ -182,7 +188,7 @@ public class Main {
     container.getComponent(AdminUpgradeAlgorithm.class).upgrade(nextAdminDirs, isClearTenants);
   }
 
-  public static void install(String[] args) throws Exception {
+  public static void install(String profile, String[] args) throws Exception {
     VersionsManager versionsManager = new VersionsManager();
 
     String version = null;
@@ -265,8 +271,9 @@ public class Main {
     AdminDirectories prevAdminDirs = new AdminDirectories(tomcatDir, confDir, dataDir);
     AdminDirectories nextAdminDirs = new AdminDirectories(tomcatDir, confDir, dataDir);
 
-    VersionEntry nextVersion = versionsManager.getVersionEntry(version);
-    VersionEntry prevVersion = versionsManager.getVersionEntry(nextVersion.getFromVersion());
+    VersionEntry nextVersion = versionsManager.getVersionEntry(version, profile);
+    VersionEntry prevVersion = versionsManager.getVersionEntry(nextVersion.getFromVersion(),
+                                                               profile);
 
     BundleDownloader downloader = null;
     if (bundle == null) {

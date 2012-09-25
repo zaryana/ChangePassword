@@ -20,15 +20,14 @@ package com.exoplatform.cloudworkspaces.installer.configuration.updaters;
 
 import com.exoplatform.cloudworkspaces.installer.InstallerException;
 import com.exoplatform.cloudworkspaces.installer.configuration.AdminConfiguration;
-import com.exoplatform.cloudworkspaces.installer.configuration.BaseConfigurationUpdater;
+import com.exoplatform.cloudworkspaces.installer.configuration.ConfigurationUpdater;
 import com.exoplatform.cloudworkspaces.installer.configuration.CurrentAdmin;
 import com.exoplatform.cloudworkspaces.installer.configuration.PreviousAdmin;
-import com.exoplatform.cloudworkspaces.installer.configuration.PreviousQuestion;
 import com.exoplatform.cloudworkspaces.installer.configuration.Question;
 import com.exoplatform.cloudworkspaces.installer.interaction.AnswersManager;
 import com.exoplatform.cloudworkspaces.installer.interaction.InteractionManager;
 
-public class GraphiteConfigurationUpdater extends BaseConfigurationUpdater {
+public class GraphiteConfigurationUpdater implements ConfigurationUpdater {
 
   private final Question graphiteHostQuestion = new Question("graphite.host",
                                                              "Set graphite host. For example: localhost",
@@ -58,25 +57,15 @@ public class GraphiteConfigurationUpdater extends BaseConfigurationUpdater {
     String prevGraphiteHost = prevConfiguration.getCurrentOrDefault("graphite.host");
     String prevGraphitePort = prevConfiguration.getCurrentOrDefault("graphite.port");
 
-    clearBlock();
-    addToBlock(graphiteHostQuestion, prevGraphiteHost);
-    addToBlock(graphitePortQuestion, prevGraphitePort);
-
-    boolean usePrev = false;
-    if (wasBlockChanged()) {
-      usePrev = interaction.ask(new PreviousQuestion(getChanges())).equals("yes");
-    }
+    graphiteHostQuestion.setDefaults(prevGraphiteHost);
+    graphitePortQuestion.setDefaults(prevGraphitePort);
 
     String graphiteHost = prevGraphiteHost;
     String graphitePort = prevGraphitePort;
-    if (!usePrev) {
-      graphiteHostQuestion.setDefaults(prevGraphiteHost);
-      graphitePortQuestion.setDefaults(prevGraphitePort);
-
+    if (!interaction.askGroup(graphiteHostQuestion, graphitePortQuestion)) {
       graphiteHost = interaction.ask(graphiteHostQuestion);
       graphitePort = interaction.ask(graphitePortQuestion);
     }
-
     currConfiguration.set("graphite.host", graphiteHost);
     currConfiguration.set("graphite.port", graphitePort);
     answers.addAnswer(graphiteHostQuestion, graphiteHost);

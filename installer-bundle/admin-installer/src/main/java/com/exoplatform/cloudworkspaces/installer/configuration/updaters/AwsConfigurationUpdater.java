@@ -20,50 +20,31 @@ package com.exoplatform.cloudworkspaces.installer.configuration.updaters;
 
 import com.exoplatform.cloudworkspaces.installer.InstallerException;
 import com.exoplatform.cloudworkspaces.installer.configuration.AdminConfiguration;
-import com.exoplatform.cloudworkspaces.installer.configuration.BaseConfigurationUpdater;
+import com.exoplatform.cloudworkspaces.installer.configuration.ConfigurationUpdater;
 import com.exoplatform.cloudworkspaces.installer.configuration.CurrentAdmin;
 import com.exoplatform.cloudworkspaces.installer.configuration.PreviousAdmin;
-import com.exoplatform.cloudworkspaces.installer.configuration.PreviousQuestion;
 import com.exoplatform.cloudworkspaces.installer.configuration.Question;
 import com.exoplatform.cloudworkspaces.installer.interaction.AnswersManager;
 import com.exoplatform.cloudworkspaces.installer.interaction.InteractionManager;
 
-public class AwsConfigurationUpdater extends BaseConfigurationUpdater {
-  private final Question applicationDefaultTypeQuestion = new Question("application.default.type",
-                                                                       "Set application default type",
-                                                                       "cloud-agent",
-                                                                       "^.*$",
-                                                                       null);
+public class AwsConfigurationUpdater implements ConfigurationUpdater {
+  private final Question cloudAwsVersionQuestion     = new Question("cloud.aws.version",
+                                                                    "Set cloud aws api version",
+                                                                    "2011-05-15",
+                                                                    "^.*$",
+                                                                    null);
 
-  private final Question cloudServiceTypeQuestion       = new Question("cloud.service.type",
-                                                                       "Set cloud service connector class",
-                                                                       "com.exoplatform.cloud.admin.instance.aws.AWSCloudServerClient",
-                                                                       "^.*$",
-                                                                       null);
+  private final Question cloudAwsIdentityQuestion    = new Question("cloud.aws.identity",
+                                                                    "Set cloud aws identity",
+                                                                    null,
+                                                                    "^.*$",
+                                                                    null);
 
-  private final Question cloudClientNameQuestion        = new Question("cloud.client.name",
-                                                                       "Set cloud client name (for amazon aws-ec2)",
-                                                                       "aws-ec2",
-                                                                       "^.*$",
-                                                                       null);
-
-  private final Question cloudAwsVersionQuestion        = new Question("cloud.aws.version",
-                                                                       "Set cloud aws api version",
-                                                                       "2011-05-15",
-                                                                       "^.*$",
-                                                                       null);
-
-  private final Question cloudAwsIdentityQuestion       = new Question("cloud.aws.identity",
-                                                                       "Set cloud aws identity",
-                                                                       null,
-                                                                       "^.*$",
-                                                                       null);
-
-  private final Question cloudAwsCredentialsQuestion    = new Question("cloud.aws.credentials",
-                                                                       "Set cloud aws credentials",
-                                                                       null,
-                                                                       "^.*$",
-                                                                       null);
+  private final Question cloudAwsCredentialsQuestion = new Question("cloud.aws.credentials",
+                                                                    "Set cloud aws credentials",
+                                                                    null,
+                                                                    "^.*$",
+                                                                    null);
 
   @Override
   public void update(PreviousAdmin prevAdmin,
@@ -77,69 +58,29 @@ public class AwsConfigurationUpdater extends BaseConfigurationUpdater {
 
     AdminConfiguration prevConfiguration = prevAdmin.getAdminConfiguration();
     AdminConfiguration currConfiguration = currAdmin.getAdminConfiguration();
-    String prevApplicationDefaultType = prevConfiguration.getCurrentOrDefault("cloud.admin.application.default.type");
-    String prevCloudServiceType = prevConfiguration.getCurrentOrDefault("cloud.admin.application.cloud.service.type");
-    String prevCloudClientName = prevConfiguration.getCurrentOrDefault("cloud.client.name");
+
     String prevCloudAwsVersion = prevConfiguration.getCurrentOrDefault("aws-ec2.api-version");
-
-    clearBlock();
-    addToBlock(applicationDefaultTypeQuestion, prevApplicationDefaultType);
-    addToBlock(cloudServiceTypeQuestion, prevCloudServiceType);
-    addToBlock(cloudClientNameQuestion, prevCloudClientName);
-    addToBlock(cloudAwsVersionQuestion, prevCloudAwsVersion);
-
-    boolean usePrev = false;
-    if (wasBlockChanged()) {
-      usePrev = interaction.ask(new PreviousQuestion(getChanges())).equals("yes");
-    }
-
-    String applicationDefaultType = prevApplicationDefaultType;
-    String cloudServiceType = prevCloudServiceType;
-    String cloudClientName = prevCloudClientName;
-    String cloudAwsVersion = prevCloudAwsVersion;
-    if (!usePrev) {
-      applicationDefaultTypeQuestion.setDefaults(prevApplicationDefaultType);
-      cloudServiceTypeQuestion.setDefaults(prevCloudServiceType);
-      cloudClientNameQuestion.setDefaults(prevCloudClientName);
-      cloudAwsVersionQuestion.setDefaults(prevCloudAwsVersion);
-
-      applicationDefaultType = interaction.ask(applicationDefaultTypeQuestion);
-      cloudServiceType = interaction.ask(cloudServiceTypeQuestion);
-      cloudClientName = interaction.ask(cloudClientNameQuestion);
-      cloudAwsVersion = interaction.ask(cloudAwsVersionQuestion);
-    }
-    currConfiguration.set("cloud.admin.application.default.type", applicationDefaultType);
-    currConfiguration.set("cloud.admin.application.cloud.service.type", cloudServiceType);
-    currConfiguration.set("cloud.client.name", cloudClientName);
-    currConfiguration.set("aws-ec2.api-version", cloudAwsVersion);
-    answers.addAnswer(applicationDefaultTypeQuestion, applicationDefaultType);
-    answers.addAnswer(cloudServiceTypeQuestion, cloudServiceType);
-    answers.addAnswer(cloudClientNameQuestion, cloudClientName);
-    answers.addAnswer(cloudAwsVersionQuestion, cloudAwsVersion);
-
     String prevAwsIdentity = prevConfiguration.getCurrentOrDefault("aws-ec2.identity");
     String prevAwsCredentials = prevConfiguration.getCurrentOrDefault("aws-ec2.credential");
 
-    clearBlock();
-    addToBlock(cloudAwsIdentityQuestion, prevAwsIdentity);
-    addToBlock(cloudAwsCredentialsQuestion, prevAwsCredentials);
+    cloudAwsVersionQuestion.setDefaults(prevCloudAwsVersion);
+    cloudAwsIdentityQuestion.setDefaults(prevAwsIdentity);
+    cloudAwsCredentialsQuestion.setDefaults(prevAwsCredentials);
 
-    usePrev = false;
-    if (wasBlockChanged()) {
-      usePrev = interaction.ask(new PreviousQuestion(getChanges())).equals("yes");
-    }
-
+    String cloudAwsVersion = prevCloudAwsVersion;
     String awsIdentity = prevAwsIdentity;
     String awsCredentials = prevAwsCredentials;
-    if (!usePrev) {
-      cloudAwsIdentityQuestion.setDefaults(prevAwsIdentity);
-      cloudAwsCredentialsQuestion.setDefaults(prevAwsCredentials);
-
+    if (interaction.askGroup(cloudAwsVersionQuestion,
+                             cloudAwsIdentityQuestion,
+                             cloudAwsCredentialsQuestion)) {
+      cloudAwsVersion = interaction.ask(cloudAwsVersionQuestion);
       awsIdentity = interaction.ask(cloudAwsIdentityQuestion);
       awsCredentials = interaction.ask(cloudAwsCredentialsQuestion);
     }
+    currConfiguration.set("aws-ec2.api-version", cloudAwsVersion);
     currConfiguration.set("aws-ec2.identity", awsIdentity);
     currConfiguration.set("aws-ec2.credential", awsCredentials);
+    answers.addAnswer(cloudAwsVersionQuestion, cloudAwsVersion);
     answers.addAnswer(cloudAwsIdentityQuestion, awsIdentity);
     answers.addAnswer(cloudAwsCredentialsQuestion, awsCredentials);
   }

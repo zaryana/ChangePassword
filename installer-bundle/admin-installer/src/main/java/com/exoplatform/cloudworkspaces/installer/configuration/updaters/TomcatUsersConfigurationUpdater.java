@@ -20,15 +20,14 @@ package com.exoplatform.cloudworkspaces.installer.configuration.updaters;
 
 import com.exoplatform.cloudworkspaces.installer.InstallerException;
 import com.exoplatform.cloudworkspaces.installer.configuration.AdminConfiguration;
-import com.exoplatform.cloudworkspaces.installer.configuration.BaseConfigurationUpdater;
+import com.exoplatform.cloudworkspaces.installer.configuration.ConfigurationUpdater;
 import com.exoplatform.cloudworkspaces.installer.configuration.CurrentAdmin;
 import com.exoplatform.cloudworkspaces.installer.configuration.PreviousAdmin;
-import com.exoplatform.cloudworkspaces.installer.configuration.PreviousQuestion;
 import com.exoplatform.cloudworkspaces.installer.configuration.Question;
 import com.exoplatform.cloudworkspaces.installer.interaction.AnswersManager;
 import com.exoplatform.cloudworkspaces.installer.interaction.InteractionManager;
 
-public class TomcatUsersConfigurationUpdater extends BaseConfigurationUpdater {
+public class TomcatUsersConfigurationUpdater implements ConfigurationUpdater {
   private final Question tomcatAdminPassQuestion   = new Question("tomcat.users.admin.password",
                                                                   "Set password for cloudadmin user",
                                                                   "cloudadmin",
@@ -57,25 +56,15 @@ public class TomcatUsersConfigurationUpdater extends BaseConfigurationUpdater {
     String prevAdminPassword = prevConfiguration.getCurrentOrDefault("tomcat.users.cloudadmin.password");
     String prevManagerPassword = prevConfiguration.getCurrentOrDefault("tomcat.users.cloudmanager.password");
 
-    clearBlock();
-    addToBlock(tomcatAdminPassQuestion, prevAdminPassword);
-    addToBlock(tomcatManagerPassQuestion, prevManagerPassword);
-
-    boolean usePrev = false;
-    if (wasBlockChanged()) {
-      usePrev = interaction.ask(new PreviousQuestion(getChanges())).equals("yes");
-    }
+    tomcatAdminPassQuestion.setDefaults(prevAdminPassword);
+    tomcatManagerPassQuestion.setDefaults(prevManagerPassword);
 
     String adminPass = prevAdminPassword;
     String managerPass = prevManagerPassword;
-    if (!usePrev) {
-      tomcatAdminPassQuestion.setDefaults(prevAdminPassword);
-      tomcatManagerPassQuestion.setDefaults(prevManagerPassword);
-
+    if (!interaction.askGroup(tomcatAdminPassQuestion, tomcatManagerPassQuestion)) {
       adminPass = interaction.ask(tomcatAdminPassQuestion);
       managerPass = interaction.ask(tomcatManagerPassQuestion);
     }
-
     currConfiguration.set("tomcat.users.cloudadmin.password", adminPass);
     currConfiguration.set("tomcat.users.cloudmanager.password", managerPass);
     answers.addAnswer(tomcatAdminPassQuestion, adminPass);
