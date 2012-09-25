@@ -1,0 +1,42 @@
+
+# Database settings
+database.url=localhost:3306
+database.username=cloud
+database.password=cloud
+
+# Cloud settings
+cloud.agent.username=cloud-agent
+
+# Tomcat users settings
+tomcat.users.admin.password=cloudadmin
+tomcat.users.manager.password=cloudmanager
+
+# Mail server settings
+cloud.mail.host=smtp.gmail.com
+cloud.mail.port=465
+cloud.mail.user=exo.plf.cloud.test1@gmail.com
+cloud.mail.password=exo.plf.cloud.test112321
+cloud.mail.smtp.auth=true
+cloud.admin.email=exo.plf.cloud.test1@gmail.com
+cloud.support.email=exo.plf.cloud.test1@gmail.com
+cloud.support.sender=exo.plf.cloud.test1@gmail.com
+cloud.sales.email=exo.plf.cloud.test1@gmail.com
+
+# Graphite settings
+graphite.host=localhost
+graphite.port=2003
+
+# Aws settings
+application.default.type=local-cloud-agent
+cloud.service.type=com.exoplatform.platform.cloud.admin.connector.LocalhostCloudServerClient
+cloud.client.name=localhost
+cloud.aws.version=2011-05-15
+cloud.aws.identity=NO_IDENTITY
+cloud.aws.credentials=NO_CREDENTIALS
+
+# Instance settings
+as.availability.zone=NO_ZONE
+as.security.group.name=NO_GROUP
+as.key.name=NO_KEY
+as.instance.type=m1.large
+as.image.id=NO_IMAGE

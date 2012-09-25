@@ -37,6 +37,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -74,6 +76,7 @@ public class Main {
     String saveTo = null;
     String bundle = null;
     boolean isClearTenants = false;
+    Map<String, String> priorityAnswers = new HashMap<String, String>();
     for (int i = 0; i < args.length; i++) {
       if (args[i].equals("-v") || args[i].equals("--version"))
         version = args[i + 1];
@@ -87,21 +90,16 @@ public class Main {
         saveTo = args[i + 1];
       if (args[i].equals("-b") || args[i].equals("--bundle"))
         bundle = args[i + 1];
+      if (args[i].startsWith("-D")) {
+        String key = args[i].substring(2, args[i].indexOf('='));
+        String value = args[i].substring(args[i].indexOf('=') + 1);
+        priorityAnswers.put(key, value);
+      }
       if (args[i].equals("--clear-tenants"))
         isClearTenants = true;
     }
     if (version == null) {
       System.err.println("Set version for upgrade");
-      return;
-    }
-
-    if (conf == null) {
-      System.err.println("Set admin configuration dir in environment. Variable - EXO_ADMIN_CONF_DIR");
-      return;
-    }
-    File confDir = new File(conf);
-    if (!confDir.exists() || !confDir.isDirectory()) {
-      System.err.println("Conf dir not exists or is not directory");
       return;
     }
 
@@ -125,14 +123,26 @@ public class Main {
       return;
     }
 
-    if (data == null) {
-      System.err.println("Set admin configuration dir in environment. Variable - EXO_ADMIN_DATA_DIR");
-      return;
+    File confDir = null;
+    if (conf == null) {
+      confDir = new File(tomcatDir, "exo-admin-conf");
+    } else {
+      confDir = new File(conf);
+      if (!confDir.exists() || !confDir.isDirectory()) {
+        System.err.println("Conf dir not exists or is not directory");
+        return;
+      }
     }
-    File dataDir = new File(data);
-    if (!dataDir.exists() || !dataDir.isDirectory()) {
-      System.out.println("Data dir not exists or is not directory");
-      return;
+
+    File dataDir = null;
+    if (data == null) {
+      dataDir = new File(tomcatDir, "data");
+    } else {
+      dataDir = new File(data);
+      if (!dataDir.exists() || !dataDir.isDirectory()) {
+        System.out.println("Data dir not exists or is not directory");
+        return;
+      }
     }
 
     AnswersManager answersManager = new AnswersManager((saveTo == null) ? null : new File(saveTo));
@@ -141,7 +151,7 @@ public class Main {
     if (answersFile == null) {
       interaction = new StreamInteractionManager();
     } else {
-      interaction = new InteractionManagerWithAnswers(new File(answersFile));
+      interaction = new InteractionManagerWithAnswers(new File(answersFile), priorityAnswers);
     }
 
     AdminDirectories prevAdminDirs = new AdminDirectories(prevTomcatDir, confDir, dataDir);
@@ -182,6 +192,7 @@ public class Main {
     String tomcat = null;
     String saveTo = null;
     String bundle = null;
+    Map<String, String> priorityAnswers = new HashMap<String, String>();
     for (int i = 0; i < args.length; i++) {
       if (args[i].equals("-v") || args[i].equals("--version"))
         version = args[i + 1];
@@ -193,22 +204,14 @@ public class Main {
         saveTo = args[i + 1];
       if (args[i].equals("-b") || args[i].equals("--bundle"))
         bundle = args[i + 1];
+      if (args[i].startsWith("-D")) {
+        String key = args[i].substring(2, args[i].indexOf('='));
+        String value = args[i].substring(args[i].indexOf('=') + 1);
+        priorityAnswers.put(key, value);
+      }
     }
     if (version == null) {
       System.err.println("Set version for upgrade");
-      return;
-    }
-
-    if (conf == null) {
-      System.err.println("Set admin configuration dir in environment. Variable - EXO_ADMIN_CONF_DIR");
-      return;
-    }
-    File confDir = new File(conf);
-    if (!confDir.exists()) {
-      confDir.mkdirs();
-    }
-    if (!confDir.isDirectory()) {
-      System.err.println("Conf dir is not directory");
       return;
     }
 
@@ -222,17 +225,32 @@ public class Main {
       return;
     }
 
+    File confDir = null;
+    if (conf == null) {
+      confDir = new File(tomcatDir, "exo-admin-conf");
+    } else {
+      confDir = new File(conf);
+      if (!confDir.exists()) {
+        confDir.mkdirs();
+      }
+      if (!confDir.isDirectory()) {
+        System.err.println("Conf dir is not directory");
+        return;
+      }
+    }
+
+    File dataDir = null;
     if (data == null) {
-      System.err.println("Set admin configuration dir in environment. Variable - EXO_ADMIN_DATA_DIR");
-      return;
-    }
-    File dataDir = new File(data);
-    if (!dataDir.exists()) {
-      dataDir.mkdirs();
-    }
-    if (!dataDir.isDirectory()) {
-      System.out.println("Data dir not exists or is not directory");
-      return;
+      dataDir = new File(tomcatDir, "data");
+    } else {
+      dataDir = new File(data);
+      if (!dataDir.exists()) {
+        dataDir.mkdirs();
+      }
+      if (!dataDir.isDirectory()) {
+        System.out.println("Data dir is not directory");
+        return;
+      }
     }
 
     AnswersManager answersManager = new AnswersManager((saveTo == null) ? null : new File(saveTo));
@@ -241,7 +259,7 @@ public class Main {
     if (answersFile == null) {
       interaction = new StreamInteractionManager();
     } else {
-      interaction = new InteractionManagerWithAnswers(new File(answersFile));
+      interaction = new InteractionManagerWithAnswers(new File(answersFile), priorityAnswers);
     }
 
     AdminDirectories prevAdminDirs = new AdminDirectories(tomcatDir, confDir, dataDir);

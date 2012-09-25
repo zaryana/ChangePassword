@@ -36,10 +36,13 @@ public class InteractionManagerWithAnswers extends StreamInteractionManager {
 
   private final Map<String, String> answers;
 
-  public InteractionManagerWithAnswers(File answers) throws InstallerException {
+  public InteractionManagerWithAnswers(File answers, Map<String, String> priorityAnswers) throws InstallerException {
     super();
     try {
       this.answers = readAnswers(answers);
+      for (String key : priorityAnswers.keySet()) {
+        this.answers.put(key, priorityAnswers.get(key));
+      }
     } catch (IOException e) {
       throw new InstallerException("File with answers " + answers.getAbsolutePath() + " not found");
     }

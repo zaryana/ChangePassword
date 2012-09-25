@@ -36,10 +36,14 @@ then
     echo "ID:" $ID
 
     # Set backup ID in admin conf
-    cd admin-tomcat/exo-admin-conf
-    sed -i s/cloud.admin.tenant.backup.id=NO_ID/cloud.admin.tenant.backup.id=$ID/ admin.properties
+    #cd admin-tomcat/exo-admin-conf
+    #sed -i s/cloud.admin.tenant.backup.id=NO_ID/cloud.admin.tenant.backup.id=$ID/ admin.properties
 
-    cd ../..
+    #cd ../..
+
+    # Installing admin
+    java -jar cloud-workspaces-admin-installer.jar install --version 1.1.0 --tomcat admin-tomcat --answers ~/local-answers.txt --bundle cloud-workspaces-admin-bundle-tomcat.zip -Dcloud.admin.tenant.backup.id=$ID
+    exit 0
 fi # otherwise use prepared cloud
 
 # Starting admin

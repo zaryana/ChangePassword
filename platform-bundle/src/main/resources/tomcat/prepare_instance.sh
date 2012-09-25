@@ -122,6 +122,8 @@
 
   if [ $i -eq $timeout ] ; then
     echo "WARNING! Template $ID creation was not finished in time. See app server logs for details."
+    ./stop_eXo.sh -force
+    echo 1
   fi
 
   # Ok, now we can stop it
