@@ -1,5 +1,5 @@
 <version>
-  <from-version>1.1.0-Beta10</from-version>
+  <from-version>1.1.0</from-version>
   <download>
     <url>http://intranet.exoplatform.org/rest/jcr/repository/collaboration/Groups/platform/users/Documents/Builds/CloudWorkspaces/releases/1.1.0/cloud-workspaces-admin-1.1.0-tomcat.zip</url>
   </download>
@@ -12,6 +12,8 @@
   <updation>
     <algorithm>com.exoplatform.cloudworkspaces.installer.upgrade.MinorAdminUpgradeAlgorithm</algorithm>
     <hooks>
+      <before-configuration-generation>
+      </before-configuration-generation>
       <configuration-generated/>
       <update-started/>
       <tomcat-stopped/>
@@ -39,11 +41,13 @@
       <updater>com.exoplatform.cloudworkspaces.installer.configuration.updaters.MailConfigurationUpdater</updater>
       <updater>com.exoplatform.cloudworkspaces.installer.configuration.updaters.CloudClientConfigurationUpdater</updater>
       <updater>com.exoplatform.cloudworkspaces.installer.configuration.updaters.ServerConfigurationUpdater</updater>
-      <updater>com.exoplatform.cloudworkspaces.installer.configuration.updaters.BackupConfigurationUpdater</updater>
 
-      <updater>com.exoplatform.cloudworkspaces.installer.configuration.updaters.GraphiteConfigurationUpdater</updater>
-      <updater>com.exoplatform.cloudworkspaces.installer.configuration.updaters.AwsConfigurationUpdater</updater>
-      <updater>com.exoplatform.cloudworkspaces.installer.configuration.updaters.InstanceConfigurationUpdater</updater>
+      <updater profile="local-cloud">com.exoplatform.cloudworkspaces.installer.configuration.updaters.LocalBackupConfigurationUpdater</updater>
+
+      <updater profile="aws">com.exoplatform.cloudworkspaces.installer.configuration.updaters.BackupConfigurationUpdater</updater>
+      <updater profile="aws">com.exoplatform.cloudworkspaces.installer.configuration.updaters.GraphiteConfigurationUpdater</updater>
+      <updater profile="aws">com.exoplatform.cloudworkspaces.installer.configuration.updaters.AwsConfigurationUpdater</updater>
+      <updater profile="aws">com.exoplatform.cloudworkspaces.installer.configuration.updaters.InstanceConfigurationUpdater</updater>
     </updaters>
     <parameters>
       <group name="Cloud settings">
@@ -283,7 +287,7 @@
         </parameter>
       </group>
 
-      <group name="AWS settings">
+      <group name="AWS settings" profile="aws">
         <parameter>
           <name>aws-ec2.api-version</name>
           <default>2011-05-15</default>
@@ -314,7 +318,7 @@
         </parameter>
       </group>
   
-      <group name="Instance settings">
+      <group name="Instance settings" profile="aws">
         <parameter>
           <name>types.cloud.agent.availability.zone</name>
           <sources>
@@ -386,7 +390,7 @@
         </parameter>
       </group>
 
-      <group name="Graphite settings">
+      <group name="Graphite settings" profile="aws">
         <parameter>
           <name>graphite.host</name>
           <default>localhost</default>

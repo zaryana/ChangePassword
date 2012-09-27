@@ -69,7 +69,7 @@ public class CloudClientConfigurationUpdater implements ConfigurationUpdater {
     String applicationDefaultType = prevApplicationDefaultType;
     String cloudServiceType = prevCloudServiceType;
     String cloudClientName = prevCloudClientName;
-    if (interaction.askGroup(applicationDefaultTypeQuestion,
+    if (!interaction.askGroup(applicationDefaultTypeQuestion,
                              cloudServiceTypeQuestion,
                              cloudClientNameQuestion)) {
       applicationDefaultType = interaction.ask(applicationDefaultTypeQuestion);

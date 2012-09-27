@@ -21,11 +21,14 @@ package com.exoplatform.cloudworkspaces.installer.upgrade;
 import com.exoplatform.cloudworkspaces.installer.InstallerException;
 import com.exoplatform.cloudworkspaces.installer.configuration.CurrentAdmin;
 import com.exoplatform.cloudworkspaces.installer.configuration.PreviousAdmin;
+import com.exoplatform.cloudworkspaces.installer.interaction.InteractionManager;
 
 public interface Hook {
-  
+
   public static interface BeforeConfigurationGeneratingHook extends Hook {
-    public void beforeConfigurationGenerating(PreviousAdmin prevAdmin, CurrentAdmin currAdmin) throws InstallerException;
+    public void beforeConfigurationGenerating(PreviousAdmin prevAdmin,
+                                              CurrentAdmin currAdmin,
+                                              InteractionManager interaction) throws InstallerException;
   }
 
   public static interface ConfigurationGeneratedHook extends Hook {

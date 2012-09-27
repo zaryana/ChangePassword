@@ -101,7 +101,7 @@ public class StreamInteractionManager implements InteractionManager {
     }
     String answer = "";
     while (answer.isEmpty() || !answer.matches("yes|no")) {
-      out.println("Do you want to use this settings? [yes]: ");
+      out.print("Do you want to use this settings? [yes]: ");
       answer = in.nextLine().trim();
       if (answer.isEmpty()) {
         answer = "yes";

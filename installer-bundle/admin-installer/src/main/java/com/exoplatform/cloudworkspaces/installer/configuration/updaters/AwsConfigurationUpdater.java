@@ -70,7 +70,7 @@ public class AwsConfigurationUpdater implements ConfigurationUpdater {
     String cloudAwsVersion = prevCloudAwsVersion;
     String awsIdentity = prevAwsIdentity;
     String awsCredentials = prevAwsCredentials;
-    if (interaction.askGroup(cloudAwsVersionQuestion,
+    if (!interaction.askGroup(cloudAwsVersionQuestion,
                              cloudAwsIdentityQuestion,
                              cloudAwsCredentialsQuestion)) {
       cloudAwsVersion = interaction.ask(cloudAwsVersionQuestion);

@@ -199,9 +199,9 @@ public class MinorAdminUpgradeAlgorithm extends AdminUpgradeAlgorithm {
   @Override
   public void install(AdminDirectories toDirs) throws InstallerException {
     Logger.timePrintln("Start configuring admin...");
-    
+
     beforeConfigurationGenerating(prevAdmin, currAdmin);
-    
+
     configurationManager.configure();
 
     configurationGenerated(prevAdmin, currAdmin);
@@ -286,7 +286,9 @@ public class MinorAdminUpgradeAlgorithm extends AdminUpgradeAlgorithm {
                                   .getUpdationAlgorithmConfiguration()
                                   .getHooks("before-configuration-generating");
     for (Object hook : hooks) {
-      ((BeforeConfigurationGeneratingHook) hook).beforeConfigurationGenerating(prevAdmin, currAdmin);
+      ((BeforeConfigurationGeneratingHook) hook).beforeConfigurationGenerating(prevAdmin,
+                                                                               currAdmin,
+                                                                               interaction);
     }
   }
 
