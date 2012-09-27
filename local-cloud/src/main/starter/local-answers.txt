@@ -5,7 +5,7 @@ database.username=cloud
 database.password=cloud
 
 # Cloud settings
-cloud.agent.username=cloud-agent
+cloud.agent.username=cloudadmin
 
 # Tomcat users settings
 tomcat.users.admin.password=cloudadmin

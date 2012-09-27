@@ -20,7 +20,7 @@ if $CLEAN ; then
   # list of tenants to clean theirs DBs
   # TODO it's not correct way as admin still runs and in theory can use tenant databases - use stop service instead, temporary solution until CLDINT-778
   curl -s -u cloudadmin:cloudadmin 'http://localhost:8080/rest/private/cloud-admin/tenant-service/tenant-list-all' | \
-  sed -e 's/["\[]/''/g' |sed -e 's/[]]/''/g' | awk '{n=split($0,a,","); for (i=1; i<=n; i++) { print a[i];  system("mysql -hlocalhost -u$EXO_DB_USER -p$EXO_DB_PASSWORD -e \"drop database " a[i] "\"") } }'
+  sed -e 's/["\[]/''/g' |sed -e 's/[]]/''/g' | awk '{n=split($0,a,","); for (i=1; i<=n; i++) { print a[i];  system("mysql -hlocalhost -ucloud -pcloud -e \"drop database " a[i] "\"") } }'
 fi
 
 cd ./admin-tomcat/bin
@@ -40,5 +40,5 @@ rm -rf ./exo-admin-conf/application-servers/*
 cd ../
 
 # drop default database
-mysql -hlocalhost -u$EXO_DB_USER -p$EXO_DB_PASSWORD -e "drop database if exists repository; drop database if exists repository_as1; drop database if exists repository_as2; drop database if exists repository_as3;"
+mysql -hlocalhost -ucloud -pcloud -e "drop database if exists repository; drop database if exists repository_as1; drop database if exists repository_as2; drop database if exists repository_as3;"
 

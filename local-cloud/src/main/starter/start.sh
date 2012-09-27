@@ -31,8 +31,6 @@ res=$(curl --connect-timeout 900 -s  -X POST -u cloudadmin:cloudadmin http://loc
 
 as_name=$(curl --connect-timeout 900 -s  -X POST -u cloudadmin:cloudadmin http://localhost:8080/rest/private/cloud-admin/instance-service/start-server?type=local-cloud-agent)
 echo "Started app server $as_name"
-cd ../..
-echo $as_name > ./as.txt
 
 #Allow autoscaling
 res=$(curl --connect-timeout 900 -s  -X POST -u cloudadmin:cloudadmin http://localhost:8080/rest/private/cloud-admin/autoscaling-service/allow-autoscaling)

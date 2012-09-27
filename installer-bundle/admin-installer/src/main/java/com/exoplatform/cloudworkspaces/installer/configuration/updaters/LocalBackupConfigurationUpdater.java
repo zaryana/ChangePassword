@@ -42,7 +42,7 @@ public class LocalBackupConfigurationUpdater implements ConfigurationUpdater {
         "TENANT_MASTERHOST=" + answers.getAnswer("tenant.masterhost"),
         "CLOUD_AGENT_USERNAME=cloudadmin", "CLOUD_AGENT_PASSWORD=cloudadmin",
         "JAVA_HOME=" + System.getenv("JAVA_HOME") };
-    String backupId = execute("./prepare_instance.sh", env, new File("").getAbsoluteFile());
+    String backupId = execute("./prepare.sh", env, new File("").getAbsoluteFile());
     currAdmin.getAdminConfiguration().set("cloud.admin.tenant.backup.id", backupId);
   }
 
