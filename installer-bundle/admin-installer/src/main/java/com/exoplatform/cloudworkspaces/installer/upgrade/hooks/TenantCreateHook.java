@@ -29,21 +29,42 @@ import org.w3c.dom.Node;
 
 public class TenantCreateHook implements UpdateFinishedHook {
 
+  private final String firstName;
+
+  private final String lastName;
+
+  private final String companyName;
+
+  private final String userMail;
+
+  private final String phone;
+
   private final String tenant;
 
-  private final String email;
+  private final String password;
 
   public TenantCreateHook(Node node) {
+    this.firstName = XmlUtils.getChild(node, "first-name").getTextContent();
+    this.lastName = XmlUtils.getChild(node, "last-name").getTextContent();
+    this.companyName = XmlUtils.getChild(node, "company-name").getTextContent();
+    this.userMail = XmlUtils.getChild(node, "user-mail").getTextContent();
+    this.phone = XmlUtils.getChild(node, "phone").getTextContent();
     this.tenant = XmlUtils.getChild(node, "tenant").getTextContent();
-    this.email = XmlUtils.getChild(node, "email").getTextContent();
+    this.password = XmlUtils.getChild(node, "password").getTextContent();
   }
 
   @Override
   public void updateFinished(CurrentAdmin currAdmin) throws InstallerException {
     CloudAdminServices cloudAdminServices = currAdmin.getCloudAdminServices();
+    Logger.timePrintln("Creating " + tenant + " tenant...");
     if (!cloudAdminServices.isTenantExists(tenant)) {
-      Logger.timePrintln("Creating " + tenant + " tenant with owner " + email);
-      cloudAdminServices.createTenant(tenant, email);
+      cloudAdminServices.createTenantWithAdminUser(tenant,
+                                                   userMail,
+                                                   firstName,
+                                                   lastName,
+                                                   companyName,
+                                                   phone,
+                                                   password);
     } else {
       Logger.timePrintln("Tenant with name " + tenant + " already exists, skip creation");
     }

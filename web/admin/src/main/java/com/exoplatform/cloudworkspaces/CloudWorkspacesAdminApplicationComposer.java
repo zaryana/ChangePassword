@@ -41,6 +41,7 @@ import com.exoplatform.cloudworkspaces.listener.TenantCreatedListener;
 import com.exoplatform.cloudworkspaces.listener.UserLimitSupervisor;
 import com.exoplatform.cloudworkspaces.listener.WorkspacesServerOnlineListenersInvoker;
 import com.exoplatform.cloudworkspaces.rest.CloudWorkspacesInfoService;
+import com.exoplatform.cloudworkspaces.rest.CloudWorkspacesPrivateTenantService;
 import com.exoplatform.cloudworkspaces.rest.CloudWorkspacesProductService;
 import com.exoplatform.cloudworkspaces.rest.CloudWorkspacesTenantService;
 import com.exoplatform.cloudworkspaces.users.UserLimitsStorage;
@@ -115,6 +116,7 @@ public class CloudWorkspacesAdminApplicationComposer extends CloudAdminApplicati
   protected void doComposeRequest(MutablePicoContainer container) {
     super.doComposeRequest(container);
     container.addComponent(CloudWorkspacesTenantService.class);
+    container.addComponent(CloudWorkspacesPrivateTenantService.class);
     container.addComponent(CloudWorkspacesInfoService.class);
     container.addComponent(CloudWorkspacesProductService.class);
 

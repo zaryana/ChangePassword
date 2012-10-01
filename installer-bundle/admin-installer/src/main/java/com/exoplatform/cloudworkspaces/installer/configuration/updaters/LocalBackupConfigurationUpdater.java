@@ -36,6 +36,7 @@ public class LocalBackupConfigurationUpdater implements ConfigurationUpdater {
                      CurrentAdmin currAdmin,
                      InteractionManager interaction,
                      AnswersManager answers) throws InstallerException {
+    System.out.println("Preparing image for local cloud...");
     String[] env = { "EXO_DB_HOST=" + answers.getAnswer("database.url"),
         "EXO_DB_USER=" + answers.getAnswer("database.username"),
         "EXO_DB_PASSWORD=" + answers.getAnswer("database.password"),

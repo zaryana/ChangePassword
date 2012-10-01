@@ -25,16 +25,22 @@ import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 public class M10CloudAdminServices implements CloudAdminServices {
 
@@ -262,6 +268,37 @@ public class M10CloudAdminServices implements CloudAdminServices {
 
   public void autoscalingCheck() throws AdminException {
     HttpResponse response = doGetRequest("/rest/private/cloud-admin/autoscaling-service/check-servers");
+    try {
+      BaseResponseHandler handler = new BaseResponseHandler();
+      handler.handleResponse(response);
+    } finally {
+      try {
+        response.getEntity().getContent().close();
+      } catch (IllegalStateException e) {
+        throw new AdminException(e);
+      } catch (IOException e) {
+        throw new AdminException(e);
+      }
+    }
+  }
+
+  public void createTenantWithAdminUser(String tenant,
+                                        String email,
+                                        String firstName,
+                                        String lastName,
+                                        String companyName,
+                                        String phone,
+                                        String password) throws AdminException {
+    Map<String, String> params = new HashMap<String, String>();
+    params.put("tenant", tenant);
+    params.put("user-mail", email);
+    params.put("first-name", firstName);
+    params.put("last-name", lastName);
+    params.put("company-name", companyName);
+    params.put("phone", phone);
+    params.put("password", password);
+    HttpResponse response = doPostRequest("/rest/private/cloud-admin/cloudworkspaces/private-tenant-service/create",
+                                          params);
     try {
       BaseResponseHandler handler = new BaseResponseHandler();
       handler.handleResponse(response);
@@ -527,6 +564,20 @@ public class M10CloudAdminServices implements CloudAdminServices {
       } catch (IOException e) {
         throw new AdminException(e);
       }
+    }
+  }
+
+  protected HttpResponse doPostRequest(String rest, Map<String, String> formParams) throws AdminException {
+    HttpPost request = new HttpPost("http://" + tenantMasterhost + rest);
+    ArrayList<BasicNameValuePair> params = new ArrayList<BasicNameValuePair>();
+    for (Entry<String, String> entry : formParams.entrySet()) {
+      params.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
+    }
+    try {
+      request.setEntity(new UrlEncodedFormEntity(params, "utf-8"));
+      return doRequest(request);
+    } catch (UnsupportedEncodingException e) {
+      throw new AdminException(e);
     }
   }
 

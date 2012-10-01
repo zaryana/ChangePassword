@@ -20,15 +20,21 @@
       <tomcat-started/>
       <new-as-ready/>
       <update-finished>
-        <!--hook class="com.exoplatform.cloudworkspaces.installer.upgrade.hooks.TenantRemoveHook">
-          <tenant>exoplatform</tenant>
-        </hook>
-        <hook class="com.exoplatform.cloudworkspaces.installer.upgrade.hooks.TenantCreateHook">
-          <tenant>exoplatform</tenant>
-          <email>intranet_admin@exoplatform.com</email>
-        </hook-->
         <hook class="com.exoplatform.cloudworkspaces.installer.upgrade.hooks.DemoTenantCreateHook">
           <email>intranet_admin@exoplatform.com</email>
+        </hook>
+
+        <hook profile="local-cloud" class="com.exoplatform.cloudworkspaces.installer.upgrade.hooks.TenantRemoveHook">
+          <tenant>exoplatform</tenant>
+        </hook>
+        <hook profile="acceptance" class="com.exoplatform.cloudworkspaces.installer.upgrade.hooks.TenantCreateHook">
+          <tenant>exoplatform</tenant>
+          <user-mail>kregent@exoplatform.com</user-mail>
+          <first-name>kregent</first-name>
+          <last-name>kregent</last-name>
+          <company-name>exoplatform</company-name>
+          <phone>12345</phone>
+          <password>kregent</password>
         </hook>
       </update-finished>
     </hooks>

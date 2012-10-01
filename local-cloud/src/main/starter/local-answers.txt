@@ -1,4 +1,6 @@
 
+#tenant.masterhost=your_masterhost
+
 # Database settings
 database.url=localhost:3306
 database.username=cloud
