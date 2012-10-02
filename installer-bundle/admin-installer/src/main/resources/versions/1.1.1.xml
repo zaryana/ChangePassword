@@ -24,7 +24,7 @@
           <email>intranet_admin@exoplatform.com</email>
         </hook>
 
-        <hook profile="local-cloud" class="com.exoplatform.cloudworkspaces.installer.upgrade.hooks.TenantRemoveHook">
+        <hook profile="acceptance" class="com.exoplatform.cloudworkspaces.installer.upgrade.hooks.TenantRemoveHook">
           <tenant>exoplatform</tenant>
         </hook>
         <hook profile="acceptance" class="com.exoplatform.cloudworkspaces.installer.upgrade.hooks.TenantCreateHook">
