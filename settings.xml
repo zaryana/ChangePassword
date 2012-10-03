@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings 
+  xmlns="http://maven.apache.org/SETTINGS/1.0.0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+ <localRepository>/home/zaryana/eXo/exo-dependencies/repository</localRepository>
+  <servers>
+
+    <!-- START SNIPPET: exo-credentials --> 
+
+    <!-- =========================== -->
+    <!-- eXoPlatform.prg credentials -->
+    <!-- =========================== -->
+    <!-- To upload in our repositories -->
+    <server>
+      <id>repository.exoplatform.org</id>
+      <username>zdombrovskaya</username>
+      <password></password>
+    </server>
+    <!-- To download from our private products repositories (IDEALL, PLF...) -->
+    <server>
+      <id>exo.private</id>
+      <username>zdombrovskaya</username>
+      <password></password>
+    </server>
+    <!-- To download from our staging repositories -->
+    <server>
+      <id>exo.staging</id>
+      <username>zdombrovskaya</username>
+      <password></password>
+    </server>    
+    <!-- To download from our custom projects repositories -->
+    <server>
+      <id>exo.cp</id>
+     <username>zdombrovskaya</username>
+      <password></password>
+    </server>
+
+    <!-- END SNIPPET: exo-credentials -->    
+
+    <!-- START SNIPPET: jboss-credentials --> 
+
+    <!-- =========================== -->
+    <!-- JBoss.org credentials       -->
+    <!-- =========================== -->
+    <server>
+      <!-- To deploy snapshots to JBoss repository -->
+      <id>jboss-snapshots-repository</id>
+      <username>zdombrovskaya</username>
+      <password></password>
+    </server>
+      <!-- To deploy releases to JBoss repository -->
+    <server>
+      <id>jboss-releases-repository</id>
+  	<username>zdombrovskaya</username>
+      <password></password>
+    </server>
+
+    <!-- END SNIPPET: jboss-credentials -->    
+
+  </servers>
+
+  <!-- START SNIPPET: mirror --> 
+
+  <mirrors>
+    <mirror>
+      <id>exo-central-server</id>
+      <mirrorOf>external:*,!exo.private,!exo.staging,!exo.cp,!jboss.staging</mirrorOf>
+      <url>http://repository.exoplatform.org/public/</url>
+    </mirror>
+  </mirrors>
+  
+  <!-- END SNIPPET: mirror -->    
+  
+  <profiles>
+  
+    <!-- START SNIPPET: local-properties --> 
+
+    <!-- This profile is always activated and let you define properties for 
+    dependent environment stuffs -->
+    <profile>
+      <id>local-properties</id>
+      <properties>
+	    <exo.projects.directory.dependencies>/home/zaryana/eXo/exo-dependencies/</exo.projects.directory.dependencies> 
+	    <exo.projects.directory.working>/home/zaryana/eXo/exo-working/</exo.projects.directory.working>
+        <exo.projects.app.tomcat.version>tomcat-6.0.32</exo.projects.app.tomcat.version>
+        <!--
+        <exo.projects.directory.dependencies>${user.home}/Projets/eXo/Dependencies</exo.projects.directory.dependencies>
+        <exo.working.dir>${user.home}/Projets/eXo/Working/</exo.working.dir>
+        -->
+     
+        <exo.projects.app.jboss.version>jboss-5.1.0.GA</exo.projects.app.jboss.version>
+        <exo.projects.app.jonas.version>JONAS_4_8_5</exo.projects.app.jonas.version>
+        <!-- for JCR 1.10.x -->
+        <!-- exo.projects.app.jboss.version>jboss-4.2.3.GA</exo.projects.app.jboss.version -->
+      </properties>
+    </profile>  
+
+    <!-- END SNIPPET: local-properties -->    
+
+    <!-- START SNIPPET: gpg-passphrase --> 
+    
+    <profile>
+      <id>release</id>
+      <properties>
+        <gpg.passphrase><!-- YOUR PGP KEY PASSPHRASE --></gpg.passphrase>
+     </properties>
+    </profile>
+
+    <!-- END SNIPPET: gpg-passphrase -->    
+    
+    <profile>
+      <id>exo-private</id>
+      <!-- Repositories to download eXo private binaries -->
+      <repositories>
+        <repository>
+          <id>exo.private</id>
+          <url>http://repository.exoplatform.org/private</url>
+          <releases>
+            <enabled>true</enabled>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+        </repository>
+      </repositories>
+      <pluginRepositories>
+        <pluginRepository>
+          <id>exo.private</id>
+          <url>http://repository.exoplatform.org/private</url>
+          <releases>
+            <enabled>true</enabled>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+        </pluginRepository>
+      </pluginRepositories>
+    </profile>
+    <profile>
+      <id>exo-staging</id>
+      <!-- Repositories to download eXo staging binairies -->
+      <!-- TAKE CARE TO ACTIVATE IT ONLY IF REQUIRED -->
+      <!-- These repositories are delivering binaries marked as released but allowed to be replaced -->
+      <!-- Maven never updates released binaries thus you have to cleanup your local repository to grab an updated version -->
+      <repositories>
+        <repository>
+          <id>exo.staging</id>
+          <url>http://repository.exoplatform.org/staging</url>
+          <releases>
+            <enabled>true</enabled>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+        </repository>
+      </repositories>
+      <pluginRepositories>
+        <pluginRepository>
+          <id>exo.staging</id>
+          <url>http://repository.exoplatform.org/staging</url>
+          <releases>
+            <enabled>true</enabled>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+        </pluginRepository>
+      </pluginRepositories>
+    </profile>
+    <profile>
+      <id>jboss-staging</id>
+      <!-- Repositories to download JBoss staging binairies -->
+      <!-- TAKE CARE TO ACTIVATE IT ONLY IF REQUIRED -->
+      <!-- These repositories are delivering binaries marked as released but allowed to be replaced -->
+      <!-- Maven never updates released binaries thus you have to cleanup your local repository to grab an updated version -->      
+      <repositories>
+        <repository>
+          <id>jboss.staging</id>
+          <url>https://repository.jboss.org/nexus/content/groups/staging/</url>
+        </repository>
+      </repositories>
+      <pluginRepositories>
+        <pluginRepository>
+          <id>jboss.staging</id>
+          <url>https://repository.jboss.org/nexus/content/groups/staging/</url>
+        </pluginRepository>
+      </pluginRepositories>
+    </profile>    
+    <profile>
+      <!-- Repositories to download eXo custom projects binaries and products patchs -->    
+      <id>exo-cp</id>
+      <repositories>
+        <repository>
+          <id>exo.cp</id>
+          <url>http://repository.exoplatform.org/cp</url>
+          <releases>
+            <enabled>true</enabled>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+        </repository>
+      </repositories>
+      <pluginRepositories>
+        <pluginRepository>
+          <id>exo.cp</id>
+          <url>http://repository.exoplatform.org/cp</url>
+          <releases>
+            <enabled>true</enabled>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+        </pluginRepository>
+      </pluginRepositories>
+    </profile>
+    <!-- To enhance DL performances this profile must always be after others repositories in Maven 2 -->
+    <!-- In Maven 3 it should be declared first -->
+    <profile>
+      <id>exo-central</id>
+      <!-- This hack change the behavior of maven to let it use our public mirror
+      as the central repository (with snapshots activation). 
+      The URL is never used and is overrided by the mirror entry.
+      -->
+      <repositories>
+        <repository>
+          <id>central</id>
+          <url>http://fake</url>
+          <releases>
+            <enabled>true</enabled>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+        </repository>
+               
+      </repositories>
+      <pluginRepositories>
+        <pluginRepository>
+          <id>central</id>
+          <url>http://fake</url>
+          <releases>
+            <enabled>true</enabled>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+        </pluginRepository>
+        
+      </pluginRepositories>
+    </profile> 
+  </profiles>
+  <activeProfiles>
+    <!-- make these profiles active all the time -->
+    <activeProfile>exo-central</activeProfile>
+    <activeProfile>local-properties</activeProfile>
+    <activeProfile>exo-private</activeProfile>
+  </activeProfiles>
+  <pluginGroups>
+    <pluginGroup>org.exoplatform.maven.plugins</pluginGroup>
+    <pluginGroup>org.sonatype.plugins</pluginGroup>
+  </pluginGroups>
+
+</settings>
