@@ -1,0 +1,44 @@
+tenant.masterhost=cwks
+
+# Database settings
+database.url=localhost:3306
+database.username=clouduser
+database.password=cloud12321
+
+# Cloud settings
+cloud.agent.username=cloudadmin
+
+# Tomcat users settings
+tomcat.users.admin.password=cloudadmin
+tomcat.users.manager.password=cloudmanager
+
+# Mail server settings
+cloud.mail.host=smtp.gmail.com
+cloud.mail.port=465
+cloud.mail.user=cloud.workspaces.developer1@gmail.com
+cloud.mail.password=cloud.workspaces.developer112321
+cloud.mail.smtp.auth=true
+cloud.admin.email=cloud-workspaces-developer@exoplatform.org
+cloud.support.email=cloud-workspaces-developer@exoplatform.org
+cloud.support.sender=cloud-workspaces-developer@exoplatform.org
+cloud.sales.email=cloud-workspaces-developer@exoplatform.org
+
+# Graphite settings
+graphite.host=localhost
+graphite.port=2003
+
+# Aws settings
+application.default.type=local-cloud-agent
+cloud.service.type=com.exoplatform.platform.cloud.admin.connector.LocalhostCloudServerClient
+cloud.client.name=localhost
+cloud.aws.version=2011-05-15
+cloud.aws.identity=NO_IDENTITY
+cloud.aws.credentials=NO_CREDENTIALS
+
+# Instance settings
+as.availability.zone=NO_ZONE
+as.security.group.name=NO_GROUP
+as.key.name=NO_KEY
+as.instance.type=m1.large
+as.image.id=NO_IMAGE
+
