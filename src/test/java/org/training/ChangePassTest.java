@@ -14,7 +14,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.util.NoSuchElementException;
 
 public class ChangePassTest {
-
    WebDriver driver;
 
    @Before
