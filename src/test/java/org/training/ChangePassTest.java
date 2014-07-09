@@ -70,7 +70,7 @@ public class ChangePassTest {
       });
   
       WebElement emailField = driver.findElement(By.id("email"));
-	   emailField.clear();
+      emailField.clear();
 		assertTrue(emailField.getAttribute("value").isEmpty());
 		emailField.sendKeys("zdombrovskaya@exoplatform.com");
 		assertEquals("zdombrovskaya@exoplatform.com", emailField.getAttribute("value"));
