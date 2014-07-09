@@ -68,14 +68,14 @@ public class ChangePassTest {
          }
          
       });
-  
+        //
       WebElement emailField = driver.findElement(By.id("email"));
       emailField.clear();
-		assertTrue(emailField.getAttribute("value").isEmpty());
-		emailField.sendKeys("zdombrovskaya@exoplatform.com");
-		assertEquals("zdombrovskaya@exoplatform.com", emailField.getAttribute("value"));
+      assertTrue(emailField.getAttribute("value").isEmpty());
+      emailField.sendKeys("zdombrovskaya@exoplatform.com");
+      assertEquals("zdombrovskaya@exoplatform.com", emailField.getAttribute("value"));
       (new WebDriverWait(driver, 30)).until(ExpectedConditions.invisibilityOfElementLocated(By.id("t_submit")));
       WebElement message = driver.findElement(By.id("messageString"));
- 	  assertEquals("Instructions to reset your password were sent to zdombrovskaya@exoplatform.com .", message.getText()); 
+      assertEquals("Instructions to reset your password were sent to zdombrovskaya@exoplatform.com .", message.getText()); 
    }
 }
