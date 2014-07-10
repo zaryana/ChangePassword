@@ -67,7 +67,6 @@ public class ChangePassTest {
          }
          
       });
-        //
       WebElement emailField = driver.findElement(By.id("email"));
       emailField.clear();
       assertTrue(emailField.getAttribute("value").isEmpty());
